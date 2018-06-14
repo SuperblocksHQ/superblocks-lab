@@ -29,6 +29,7 @@ import AppView from './appview.js';
 import ConstantEditor from './editor-constant.js';
 import ContractInteraction from './contractinteraction.js';
 import TransactionLog from '../blockexplorer/transactionlog.js';
+import ContractTester from './contracttester.js';
 
 export class WindowComponent extends Component {
     constructor(props) {
@@ -162,6 +163,11 @@ export class Window {
         else if(this.props.item.props.type=="transaction_log") {
             return (
                 <TransactionLog id={this.subId} parent={this} name={this.props.item.props._name} project={this.props.item.props._project} router={this.props.router} functions={this.props.functions} />
+            );
+        }
+        else if(this.props.item.props.type=="contract" && this.props.item.props.type2=="test") {
+            return (
+                <ContractTester id={this.subId} parent={this} contract={this.props.item.props._contract} project={this.props.item.props._project} router={this.props.router} functions={this.props.functions} />
             );
         }
     };
