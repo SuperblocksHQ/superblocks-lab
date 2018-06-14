@@ -149,6 +149,15 @@ contract `+this.props.contract.name+` {
         if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
     };
 
+    test = (e) => {
+        e.preventDefault();
+        const subitem = this.props.item.getChildren().filter((elm) => {
+            return (elm.props.type2=="test");
+
+        })[0];
+        if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
+    };
+
     textChange = (value) => {
         this.body.contents=value;
         if(this.body.state!=1) {
@@ -190,6 +199,7 @@ contract `+this.props.contract.name+` {
                     {this.props.type2=="contract" && <a href="#" title="Deploy" onClick={this.deploy}><FaIcon icon={iconDeploy}/></a>}
                     {this.props.type2=="contract" && <a href="#" title="Configure" onClick={this.configure}><FaIcon icon={iconCog}/></a>}
                     {this.props.type2=="contract" && <a href="#" title="Interact" onClick={this.interact}><FaIcon icon={iconChess}/></a>}
+                    {this.props.type2=="contract" && <a href="#" title="Test" onClick={this.test}><FaIcon icon={iconTest}/></a>}
                 </div>
                 <div class={style.info}>
                     <span>
