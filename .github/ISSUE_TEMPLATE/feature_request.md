@@ -9,7 +9,6 @@ Have you read Superblock Studios's Code of Conduct? By filing an Issue, you are 
 
 Do you want to ask a question? Are you looking for support? The Superblocks community is the best place for getting support: https://t.me/GetSuperblocks
 
-
 -->
 
 ## Summary
