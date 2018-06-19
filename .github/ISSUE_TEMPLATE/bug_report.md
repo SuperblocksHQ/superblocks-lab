@@ -1,15 +1,27 @@
-### Environment/Browser
+---
+name: Bug report
+about: Create a report to help us improve
+---
 
-### Description
+<!-- Please search existing issues to avoid creating duplicates. -->
+<!-- Also please test using the latest beta version to make sure your issue has not already been fixed: https://studio-beta.superblocks.com/ -->
 
-### Steps to reproduce
+## Environment/Browser
+Simply tell which browser and version are you using
+
+## Description
+Concise and descriptive message explaining what the issue is
+
+## Steps to reproduce
 1.
 2.
 3.
 
-### Expected result
+## Expected result
+Describe what are you actually expecting to happen
 
-### Actual result
+## Actual result
+Describe what is it actually happening in your case
 
-### Reproducible
-100%
+## Reproducible
+Describe how many times (in %) is the bug appearing (ex. 100%)
