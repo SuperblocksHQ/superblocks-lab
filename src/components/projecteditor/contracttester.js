@@ -19,8 +19,9 @@ import { h, Component } from 'preact';
 import style from './style-mocha';
 import SuperProvider from '../superprovider';
 import Web3 from 'web3';
-// TODO: FIXME: consider adding as part of the project (instead of dist)
-import Mocha from '../mocha';
+import Tx from '../../ethereumjs-tx-1.3.3.min.js';
+import ABI from '../../ethereumjs-abi-0.6.5.min.js';
+import Mocha from '../../mocha.js';
 
 export default class ContractTester extends Component {
     constructor(props) {
@@ -33,6 +34,56 @@ export default class ContractTester extends Component {
         this.contract_address="";
         this.contract_instance=null;
     }
+
+    getAccounts = (useDefault) => {
+        var index=0;
+        const ret=[{name:"(locked)",value:index++}];
+        this.dappfile.accounts().map((account) => {
+            ret.push({name:account.name,value:index++});
+        })
+        return ret;
+    };
+
+    _getAccount=()=>{
+        const items=this.getAccounts().filter((item)=>{
+            return this.state.account==item.value;
+        });
+        if(items.length>0) return items[0].name;
+    };
+
+    _getAccountAddress=()=>{
+        // Check given account, try to open and get address, else return [].
+        const accountName=this._getAccount();
+        if(accountName=="(locked)") return [];
+        if(!accountName) return [];
+
+        const env=this.props.project.props.state.data.env;
+        const account = this.dappfile.getItem("accounts", [{name: accountName}]);
+        const accountIndex=account.get('index', env);
+        const walletName=account.get('wallet', env);
+        const wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
+        if(!wallet) {
+            return [];
+        }
+        const walletType=wallet.get('type');
+
+        if(walletType=="external") {
+            // Metamask seems to always only provide one (the chosen) account.
+            const extAccounts = web3.eth.accounts || [];
+            if(extAccounts.length<accountIndex+1) {
+                // Account not matched
+                return [];
+            }
+            return [extAccounts[accountIndex]];
+        }
+
+        if(this.props.functions.wallet.isOpen(walletName)) {
+            const address=this.props.functions.wallet.getAddress(walletName, accountIndex);
+            return [address];
+        }
+
+        return [];
+    };
 
     _getWeb3=(endpoint)=>{
         var provider;
@@ -53,6 +104,7 @@ export default class ContractTester extends Component {
         return dir + "." + filename + "." + tag + "." + suffix;
     };
 
+    // NOTE: this represents an user-provided function to be executed before tests
     action_before() {
         describe('User action before tests', function () {
             it('should test a pre-test', function () {
@@ -63,6 +115,7 @@ export default class ContractTester extends Component {
         });
     }
 
+    // NOTE: this represents an user-provided function to be executed after tests
     action_after() {
         describe('User action after tests', function () {
             it('should test a post-test', function () {
@@ -73,7 +126,9 @@ export default class ContractTester extends Component {
         });
     }
 
-    check_data(instance, address, data_name, expected_value, done) {
+    assert_call(instance, address, method, args, expected_type, expected_value, done) {
+        var data_name=ABI.ABI.methodID(method, args);
+        var expected_value="0x" + ABI.ABI.rawEncode(expected_type, expected_value).toString("hex");
         it('matches data', function (done) {
             instance._eth.call({to: address, data: data_name}, function(error, result) {
                 if(!error) {
@@ -87,21 +142,111 @@ export default class ContractTester extends Component {
                 }
             });
         });
-
     }
 
-    action_test=(instance, address, done)=> {
-        var check_data = this.check_data;
-        describe('User test action: check contract data', function (done) {
-            // TODO: FIXME: simplify check_data to minimize number of parameters 
-            //              (implicit instance and address)
-            // TODO: FIXME: change input data to proper signature (ABI)
-            // TODO: FIXME: change expected value output to human readable (decoded)
-            check_data(instance, address, "0xe21f37ce", "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c48656c6c6f20576f726c64210000000000000000000000000000000000000000", done);
+    action_test=(web3, instance, contract_address, account_address, account_key, done)=> {
+        describe('User test action: manually check contract data', function (done) {
+            // NOTE: the following tests are intended
+            //       to target the Hello World template
+            it('matches message data', function (done) {
+                var expected_value = "Hello World!";
+                instance.message(function(error, result) {
+                    if(error) {
+                        console.error(error);
+                        done(error);
+                    } else {
+                        if(result !== expected_value) {
+                            done(new Error(result));
+                        } else {
+                            done();
+                        }
+                    }
+                });
+            });
+
+            it('update message data', function (done) {
+                const gas_price="0x3B9ACA00";
+                const gas_limit="0x3b8260";
+                var account_nonce=0;
+
+                // TODO: FIXME: consider providing a helper function for the following code ?
+                web3.eth.getTransactionCount(account_address, function(error, result) {
+                    if(error) {
+                        done(new Error("Could not get nonce for address " + account_address));
+                    } else {
+                        account_nonce=result;
+                        var data = ABI.ABI.simpleEncode("update(string)", "Super Hello World!");
+                        const tx=new Tx.Tx({
+                            from: account_address,
+                            to: contract_address,
+                            value: "0x0",
+                            nonce: account_nonce,
+                            gasPrice: gas_price,
+                            gasLimit: gas_limit,
+                            data: data,
+                        });
+                        tx.sign(Tx.Buffer.Buffer.from(account_key, "hex"));
+
+                        web3.eth.sendRawTransaction("0x"+tx.serialize().toString("hex"),
+                            function(error, result) {
+                                if(error) {
+                                    console.error(error);
+                                    done(error);
+                                } else {
+                                    done();
+                                }
+                            }
+                        );
+                    }
+                });
+            });
+
+            // TODO: FIXME: remove skip
+            it.skip('matches updated message data', function (done) {
+                // NOTE: this is a test for Hello World template
+                var expected_value = "Super Hello World!";
+                instance.message(function(error, result) {
+                    if(error) {
+                        console.error(error);
+                        done(error);
+                    } else {
+                        if(result !== expected_value) {
+                            done(new Error(result));
+                        } else {
+                            done();
+                        }
+                    }
+                });
+            });
+        });
+
+        var assert_call = this.assert_call;
+        describe('User test action: check contract data via assert_call', function (done) {
+            // NOTE: this is a test for Hello World template
+            // TODO: FIXME: simplify assert_call to minimize number of parameters 
+            //              (consider implicit instance and address ?)
+
+            var method="message";
+            var args=[];
+            var expected_type=["string"];
+            var expected_value=["Hello World!"];
+            assert_call(instance, contract_address, method, args, expected_type, expected_value, done);
         });
     }
 
     setup(action_before, action_test, action_after) {
+        // TODO: FIXME: enable custom account selection;
+        //              See also: contractinteraction.js
+/*        const account_address=this._getAccountAddress();
+        if(account_address.length==0) {
+            this.account_address="0x0";
+        }
+        else {
+            this.account_address=account_address[0];
+        }*/
+        const account_address="0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd";
+        const account_key="3867b6c26d09eda0a03e523f509e317d1656adc2f64b59f8b630c76144db0f17";
+
         const env=this.props.project.props.state.data.env;
         const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
         const src=contract.get('source');
@@ -143,8 +288,8 @@ export default class ContractTester extends Component {
 
                 this.contract_instance = web3.eth.contract(contract_interface).at(this.contract_address);
 
-                var address = this.contract_address;
-                if(address) {
+                var contract_address = this.contract_address;
+                if(contract_address) {
                    mocha.setup('bdd');
 
                     var instance = this.contract_instance;
@@ -164,7 +309,7 @@ export default class ContractTester extends Component {
 
                         it('Running test suite...', function (done) {
                             console.log('Running test suite...');
-                            action_test(instance, address, done);
+                            action_test(web3, instance, contract_address, account_address, account_key, done);
                             done();
                         });
 
