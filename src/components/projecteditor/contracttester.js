@@ -16,7 +16,7 @@
 
 import { h, Component } from 'preact';
 // TODO: FIXME: pending style
-import style from './style-mocha';
+//import style from './style-mocha';
 import SuperProvider from '../superprovider';
 import Web3 from 'web3';
 import Tx from '../../ethereumjs-tx-1.3.3.min.js';
