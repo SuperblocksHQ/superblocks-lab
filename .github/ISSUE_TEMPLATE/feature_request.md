@@ -5,7 +5,7 @@ about: Suggest an idea for this project
 
 <!--
 
-Have you read Superblock Studios's Code of Conduct? By filing an Issue, you are expected to comply with it, including treating everyone with respect: https://github.com/superblocksHQ/studio/blob/master/CODE_OF_CONDUCT.md
+Have you read Superblocks Studios's Code of Conduct? By filing an Issue, you are expected to comply with it, including treating everyone with respect: https://github.com/superblocksHQ/studio/blob/master/CODE_OF_CONDUCT.md
 
 Do you want to ask a question? Are you looking for support? The Superblocks community is the best place for getting support: https://t.me/GetSuperblocks
 
@@ -21,6 +21,6 @@ Why are we doing this? What use cases does it support? What is the expected outc
 
 ## Describe alternatives you've considered
 
-A clear and concise description of the alternative solutions you've considered. Be sure to explain why Atom's existing customizability isn't suitable for this feature.
+A clear and concise description of the alternative solutions you've considered.
 
 ## Additional context
