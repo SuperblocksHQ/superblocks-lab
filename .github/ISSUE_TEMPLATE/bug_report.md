@@ -24,4 +24,4 @@ Describe what are you actually expecting to happen
 Describe what is actually happening in your case
 
 ## Reproducible
-Describe aproximately how many times (in %) is the bug appearing (ex. 100%)
+Describe approximately how many times (in %) is the bug appearing (ex. 100%)
