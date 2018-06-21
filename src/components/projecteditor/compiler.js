@@ -214,7 +214,7 @@ export default class Compiler extends Component {
                                 cb(abisrc, JSON.stringify(metadata.output.abi), ()=>{
                                     const meta={
                                         compile: {
-                                            gasEstimates: contractObj.evm.bytecode.gasEstimates,
+                                            gasEstimates: contractObj.evm.gasEstimates,
                                         }
                                     };
                                     cb(metasrc, JSON.stringify(meta), ()=>{
