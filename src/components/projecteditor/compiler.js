@@ -211,7 +211,7 @@ export default class Compiler extends Component {
                                         }
                                     });
                                 };
-                                cb(abisrc, metadata.output.abi, ()=>{
+                                cb(abisrc, JSON.stringify(metadata.output.abi), ()=>{
                                     const meta={
                                         compile: {
                                             gasEstimates: contractObj.evm.bytecode.gasEstimates,
