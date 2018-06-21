@@ -10270,17 +10270,14 @@ function extend() {
         const resolveCb=(filepath)=>{
             console.log('[compiler] import file ' + filepath);
             if(cmd.files[filepath]) {
-                console.log(cmd.files[filepath]);
                 return {contents:cmd.files[filepath]};
             }
             return {error: 'I searched the bottoms of the Oceans... The slopes of the Mountains... The dark side of the Moon... Under the Oak where you were born... But no where could you be found.'};
-            //return {contents:""};
         };
         console.log("[compiler] start compiling.");
         var result;
         for(var tries=2;tries>=0;tries--) {
             try {
-                //result = compiler.compile(cmd.input, cmd.optimization, resolveCb);
                 result = compiler.compileStandardWrapper(cmd.input, resolveCb);
             }
             catch(e) {
