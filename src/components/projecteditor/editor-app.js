@@ -67,6 +67,19 @@ export default class AppEditor extends Component {
         });
     };
 
+    delete = (e) => {
+        e.preventDefault();
+        if(confirm("Really delete this DApp?")) {
+            if(this.props.router.control._getProjectWindowCount(this.props.project)>1) {
+                alert("You must first close all open tabs for this project.");
+                return;
+            }
+            this.props.project.delete(()=>{
+                this.props.parent.close();
+            });
+        }
+    };
+
     _download=()=>{
     };
 
@@ -141,6 +154,9 @@ export default class AppEditor extends Component {
             <div>
                 <a href="#" onClick={(e)=>{e.preventDefault();this.setState({show:true});}}>Show Dappfile.json for export</a>
                 {this.state.show && <textarea style="width:100%;height:300px;" readonly="true">{dappfileexport}</textarea>}
+            </div>
+            <div>
+                <a href="#" class={style.deleteBtn} onClick={this.delete}>Delete this DApp</a>
             </div>
             </div>
         </div>);
