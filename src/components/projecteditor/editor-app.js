@@ -69,7 +69,7 @@ export default class AppEditor extends Component {
 
     delete = (e) => {
         e.preventDefault();
-        if(confirm("Really delete this DApp?")) {
+        if(confirm("Are you sure you want to delete this DApp?")) {
             if(this.props.router.control._getProjectWindowCount(this.props.project)>1) {
                 alert("You must first close all open tabs for this project.");
                 return;
