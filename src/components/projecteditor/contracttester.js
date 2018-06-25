@@ -290,7 +290,8 @@ export default class ContractTester extends Component {
 
                 var contract_address = this.contract_address;
                 if(contract_address) {
-                   mocha.setup('bdd');
+                    mocha.suite = mocha.suite.clone();
+                    mocha.setup('bdd');
 
                     var instance = this.contract_instance;
 
@@ -323,7 +324,6 @@ export default class ContractTester extends Component {
                             done();
                         });
                     });
-
                     mocha.checkLeaks();
                     mocha.run();
                     return 0;
@@ -337,14 +337,18 @@ export default class ContractTester extends Component {
     };
 
     render() {
+        var status = 0;
 
+        // It is possible to block further testing by checking for existing report
+        // if(document.getElementById("mocha-report") === null)
         // TODO: FIXME: read user tests (external)
         var user_action_before_test = this.action_before;
         var user_action_test = this.action_test;
         var user_action_after_test = this.action_after;
-        var status = this.setup(user_action_before_test, user_action_test, user_action_after_test);
+        status = this.setup(user_action_before_test, user_action_test, user_action_after_test);
 
         // Render results
+        // Note: depends on setup to finish in order to have information to present
         if(status == 1) {
             return (
                     <div class="scrollable-y" id={this.id+"_scrollable"}>
