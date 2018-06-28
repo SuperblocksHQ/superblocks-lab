@@ -515,7 +515,35 @@ export default class DevkitProjectEditorControl extends Component {
     _uploadWorkspace = (e) => {
         var files = document.querySelector('#wsFileInput').files;
         var file = files[0];
-        this.backend.uploadWorkspace(file, this._reloadProjects);
+
+        const uploadConfirm = e => {
+            e.preventDefault()
+            this.backend.uploadWorkspace(file, err => {
+                if(err) {
+                    alert(err);
+                    this.props.functions.modal.close();
+                }
+                else this._reloadProjects(e, this.props.functions.modal.close)
+            });
+        }
+        
+        const body=(
+            <div>
+                <p>Warning, this will overwrite the entire workspace, press 'Import' to confirm.</p>
+                <div style="margin-top: 10px;">
+                    <a class="btn2" style="float: left; margin-right: 30px;" onClick={this.props.functions.modal.cancel}>Cancel</a>
+                    <a class="btn2 filled" style="float: left;" onClick={uploadConfirm}>Import</a>
+                </div>
+            </div>
+        );
+        const modalData={
+            title: "Import Saved Workspace",
+            body: body,
+            style: {"text-align":"center",height:"400px"},
+        };
+        const modal=(<Modal data={modalData} />);
+        this.props.functions.modal.show({render: () => {return modal;}});
+
         e.target.value = '';
     }
 

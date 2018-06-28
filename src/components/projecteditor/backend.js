@@ -294,11 +294,11 @@ export default class Backend {
             try {
               const obj = JSON.parse(evt.target.result);
               if (!obj.projects) {
-                alert('invalid workspace file');
+                cb('invalid workspace file');
                 return;
               }
             } catch (e) {
-              alert('invalid JSON');
+              cb('invalid JSON');
               return;
             }
             localStorage.setItem("dapps1.0",evt.target.result)
