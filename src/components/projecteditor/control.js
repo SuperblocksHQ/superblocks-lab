@@ -506,13 +506,16 @@ export default class DevkitProjectEditorControl extends Component {
     };
 
     _downloadWorkspace = e => {
+        e.preventDefault();
         this.backend.downloadWorkspace(e);
     }
 
     _clickWorkspace = (e) => {
+        e.preventDefault();
         document.querySelector('#wsFileInput').dispatchEvent(new MouseEvent('click')); // ref does not work fhttps://github.com/developit/preact/issues/477
     }
     _uploadWorkspace = (e) => {
+        e.preventDefault();
         var files = document.querySelector('#wsFileInput').files;
         var file = files[0];
 

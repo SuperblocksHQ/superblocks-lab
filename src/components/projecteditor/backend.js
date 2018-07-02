@@ -273,7 +273,7 @@ export default class Backend {
         if(cb) setTimeout(()=>cb(),1);
     };
 
-    downloadWorkspace = e => {
+    downloadWorkspace = () => {
         const exportName = 'superblocks_workspace.json';
         const workspace=JSON.parse(localStorage.getItem("dapps1.0")) || {};
         var exportObj = workspace;
