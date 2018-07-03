@@ -37,7 +37,7 @@ export default class DevkitNewDapp extends Component {
         if(evt) evt.preventDefault();
         var title=this.state.projectTitle;
         if(dappfileJSONObj) {
-            // We assume it's validity is checked already.
+            // We assume its validity is checked already.
             title=dappfileJSONObj.dappfile.project.info.title;
         }
         var project=this.state.projectName;
@@ -101,57 +101,47 @@ export default class DevkitNewDapp extends Component {
         }
     };
 
-    import = (evt) => {
-        evt.preventDefault();
+    _clickProject = (e) => {
+        e.preventDefault();
+        document.querySelector('#wsProjectFileInput').dispatchEvent(new MouseEvent('click')); // ref does not work https://github.com/developit/preact/issues/477
+    }
+
+    _uploadProject = (e) => {
+        e.preventDefault();
         var project=this.state.projectName;
         if(project=="") {
             alert("Please give the project a name.");
+            document.querySelector('#wsProjectFileInput').value = "";
             return;
         }
         if(!project.match(/^([a-zA-Z0-9-]+)$/)) {
             alert('Illegal projectname. Only A-Za-z0-9 and dash (-) allowed.');
+            document.querySelector('#wsProjectFileInput').value = "";
             return;
         }
         var contentJSON="";
-        const ok=(e)=>{
-            e.preventDefault();
-            if(!contentJSON) {
-                alert("No JSON provided. Paste it into the text area and try again.");
-                return;
+
+        var files = document.querySelector('#wsProjectFileInput').files;
+        var file = files[0];
+
+        const handler=(status, code) => {
+            if(this.props.cb) {
+                const index=this.props.functions.modal.getCurrentIndex();
+                if(this.props.cb(status, code) !== false) this.props.functions.modal.close(index);
             }
-            var dappfileJSONObj;
-            try {
-                dappfileJSONObj=JSON.parse(contentJSON);
+            else {
+                this.props.functions.modal.close();
             }
-            catch(e) {
-                alert("Could not parse JSON, is it properly pasted?");
-                return;
+        };
+
+        this.props.backend.uploadProject(project, file, handler, err => {
+            if(err) {
+                alert(err);
             }
-            console.log("import", dappfileJSONObj);
-            // TODO: FIXME: validate the object.
-            this.add(null, dappfileJSONObj);
             this.props.functions.modal.close();
-        };
-        const handleContentChange=(e)=> {
-            contentJSON=e.target.value;
-        };
-        const body=(
-            <div>
-                <p>Paste your DAppfile.json contents below and press 'Import'.</p>
-                <div><textarea id="dappfilejsonimport" name="" onChange={handleContentChange} style="width:100%;height:200px;"></textarea></div>
-                <div style="margin-top: 10px;">
-                    <a class="btn2" style="float: left; margin-right: 30px;" onClick={this.props.functions.modal.cancel}>Cancel</a>
-                    <a class="btn2 filled" style="float: left;" onClick={ok}>Import</a>
-                </div>
-            </div>
-        );
-        const modalData={
-            title: "Import DAppfile.json",
-            body: body,
-            style: {"text-align":"center",height:"400px"},
-        };
-        const modal=(<Modal data={modalData} />);
-        this.props.functions.modal.show({render: () => {return modal;}});
+        });
+
+        e.target.value = '';
     }
 
     handleNameChange = changeEvent => {
@@ -190,7 +180,8 @@ export default class DevkitNewDapp extends Component {
                 <div class={style.footer}>
                     <a onClick={this.props.functions.modal.cancel} class="btn2" style="float: left; margin-right: 30px;" href="#">Cancel</a>
                     <a onClick={this.add} class="btn2 filled" style="float: left;"  href="#">Create</a>
-                    <a onClick={this.import} class="" style="float: right;margin-top: 20px;margin-right: 10px;" href="#">Import DAppfile.json...</a>
+                    <a onClick={ e => this._clickProject(e)} class="" style="float: right;margin-top: 20px;margin-right: 10px;" href="#">Import Dapp from existing JSON file...</a>
+                    <input id="wsProjectFileInput" type="file" style="display: none;" onChange={e => this._uploadProject(e)} ref={w => this.wsProjectFileInput=w} />
                 </div>
                 <div class={style.area}>
                     <div class={style.form}>
