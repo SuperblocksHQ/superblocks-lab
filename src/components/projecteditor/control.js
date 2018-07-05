@@ -696,7 +696,7 @@ export default class DevkitProjectEditorControl extends Component {
         projectItem.save((status)=>{
             if(status==0) {
                 // TODO: this lookup is bad.
-                const ctrs=projectItem.props.state.children[0].props.state._children;
+                const ctrs=projectItem.props.state.children[1].props.state._children;
                 if(ctrs && ctrs.length >= 2) {
                     const contract=ctrs[ctrs.length-2];
                     const item=contract.props.state.children[0];
