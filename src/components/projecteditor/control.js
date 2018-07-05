@@ -697,7 +697,7 @@ export default class DevkitProjectEditorControl extends Component {
             if(status==0) {
                 // TODO: this lookup is bad.
                 const ctrs=projectItem.props.state.children[0].props.state._children;
-                if(ctrs) {
+                if(ctrs && ctrs.length >= 2) {
                     const contract=ctrs[ctrs.length-2];
                     const item=contract.props.state.children[0];
                     if(this.props.router.panes) this.props.router.panes.openItem(item);
