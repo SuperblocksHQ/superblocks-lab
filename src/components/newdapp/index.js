@@ -180,7 +180,7 @@ export default class DevkitNewDapp extends Component {
                 <div class={style.footer}>
                     <a onClick={this.props.functions.modal.cancel} class="btn2" style="float: left; margin-right: 30px;" href="#">Cancel</a>
                     <a onClick={this.add} class="btn2 filled" style="float: left;"  href="#">Create</a>
-                    <a onClick={ e => this._clickProject(e)} class="" style="float: right;margin-top: 20px;margin-right: 10px;" href="#">Import Dapp from existing JSON file...</a>
+                    <a onClick={ e => this._clickProject(e)} class="" style="float: right;margin-top: 20px;margin-right: 10px;" href="#">Upload project JSON file</a>
                     <input id="wsProjectFileInput" type="file" style="display: none;" onChange={e => this._uploadProject(e)} ref={w => this.wsProjectFileInput=w} />
                 </div>
                 <div class={style.area}>

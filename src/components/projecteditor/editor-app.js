@@ -141,7 +141,7 @@ export default class AppEditor extends Component {
                     </form>
                 </div>
             <div>
-                <a href="#" onClick={(e)=>{e.preventDefault();this.backend.downloadProject(this.props.dappfilejson.dir);}}>Export Dapp as a JSON file</a>
+                <a href="#" onClick={(e)=>{e.preventDefault();this.backend.downloadProject(this.props.dappfilejson.dir);}}>Download project as JSON file</a>
             </div>
             </div>
         </div>);
