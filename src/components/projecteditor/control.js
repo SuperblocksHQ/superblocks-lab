@@ -695,8 +695,17 @@ export default class DevkitProjectEditorControl extends Component {
         });
         projectItem.save((status)=>{
             if(status==0) {
+                // Note: children[0] holds the "Transaction Logs", so the actual starting
+                //       position for contracts starts at children index 1.
+                //
                 // TODO: this lookup is bad.
                 const ctrs=projectItem.props.state.children[1].props.state._children;
+
+                // Note: The following check asserts there exists at least 1 valid element plus one.
+                //       The extra position (plus one) is reserved to the "make contract" prop, appended to the end
+                //       of the contracts array (ctrs).
+                //       The extra position is the last valid element at index ctrs.length-1
+                //       The last valid contract element is at index ctrs.length-2
                 if(ctrs && ctrs.length >= 2) {
                     const contract=ctrs[ctrs.length-2];
                     const item=contract.props.state.children[0];
