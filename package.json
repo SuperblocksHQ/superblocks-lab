@@ -15,7 +15,6 @@
     "babelify": "^8.0.0",
     "browserify": "^16.1.1",
     "eslint": "^5.2.0",
-    "eslint-config-synacor": "^2.0.2",
     "eslint-plugin-react": "^7.10.0",
     "ethereumjs-abi": "^0.6.5",
     "ethereumjs-account": "^2.0.4",
