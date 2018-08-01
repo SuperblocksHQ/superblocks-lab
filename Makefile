@@ -28,6 +28,8 @@ ifndef ORIGIN_DIST
 ORIGIN_DIST=https://studio.superblocks.com
 endif
 
+lint:
+	./node_modules/.bin/eslint ./src --ignore-pattern "src/components/*/dist/*" --output-file "./eslint_report.txt" --format unix
 watch: build_external_dev
 	PORT=$(PORT) $(PREACT) watch
 build: build_external_dist
