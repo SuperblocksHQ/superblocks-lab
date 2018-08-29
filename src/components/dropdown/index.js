@@ -34,7 +34,7 @@ export class DropdownContainer extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.closeOnEdite) {
+        if (nextProps.closeOnEdit) {
             this.closeMenu();
         }
     }

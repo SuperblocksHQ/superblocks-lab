@@ -129,7 +129,7 @@ class AccountDropdown extends Component {
                     <div className={classnames(cls)} onClick={(e)=>{e.preventDefault(); this.props.onAccountChosen(account.name)}}>
                         <div>{account.name}</div>
                         <div style="margin-left: auto;">
-                            <button class="btnNoBg" onClick={(e)=>{this.props.onAccountEdit(e, index, {closeOnEdite:true})}}>
+                            <button class="btnNoBg" onClick={(e)=>{this.props.onAccountEdit(e, index,)}}>
                                 <IconEdit />
                             </button>
                             <button class="btnNoBg" onClick={(e)=>{this.props.onAccountDelete(e, index)}}>
@@ -208,8 +208,8 @@ class AccountSelector extends Component {
     };
 
     accountEdit=(e, index) => {
-        this.setState({closeOnEdite:true});
-        setTimeout(()=>this.setState({closeOnEdite:false}),1500)
+        this.setState({closeOnEdit:true});
+        setTimeout(()=>this.setState({closeOnEdit:false}),1500)
         if(this.state.project) this.props.router.control._clickEditAccount (e, this.state.project, index);
 
     };
