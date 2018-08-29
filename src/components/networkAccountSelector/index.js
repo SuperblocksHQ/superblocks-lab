@@ -129,7 +129,7 @@ class AccountDropdown extends Component {
                     <div className={classnames(cls)} onClick={(e)=>{e.preventDefault(); this.props.onAccountChosen(account.name)}}>
                         <div>{account.name}</div>
                         <div style="margin-left: auto;">
-                            <button class="btnNoBg" onClick={(e)=>{this.props.onAccountEdit(e, index)}}>
+                            <button class="btnNoBg" onClick={(e)=>{this.props.onAccountEdit(e, index, {closeOnEdite:true})}}>
                                 <IconEdit />
                             </button>
                             <button class="btnNoBg" onClick={(e)=>{this.props.onAccountDelete(e, index)}}>
@@ -167,6 +167,9 @@ AccountDropdown.propTypes = {
 class AccountSelector extends Component {
     constructor(props) {
         super(props);
+        this.state={
+            closeOnEdite:false,
+        }
         var account,dappfile, defaultAccount="Default";
         const project = this.props.router.control.getActiveProject();
 
@@ -193,6 +196,7 @@ class AccountSelector extends Component {
 
     componentWillUnmount() {
         clearInterval(this.timer);
+        this.setState({closeOnEdite:false})
     }
 
     accountChosen=(account) => {
@@ -204,7 +208,10 @@ class AccountSelector extends Component {
     };
 
     accountEdit=(e, index) => {
+        this.setState({closeOnEdite:true});
+        setTimeout(()=>this.setState({closeOnEdite:false}),1500)
         if(this.state.project) this.props.router.control._clickEditAccount (e, this.state.project, index);
+
     };
 
     accountDelete = (e, index) => {
@@ -365,9 +372,9 @@ class AccountSelector extends Component {
                 <IconPublicAddress alt="pseudo account with only a public address"/>
             );
         }
-
         return (
             <DropdownContainer
+                closeOnEdite={this.state.closeOnEdite}
                 dropdownContent={
                     <AccountDropdown
                             dappfile={this.state.dappfile}

@@ -33,6 +33,11 @@ export class DropdownContainer extends Component {
             showMenu: false,
         }
     }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.closeOnEdite) {
+            this.closeMenu();
+        }
+    }
 
     showMenu = (showMenu) => {
         this.setState({ showMenu: true });
