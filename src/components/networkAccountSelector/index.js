@@ -167,9 +167,6 @@ AccountDropdown.propTypes = {
 class AccountSelector extends Component {
     constructor(props) {
         super(props);
-        this.state={
-            closeOnEdite:false,
-        }
         var account,dappfile, defaultAccount="Default";
         const project = this.props.router.control.getActiveProject();
 
@@ -196,7 +193,6 @@ class AccountSelector extends Component {
 
     componentWillUnmount() {
         clearInterval(this.timer);
-        this.setState({closeOnEdite:false})
     }
 
     accountChosen=(account) => {
