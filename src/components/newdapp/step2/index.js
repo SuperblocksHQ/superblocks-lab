@@ -38,8 +38,7 @@ GridLayout.protoTypes = {
 }
 
 const TemplateLayout = ({ image, name, description, selected, onTemplateSelected } = props) => (
-    <div onClick={onTemplateSelected} class={classNames([style.templateLayout], { [style.selected]: selected })}
-         style={{alignItems:'center', justifyContent:'center', flexDirection: 'column', display:'grid'}}>
+    <div onClick={onTemplateSelected} class={classNames([style.templateLayout], { [style.selected]: selected }, style.alignContnetCenter)}>
         <img src={image} width="300"/>
         <div style={{height: '90px'}}>
         <div class={style.title}>{name}</div>
