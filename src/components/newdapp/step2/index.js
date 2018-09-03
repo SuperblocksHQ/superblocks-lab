@@ -13,7 +13,7 @@ TemplateCategory.protoTypes = {
 }
 
 const GridLayout = ({ templates, onTemplateSelected, templateSelectedId, categorySelectedId } = props) => (
-    <div class={classNames([style.gridLayout],style.leftmargin)} >
+    <div class={style.gridLayout}>
         <div id="mainContent" className="container" style={{display: 'grid', gridTemplateColumns: 'repeat(2, 0fr)', gridGap: '10px', gridAutoRows: 'minMax(100px, auto)'}}>
         { templates
             .filter((template) => template.categories.indexOf(categorySelectedId) > -1)
