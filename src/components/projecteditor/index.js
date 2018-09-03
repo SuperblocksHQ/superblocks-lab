@@ -135,7 +135,7 @@ export default class ProjectEditor extends Component {
                     <span class="resizer vertical" onMouseDown={this.onMouseDown}></span>
                     <div style="position: relative; width: 100%">
                         <div key="main_panes" id="main_panes" class={style.panescontainer} >
-                            <Panes router={this.props.router} functions={this.props.functions} />
+                            <Panes router={this.props.router} functions={this.props.functions} isActionPanelShowing={showTransactions} />
                             {
                                 showTransactions ?
                                     <div class={style.actionContainer} >
