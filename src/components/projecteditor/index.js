@@ -150,6 +150,7 @@ export default class ProjectEditor extends Component {
                             <div class={style.actions}>
                                 <button class={classNames([style.action, "btnNoBg"])} onClick={this.onShowHideTransactionsClicked}>
                                     <IconTransactions />
+                                    <span class={style.verticalText}>Transactions</span>
                                 </button>
                             </div>
                         </div>
