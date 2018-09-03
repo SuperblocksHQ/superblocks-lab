@@ -104,10 +104,11 @@ export default class ProjectEditor extends Component {
         this.setState({
             showTransactions: !this.state.showTransactions
         });
-
         this.redraw(true);
-    }
-
+    };
+      closeOnProjectChange=(checkState)=>{
+      this.setState({showTransactions:checkState})
+       };
     render() {
         var endpoint="";
         var project;
@@ -120,8 +121,8 @@ export default class ProjectEditor extends Component {
         }
         const { controlPanelWidth, showTransactions } = this.state;
         return (
-            <div class={style.projecteditor} id="main_container">
-                <TopBar router={this.props.router} functions={this.props.functions} />
+            <div class={style.projecteditor} id="main_container" style={{width:'100%'}}>
+                <TopBar router={this.props.router} functions={this.props.functions} closeOnProjectChange={this.closeOnProjectChange} />
                 <div style="display: flex; height: 100%">
                     <div key="main_control" id="main_control" class={style.control} style={{width: controlPanelWidth}}>
                         <Control router={this.props.router} functions={this.props.functions} />
@@ -129,11 +130,11 @@ export default class ProjectEditor extends Component {
                     </div>
                     <span class="resizer vertical" onMouseDown={this.onMouseDown}></span>
                     <div style="position: relative; width: 100%">
-                        <div key="main_panes" id="main_panes" class={style.panescontainer}>
-                            <Panes router={this.props.router} functions={this.props.functions} />
+                        <div key="main_panes" id="main_panes" class={style.panescontainer} >
+                            <Panes router={this.props.router} functions={this.props.functions} showTransactions={this.state.showTransactions} />
                             {
                                 showTransactions ?
-                                    <div class={style.actionContainer}>
+                                    <div class={style.actionContainer} >
                                         <div class={style.header}>
                                             <span class={style.title}>Transactions History</span>
                                             <button class={classNames([style.icon, "btnNoBg"])} onClick={this.onShowHideTransactionsClicked}>

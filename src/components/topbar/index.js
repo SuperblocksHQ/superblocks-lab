@@ -64,6 +64,7 @@ class ProjectDialog extends Component {
 
     openProject = (e, project, cb) => {
         this.props.router.control.openProject(project, cb);
+        this.props.closeOnProjectChange(false)
     };
 
     openProjectConfig = (e, project) => {
@@ -307,7 +308,7 @@ export default class TopBar extends Component {
                 <img class={style.logo} src="/static/img/img-lab-logo.svg" alt="Superblocks Lab logo"></img>
                 <DropdownContainer
                     class={style.projectButton}
-                    dropdownContent={<ProjectDialog functions={this.props.functions} router={this.props.router} />} >
+                    dropdownContent={<ProjectDialog functions={this.props.functions} router={this.props.router} closeOnProjectChange={this.props.closeOnProjectChange} />} >
                         <ProjectSelector title={title}/>
                 </DropdownContainer>
 

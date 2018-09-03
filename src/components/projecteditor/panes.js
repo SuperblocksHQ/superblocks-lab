@@ -287,7 +287,7 @@ export default class DevkitProjectEditorPanes extends Component {
         const header=this.renderHeader();
         const panes=this.renderPanes();
         return (
-           <div key="panes" id="panes" class="full">
+           <div key="panes" id="panes" class="full" style={{width: this.props.showTransactions ? '60%' : '100%'}}>
                <div key="header" id="panes_header" class={style.header}>
                    {header}
                </div>
