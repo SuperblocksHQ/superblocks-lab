@@ -57,7 +57,7 @@ export default class ProjectEditor extends Component {
             document.removeEventListener('mousemove', this.onMouseMove)
             document.removeEventListener('mouseup', this.onMouseUp)
         }
-    };
+    }
 
     redraw = (all) => {
         if(this.props.router.control) {
@@ -69,7 +69,7 @@ export default class ProjectEditor extends Component {
         if(this.props.router.panes) {
             this.props.router.panes.redraw(all);
         }
-    };
+    }
 
     onMouseMove = (e) => {
         e.stopPropagation();
@@ -105,10 +105,14 @@ export default class ProjectEditor extends Component {
             showTransactions: !this.state.showTransactions
         });
         this.redraw(true);
-    };
-      closeOnProjectChange=(checkState)=>{
-      this.setState({showTransactions:checkState})
-       };
+    }
+
+    onProjectSelectedHandle = () => {
+        this.setState({
+            showTransactions: false
+        });
+    }
+
     render() {
         var endpoint="";
         var project;
@@ -121,8 +125,8 @@ export default class ProjectEditor extends Component {
         }
         const { controlPanelWidth, showTransactions } = this.state;
         return (
-            <div class={style.projecteditor} id="main_container" style={{width:'100%'}}>
-                <TopBar router={this.props.router} functions={this.props.functions} closeOnProjectChange={this.closeOnProjectChange} />
+            <div class={style.projecteditor} id="main_container">
+                <TopBar router={this.props.router} functions={this.props.functions} onProjectSelected={this.onProjectSelectedHandle} />
                 <div style="display: flex; height: 100%">
                     <div key="main_control" id="main_control" class={style.control} style={{width: controlPanelWidth}}>
                         <Control router={this.props.router} functions={this.props.functions} />
@@ -131,7 +135,7 @@ export default class ProjectEditor extends Component {
                     <span class="resizer vertical" onMouseDown={this.onMouseDown}></span>
                     <div style="position: relative; width: 100%">
                         <div key="main_panes" id="main_panes" class={style.panescontainer} >
-                            <Panes router={this.props.router} functions={this.props.functions} showTransactions={this.state.showTransactions} />
+                            <Panes router={this.props.router} functions={this.props.functions} />
                             {
                                 showTransactions ?
                                     <div class={style.actionContainer} >

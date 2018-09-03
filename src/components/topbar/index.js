@@ -6,7 +6,6 @@ import { DropdownContainer } from '../dropdown';
 import Backend from  '../projecteditor/control/backend';
 import Modal from '../modal';
 import {
-    IconTransactions,
     IconDownload,
     IconTrash,
     IconConfigure,
@@ -64,7 +63,7 @@ class ProjectDialog extends Component {
 
     openProject = (e, project, cb) => {
         this.props.router.control.openProject(project, cb);
-        this.props.closeOnProjectChange(false)
+        this.props.onProjectSelected();
     };
 
     openProjectConfig = (e, project) => {
@@ -291,6 +290,12 @@ class ProjectDialog extends Component {
     }
 }
 
+ProjectDialog.propTypes = {
+    onProjectSelected: PropTypes.func.isRequired,
+    router: PropTypes.object.isRequired,
+    functions: PropTypes.object.isRequired
+}
+
 export default class TopBar extends Component {
 
     render() {
@@ -308,8 +313,9 @@ export default class TopBar extends Component {
                 <img class={style.logo} src="/static/img/img-lab-logo.svg" alt="Superblocks Lab logo"></img>
                 <DropdownContainer
                     class={style.projectButton}
-                    dropdownContent={<ProjectDialog functions={this.props.functions} router={this.props.router} closeOnProjectChange={this.props.closeOnProjectChange} />} >
-                        <ProjectSelector title={title}/>
+                    dropdownContent={<ProjectDialog functions={this.props.functions} router={this.props.router} onProjectSelected={this.props.onProjectSelected} />}
+                >
+                    <ProjectSelector title={title}/>
                 </DropdownContainer>
 
                 <DropdownContainer
@@ -320,4 +326,10 @@ export default class TopBar extends Component {
             </div>
         );
     }
+}
+
+TopBar.propTypes = {
+    onProjectSelected: PropTypes.func.isRequired,
+    router: PropTypes.object.isRequired,
+    functions: PropTypes.object.isRequired
 }
