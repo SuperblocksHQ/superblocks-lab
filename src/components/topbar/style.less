@@ -68,8 +68,8 @@
         transition: all 0.3s ease;
         height: 100%;
         &:hover {
-            color: rgb(224, 224, 244);
-            border-color: rgb(64, 169, 243);
+            color: #E0E0E0;
+            border-color: @primary-color;
         }
     }
     .icon {
@@ -105,7 +105,7 @@
         display: block;
         position: fixed;
         border-radius: 4px;
-        background-color: #2b2b2b;
+        background-color: @modal-background-color;
         min-width: 400px;
         min-height: 320px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -160,7 +160,7 @@
                             border-radius: 3px;
                             color: #fff;
                             &:hover {
-                                background: #353535;
+                                background: @modal-color-hover;
                             }
                             .projSwitcherRow {
                                 padding: 0 16px;
