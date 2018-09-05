@@ -502,17 +502,47 @@ export default class Control extends Component {
         e.preventDefault();
         e.stopPropagation();
 
+        //
+        // Iterate over all panes and close Configure window
+        // TODO: FIXME: sub-optimal code
+        // TODO: this lookup is bad since it depends on the order of the menu items.
+        const length = this.props.router.panes.panes.length;
+        if(length > 0) {
+            for(var i=0;i<length;i++) {
+                const pane = this.props.router.panes.panes[i];
+                if(pane) {
+                    const paneWindow = pane.windows[0];
+                    const paneType2= paneWindow.props.item.props.type2;
+                    if(paneType2 === "configure") {
+                        paneWindow.close();
+                    }
+                }
+            }
+        }
         if(this.props.router.panes) this.props.router.panes.openItem(item);
     };
 
     _anyContractItemsOpen = (contractName) => {
         const project = this.getActiveProject();
         if(project) {
+
+            //
+            // Iterate over all panes and everything except Configure window
+            // TODO: FIXME: sub-optimal code
             // TODO: this lookup is bad since it depends on the order of the menu items.
-            // TODO: look through project object for the contract named contractName, then get the item for the Editor, Compiler, Deployer and Interact window.
-            // Check if any of these items are open, using 
-            //this.props.router.panes.getWindowByItem(item)
-            //if any match then return true, else false.
+            const length = this.props.router.panes.panes.length;
+            if(length > 0) {
+                for(var i=0;i<length;i++) {
+                    const pane = this.props.router.panes.panes[i];
+                    if(pane) {
+                        const paneWindow = pane.windows[0];
+                        const paneType2= paneWindow.props.item.props.type2;
+                        if(paneType2 !== "configure") {
+                            paneWindow.close();
+                        }
+                    }
+                }
+            }
         }
         return false;
     };

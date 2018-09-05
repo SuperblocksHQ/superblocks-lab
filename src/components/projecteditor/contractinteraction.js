@@ -94,6 +94,13 @@ export default class ContractInteraction extends Component {
     render2 = () => {
         const env=this.state.network;
         const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
+
+        // Early return when contract is missing, likely due to a recent rename
+        if(!contract){
+            this.writeContent(1, "Missing file(s), contract not deployed?");
+            return;
+        }
+
         const src=contract.get('source');
         const network=this.state.network;
         const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
