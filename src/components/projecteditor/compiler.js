@@ -231,7 +231,7 @@ export default class Compiler extends Component {
                             }
                             else {
                                 if (data.contracts) {
-                                    this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + contractName + " could not be compiled. The contract needs to be named same as the contract source file."});
+                                    this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + contractName + " could not be compiled. The contract needs to be named the same as the contract's source file."});
                                 }
                                 else {
                                     this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + contractName + " could not be compiled."});
