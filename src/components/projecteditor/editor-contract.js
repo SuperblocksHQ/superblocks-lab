@@ -120,7 +120,6 @@ export default class ContractEditor extends Component {
     }
 
     componentWillReceiveProps(props) {
-        console.log('contract editor got props');
         this.dappfile = props.project.props.state.data.dappfile;
     }
 
@@ -192,26 +191,27 @@ export default class ContractEditor extends Component {
                 return;
             }
             // Check if any affected windows are open.
-            if (this.props.router.control._anyContractItemsOpen(this.props.contract)) {
-                alert("Please close any editor, compile or deploy window which is open for this contract, then try again to rename it.");
-                return;
-            }
-
-            // Rename the source file too.
-            const file=this.contract.get('source').match(".*/([^/]+$)")[1];
-            this.props.project.renameFile(this._originalsourcepath, file, (status) => {
-                if (status == 4) {
-                    // File doesn't exist (yet).
-                    // Fall through
-                }
-                else if (status > 0) {
-                    alert("Error: Could not rename contract source file. Please close the tab containing the contract's source code and try again.");
+            this.props.router.control._closeAnyContractItemsOpen(this.props.contract, false, (status) => {
+                if (status != 0) {
+                    alert("Please close any editor, compile or deploy window which is open for this contract, then try again to rename it.");
                     return;
                 }
-                else {
-                    alert("Warning: You must now manually rename the contract and the constructor in the source file to match the new file name, and finally the app.js file will need to be adjusted for the new contract name.");
-                }
-                finalize();
+                // Rename the source file too.
+                const file=this.contract.get('source').match(".*/([^/]+$)")[1];
+                this.props.project.renameFile(this._originalsourcepath, file, (status) => {
+                    if (status == 4) {
+                        // File doesn't exist (yet).
+                        // Fall through
+                    }
+                    else if (status > 0) {
+                        alert("Error: Could not rename contract source file. Please close the tab containing the contract's source code and try again.");
+                        return;
+                    }
+                    else {
+                        alert("Warning: You must now manually rename the contract and the constructor in the source file to match the new file name, if the contract is used as argument to any other contract that needs to be updated and finally the app.js content will need to be adjusted for the new contract name.");
+                    }
+                    finalize();
+                });
             });
         }
         else {
