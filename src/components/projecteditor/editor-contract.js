@@ -119,6 +119,11 @@ export default class ContractEditor extends Component {
         this._originalsourcepath=this.contract.get("source");
     }
 
+    componentWillReceiveProps(props) {
+        console.log('contract editor got props');
+        this.dappfile = props.project.props.state.data.dappfile;
+    }
+
     componentDidMount() {
         this.redraw();
     }
@@ -145,8 +150,8 @@ export default class ContractEditor extends Component {
             alert('Error: Missing fields.');
             return;
         }
-        if(!this.contract.obj.name.match(/^([a-zA-Z0-9-_]+)$/)) {
-            alert('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed.');
+        if(!this.contract.obj.name.match(/^([a-zA-Z0-9-_]+)$/) || this.contract.obj.name.length > 32) {
+            alert('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 32 characters.');
             return;
         }
         for(var index=0;index<this.contract.obj.args.length;index++) {
@@ -294,7 +299,6 @@ export default class ContractEditor extends Component {
                                 <div class="superInputDark">
                                     <label for="name">Name</label>
                                     <input
-                                        disabled
                                         id="name"
                                         type="text"
                                         onKeyUp={(e)=>{this.onChange(e, 'name')}}

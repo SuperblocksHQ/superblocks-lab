@@ -505,7 +505,7 @@ export default class Control extends Component {
         if(this.props.router.panes) this.props.router.panes.openItem(item);
     };
 
-    _anyContractItemsOpen = (contractName) => {
+    _anyContractItemsOpen = (contractName, includeConfigure) => {
         const project = this.getActiveProject();
         if(project) {
             // TODO: this lookup is bad since it depends on the order of the menu items.
@@ -513,7 +513,9 @@ export default class Control extends Component {
             const items = [];
             const item = project.props.state.children[1].getChildren()[0].props.state._children[0];
             items.push(item);
-            items.push(item.props.state.children[0]);  // Configure item
+            if (includeConfigure) {
+                items.push(item.props.state.children[0]);  // Configure item
+            }
             items.push(item.props.state.children[1]);
             items.push(item.props.state.children[2]);
             items.push(item.props.state.children[3]);
@@ -917,7 +919,7 @@ export default class Control extends Component {
         e.stopPropagation();
         if(!confirm("Really delete contract?")) return;
         const contract=projectItem.props.state.data.dappfile.contracts()[contractIndex];
-        if (this._anyContractItemsOpen(contract.name)) {
+        if (this._anyContractItemsOpen(contract.name, true)) {
             alert("Could not delete contract, close editor/compiler/deployer/interaction windows and try again.");
             return;
         }
