@@ -206,7 +206,7 @@ export default class App extends Component {
                     <div class="top-menu">
                         <span class="left">Superblocks Studio {this._version} (Asparagus)</span>
                         <span class="right">Need help? <a href="https://t.me/GetSuperblocks" target="_blank">Join us on Telegram!</a></span>
-                        { this._showIotAcademyWelcome && (<span id="iot-academy-blurb" class="right">Use this version for Ivan on Tech's academy course, else <a href="https://studio.superblocks.com" target="_blank">try the newest version</a></span>)}
+                        { this._showIotAcademyWelcome && (<span id="iot-academy-blurb" class="right">Use this version for Ivan on Tech's academy course, else <a href="https://lab.superblocks.com" target="_blank">try the newest version</a></span>)}
                     </div>
                     <div class="maincontent">
                         <ProjectEditor key="projedit" functions={this.functions} />
