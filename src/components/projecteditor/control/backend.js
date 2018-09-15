@@ -457,6 +457,10 @@ export default class Backend {
         downloadAnchorNode.remove();
     }
 
+    _deleteBuildDir = (root) => {
+        delete root['/']['children']['build'];
+    };
+
     _clearDotfiles = (root) => {
         // This will clear all keys starting with a dot.
         // Changes are done in place in the 'root' object.
@@ -494,7 +498,7 @@ export default class Backend {
         project2.format = DAPP_FORMAT_VERSION;
 
         if(!keepState) {
-            this._clearDotfiles(project2.files);
+            this._deleteBuildDir(project2.files);
         }
 
         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(project2));

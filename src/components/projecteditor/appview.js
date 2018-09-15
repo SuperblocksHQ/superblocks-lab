@@ -79,11 +79,13 @@ export default class AppView extends Component {
         this.setState(); // To update data outside of iframe.
     };
 
-    _makeFileName=(path, tag, suffix)=>{
+    _makeFileName=(path, suffix)=>{
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir=a[1];
         const filename=a[2];
-        return dir + "." + filename + "." + tag + "." + suffix;
+        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const contractName = a2[1];
+        return "/build" + dir + contractName + "/" + contractName + "." + suffix;
     };
 
     render2 = (cb) => {
@@ -118,17 +120,17 @@ export default class AppView extends Component {
                     var endpoint;
                     for(var index=0;index<contracts.length;index++) {
                         const contract = this.dappfile.getItem("contracts", [{name: contracts[index]}]);
-                        const src=contract.get('source');
+                        const src = contract.get('source');
                         const network=this.state.network;
                         endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
-                        const txsrc=this._makeFileName(src, tag+"."+network, "tx");
-                        const deploysrc=this._makeFileName(src, tag, "deploy");
+                        const txsrc=this._makeFileName(src, network, "tx");
+                        const deploysrc=this._makeFileName(src, network, "deploy");
                         contracts2.push([txsrc, deploysrc, endpoint]);
                     }
 
                     const files=[];
                     for(var index=0;index<contracts.length;index++) {
-                        files.push("/app/contracts/."+contracts[index]+"."+env+".js");
+                        files.push("/build/app/."+contracts[index]+"."+env+".js");
                     }
                     this._loadFiles(files, (status, bodies)=>{
                         if(status!=0) {

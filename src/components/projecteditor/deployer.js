@@ -58,7 +58,12 @@ export default class Deployer extends Component {
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir=a[1];
         const filename=a[2];
-        return dir + "." + filename + "." + tag + "." + suffix;
+        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const contractName = a2[1];
+        if (tag) {
+            return "/build" + dir + contractName + "/" + contractName + "." + tag + "." + suffix;
+        }
+        return "/build" + dir + contractName + "/" + contractName + "." + suffix;
     };
 
     _getWeb3=(endpoint)=>{
@@ -151,14 +156,14 @@ export default class Deployer extends Component {
             env: env,
             tag: tag,
             src: src,
-            abisrc: this._makeFileName(src, tag, "abi"),
-            binsrc: this._makeFileName(src, tag, "bin"),
-            hashsrc: this._makeFileName(src, tag, "hash"),
-            metasrc: this._makeFileName(src, tag, "meta"),
-            addresssrc: this._makeFileName(src, tag+"."+this.network, "address"),
-            txsrc: this._makeFileName(src, tag+"."+this.network, "tx"),
-            deploysrc: this._makeFileName(src, tag, "deploy"),
-            contractsjssrc: "/app/contracts/." + this.props.contract + "." + env + ".js",
+            abisrc: this._makeFileName(src, "", "abi"),
+            binsrc: this._makeFileName(src, "", "bin"),
+            hashsrc: this._makeFileName(src, "", "hash"),
+            metasrc: this._makeFileName(src, "", "meta"),
+            addresssrc: this._makeFileName(src, this.network, "address"),
+            txsrc: this._makeFileName(src, this.network, "tx"),
+            deploysrc: this._makeFileName(src, this.network, "deploy"),
+            contractsjssrc: "/build/app/" + this.props.contract + "." + this.network + ".js",
         };
 
         this.accountName = this.props.project.props.state.data.account;
@@ -412,9 +417,9 @@ export default class Deployer extends Component {
             }
             const src=contract.get('source');
             const tag=env;
-            const txsrc=this._makeFileName(src, tag+"."+this.network, "tx");
-            const deploysrc=this._makeFileName(src, tag, "deploy");
-            const addresssrc=this._makeFileName(src, tag+"."+this.network, "address");
+            const txsrc=this._makeFileName(src, this.network, "tx");
+            const deploysrc=this._makeFileName(src, this.network, "deploy");
+            const addresssrc=this._makeFileName(src, this.network, "address");
             const files=[txsrc, addresssrc, deploysrc];
             this._loadRawFiles(files, (status, bodies)=>{
                 if(status>0) {
@@ -564,7 +569,7 @@ export default class Deployer extends Component {
             }
             this.props.project.loadFile(obj.abisrc, (abibody) => {
                 if(abibody.status!=0) {
-                    this._stderr("Could not load contract ABI.");
+                    this._stderr("Could not load contract ABI: " + obj.abisrc);
                     cb(1);
                     return
                 }

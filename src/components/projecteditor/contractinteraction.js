@@ -88,7 +88,12 @@ export default class ContractInteraction extends Component {
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir=a[1];
         const filename=a[2];
-        return dir + "." + filename + "." + tag + "." + suffix;
+        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const contractName = a2[1];
+        if (tag) {
+            return "/build" + dir + contractName + "/" + contractName + "." + tag + "." + suffix;
+        }
+        return "/build" + dir + contractName + "/" + contractName + "." + suffix;
     };
 
     render2 = () => {
@@ -99,10 +104,10 @@ export default class ContractInteraction extends Component {
         const network=this.state.network;
         const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
         const tag=env;
-        const srcabi=this._makeFileName(src, tag, "abi");
-        const addresssrc=this._makeFileName(src, tag+"."+network, "address");
-        const txsrc=this._makeFileName(src, tag+"."+network, "tx");
-        const deploysrc=this._makeFileName(src, tag, "deploy");
+        const srcabi=this._makeFileName(src, "", "abi");
+        const addresssrc=this._makeFileName(src, network, "address");
+        const txsrc=this._makeFileName(src, network, "tx");
+        const deploysrc=this._makeFileName(src, network, "deploy");
         const contracts=[this.props.contract];
         this.props.project.loadFile(addresssrc, (body) => {
             if(body.status!=0) {
@@ -263,7 +268,7 @@ export default class ContractInteraction extends Component {
         const files=[];
         const bodies=[];
         for(var index=0;index<contracts.length;index++) {
-            files.push("/app/contracts/."+contracts[index]+"."+env+".js");
+            files.push("/build/app/."+contracts[index]+"."+env+".js");
         }
         var fn;
         fn=((files, bodies, cb2)=>{

@@ -55,11 +55,13 @@ export default class Compiler extends Component {
         if(callback) callback(status);
     };
 
-    _makeFileName=(path, tag, suffix)=>{
+    _makeFileName=(path, suffix)=>{
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir=a[1];
         const filename=a[2];
-        return dir + "." + filename + "." + tag + "." + suffix;
+        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const contractName = a2[1];
+        return "/build" + dir + contractName + "/" + contractName + "." + suffix;
     };
 
     run = (e) => {
@@ -138,11 +140,10 @@ export default class Compiler extends Component {
                     }
                 }
 
-                const env=this.props.project.props.state.data.env;
-                const abisrc=this._makeFileName(srcfilename, env, "abi");
-                const metasrc=this._makeFileName(srcfilename, env, "meta");
-                const binsrc=this._makeFileName(srcfilename, env, "bin");
-                const hashsrc=this._makeFileName(srcfilename, env, "hash");
+                const abisrc=this._makeFileName(srcfilename, "abi");
+                const metasrc=this._makeFileName(srcfilename, "meta");
+                const binsrc=this._makeFileName(srcfilename, "bin");
+                const hashsrc=this._makeFileName(srcfilename, "hash");
                 const delFiles=()=>{
                     this.props.project.deleteFile(abisrc, ()=>{
                         this.props.project.deleteFile(binsrc, ()=>{

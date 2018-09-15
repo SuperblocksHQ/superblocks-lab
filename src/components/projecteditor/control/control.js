@@ -351,7 +351,7 @@ export default class Control extends Component {
         var accounts=this._newItem({classes: ["hidden"], title: "Accounts", type: "folder", type2: "accounts", _project: projectItem, toggable: true, state:{open: false, children: accountsChildren}});
         children.push(accounts);
 
-        var files=this._newItem({classes: ["hidden"], title: "Files", type: "folder", type2: "files", _project: projectItem, _level: 0, _lazy:true, _path: '/', _key: '/', toggable: true, render: this._renderFileTitle, state:{open: false, children: this._renderFilesChildren}});
+        var files=this._newItem({classes: ["xxhidden"], title: "Files", type: "folder", type2: "files", _project: projectItem, _level: 0, _lazy:true, _path: '/', _key: '/', toggable: true, render: this._renderFileTitle, state:{open: false, children: this._renderFilesChildren}});
         children.push(files);
 
         if(!this._updateProject(projectItem, project)) return null;
