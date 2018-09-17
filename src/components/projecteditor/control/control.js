@@ -860,13 +860,26 @@ export default class Control extends Component {
         e.preventDefault();
         e.stopPropagation();
 
-        var name;
-        name = prompt("Please give the contract a name:");
-        if (!name) return;
-        if(!name.match(/^([a-zA-Z0-9-_]+)$/) || name.length > 16) {
-            alert('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 16 characters.');
-            return;
+        var name = undefined;
+        do {
+            if(name === undefined ){
+                name = prompt('Please give the contract a name (up to 32 characters):');
+            }
+            else if (name !== null && name.length > 32) {
+                name = prompt('Please give the contract a name (up to 32 characters):', name);
+            }
+            else if(!name){
+                return null;
+            }
+            else if(!name.match(/^([a-zA-Z0-9-_]+)$/)) {
+                name = prompt('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed.',name);
+            }
+            else {
+                alert('Something strange is happened please report this issue')
+            }
         }
+        while (!name || name.length > 32 || !name.match(/^([a-zA-Z0-9-_]+)$/));
+
         if(projectItem.props.state.data.dappfile.contracts().filter((c)=>{
             return c.name==name;
         }).length>0) {
