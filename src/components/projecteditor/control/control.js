@@ -863,10 +863,10 @@ export default class Control extends Component {
         var name = undefined;
         do {
             if(name === undefined ){
-                name = prompt('Please give the contract a name (up to 16 characters):');
+                name = prompt('Please give the contract a name (up to 32 characters):');
             }
             else if (name !== null && name.length > 32) {
-                name = prompt('Please give the contract a name (up to 16 characters):', name);
+                name = prompt('Please give the contract a name (up to 32 characters):', name);
             }
             else if(!name){
                 return null;
