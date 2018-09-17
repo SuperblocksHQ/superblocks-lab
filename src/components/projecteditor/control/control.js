@@ -863,10 +863,10 @@ export default class Control extends Component {
         var name = undefined;
         do {
             if(name === undefined ){
-                name = prompt('Please give the contract a name:', "Only 16 character Allowed");
+                name = prompt('Please give the contract a name (up to 16 characters):');
             }
-            else if (name !== null && name.length > 16) {
-                name = prompt('Only 16 character Allowed:', name);
+            else if (name !== null && name.length > 32) {
+                name = prompt('Please give the contract a name (up to 16 characters):', name);
             }
             else if(!name){
                 return null;
@@ -877,18 +877,9 @@ export default class Control extends Component {
             else {
                 alert('Something strange is happened please report this issue')
             }
-
         }
-        while (!name || name.length > 16);
-        // if(name.length>16){
-        //     prompt('Only 16 character Allowed',name);
-        // }
-        // if (!name) return;
-        // if(!name.match(/^([a-zA-Z0-9-_]+)$/)) {
-        //     // alert('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 16 characters.');
-        //     prompt('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed.',name);
-        //     return;
-        // }
+        while (!name || name.length > 32 || !name.match(/^([a-zA-Z0-9-_]+)$/));
+
         if(projectItem.props.state.data.dappfile.contracts().filter((c)=>{
             return c.name==name;
         }).length>0) {
