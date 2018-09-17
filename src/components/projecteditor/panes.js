@@ -310,7 +310,6 @@ export default class Panes extends Component {
     }
 }
 
-
 Panes.propTypes = {
     router: PropTypes.object.isRequired,
     functions: PropTypes.object.isRequired,
