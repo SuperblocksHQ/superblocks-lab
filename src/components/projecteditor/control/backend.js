@@ -188,12 +188,19 @@ export default class Backend {
         return newProject;
     };
 
-    newFile = (name, path, file, cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        if(!data.projects) data.projects=[];
-        var project=data.projects.filter((item)=>{
-            return item.dir==name;
+    /**
+     * Create a new file for a project.
+     *
+     */
+    newFile = (inode, path, file, cb) => {
+        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+
+        if (!data.projects) data.projects = [];
+
+        var project = data.projects.filter( (item) => {
+            return item.inode == inode;
         })[0];
+
         if(!project) {
             setTimeout(()=>cb(3),1);
             return;
@@ -227,12 +234,19 @@ export default class Backend {
         setTimeout(()=>cb(0),1);
     };
 
-    renameFile = (name, path, file, cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        if(!data.projects) data.projects=[];
-        var project=data.projects.filter((item)=>{
-            return item.dir==name;
+    /**
+     * Rename a file in a project.
+     *
+     */
+    renameFile = (inode, path, file, cb) => {
+        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+
+        if (!data.projects) data.projects = [];
+
+        var project = data.projects.filter( (item) => {
+            return item.inode == inode;
         })[0];
+
         if(!project) {
             setTimeout(()=>cb(3),1);
             return;
@@ -268,12 +282,19 @@ export default class Backend {
         setTimeout(()=>cb(0),1);
     };
 
-    deleteFile = (name, path, cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        if(!data.projects) data.projects=[];
-        var project=data.projects.filter((item)=>{
-            return item.dir==name;
+    /**
+     * Delete a file in a project.
+     *
+     */
+    deleteFile = (inode, path, cb) => {
+        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+
+        if (!data.projects) data.projects = [];
+
+        var project = data.projects.filter( (item) => {
+            return item.inode == inode;
         })[0];
+
         if(!project) {
             if(cb) setTimeout(()=>cb(3),1);
             return;
@@ -299,17 +320,25 @@ export default class Backend {
         if(cb) setTimeout(()=>cb(0),1);
     };
 
-    listFiles = (name, path, cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        if(!data.projects) data.projects=[];
-        var project=data.projects.filter((item)=>{
-            return item.dir==name;
+    /**
+     * List files below a path at one level within a project.
+     *
+     */
+    listFiles = (inode, path, cb) => {
+        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+
+        if (!data.projects) data.projects = [];
+
+        var project = data.projects.filter( (item) => {
+            return item.inode == inode;
         })[0];
-        if(!project) {
-            setTimeout(()=>cb(1),1);
+
+        if (!project) {
+            setTimeout(() => cb(1), 1);
             return;
         }
-        if(!project.files) project.files={"/":{type:"d",children:{}}};
+
+        if (!project.files) project.files={"/":{type:"d",children:{}}};
         const parts=path.split("/");
         var folder=project.files["/"];
         for(var index=1;index<parts.length-1;index++) {
@@ -333,62 +362,88 @@ export default class Backend {
         setTimeout(()=>cb(0,dirs.concat(files)),1);
     };
 
-    loadProject = (dir, cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        for(var index=0;index<data.projects.length;index++) {
-            if(data.projects[index].dir==dir) {
-                setTimeout(()=>cb(0, data.projects[index]),1);
-                return;
-            }
-        }
-        setTimeout(()=>{cb(1)},1);
-    }
+    //loadProject = (dir, cb) => {
+        //const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        //for(var index=0;index<data.projects.length;index++) {
+            //if(data.projects[index].dir==dir) {
+                //setTimeout(()=>cb(0, data.projects[index]),1);
+                //return;
+            //}
+        //}
+        //setTimeout(()=>{cb(1)},1);
+    //}
 
-    deleteProject = (name, cb) => {
+    /**
+     * Delete a project by its inode.
+     *
+     */
+    deleteProject = (inode, cb) => {
         const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
         if(!data.projects) data.projects=[];
         var projects=data.projects.filter((item)=>{
-            return item.dir!=name;
+            return item.inode != inode;
         });
+
         data.projects=projects;
         localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
         cb();
-    }
-
-    loadProjects = (cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        setTimeout(()=>cb(0, data.projects || []),1);
-    }
-
-    saveProject = (name, payload, cb, isNew, files) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        if(!data.projects) data.projects=[];
-        var project=data.projects.filter((item)=>{
-            return item.dir==name;
-        })[0];
-        if(isNew && project) {
-            setTimeout(()=>cb({status:1,code:1}),1);
-            return;
-        }
-        if(!project) {
-            project={
-                dir: name,
-                inode: Math.floor(Math.random()*10000000),
-                files:files
-            };
-            data.projects.push(project);
-        }
-        project.dappfile=payload.dappfile;
-        localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
-        setTimeout(()=>cb({status:0,code:0}),1);
     };
 
-    saveFile = (name, payload, cb) => {
+    /**
+     * Load the light versions of all projects.
+     *
+     */
+    loadProjects = (cb) => {
         const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        if(!data.projects) data.projects=[];
-        var project=data.projects.filter((item)=>{
-            return item.dir==name;
+        const projects = [];
+        (data.projects || []).map( (project) => {
+            const name = project.dir;
+            const title = (project.dappfile.project.info || {}).title;
+            projects.push({
+                inode: project.inode,
+                name: name,
+                title: title,
+            });
+        });
+        setTimeout(()=>cb(0, projects), 1);
+    }
+
+    //saveProject = (name, payload, cb, isNew, files) => {
+        //const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        //if(!data.projects) data.projects=[];
+        //var project=data.projects.filter((item)=>{
+            //return item.dir==name;
+        //})[0];
+        //if(isNew && project) {
+            //setTimeout(()=>cb({status:1,code:1}),1);
+            //return;
+        //}
+        //if(!project) {
+            //project={
+                //dir: name,
+                //inode: Math.floor(Math.random()*10000000),
+                //files:files
+            //};
+            //data.projects.push(project);
+        //}
+        //project.dappfile=payload.dappfile;
+        //localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
+        //setTimeout(()=>cb({status:0,code:0}),1);
+    //};
+
+    /**
+     * Save the contents of a file within a project.
+     *
+     */
+    saveFile = (inode, payload, cb) => {
+        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+
+        if (!data.projects) data.projects = [];
+
+        var project = data.projects.filter( (item) => {
+            return item.inode == inode;
         })[0];
+
         if(!project) {
             setTimeout(()=>cb({status:3}),1);
             return;
@@ -414,16 +469,24 @@ export default class Backend {
         setTimeout(()=>cb({status:0, hash:""}),1);
     };
 
-    loadFile = (name, path, cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        if(!data.projects) data.projects=[];
-        var project=data.projects.filter((item)=>{
-            return item.dir==name;
+    /**
+     * Load the contents of a file within a project.
+     *
+     */
+    loadFile = (inode, path, cb) => {
+        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+
+        if (!data.projects) data.projects = [];
+
+        var project = data.projects.filter( (item) => {
+            return item.inode == inode;
         })[0];
+
         if(!project) {
             setTimeout(()=>cb({status:3}),1);
             return;
         }
+
         if(path[0] != '/') {
             setTimeout(()=>cb({status:3}),1);
             return;
@@ -444,53 +507,46 @@ export default class Backend {
         else setTimeout(()=>cb({status:1, contents:"", hash:""}),1);
     };
 
-    downloadWorkspace = () => {
-        const exportName = 'superblocks_workspace.json';
-        const workspace=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        var exportObj = workspace;
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-        var downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href",     dataStr);
-        downloadAnchorNode.setAttribute("download", exportName + ".json");
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-    }
+    //downloadWorkspace = () => {
+        //const exportName = 'superblocks_workspace.json';
+        //const workspace=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        //var exportObj = workspace;
+        //var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+        //var downloadAnchorNode = document.createElement('a');
+        //downloadAnchorNode.setAttribute("href",     dataStr);
+        //downloadAnchorNode.setAttribute("download", exportName + ".json");
+        //document.body.appendChild(downloadAnchorNode); // required for firefox
+        //downloadAnchorNode.click();
+        //downloadAnchorNode.remove();
+    //}
 
     _deleteBuildDir = (root) => {
         delete root['/']['children']['build'];
     };
 
-    _clearDotfiles = (root) => {
-        // This will clear all keys starting with a dot.
-        // Changes are done in place in the 'root' object.
-        const keys=Object.keys(root);
-        for(var index=0;index<keys.length;index++) {
-            const key=keys[index];
-            if(key[0]=='.') {
-                delete root[key];
-                continue;
-            }
-            const node=root[key];
-            if(node.type=='d') {
-                this._clearDotfiles(node.children);
-            }
-        }
-    };
+    //_clearDotfiles = (root) => {
+        //// This will clear all keys starting with a dot.
+        //// Changes are done in place in the 'root' object.
+        //const keys=Object.keys(root);
+        //for(var index=0;index<keys.length;index++) {
+            //const key=keys[index];
+            //if(key[0]=='.') {
+                //delete root[key];
+                //continue;
+            //}
+            //const node=root[key];
+            //if(node.type=='d') {
+                //this._clearDotfiles(node.children);
+            //}
+        //}
+    //};
 
-    downloadProject = (projectName, keepState) => {
-        const exportName = "superblocks_project_" + projectName;
+    downloadProject = (project, keepState) => {
+        const exportName = "superblocks_project_" + project.getName();
         const workspace = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        var project = workspace.projects.filter((item) => {
-            return item.dir==projectName;
-        })[0];
 
-        // Return on empty project
-        if(Object.keys(project).length <= 0) {
-            console.warn("Unable to locate project: " + projectName);
-            return;
-        }
-
+        // TODO: create zipfile of filesystem
+        // project.serialize()
         const project2 = JSON.parse(JSON.stringify(project));
         delete project2._filecache;
         delete project2.inode;
@@ -510,31 +566,32 @@ export default class Backend {
         downloadAnchorNode.remove();
     }
 
-    uploadWorkspace = (file, cb) => {
-        var reader = new FileReader();
+    //uploadWorkspace = (file, cb) => {
+        //var reader = new FileReader();
 
-        reader.onloadend = (evt) => {
-          if (evt.target.readyState == FileReader.DONE) {
-            try {
-              const obj = JSON.parse(evt.target.result);
-              if (!obj.projects) {
-                cb('invalid workspace file');
-                return;
-              }
-            } catch (e) {
-              cb('invalid JSON');
-              return;
-            }
-            localStorage.setItem(DAPP_FORMAT_VERSION,evt.target.result)
-            cb()
-          }
-        };
+        //reader.onloadend = (evt) => {
+          //if (evt.target.readyState == FileReader.DONE) {
+            //try {
+              //const obj = JSON.parse(evt.target.result);
+              //if (!obj.projects) {
+                //cb('invalid workspace file');
+                //return;
+              //}
+            //} catch (e) {
+              //cb('invalid JSON');
+              //return;
+            //}
+            //localStorage.setItem(DAPP_FORMAT_VERSION,evt.target.result)
+            //cb()
+          //}
+        //};
 
-        var blob = file.slice(0, file.size);
-        reader.readAsBinaryString(blob);
-    }
+        //var blob = file.slice(0, file.size);
+        //reader.readAsBinaryString(blob);
+    //}
 
     uploadProject = (project, file, handler, cb) => {
+        // TODO: handle new format and zip files.
         var reader = new FileReader();
 
         reader.onloadend = (evt) => {

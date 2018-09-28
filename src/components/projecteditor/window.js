@@ -88,7 +88,7 @@ export class Window {
         if(this.props.item.props.type=="file") {
             return (
                 <div class="full" onClick={(e)=>{this._clickedUpon()}}>
-                    <Editor id={this.subId} key={this.subId} contract={this.props.item.props._contract} project={this.props.item.props._project} file={this.props.item.props.file} router={this.props.router} item={this.props.item} parent={this} type={this.props.item.props.type} type2={this.props.item.props.type2} />
+                    <Editor id={this.subId} key={this.subId} router={this.props.router} item={this.props.item} parent={this} />
                 </div>
             );
         }
@@ -134,11 +134,6 @@ export class Window {
         else if(this.props.item.props.type=="account") {
             return (
                 <AccountEditor id={this.subId} key={this.subId} project={this.props.item.props._project} account={this.props.item.props._account} parent={this} router={this.props.router} functions={this.props.functions} />
-            );
-        }
-        else if(this.props.item.props.type=="constant") {
-            return (
-                <ConstantEditor id={this.subId} key={this.subId} project={this.props.item.props._project} constant={this.props.item.props._constant} parent={this} router={this.props.router} functions={this.props.functions} />
             );
         }
         else if(this.props.item.props.type=="tutorials" && this.props.item.props.type2=="manual") {
@@ -191,6 +186,8 @@ export class Window {
     };
 
     getTitle = () => {
+        console.log("get title", this.props.item.props);
+        if (this.props.item.props.state.title) return this.props.item.props.state.title;
         if(this.childComponent && this.childComponent.getTitle) return this.childComponent.getTitle();
         if(this.props.item.props.type=="file") return this.props.item.props.title;
         if(this.props.item.props.type=="contract") {

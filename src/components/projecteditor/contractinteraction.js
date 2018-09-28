@@ -268,7 +268,7 @@ export default class ContractInteraction extends Component {
         const files=[];
         const bodies=[];
         for(var index=0;index<contracts.length;index++) {
-            files.push("/build/app/."+contracts[index]+"."+env+".js");
+            files.push("/build/app/"+contracts[index]+"."+env+".js");
         }
         var fn;
         fn=((files, bodies, cb2)=>{

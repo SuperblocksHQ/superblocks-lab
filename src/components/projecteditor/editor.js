@@ -26,15 +26,15 @@ export default class Editor extends Component {
         this.props.parent.childComponent=this;
         this.langmap={
             js:"javascript",
-            sol:"sol",
             sh:"shell",
+            bash:"shell",
             md:"markdown",
         };
         this.editorObj;
         this.monacoObj;
         this.body={contents:"",state:-1};
         this.language="";
-        var a=this.props.file.match(".*[.](.+)$");
+        var a=this.props.item.getFile().match(".*[.]([^.]+)$");
         if(a) {
             const suffix=a[1].toLowerCase();
             if(this.langmap[suffix]) {
@@ -47,12 +47,12 @@ export default class Editor extends Component {
     }
 
     componentDidMount() {
-        if(this.props.file) this.loadContents();
+        this.loadContents();
         this.redraw();
     }
 
     _finalize = () => {
-        this.props.project.closeFile(this.props.file);
+        this.props.item.close();
     };
 
     canClose = (cb) => {
@@ -70,35 +70,26 @@ export default class Editor extends Component {
     };
 
     loadContents = () => {
-        this.props.project.loadFile(this.props.file, (body) => {
+        this.props.item.load( (body) => {
+            console.log(body);
             this.body=body;
-            if(body.status==0) {
-            }
-            else {
-                body.status=0;
-                body.state=1;
-                if(this.language=="sol") {
-                    this.body.contents=`pragma solidity ^0.4.17;
-
-contract `+this.props.contract.name+` {
-}
-`;
-                }
-            }
+            this.body.state = 0;
             this.redraw();
         });
     };
 
     getTitle = () => {
-        if(this.body.state!=0) return "*" + this.props.item.props.title;
-        return this.props.item.props.title;
+        var prefix="";
+        if(this.body.state!=0) prefix = "*";
+        return prefix + this.props.item.getTitle();
     };
 
     save = (e) => {
         if(e) e.preventDefault();
-        this.props.project.saveFile(this.props.file, (ret) => {
+        this.props.item.save(this.body, (ret) => {
             if(ret.status==0) {
                 this.body.state=0;
+                // Trigger other windows to refresh.
                 this.props.parent.props.parent.props.parent.redraw();
             }
             else if(ret.status==2) {
@@ -109,44 +100,44 @@ contract `+this.props.contract.name+` {
     compile = (e) => {
         this.save(e);
         const subitem = this.props.item.getChildren().filter((elm) => {
-            return (elm.props.type2=="compile");
+            return (elm.props.item.props.type2=="compile");
 
         })[0];
-        if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
+        if(subitem) this.props.router.panes.openContractItem(subitem, this.props.parent.props.parent.props.id);
     };
 
     deploy = (e) => {
         e.preventDefault();
         const subitem = this.props.item.getChildren().filter((elm) => {
-            return (elm.props.type2=="deploy");
+            return (elm.props.item.props.type2=="deploy");
 
         })[0];
-        if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
+        if(subitem) this.props.router.panes.openContractItem(subitem, this.props.parent.props.parent.props.id);
     };
 
     configure = (e) => {
         e.preventDefault();
         const subitem = this.props.item.getChildren().filter((elm) => {
-            return (elm.props.type2=="configure");
+            return (elm.props.item.props.type2=="configure");
 
         })[0];
-        if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
+        if(subitem) this.props.router.control.openContractItem(null, subitem, this.props.parent.props.parent.props.id);
     };
 
     interact = (e) => {
         e.preventDefault();
         const subitem = this.props.item.getChildren().filter((elm) => {
-            return (elm.props.type2=="interact");
+            return (elm.props.item.props.type2=="interact");
 
         })[0];
-        if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
+        if(subitem) this.props.router.panes.openContractItem(subitem, this.props.parent.props.parent.props.id);
     };
 
     textChange = (value) => {
         this.body.contents=value;
         if(this.body.state!=1) {
             this.body.state=1;
-            this.props.parent.props.parent.props.parent.redraw();
+            this.redraw();
         }
     };
 
@@ -179,14 +170,14 @@ contract `+this.props.contract.name+` {
             <div class={style.toolbar} id={this.id+"_header"}>
                 <div class={style.buttons}>
                     <button class="btnNoBg" title="Save" style={stl} onClick={this.save}><IconSave /></button>
-                    {this.props.type2=="contract" && <button class="btnNoBg" title="Compile" onClick={this.compile}><IconCompile /></button>}
-                    {this.props.type2=="contract" && <button class="btnNoBg" title="Deploy" onClick={this.deploy}><IconDeploy style={{ verticalAlign:'middle'}} /></button>}
-                    {this.props.type2=="contract" && <button class="btnNoBg" title="Configure" onClick={this.configure}><IconConfigure /></button>}
-                    {this.props.type2=="contract" && <button class="btnNoBg" title="Interact" onClick={this.interact}><IconInteract style={{ verticalAlign:'middle'}}/></button>}
+                    {this.props.item.getType2()=="contract" && <button class="btnNoBg" title="Compile" onClick={this.compile}><IconCompile /></button>}
+                    {this.props.item.getType2()=="contract" && <button class="btnNoBg" title="Deploy" onClick={this.deploy}><IconDeploy style={{ verticalAlign:'middle'}} /></button>}
+                    {this.props.item.getType2()=="contract" && <button class="btnNoBg" title="Configure" onClick={this.configure}><IconConfigure /></button>}
+                    {this.props.item.getType2()=="contract" && <button class="btnNoBg" title="Interact" onClick={this.interact}><IconInteract style={{ verticalAlign:'middle'}}/></button>}
                 </div>
                 <div class={style.info}>
                     <span>
-                        {this.props.file}
+                        {this.props.item.getFullPath()}
                     </span>
                 </div>
             </div>

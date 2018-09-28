@@ -119,7 +119,7 @@ export default class ProjectEditor extends Component {
         if (this.props.router && this.props.router.control) {
             project = this.props.router.control && this.props.router.control.getActiveProject();
             if (project) {
-                const network = project.props.state.data.env;
+                const network = project.getEnvironment();
                 endpoint = (this.props.functions.networks.endpoints[network] || {}).endpoint;
             }
         }

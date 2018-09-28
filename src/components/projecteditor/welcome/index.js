@@ -22,7 +22,7 @@ export default class Welcome extends Component {
 
     onCreateNewProjectClick = (e) => {
         console.log(this.props);
-        this.props.router.control._newDapp(e);
+        this.props.router.control.newDapp(e);
     }
 
     render() {

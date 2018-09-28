@@ -79,13 +79,13 @@ export default class AppView extends Component {
         this.setState(); // To update data outside of iframe.
     };
 
-    _makeFileName=(path, suffix)=>{
+    _makeFileName=(path, network, suffix)=>{
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir=a[1];
         const filename=a[2];
         const a2 = filename.match(/^([^.]+)\.sol$/);
         const contractName = a2[1];
-        return "/build" + dir + contractName + "/" + contractName + "." + suffix;
+        return "/build" + dir + contractName + "/" + contractName + "." + network + "." + suffix;
     };
 
     render2 = (cb) => {
@@ -126,11 +126,12 @@ export default class AppView extends Component {
                         const txsrc=this._makeFileName(src, network, "tx");
                         const deploysrc=this._makeFileName(src, network, "deploy");
                         contracts2.push([txsrc, deploysrc, endpoint]);
+                        console.log(contracts2);
                     }
 
                     const files=[];
                     for(var index=0;index<contracts.length;index++) {
-                        files.push("/build/app/."+contracts[index]+"."+env+".js");
+                        files.push("/build/app/"+contracts[index]+"."+env+".js");
                     }
                     this._loadFiles(files, (status, bodies)=>{
                         if(status!=0) {

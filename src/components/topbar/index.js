@@ -83,9 +83,11 @@ class ProjectDialog extends Component {
             alert("Download aborted. Yes or No answer expected.");
             return;
         }
-        this.props.router.control.downloadProject(project, keepState.toLowerCase() == "yes");
+        const backend = new Backend();
+        backend.downloadProject(project, keepState.toLowerCase() == "yes");
     };
 
+    // TODO:
     importProject = (e) => {
         e.preventDefault();
         var uploadAnchorNode = document.createElement('input');
@@ -233,7 +235,7 @@ class ProjectDialog extends Component {
                                 ) : (null)
                             }
                             <div class={style.container}>
-                                <div class={style.overflowText}>{project.props.state.data.dir} - &nbsp;{project.props.state.data.dappfile.getObj().project.info.title || ""}</div>
+                                <div class={style.overflowText}>{project.getName()} - &nbsp;{project.getTitle()}</div>
                             </div>
                             <div class={classNames([style.projSwitcherRowActions, style.container])}>
                                 <button class="btnNoBg" onClick={(e)=>{this.openProjectConfig(e, project)}}>
@@ -275,7 +277,7 @@ class ProjectDialog extends Component {
                     </div>
                 </div>
                 <div class={style.actions}>
-                    <button class="btnNoBg" onClick={this.props.router.control._newDapp}>Create New</button>
+                    <button class="btnNoBg" onClick={this.props.router.control.newDapp}>Create New</button>
                     <div class={style.separator} />
                     <button class="btnNoBg" onClick={this.importProject}>Import</button>
                 </div>
@@ -298,7 +300,7 @@ export default class TopBar extends Component {
         if (this.props.router.control) {
             const openProject = this.props.router.control.getActiveProject();
             if (openProject) {
-                title = openProject.props.state.data.dappfile.getObj().project.info.name;
+                title = openProject.getName();
             }
         }
 

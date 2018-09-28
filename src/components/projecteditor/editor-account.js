@@ -193,7 +193,10 @@ export default class AccountEditor extends Component {
             return;
         }
 
+        var oldName = this.accountName;
         this.account.set("name", this.form.name);
+        const item = this.props.project.reKeyNonMenuItem('accounts', {_key: oldName}, "_key", this.form.name);
+        item.props.state.title = this.form.name;
 
         if(this._save((status)=>{
             if(status==0) {
@@ -201,11 +204,12 @@ export default class AccountEditor extends Component {
                 this.setState({accountNameDirty:false});
                 // Close tab, because the item has changed, this is the easiest way out.
                 // To keep the tab open we need to sync the tab item with the updated menu item.
-                this.props.parent.close();
+                //this.props.parent.close();
             }
             else {
                 // Restore state
                 this.account.set("name", this.accountName);
+                this.props.project.reKeyNonMenuItem('accounts', {_key: this.form.name}, "_key", oldName);
             }
         }));
     };
@@ -362,7 +366,7 @@ export default class AccountEditor extends Component {
                                             value={this.form.name}
                                             onKeyUp={(e)=>{this.onNameChange(e)}}
                                             onChange={(e)=>{this.onNameChange(e)}} />
-                    
+
                                     <button class="btn2" disabled={!this.state.accountNameDirty} onClick={this._nameSave}>Save name</button>
                                 </div>
                                 <div class={style.networkContainer}>
