@@ -18,19 +18,29 @@ import {
 class NetworkDropdown extends Component {
 
     render() {
-        // Early return when project data is not available
-        if(!this.props.dappfile || this.props.dappfile === undefined) {
-            return;
+        var networks, chosenNetwork;
+        const project = this.props.router.control.getActiveProject();
+        if (!project) {
+            // Setup default network just for show.
+            networks = [{
+                getName: () => {return "browser"}
+            }];
+            chosenNetwork = "browser";
+        }
+        else {
+            chosenNetwork = project.getEnvironment();
+            const environmentsItem = project.getHiddenItem("environments");
+            networks = environmentsItem.getChildren();
         }
 
-        const networks = this.props.dappfile.environments().map((env) => {
+        const renderedNetworks = networks.map((network) => {
             const cls={};
             cls[style.networkLink] = true;
             cls[style.capitalize] = true;
-            if (env.name==this.props.networkSelected) cls[style.networkLinkChosen] = true;
+            if (network.getName() == this.props.networkSelected) cls[style.networkLinkChosen] = true;
             return (
-                <div onClick={(e)=>{e.preventDefault(); this.props.onNetworkSelected(env.name)}} className={classnames(cls)}>
-                    {env.name}
+                <div onClick={(e)=>{e.preventDefault(); this.props.onNetworkSelected(network.getName())}} className={classnames(cls)}>
+                    {network.getName()}
                 </div>);
         });
         return (
@@ -38,14 +48,13 @@ class NetworkDropdown extends Component {
                 <div class={style.title}>
                     Select a Network
                 </div>
-                {networks}
+                {renderedNetworks}
             </div>
         );
     }
 }
 
 NetworkDropdown.propTypes = {
-    dappfile: PropTypes.object.isRequired,
     networkSelected: PropTypes.string.isRequired,
     onNetworkSelected: PropTypes.func.isRequired
 }
@@ -56,43 +65,38 @@ NetworkDropdown.propTypes = {
 class NetworkSelector extends Component {
     constructor(props) {
         super(props);
-        var network, dappfile, defaultEnv = "browser";
+
+        var network = "browser";
         const project = this.props.router.control.getActiveProject();
-        if(project) {
-            dappfile = project.props.state.data.dappfile;
-            dappfile.environments().map((env) => {
-                if(env.name == project.props.state.data.env) network = project.props.state.data.env;
-            });
-            defaultEnv = dappfile.environments()[0].name;
-        };
+        if (project) {
+            network = project.getEnvironment();
+        }
 
         this.setState({
-            dappfile: dappfile,
-            network: network || defaultEnv,
-            project: project,
+            network: network
         });
-        this.pushSettings();
     }
 
     onNetworkSelectedHandle=(network)=>{
+        const project = this.props.router.control.getActiveProject();
+        project.getHiddenItem("environments").setChosen(network);
         this.setState({
             network: network,
         });
-        this.pushSettings();
         this.props.router.main.redraw(true);
     };
 
-    pushSettings=()=>{
-        if(this.state.project) this.state.project.props.state.data.env = this.state.network;
-    };
-
     render() {
-        const endpoint=(this.props.functions.networks.endpoints[this.state.network] || {}).endpoint;
+        var endpoint = "";
+        const project = this.props.router.control.getActiveProject();
+        if (project) {
+            endpoint = project.getEndpoint(this.state.network);
+        }
         return (
             <DropdownContainer
                 dropdownContent={
                     <NetworkDropdown
-                        dappfile={this.state.dappfile}
+                        router={this.props.router}
                         networkSelected={this.state.network}
                         onNetworkSelected={this.onNetworkSelectedHandle}
                         handleClickOutside={this.closeNetworkMenu}
@@ -115,15 +119,25 @@ class NetworkSelector extends Component {
 class AccountDropdown extends Component {
 
     render() {
-        // Early return when project data is not available
-        if(!this.props.dappfile || this.props.dappfile === undefined) {
-            return;
+        var accounts, chosenAccount;
+        const project = this.props.router.control.getActiveProject();
+        if (!project) {
+            // Setup default account just for show.
+            accounts = [{
+                getName: () => {return "Default"}
+            }];
+            chosenAccount = "Default";
+        }
+        else {
+            chosenAccount = project.getAccount();
+            const accountsItem = project.getHiddenItem("accounts");
+            accounts = accountsItem.getChildren();
         }
 
-        const accounts = this.props.dappfile.accounts().map((account, index) => {
+        const renderedAccounts = accounts.map((account, index) => {
             const cls={};
             cls[style.accountLink]=true;
-            if (account.name == this.props.account) cls[style.accountLinkChosen]=true;
+            if (account.getName() == chosenAccount) cls[style.accountLinkChosen]=true;
 
             var deleteButton;
             if(index !== 0) {
@@ -138,8 +152,8 @@ class AccountDropdown extends Component {
 
             return (
                 <div>
-                    <div className={classnames(cls)} onClick={(e)=>{e.preventDefault(); this.props.onAccountChosen(account.name)}}>
-                        <div>{account.name}</div>
+                    <div className={classnames(cls)} onClick={(e)=>{e.preventDefault(); this.props.onAccountChosen(account.getName())}}>
+                        <div>{account.getName()}</div>
                         <div style="margin-left: auto;">
                             <button class="btnNoBg" onClick={(e)=>{this.props.onAccountEdit(e, index)}}>
                                 <IconEdit />
@@ -156,7 +170,7 @@ class AccountDropdown extends Component {
                 <div class={style.title}>
                     Select an Account
                 </div>
-                {accounts}
+                {renderedAccounts}
                 <div class={style.newAccount}>
                     <button class="btnNoBg" onClick={this.props.onNewAccountClicked}>+ New Account</button>
                 </div>
@@ -166,8 +180,6 @@ class AccountDropdown extends Component {
 }
 
 AccountDropdown.propTypes = {
-    dappfile: PropTypes.object.isRequired,
-    account: PropTypes.string.isRequired,
     handleClickOutside: PropTypes.func.isRequired,
     onAccountChosen: PropTypes.func.isRequired,
     onAccountEdit: PropTypes.func.isRequired,
@@ -178,24 +190,11 @@ AccountDropdown.propTypes = {
 class AccountSelector extends Component {
     constructor(props) {
         super(props);
-        var account,dappfile, defaultAccount="Default";
         const project = this.props.router.control.getActiveProject();
 
-        if(project) {
-            dappfile=project.props.state.data.dappfile;
-            dappfile.accounts().map((accountItem) => {
-                if(accountItem.name==project.props.state.data.account) account=project.props.state.data.account;
-            });
-            defaultAccount=dappfile.accounts()[0].name;
-        };
-
         this.setState({
-            dappfile: dappfile,
-            account: account || defaultAccount,
-            project: project,
             balances: {},
         });
-        this.pushSettings();
     }
 
     componentDidMount() {
@@ -207,47 +206,100 @@ class AccountSelector extends Component {
     }
 
     accountChosen=(account) => {
-        this.setState({
-            account: account,
-        });
-        this.pushSettings();
+        const project = this.props.router.control.getActiveProject();
+        if (!project) return;
+        const accountsItem = project.getHiddenItem("accounts");
+        accountsItem.setChosen(account);
         this.props.router.main.redraw(true);
     };
 
     accountEdit=(e, index) => {
-        if(this.state.project) this.props.router.control._clickEditAccount (e, this.state.project, index);
-        this.props.router.main.redraw(true);
+        e.preventDefault();
+        e.stopPropagation();
+
+        const project = this.props.router.control.getActiveProject();
+        if (!project) return;
+
+        const accountsItem = project.getHiddenItem("accounts");
+
+        const item = accountsItem.getChildren()[index];
+
+        this.props.router.panes.openItem(item);
     };
 
     accountDelete = (e, index) => {
-        if(this.state.project) this.props.router.control._clickDeleteAccount (e, this.state.project, index);
+        e.preventDefault();
+        e.stopPropagation();
+
+        const project = this.props.router.control.getActiveProject();
+        if (!project) return;
+
+        if (index == 0) {
+            alert("You cannot delete the default account.");
+            return;
+        }
+
+        if (!confirm("Are you sure to delete account?")) return;
+
+        const accountsItem = project.getHiddenItem("accounts");
+
+        var isCurrent = (accountsItem.getChildren()[index].getName() == project.getAccount());
+
+        if (isCurrent) {
+            accountsItem.setChosen(null);
+        }
+
+        project.deleteAccount(index, () => {
+            // TODO: close any item open.
+            this.props.router.main.redraw(true);
+        });
     };
 
     onNewAccountClickHandle = (e) => {
-        if(this.state.project) this.props.router.control._clickNewAccount(e, this.state.project);
+        e.preventDefault();
+        e.stopPropagation();
+        const project = this.props.router.control.getActiveProject();
+        if (!project) return;
+        project.addAccount( () => {
+            // TODO: how to open new item?
+            this.props.router.main.redraw(true);
+        });
     };
 
-    pushSettings = () => {
-        if(this.state.project) this.state.project.props.state.data.account=this.state.account;
-    };
-
-    accountType = (e) => {
-        if(!this.state.dappfile) return {};
-        // Figure out what type of account this is and if it is locked or not.
-        const env=this.state.project.props.state.data.env;
-        var isLocked=false;
-        var walletType=null;
-        var address="";
-        var wallet=null;
+    /**
+     * By the chosen account, return
+     * @return {accountType, isLocked, network, address}:
+     *     where:
+     *      accounType=wallet|pseudo|metamask
+     *      isLocked is true if the wallet or metamask is locked
+     *      network is the current network
+     *      address is the account public address (for the current network)
+     */
+    accountType = () => {
+        const project = this.props.router.control.getActiveProject();
+        const accountName = project.getAccount();
+        if (!project || !accountName) return {};
+        const chosenEnv = project.getEnvironment();
+        const network = chosenEnv;
+        var isLocked = false;
+        var walletType = null;
+        var address = "";
         var accountType;
-        const account = this.state.dappfile.getItem("accounts", [{name: this.state.account}]);
-        const walletName=account.get('wallet', env);
-        const accountIndex=account.get('index', env);
-        if(walletName) {
-            wallet = this.state.dappfile.getItem("wallets", [{name: walletName}]);
+
+        const accountsItem = project.getHiddenItem("accounts");
+        const accountItem = accountsItem.getByName(accountName);
+
+        const walletName = accountItem.getWallet(chosenEnv);
+        const accountIndex = accountItem.getAccountIndex(chosenEnv);
+
+        var walletItem;
+        if (walletName) {
+            const walletsItem = project.getHiddenItem("wallets");
+            walletItem = walletsItem.getByName(walletName);
         }
-        if(wallet) {
-            walletType=wallet.get('type');
+
+        if(walletItem) {
+            walletType = walletItem.getWalletType();
             if(walletType=="external") {
                 accountType="metamask";
                 if(!window.web3) {
@@ -275,17 +327,16 @@ class AccountSelector extends Component {
             }
         }
         else {
-            address=account.get('address', env);
-            accountType="pseudo";
+            address = accountItem.getAddress(chosenEnv);
+            accountType = "pseudo";
         }
 
-        const network=env;
         return {accountType, isLocked, network, address};
     };
 
     accountBalance = () => {
         // Return cached balance of account
-        const {accountType, isLocked, network, address}=this.accountType();
+        const {accountType, isLocked, network, address} = this.accountType();
         return ((this.state.balances[network] || {})[address] || "0") + " eth";
     };
 
@@ -302,10 +353,15 @@ class AccountSelector extends Component {
     };
 
     updateBalances = () => {
-        if(this.updateBalanceBusy) return;
+        const project = this.props.router.control.getActiveProject();
+        if (!project) return {};
+
+        if (this.updateBalanceBusy) return;
         this.updateBalanceBusy=true;
-        const {accountType, isLocked, network, address}=this.accountType();
-        if(!address || address.length<5) {
+
+        const {accountType, isLocked, network, address} = this.accountType();
+
+        if (!address || address.length<5) {
             // a 0x00 address...
             this.updateBalanceBusy=false;
             return;
@@ -319,7 +375,8 @@ class AccountSelector extends Component {
     };
 
     fetchBalance = (network, address, cb) => {
-        const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
+        const project = this.props.router.control.getActiveProject();
+        const endpoint = project.getEndpoint(network);
         const web3 = this.getWeb3(endpoint);
         web3.eth.getBalance(address,(err,res)=>{
             if(err) {
@@ -333,19 +390,28 @@ class AccountSelector extends Component {
 
     unlockWallet = (e) => {
         e.preventDefault();
-        const env=this.state.project.props.state.data.env;
-        const account = this.state.dappfile.getItem("accounts", [{name: this.state.account}]);
-        const walletName=account.get('wallet', env);
-        this.props.functions.wallet.openWallet(walletName, null, (status)=>{
-            if(status===0) {
+
+        const project = this.props.router.control.getActiveProject();
+        const chosenEnv = project.getEnvironment();
+        const accountName = project.getAccount();
+        const accountsItem = project.getHiddenItem("accounts");
+        const accountItem = accountsItem.getByName(accountName);
+        const walletName = accountItem.getWallet(chosenEnv);
+
+        this.props.functions.wallet.openWallet(walletName, null, (status) => {
+            if (status === 0) {
                 this.props.router.main.redraw(true);
             }
         });
     };
 
     render() {
-        const {accountType, isLocked, network, address}=this.accountType();
-        const accountBalance=this.accountBalance(network, address);
+        const project = this.props.router.control.getActiveProject();
+        if (!project) return;
+        const account = project.getAccount();
+        const {accountType, isLocked, network, address} = this.accountType();
+        if (!network) return;
+        const accountBalance = this.accountBalance();
         var accountIcon;
 
         if (accountType == "metamask") {
@@ -381,8 +447,7 @@ class AccountSelector extends Component {
             <DropdownContainer
                 dropdownContent={
                     <AccountDropdown
-                            dappfile={this.state.dappfile}
-                            account={this.state.account}
+                            router={this.props.router}
                             onAccountChosen={this.accountChosen}
                             onAccountEdit={this.accountEdit}
                             onAccountDelete={this.accountDelete}
@@ -393,7 +458,7 @@ class AccountSelector extends Component {
                 <div class={classnames([style.selector, style.account])}>
                     {accountIcon}
                     <div title={address} class={style.nameContainer}>
-                        {this.state.account}<br />
+                        {account}<br />
                         <span style="font-size: 0.5em;">
                             {accountBalance}
                         </span>

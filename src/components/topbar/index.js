@@ -66,7 +66,7 @@ class ProjectDialog extends Component {
     openProjectConfig = (e, project) => {
         this.openProject(e, project, (status) => {
             if (status == 0) {
-                this.props.router.control.openProjectConfig(project);
+                this.props.router.control.openProjectConfig();
             }
         });
     };
@@ -212,7 +212,7 @@ class ProjectDialog extends Component {
     deleteProject = (e, project) => {
         e.stopPropagation();
 
-        this.props.router.control.deleteProject(project);
+        this.props.router.control.deleteProject(project, () => {this.setState()});
     };
 
     getProjectItems = () => {

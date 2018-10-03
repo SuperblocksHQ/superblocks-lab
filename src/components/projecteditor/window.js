@@ -99,7 +99,7 @@ export class Window {
         }
         else if(this.props.item.props.type=="project") {
             return (
-                <AppEditor id={this.subId} key={this.subId} project={this.props.item.props._project} dappfilejson={this.props.item.props._dappfilejson} parent={this} router={this.props.router} />
+                <AppEditor id={this.subId} key={this.subId} item={this.props.item} parent={this} router={this.props.router} />
             );
         }
         else if(this.props.item.props.type=="contract" && this.props.item.props.type2=="compile") {
@@ -133,7 +133,7 @@ export class Window {
         }
         else if(this.props.item.props.type=="account") {
             return (
-                <AccountEditor id={this.subId} key={this.subId} project={this.props.item.props._project} account={this.props.item.props._account} parent={this} router={this.props.router} functions={this.props.functions} />
+                <AccountEditor id={this.subId} key={this.subId} item={this.props.item} parent={this} router={this.props.router} functions={this.props.functions} />
             );
         }
         else if(this.props.item.props.type=="tutorials" && this.props.item.props.type2=="manual") {
@@ -186,7 +186,6 @@ export class Window {
     };
 
     getTitle = () => {
-        console.log("get title", this.props.item.props);
         if (this.props.item.props.state.title) return this.props.item.props.state.title;
         if(this.childComponent && this.childComponent.getTitle) return this.childComponent.getTitle();
         if(this.props.item.props.type=="file") return this.props.item.props.title;

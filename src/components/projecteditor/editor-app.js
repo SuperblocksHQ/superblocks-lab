@@ -25,20 +25,18 @@ export default class AppEditor extends Component {
         this.backend = new Backend();
         this.id=props.id+"_editor";
         this.props.parent.childComponent=this;
-        this.dappfile = this.props.project.props.state.data.dappfile;
-        this.app = this.dappfile.getObj().app || {};
-        this.project = this.dappfile.getObj().project || {};
-        this.project.info=this.project.info||{};
-        this.project.info.title=this.project.info.title||"";
-        this.setState({form:{title:this.project.info.title}});
+
+        //this.dappfile = this.props.project.props.state.data.dappfile;
+        //this.project = this.dappfile.getObj().project || {};
+        //this.project.info=this.project.info||{};
+        //this.project.info.title=this.project.info.title||"";
+        this.setState({form:{title:this.props.item.getProject().getTitle()}});
     }
 
     componentWillReceiveProps(props) {
-        this.dappfile = props.project.props.state.data.dappfile;
     }
 
     componentDidMount() {
-        this.redraw();
     }
 
     redraw = () => {
@@ -58,13 +56,17 @@ export default class AppEditor extends Component {
             alert('Illegal title. No special characters allowed.');
             return false;
         }
-        this.project.info.title=this.state.form.title;
-        this.dappfile.getObj().project=this.project;
-        this.props.project.save((status)=>{
-            if(status==0) {
-                this.props.parent.close();
-            }
+        this.props.item.getProject().setTitle(this.state.form.title);
+        this.props.item.getProject().saveDappfile().then( () => {
+
         });
+        //this.project.info.title=this.state.form.title;
+        //this.dappfile.getObj().project=this.project;
+        //this.props.project.save((status)=>{
+            //if(status==0) {
+                //this.props.parent.close();
+            //}
+        //});
     };
 
     onChange = (e, key) => {

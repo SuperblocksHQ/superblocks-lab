@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+// Items are recreated very often, so only keep state in the `state` object.
+// The `state` object is copied from item to item.
+// Only put real static scalars diurectly in `props`.
+// A state object can be manipulated, but only with caution, since
+// the proper way is to manipulate the dappfile through the ProjectItem and then the items will recreate and
+// state will be copied. But for a few cases one must also directly manipulate the item state, such a case is when
+// renaming an item such as it's `key` value is changed. then `reKey` the item and manipulate the dappfile config,
+// the reloading and recreation of items will then merge gracefully.
+
 import {
     IconTrash,
     IconGem,
@@ -43,13 +52,24 @@ import classnames from 'classnames';
 export default class Item {
     props;
     static idCounter = 0;
-    constructor(props, router) {
+    constructor(props, router, functions) {
         if (props.state == null) props.state = {};
         if (props.state.id == null) props.state.id = this.generateId();
-        if (props.toggable == null) props.toggable = (props.children != null && props.children.length > 0);
-        if (props.toggable && props.state.open == null) props.state.open = true;
+        if (props.state.toggable == null) props.state.toggable = (props.state.children != null && props.state.children.length > 0);
+        if (props.state.toggable && props.state.open == null) props.state.open = true;
         this.props = props;
         this.router = router;
+        this.functions = functions;
+
+        // If item is open then we auto load the children, but we can't do it directly from the constructor since
+        // a derived class might not be ready for it. So we put it in a timeout.
+        if (this.props.state.open) {
+            setTimeout( () => {
+                this.getChildren(true, () => {
+                    this.redraw();
+                });
+            }, 1);
+        }
     }
 
     generateId = () => {
@@ -60,6 +80,10 @@ export default class Item {
         return this.props.state.id;
     };
 
+    getName = () => {
+        return this.props.state.name || "";
+    };
+
     /**
      * Set the children of this item.
      * Either an array or a function.
@@ -67,6 +91,9 @@ export default class Item {
      */
     setChildren = (children) => {
         this.props.state.children = children;
+        if (this.props.state.children) {
+            this.props.state.toggable = true;
+        }
     };
 
     /**
@@ -82,21 +109,25 @@ export default class Item {
         this.props.state.hiddenItems[key] = item;
     };
 
+    getHiddenItem = (key) => {
+        this.props.state.hiddenItems = this.props.state.hiddenItems || {};
+        return this.props.state.hiddenItems[key];
+    };
+
     getChildren = (force, cb) => {
-        console.log("getChildren", this);
-        if (this.props.state.children == null) this.props.state.children = [];
         if (this.props.state.children instanceof Function) {
             if(this.props.lazy && !force) return this.props.state._children || [];
-            console.log("go");
             return this.props.state.children(cb) || [];
             // We need to return empty set first time since it is async.
             // The callback will trigger when children are ready and cached.
         }
+        if (this.props.state.children == null) this.props.state.children = [];
+        if (cb) cb();
         return this.props.state.children;
     };
 
     getTitle = () => {
-        return (this.props.state || {}).title || this.props.title;
+        return (this.props.state || {}).title;
     }
 
     getIcon = () => {
@@ -120,7 +151,7 @@ export default class Item {
     };
 
     reKey = (newKey) => {
-        this.props.key = newKey;
+        this.props.state.key = newKey;
     };
 
     _copyState = (target, source) => {
@@ -131,26 +162,40 @@ export default class Item {
                 var sourceChild=source[index2];
                 // Compare properties.
                 if(this._cmpItem(targetChild.props, sourceChild.props)) {
-                    targetChild.props.state=sourceChild.props.state;
+                    // Copy over original state object to new item.
+                    // But copy back all value which are double underscored, those we actually want the latest properties of,
+                    // such as `__parent`, which will refer to the newly created parent item.
+                    const newState = targetChild.props.state;
+                    targetChild.props.state = sourceChild.props.state;
+                    const keys = Object.keys(newState);
+                    for (let index = 0; index < keys.length; index++) {
+                        let key = keys[index];
+                        if (key.substr(0, 2) == "__") {
+                            targetChild.props.state[key] = newState[key];
+                        }
+                    }
                 }
             }
         }
     };
 
     _cmpItem = (item1, item2) => {
-        return (item1.key === item2.key);
+        return (item1.state.key === item2.state.key);
     };
 
     redraw = () => {
         this.router.control.redraw();
     };
 
+    redrawMain = (redrawAll) => {
+        this.router.main.redraw(redrawAll);
+    };
+
     _openItem = (e, item) => {
         e.preventDefault();
         e.stopPropagation();
 
-        console.log("open", item);
-        if(this.router.panes) this.router.panes.openItem(item);
+        if(this.router.panes) this.router.panes.openItem(this);
     };
 
     _angleClicked = (e) => {
@@ -158,9 +203,8 @@ export default class Item {
         this.props.state.open = !this.props.state.open;
         if(this.props.state.open && this.props.lazy) {
             this.getChildren(true, () => {
-                // Since we get child list async, we need to redraw when wo got it.
+                // Since we get child list async, we need to redraw when we got it.
                 this.redraw();
-                console.log("REDRAW");
             });
         }
         // Always redraw
@@ -169,7 +213,7 @@ export default class Item {
 
     _renderIcons = (level, index) => {
         var caret;
-        var isToggable = this.props.toggable && (this.getChildren().length>0 || this.props.lazy);
+        var isToggable = this.props.state.toggable && (this.getChildren().length>0 || this.props.lazy);
         if (isToggable) {
             caret = (
                 <Caret
@@ -276,7 +320,7 @@ export default class Item {
     /**
      * Default render implementation.
      */
-    _render = (level, index) => {
+    _defaultRender = (level, index) => {
         return (
             <div title={this.props.state.title} class={style.title}>
                 {this.getTitle()}
@@ -285,15 +329,13 @@ export default class Item {
     };
 
     _render2 = (level, index, renderedChildren) => {
-        if (this.props._hidden) return;
-
-        var output = this._render(level, index);
-        //if (this.props.render) {
-            //output = this.props.render(level, index, item);
-        //}
-        //else {
-            //output = this._defaultRender(level, index, item);
-        //}
+        var output;
+        if (this.props.render) {
+            output = this.props.render(level, index, this);
+        }
+        else {
+            output = this._defaultRender(level, index, this);
+        }
 
         const icons = this._renderIcons(level, index);
         const childrenPkg = this._packageChildren(level, index, renderedChildren);
@@ -310,7 +352,6 @@ export default class Item {
     };
 
     render = (level, index) => {
-        //console.log("render", this);
         level = (level !== undefined ? level : 0);
         index = (index !== undefined ? index : 0);
         const renderedChildren = this.getChildren().map((item, index2) => {

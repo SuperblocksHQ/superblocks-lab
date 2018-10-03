@@ -81,13 +81,31 @@ export class Obj {
     };
 }
 
+/**
+ * Returns references straight to the underlaying data model, so be careful.
+ *
+ */
 export default class Dappfile {
-    constructor(props) {
-        this.root=props.dappfile;
+    constructor(dappfileObj) {
+        this.root = dappfileObj || {};
+        this.root.project = this.root.project || {};
+        this.root.project.info = this.root.project.info || {};
     }
 
-    getObj = () => {
-        return this.root;
+    //getObj = () => {
+        //return this.root;
+    //};
+
+    dump = () => {
+        return JSON.stringify(this.root);
+    };
+
+    getTitle = () => {
+        return this.root.project.info.title || "";
+    };
+
+    setTitle = (title) => {
+        this.root.project.info.title = title;
     };
 
     contracts = () => {
@@ -100,11 +118,6 @@ export default class Dappfile {
         return this.root.wallets;
     };
 
-    constants = () => {
-        if(this.root.constants==null) this.root.constants=[];
-        return this.root.constants;
-    };
-
     accounts = () => {
         if(this.root.accounts==null) this.root.accounts=[];
         return this.root.accounts;
@@ -115,33 +128,34 @@ export default class Dappfile {
         return this.root.environments;
     };
 
-    setItem = (root, filters, obj) => {
-        obj=obj.obj;
-        const vessel=this._findItems(root, filters)[0];
-        if(vessel) {
-            var keys=Object.keys(vessel);
-            for(var index=0;index<keys.length;index++) {
-                const key=keys[index];
-                delete vessel[key];
-            }
-            keys=Object.keys(obj);
-            for(var index=0;index<keys.length;index++) {
-                const key=keys[index];
-                vessel[key]=obj[key];
-            }
-            return true;
-        }
-        else {
-            return false;
-        }
-    };
+    //setItem = (root, filters, obj) => {
+        //obj=obj.obj;
+        //const vessel=this._findItems(root, filters)[0];
+        //if(vessel) {
+            //var keys=Object.keys(vessel);
+            //for(var index=0;index<keys.length;index++) {
+                //const key=keys[index];
+                //delete vessel[key];
+            //}
+            //keys=Object.keys(obj);
+            //for(var index=0;index<keys.length;index++) {
+                //const key=keys[index];
+                //vessel[key]=obj[key];
+            //}
+            //return true;
+        //}
+        //else {
+            //return false;
+        //}
+    //};
 
     // Return a deep copy of first found item in an array below a root object by it's filters.
     getItem = (root, filters) => {
         const ret=this._findItems(root, filters || []);
         const obj=ret[0];
         if(!obj) return;
-        return new Obj(Obj.cloneObj(obj));
+        return new Obj(obj);
+        //return new Obj(Obj.cloneObj(obj));
     };
 
     _findItems = (root,filters) => {
@@ -162,4 +176,11 @@ export default class Dappfile {
         }
         return true;
     }
+
+    /**
+     * Validate object as a valid dappfile.
+     */
+    static validateDappfile = (dappfileObj) => {
+        return true;
+    };
 }

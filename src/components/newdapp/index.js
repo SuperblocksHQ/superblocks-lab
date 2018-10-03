@@ -39,15 +39,13 @@ export default class NewDapp extends Component {
     }
 
     onProjectDetailsDone = (projectInfo) => {
-        var dappfile = this.state.selectedTemplate.dappfile;
-
-        // Make sure we include the info of the current project in the dappFile, in order to do not break anything in the app...
-        const project = { info: projectInfo }
-        dappfile.project = project;
+        const name = projectInfo.name;
+        const title = projectInfo.title;
 
         const files = this.state.selectedTemplate.files;
+        // TODO: update the dappfile.json with name and title.
 
-        this.props.backend.saveProject(projectInfo.name, { dappfile: dappfile }, o => this.props.cb(o.status, o.code), true, files);
+        this.props.backend.createProject(files, status => this.props.cb(status));
 
         this.closeModal();
     }

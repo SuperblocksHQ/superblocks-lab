@@ -24,14 +24,10 @@ export default class AccountEditor extends Component {
         super(props);
         this.id=props.id+"_editor";;
         this.props.parent.childComponent=this;
-        this.dappfile = this.props.project.props.state.data.dappfile;
-        this.account = this.dappfile.getItem("accounts", [{name: props.account}]);
-        this.accountName=this.props.account;
         this.setEnv("browser");
     }
 
     componentWillReceiveProps(props) {
-        this.dappfile = props.project.props.state.data.dappfile;
     }
 
     componentDidMount() {
@@ -42,19 +38,25 @@ export default class AccountEditor extends Component {
         this.setState();
     };
 
-    setEnv=(env)=>{
+    environments = () => {
+        const project = this.props.item.getProject();
+        const items = project.getHiddenItem("environments");
+        return items.getChildren();
+    };
+
+    setEnv = (env) => {
         // Set all initial values of the account.
         var isLocked=false;
         var walletType=null;
         var address;
-        var wallet=null;
-        const walletName=this.account.get('wallet', env);
-        const accountIndex=this.account.get('index', env);
+        var walletItem = null;
+        const walletName = this.props.item.getWallet(env);
+        const accountIndex = this.props.item.getAccountIndex(env);
         if(walletName) {
-            wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
+            walletItem = this.props.item.getProject().getHiddenItem('wallets').getByName(walletName);
         }
-        if(wallet) {
-            walletType=wallet.get('type');
+        if(walletItem) {
+            walletType=walletItem.getWalletType();
             if(walletType=="external") {
                 if(!window.web3) {
                     if(this.props.functions.wallet.isOpen(walletName)) {
@@ -82,16 +84,16 @@ export default class AccountEditor extends Component {
             }
         }
         else {
-            address=this.account.get('address', env);
+            address = this.props.item.getAddress(env);
         }
 
         const network=env;
         // Initial (editable) values
         this.form={
             env: env,
-            name: this.accountName,
+            name: this.props.item.getName(),
             walletName: walletName,
-            wallet: wallet,
+            wallet: walletItem,
             walletType: walletType,
             address: address,
             balance: 0,
@@ -140,22 +142,21 @@ export default class AccountEditor extends Component {
     };
 
     _save = (cb) => {
-        if(this.account.obj.name != this.accountName) {
+        if(this.props.item.getName() != this.form.name) {
             // Name is changing, check for clash.
-            if(this.dappfile.getItem("accounts", [{name: this.account.obj.name}])) {
+            if (this.props.item.getProject().getHiddenItem('accounts').getByName(this.form.name)) {
                 alert('Error: An account with that name already exists.');
                 cb(1);
                 return;
             }
         }
 
-        if(!this.dappfile.setItem("accounts", [{name: this.accountName}], this.account)) {
-            alert('Cannot save, project updated. You need to reload Superblocks Lab.');
-            cb(1);
-            return;
-        }
-
-        this.props.project.save(cb);
+        const oldname = this.props.item.getName();
+        this.props.item.reKey(this.form.name);
+        this.props.item.getProject().setAccountName(oldname, this.form.name, () => {
+            this.props.router.main.redraw(true);
+            cb(0);
+        });
     };
 
     onEnvChange = (e, value) => {
@@ -193,23 +194,9 @@ export default class AccountEditor extends Component {
             return;
         }
 
-        var oldName = this.accountName;
-        this.account.set("name", this.form.name);
-        const item = this.props.project.reKeyNonMenuItem('accounts', {_key: oldName}, "_key", this.form.name);
-        item.props.state.title = this.form.name;
-
         if(this._save((status)=>{
             if(status==0) {
-                this.accountName=this.form.name;
                 this.setState({accountNameDirty:false});
-                // Close tab, because the item has changed, this is the easiest way out.
-                // To keep the tab open we need to sync the tab item with the updated menu item.
-                //this.props.parent.close();
-            }
-            else {
-                // Restore state
-                this.account.set("name", this.accountName);
-                this.props.project.reKeyNonMenuItem('accounts', {_key: this.form.name}, "_key", oldName);
             }
         }));
     };
@@ -228,19 +215,13 @@ export default class AccountEditor extends Component {
             return;
         }
 
-        const currentAddress=this.account.get("address", this.form.env);
-        this.account.set("address", this.form.address, this.form.env);
-
-        if(this._save((status)=>{
-            if(status==0) {
-                this.accountName=this.form.name;
-                this.setState({accountAddressDirty:false});
-            }
-            else {
-                // Restore state
-                this.account.set("address", currentAddress, this.form.env);
-            }
-        }));
+        this.props.item.getProject().setAccountAddress(this.props.item.getName(), this.form.address, this.form.env, () => {
+            if(this._save((status)=>{
+                if(status==0) {
+                    this.setState({accountAddressDirty:false});
+                }
+            }));
+        });
     };
 
     onBalanceChange=(e)=>{
@@ -286,7 +267,7 @@ export default class AccountEditor extends Component {
         }
         else {
             // Check for external web3 provider
-            if (this.form.walletTyp == "external") {
+            if (this.form.walletType == "external") {
                 if (this.form.isLocked) {
                     return (
                         <p>
@@ -383,14 +364,14 @@ export default class AccountEditor extends Component {
                                         <div class={style.networks}>
                                             <ul>
                                                 {
-                                                    this.dappfile.environments().map((env) => {
+                                                    this.environments().map( (env) => {
                                                         const cls={};
-                                                        if (env.name == this.form.env) {
+                                                        if (env.getName() == this.form.env) {
                                                             cls[style.active] = true;
                                                         }
                                                         return (
                                                             <li className={classnames([cls])}>
-                                                                <div class={style.networkName} onClick={(e)=>{this.onEnvChange(e, env.name)}}>{env.name}</div>
+                                                                <div class={style.networkName} onClick={(e)=>{this.onEnvChange(e, env.getName())}}>{env.getName()}</div>
                                                             </li>);
                                                 })}
                                             </ul>

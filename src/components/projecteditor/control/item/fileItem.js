@@ -43,61 +43,198 @@ export default class FileItem extends Item {
         props.state = props.state || {};
         props.type = props.type || "file";
         props.lazy = (props.lazy === undefined) ? true : props.lazy;
-        props.toggable = (props.toggable === undefined) ? (props.type == "folder") : props.toggable;
+        props.state.toggable = (props.state.toggable === undefined) ? (props.type == "folder") : props.state.toggable;
         props.state.open = (props.state.open === undefined) ? true : props.state.open;
+        props.state.readonly = props.state.readonly===undefined ? true : props.state.readonly;
         super(props, router);
         if (props.type == "folder") {
             props.state.children = (props.state.children === undefined ? this._renderChildren : props.state.children);
         }
+        props.state.isSaved = true;
+        props.state.contents = "";
+        props.state.savedContents = "";
         props.render = props.render || this._renderFileTitle;
+
+        if (props.type == 'file') {
+            var icon = <IconFile />;
+            var type2 = "file";
+            var a = (props.state.file || "").match(".*[.](.+)$");
+            if(a) {
+                const suffix = a[1].toLowerCase();
+                switch (suffix) {
+                    case 'html':
+                        type2 = 'html';
+                        icon = <IconHtml />;
+                        break
+                    case 'css':
+                        type2 = 'css';
+                        icon = <IconCss />;
+                        break
+                    case 'js':
+                        type2 = 'js';
+                        icon = <IconJS />;
+                        break
+                    case 'md':
+                        type2 = 'md';
+                        icon = <IconMd />;
+                        break
+                    case 'sol':
+                        type2 = 'contract';
+                        icon = <IconContract />;
+                        break
+                }
+            }
+            props.type2 = props.type2 || type2;
+            props.icon = props.icon || icon;
+        }
     }
 
+    /**
+     * Return the file/dir name.
+     */
     getFile = () => {
         return this.props.state.file;
     };
 
-    getPath = () => {
-        return this.props.state.path;
-    };
-
+    /**
+     * Return the full path of the file/dir.
+     */
     getFullPath = () => {
-        return this.props.state.fullpath;
+        var s = (this.props.state.__parent ? this.props.state.__parent.getFullPath() : "") + "/" + this.props.state.file;
+        if (s.substr(0,2) == '//') {
+            s = s.substr(1);
+        }
+        return s;
     };
 
     /**
      * Load the contents of the file.
-     * @param cb: callback
-     * @param reload: force a reload of the data
-     * @param stealth: if set then do not count this
-     *
+     * @param reload: force reload
+     * @return Promise
      */
-    load = (cb) => {
-        var project = this.getProject();
-        project.loadFile(this.getFullPath(), (body) => {
-            cb(body);
+    load = (reload) => {
+        if (!this.isSaved() && !reload) {
+            return new Promise( (resolve, reject) => {
+                console.log("File not saved, cannot reload it without force flag.");
+                reject();
+            });
+        }
+
+        return new Promise( (resolve, reject) => {
+            const project = this.getProject();
+            project.loadFile(this.getFullPath(), (ret) => {
+                if (ret.status != 0 ) {
+                    reject();
+                }
+                else {
+                    this.props.state.savedContents = ret.contents;
+                    this.setContents(ret.contents);
+                    resolve();
+                }
+            });
         });
-        // TODO return Promise
     };
 
     /**
      * Save the contents of the file.
-     * @param cb: callback
-     * @param reload: force a reload of the data
-     * @param stealth: if set then do not count this
+     * @return: Promise
      *
      */
-    save = (body, cb) => {
-        var project = this.getProject();
-        project.saveFile(this.getFullPath(), body, cb);
+    save = () => {
+        return new Promise( (resolve, reject) => {
+            if (this.isDeleted()) {
+                reject();
+                return;
+            }
+            const project = this.getProject();
+            project.saveFile(this.getFullPath(), this.getContents(), (ret) => {
+                if (ret.status != 0 ) {
+                    reject();
+                }
+                else {
+                    this.props.state.savedContents = this.getContents();
+                    this.props.state.isSaved = true;
+                    resolve();
+                }
+            });
+        });
+    };
+
+    setContents = (contents) => {
+        this.props.state.contents = contents;
+        this.props.state.isSaved = (this.props.state.contents == this.props.state.savedContents);
+    };
+
+    getContents = () => {
+        return this.props.state.contents;
+    };
+
+    isSaved = () => {
+        return this.props.state.isSaved;
+    };
+
+    isReadOnly = () => {
+        return this.props.state.isReadOnly == true;
+    };
+
+    setReadOnly = (flag) => {
+        this.props.state.isReadOnly = flag;
     };
 
     /**
-     * Rename the file in storage.
+     * Move/Rename this file in storage.
      *
      */
-    rename = (newname, cb) => {
-        var project = this.getProject();
-        project.renameFile(this.getFullPath(), newname, cb);
+    mv = (newFullPath) => {
+        if (newFullPath[newFullPath.length - 1] == '/') {
+            // Cannot end with slash (nor be Lonesome Cowboy Slash).
+            return new Promise( (resolve, reject) => {
+                reject();
+            });
+        }
+        return new Promise( (resolve, reject) => {
+            const project = this.getProject();
+            project.moveFile(this.getFullPath(), newFullPath, (status) => {
+                if (status != 0 ) {
+                    reject(status);
+                }
+                else {
+                    // Update this item with new filename.
+                    // Move item and change parent.
+                    const a = newFullPath.match("^(.*)/([^/]+)$");
+                    const newPath = a[1];
+                    const filename = a[2];
+                    this.reKey(filename);
+                    this.props.state.file = filename;
+                    this.props.state.title = filename;
+
+                    // Disconnect item from cached children list in parent.
+                    const children = this.props.state.__parent.getChildren();  // This will already be loaded and cached, otherwise we wouldn't be here.
+                    for(let index=0; index < children.length; index++) {
+                        if (children[index].props.state.key == this.props.state.key) {
+                            children.splice(index);
+                            break;
+                        }
+                    }
+
+                    const project = this.getProject();
+                    const newPathArray = newPath.split('/');
+                    project._getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
+                        // Set new parent
+                        this.props.state.__parent = newParent;
+                        newParent.getChildren(true, () => {
+                            const children2 = newParent.getChildren();
+                            this._copyState(children2, [this]);
+                            resolve();
+                        });
+                    }).catch( () => {
+                        alert("Error: Unexpected error when moving file.");
+                        location.reload();
+                        return;
+                    });
+                }
+            });
+        });
     };
 
     /**
@@ -105,53 +242,130 @@ export default class FileItem extends Item {
      *
      */
     del = (cb) => {
-        var project = this.getProject();
+        const project = this.getProject();
         project.deleteFile(this.getFullPath(), newname, cb);
     };
 
     /**
      * Close the open file.
+     * This means reverting the buffer to it's last saved state.
      *
      */
     close = (cb) => {
-        var project = this.getProject();
-        project.closeFile(this.getFullPath(), newname, cb);
+        this.revert();
+    };
+
+    revert = () => {
+        this.setContents(this.props.state.savedContents);
+    };
+
+    setDeleted = () => {
+        this.props.state.isDeleted = true;
+    };
+
+    isDeleted = () => {
+        return this.props.state.isDeleted;
+    };
+
+    _clickNewFile = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if(this.getType() == "folder") {
+            const project = this.getProject();
+            const file = prompt("Enter new name of file or folder. If folder last character must be a slash (/).");
+            if(file) {
+                if(!file.match("(^[a-zA-Z0-9-_\.]+[/]?)$")) {
+                    alert("Illegal filename.");
+                    return false;
+                }
+                project.newFile(this.getFullPath(), file, (status) => {
+                    if (status == 0) {
+                        this.getChildren(true, () => {
+                            this.redrawMain(true);
+                        });
+                    }
+                    else {
+                        alert("Could not create file/folder.", status);
+                    }
+                });
+            }
+        }
+    };
+
+    _clickDeleteFile = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!confirm("Are you sure to delete " + this.getFullPath() + "?")) {
+            return false;
+        }
+        const project = this.getProject();
+        project.deleteFile(this.getFullPath(), (status) => {
+            if (status == 0) {
+                this.setDeleted();
+                this.props.state.__parent.getChildren(true, () => {
+                    this.redrawMain(true);
+                });
+            }
+            else {
+                alert("Could not delete file/folder.", status);
+            }
+        });
+    };
+
+    _clickRenameFile = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const project = this.getProject();
+        const newFile = prompt("Enter new name.", this.getFullPath());
+        if (newFile) {
+            //if (!newFile.match("(^[a-zA-Z0-9-_\.]+)$")) {
+                //alert("Illegal filename.");
+                //return false;
+            //}
+            const newFullPath = newFile;
+            this.mv(newFile).then( () => {
+                this.redrawMain(true);
+            }).catch( (err) => {
+                alert("Error: Could not move file.");
+                return;
+            });
+        }
     };
 
     _renderFileTitle = (level, index) => {
-        var projectItem=this.getProject();
         if (this.getType() == "file") {
-            return (<div class={style.projectContractsTitleContainer} onClick={(e)=>this._openItem(e, item)}>
+            return (<div class={style.projectContractsTitleContainer} onClick={this._openItem}>
                 <div class={style.title}>
-                    <a title={item.getTitle()} href="#">
-                        {item.getTitle()}
+                    <a title={this.getTitle()} href="#">
+                        {this.getTitle()}
                     </a>
                 </div>
-                <div class={style.buttons}>
-                    <a href="#" title="Rename file" onClick={(e)=>{this._clickRenameFile(e, item);}}>
+                {!this.isReadOnly() && <div class={style.buttons}>
+                    <a href="#" title="Rename file" onClick={this._clickRenameFile}>
                         <IconClone />
                     </a>
-                    <a href="#" title="Delete file" onClick={(e)=>{this._clickDeleteFile(e, item);}}>
+                    <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
                         <IconTrash />
                     </a>
-                </div>
+                </div>}
             </div>);
         }
         else if(this.getType() == "folder") {
-            return (<div class={style.projectContractsTitleContainer} onClick={(e)=>this._angleClicked(e, item)}>
-                <div class={style.title} title={item.getTitle()}>
-                    <a href="#">{item.getTitle()}</a>
+            return (<div class={style.projectContractsTitleContainer} onClick={this._angleClicked}>
+                <div class={style.title} title={this.getTitle()}>
+                    <a href="#">{this.getTitle()}</a>
                 </div>
                 <div class={style.buttons}>
-                    <a href="#" title="New..." onClick={(e)=>{this._clickNewFile(e, item);}}>
+                    <a href="#" title="New..." onClick={this._clickNewFile}>
                         <IconFile />
                     </a>
-                    {item.props.state.fullpath != "/" &&
+                    {this.getFullPath() != "/" &&
                     <div style="display: inline;">
-                        <a href="#" title="Rename directory" onClick={(e)=>{this._clickRenameFile(e, item);}}>
+                        <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
                             <IconClone />
                         </a>
-                        <a href="#" title="Delete directory" onClick={(e)=>{this._clickDeleteFile(e, item);}}>
+                        <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
                             <IconTrash />
                         </a>
                     </div>
@@ -162,18 +376,14 @@ export default class FileItem extends Item {
     };
 
     _renderChildren = (cb) => {
-        console.log("render children", this);
         if (this.getType() == 'folder') {
             const project = this.getProject();
-            const path = this.getFullPath();
-            project.listFiles(path, (status, list) => {
-                console.log(list);
+            project.listFiles(this.getFullPath(), (status, list) => {
                 if (status == 0) {
                     const children=[];
                     list.map( (file) => {
                         if (file.type == "d") {
-                            const fullpath = this.getFullPath() + file.name + '/';
-                            var render = this._renderFileTitle;
+                            var render;
                             //if (fullpath == "/app/") {
                                 //render = this._renderApplicationSectionTitle;
                             //}
@@ -182,88 +392,61 @@ export default class FileItem extends Item {
                             //}
                             children.push(new FileItem({
                                 type: "folder",
-                                key: fullpath,
                                 render: render,
                                 state: {
+                                    key: file.name,
                                     open: false,
                                     title: file.name,
                                     file: file.name,
-                                    path: path,
-                                    fullpath: fullpath,
+                                    __parent: this,
                                     project: this.getProject(),
                                 }
                             }, this.router));
                         }
                         else if(file.type=="f") {
-                            const fullpath = this.getFullPath() + file.name;
-                            var icon = <IconFile />;
-                            var type2 = "file";
-                            var state = {};
-                            var toggable = false;
-                            //var a = fullpath.match(".*[.](.+)$");
-                            //if(a) {
-                                //const suffix=a[1].toLowerCase();
-                                //switch (suffix) {
-                                    //case 'html':
-                                        //type2 = 'html';
-                                        //icon = <IconHtml />;
-                                        //break
-                                    //case 'css':
-                                        //type2 = 'css';
-                                        //icon = <IconCss />;
-                                        //break
-                                    //case 'js':
-                                        //type2 = 'js';
-                                        //icon = <IconJS />;
-                                        //break
-                                    //case 'md':
-                                        //type2 = 'md';
-                                        //icon = <IconMd />;
-                                        //break
-                                    //case 'sol':
-                                        //type2 = 'contract';
-                                        //icon = <IconContract />;
-                                        //toggable = true;
-                                        //state = {
-                                            //_tag: 0,
-                                            //open: false,
-                                            //children: [
-                                                //new FileItem({
-                                                    //type: "contract",
-                                                    //type2: "configure",
-                                                    //onClick: this.openContractItem,
-                                                    //icon: <IconConfigure />,
-                                                    //state: {
-                                                        //title: "Configure",
-                                                        //project: item.props.state.project,
-                                                        //file: file.name,
-                                                        //path: path,
-                                                        //fullpath: fullpath,
-                                                        //_tag: 1
-                                                    //}
-                                                //})
-                                            //]
-                                        //};
-                                        //break
-                                //}
-                            //}
-                            state.title = file.name;
-                            state.file = file.name;
-                            state.path = path;
-                            state.fullpath = fullpath;
-                            state.project = this.getProject();
-                            children.push(new FileItem({
-                                type: "file",
-                                type2: type2,
-                                key: fullpath,
-                                icon: icon,
-                                onClick: this._openItem,
-                                toggable: toggable,
-                                state: state
-                            }, this.router));
+                            var fileItem;
+                            if (this.getFullPath() == '/' && file.name == 'dappfile.json') {
+                                fileItem = this.getProject().getHiddenItem("dappfile");
+                                fileItem.props.onClick = this._openItem;
+                                fileItem.props.state.__parent = this;
+                                fileItem.props.state._tag = 0;
+                            }
+                            else {
+                                fileItem = new FileItem({
+                                    type: "file",
+                                    onClick: this._openItem,
+                                    state: {
+                                        key: file.name,
+                                        title: file.name,
+                                        file: file.name,
+                                        __parent: this,
+                                        project: this.getProject(),
+                                        _tag: 0
+                                    }
+                                }, this.router);
+                            }
+
+                            if (fileItem.getType2() == 'contract') {
+                                const contractChildren = [
+                                    new Item({
+                                        type: "contract",
+                                        type2: "configure",
+                                        onClick: this._openItem,
+                                        icon: <IconConfigure />,
+                                        state: {
+                                            title: "Configure",
+                                            project: this.getProject(),
+                                            __parent: fileItem,
+                                            _tag: 1
+                                        }
+                                    })
+                                ];
+                                fileItem.setChildren(contractChildren);
+                            }
+
+                            children.push(fileItem);
                         }
                     });
-                    console.log("children", children);
                     this._copyState(children, this.props.state._children || []);
                     this.props.state._children=children;
                     if (cb) cb();

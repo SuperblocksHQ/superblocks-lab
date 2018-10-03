@@ -64,9 +64,9 @@ export default class Control extends Component {
             classes: ["menutop"],
             render: this._menuTop,
             icon: null,
-            toggable: false,
             state: {
                 title: "Top menu",
+                toggable: false,
                 children: () => {
                     var children = [];
                     const project = this.getActiveProject();
@@ -79,13 +79,12 @@ export default class Control extends Component {
             menu: menu
         });
         props.router.register("control", this);
-        console.log(this.redraw, this.redrawMain);
     }
 
     componentDidMount() {
         this._loadProjects( (status) => {
             if (status == 0) {
-                //this._openLastProject();
+                this._openLastProject();
                 this._showWelcome();
             }
         });
@@ -132,9 +131,13 @@ export default class Control extends Component {
             else {
                 // Iterate over all loaded projects,
                 // see if already loaded, else add it to the list.
+                const projectsList = [];
                 lightProjects.map( (lightProject) => {
                     const exists = this._projectsList.filter( (project) => {
-                        return (project.getInode() == lightProject.inode);
+                        if (project.getInode() == lightProject.inode) {
+                            projectsList.push(project);
+                            return true;
+                        }
                     }).length > 0;
                     if (!exists) {
                         const project = new ProjectItem({
@@ -143,12 +146,13 @@ export default class Control extends Component {
                                 name: lightProject.name,
                                 title: lightProject.title
                             }
-                        }, this.props.router);
-                        this._projectsList.push(project);
+                        }, this.props.router, this.props.functions);
+                        projectsList.push(project);
                     }
                 });
+                this._projectsList = projectsList;
             }
-            cb(status);
+            if (cb) cb(status);
         });
     };
 
@@ -243,17 +247,19 @@ export default class Control extends Component {
      * Set a project as active in the explorer.
      */
     _setProjectActive = (project) => {
+        console.log("se project active", project);
         this.setState({activeProject: project});
         this.props.selectProject(project);
     };
 
+    /**
+     * Open the project config item for the active project.
+     */
     openProjectConfig = (item) => {
-        this.backend.loadProject(item.props.state.data.dir, (status, project)=>{
-            if(status==0) {
-                item.props.state.dappfilejson=project;
-                if(this.props.router.panes) this.props.router.panes.openItem(item);
-            }
-        });
+        const project = this.getActiveProject();
+        if (project) {
+            if(this.props.router.panes) this.props.router.panes.openItem(project);
+        }
     };
 
     /**
@@ -267,16 +273,9 @@ export default class Control extends Component {
             alert("Please save the current project first.");
             return;
         }
-        const cb = (status, code) => {
-            if(code == 0) {
-                this._loadProjects( (status) => {
-                    if (status == 0) {
-                        const project = this._projectsList[this._projectsList.length-1];
-                        if (project) {
-                            this.openProject(project);
-                        }
-                    }
-                });
+        const cb = (status) => {
+            if (status == 0) {
+                this._loadProjects();
             }
             else {
                 alert("A DApp with that name already exists, please choose a different name.");
@@ -309,199 +308,8 @@ export default class Control extends Component {
 
 
 
-    _newProject = (rawProject) => {
-        var children=[];
-        const nonMenuItems = {};
-        var state={
-            open: true,
-            status: 'idle',
-            data: {
-            },
-            children: children,
-            nonMenuItems: nonMenuItems,
-        };
-        var projectItem = new Item({
-            inode: rawProject.inode,
-            type: "project",
-            classes: ["project"],
-            render: this._renderProjectTitle,
-            icon: null,
-            toggable: false,
-            state: state,
-        });
-        projectItem.props._project=projectItem;
-        state.txlog = new TransactionLogData({functions:this.props.functions, project:projectItem});
-
-        // TODO: these operations will be replaced by general filesystem operations.
-        projectItem.save=(cb) => {this._saveProject(projectItem, cb)};
-        projectItem.delete=(cb) => {this._deleteProject(projectItem, cb)};
-        projectItem.loadFile=(file, cb, stealth) => {this._loadFile(project, file, cb, false, stealth)};
-        projectItem.saveFile=(file, cb) => {this._saveFile(project, file, cb)};
-        projectItem.closeFile=(file) => {this._closeFile(project, file)};
-        projectItem.deleteFile=(file, cb) => {this._deleteFile(project, file, cb)};
-        projectItem.renameFile=(path, file, cb) => {this._renameFile(project, path, file, cb)};
-        projectItem.filterNonMenuItem=(key, filter) => {return this._filterNonMenuItem(nonMenuItems, key, filter)};
-        projectItem.reKeyNonMenuItem=(key, filter, key2, value) => {return this._reKeyNonMenuItem(nonMenuItems, key, filter, key2, value)};
-
-        //var transactionlog=this._newItem({ classes: ["hidden"], title: "Transaction history", type: "transaction_log", icon: <IconCube />, onClick:this._openItem, _project: projectItem });
-        //children.push(transactionlog);
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////// Files Section //////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //var filesChildren = [];
-
-        //var contractsChildren=(item) => {
-            //// Upvalue: state.
-            //var contracts=state.data.dappfile.contracts();
-            //var children=[];
-            //var _children=item.props.state._children || [];
-            //for(var index=0;index<contracts.length;index++) {
-                //var contract=contracts[index];
-
-                //const contractChildChildren=[];
-                //var contractChild=this._newItem({title: contract.name+".sol", _index: index, _nrContracts: contracts.length, _key: contract.name+":"+contract.source, render: this._renderContractTitle, icon: <IconContract />, _project: projectItem, _contract: contract, type: "file", type2: "contract", file: contract.source, toggable: true, state:{_tag: 0, open: index == 0 ? true : false, children: contractChildChildren}});
-
-                //var contractConfig=this._newItem({title: "Configure", _contract: contract.name, _project: projectItem, type: "contract", type2: "configure", onClick: this._openItem, icon: <IconConfigure />, state: {_tag: 1}});
-                //var contractInteract=this._newItem({title: "Interact", _parentItem: contractChild, _contract: contract.name, _project: projectItem, type: "contract", type2: "interact", onClick: this._openItem, icon: <IconInteract /> , state: {_tag: 2}});
-                //var contractCompile=this._newItem({title: "Compile", _contract: contract.name, _project: projectItem, type: "contract", type2: "compile", onClick: this._openItem, icon: <IconCompile />, state: {_tag: 3}});
-                //var contractDeploy=this._newItem({title: "Deploy", _parentItem: contractChild, _contract: contract.name, _project: projectItem, type: "contract", type2: "deploy", onClick: this._openItem, icon: <IconDeploy />, state: {_tag: 4}});
-
-                //contractChildChildren.push(contractConfig);
-                //contractChildChildren.push(contractCompile);
-                //contractChildChildren.push(contractDeploy);
-                //contractChildChildren.push(contractInteract);
-                //children.push(contractChild);
-            //}
-            //// Add invisible items
-            //const invsMake=this._newItem({title: "Make", icon: <IconDeploy />, _project: projectItem, _key: "make", type: "make", type2: "contracts", _hidden: true});
-            //children.push(invsMake);
-            //this._copyState(children, _children);
-            //item.props.state._children=children;
-            //return children;
-        //};
-        //var contracts=this._newItem({ title: "contracts", type: "folder", type2: "contracts", _project: projectItem, render: this._renderContractsSectionTitle, toggable: true, iconCollapsed: <IconFolder />, icon: <IconFolderOpen />, state: { open: true, children: contractsChildren }});
-        //filesChildren.push(contracts);
-
-        //var constantsChildren=(item) => {
-            //// Upvalue: state.
-
-            //// Cached children, we want to keep the state.
-            //var _children=item.props.state._children || [];
-
-            //// Newly generated children, which we copy state over to.
-            //var children=[];
-            //var constants=state.data.dappfile.constants();
-            //for(var index=0;index<constants.length;index++) {
-                //var constant=constants[index];
-                //var childItem = this._newItem({title: constant.name, _key: constant.name, _index: index, _project: projectItem, _constant: constant.name, icon: <IconGem />, onClick:this._openItem, render: this._renderConstantTitle, type: "constant"});
-                //children.push(childItem);
-            //}
-            //this._copyState(children, _children);
-
-            //// Cache generated.
-            //item.props.state._children=children;
-            //return children;
-        //};
-
-        //var constants=this._newItem({classes: ["hidden"], title: "Constants", type: "folder", type2: "constants", _project: projectItem, render:this._renderConstantsTitle ,toggable: true, state:{open: false, children: constantsChildren}});
-        //filesChildren.push(constants);
-
-        //var app=this._newItem({title: "app", type: "app", type2: "folder", render: this._renderApplicationSectionTitle, _project: projectItem, toggable: true, iconCollapsed: <IconFolder />, icon: <IconFolderOpen />, state:{ open: true, children: [
-            //this._newItem({title: "app.html", _project: projectItem, type: "file", type2: 'html', _project: projectItem, file: "/app/app.html", onClick: this._openItem, icon: <IconHtml />, state: { _tag:0 }}),
-            //this._newItem({title: "app.js", _project: projectItem, type: "file", type2: 'js', _project: projectItem, file:'/app/app.js', onClick: this._openItem, icon: <IconJS />, state:{ _tag:3 }}),
-            //this._newItem({title: "app.css", _project: projectItem, type: "file", type2: 'css', _project: projectItem, file: '/app/app.css', onClick: this._openItem, icon: <IconCss />, state:{ _tag:2 }}),
-            //this._newItem({classes: ["hidden"], title: "Show Preview", _project: projectItem, type: "app", type2: "view", _project: projectItem, onClick: this._openItem, icon: <IconShowPreview />, state:{ _tag:1 }}),
-        //]}});
-        //filesChildren.push(app);
-
-        //let readme = this._newItem({title: "README.md", _project: projectItem, type: "file", type2: 'md', _project: projectItem, file: "/README.md", onClick: this._openItem, icon: <IconMd />, state: { }});
-        //filesChildren.push(readme);
-
-        //var files = this._newItem({ title: "Files", type: "app", type2: "folder", render: this._renderLearnSectionTitle, _project: projectItem, toggable: true, icon: null, state: { open: true, children: filesChildren }});
-        //children.push(files);
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////// Accounts Section (Hidden) //////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //nonMenuItems['accounts'] = accounts;
-
-        //var files = new FileItem({
-            //classes: ["files"],
-            //type: "folder",
-            //type2: "files",
-            //_lazy: true,
-            //_key: '/',
-            //toggable: true,
-            //render: this._renderFileTitle,
-            //state: {
-                //title: "Files",
-                //project: projectItem,
-                //open: true,
-                //fullpath: '/',
-                //children: this._renderFilesChildren
-            //}
-        //});
-        children.push(files);
-
-        if(!this._updateProject(projectItem, project)) return null;
-        return projectItem;
-    };
-
-
-    //_shortenSourceName = (path) => {
-        //return path.match("([^/]*)$")[0];
-    //};
-
-    // Find same Item and copy the state.
-
-    _updateProject = (item, project) => {
-        item.props.state.title = project.dir;
-        item.props.state.data.dir = project.dir;
-        item.props.state.data.dappfile = new Dappfile({dappfile:project.dappfile});
-        //this._testar(item.props.state.data.dappfile);
-        item.props.state.data.dappfile_hash = project.dappfile_hash;
-
-        // Set a default env.
-        if(item.props.state.data.dappfile.environments().length == 0) {
-            return false
-        }
-        var defenv = item.props.state.data.dappfile.environments()[0].name;
-        var found=false;
-        for(var index=0;index<item.props.state.data.dappfile.environments().length;index++) {
-            if(item.props.state.data.dappfile.environments()[index].name == item.props.state.data.env) {
-                found=true;
-                break;
-            }
-        }
-        if(!found) {
-            item.props.state.data.env = defenv;
-        }
-
-        // Refresh the file explorer.
-        const itemFiles=this._filterItem(item, {type2: "files"});
-        var crazyRecurser;
-        crazyRecurser= (item) =>{
-            const childrn=item.props.state._children || [];
-            for(var index=0;index<childrn.length;index++) {
-                crazyRecurser(childrn[index]);
-            }
-            if(childrn.length>0 || item.props.state.open) {
-                item.getChildren(true);
-            }
-        };
-        crazyRecurser(itemFiles);
-        return true;
-    };
-
-    //_newItem = (props) => {
-        //if(props.state == null) props.state={};
-        //if(props.state.id == null) props.state.id=this.props.functions.generateId();
-        //if(props.toggable && props.state.open == null) props.state.open=true;
-        //return new Item(props);
-    //};
 
     _openAppPreview = (e, item) => {
         e.stopPropagation();
@@ -617,62 +425,19 @@ export default class Control extends Component {
         if (cb) cb(1);
     };
 
-    //_downloadWorkspace = e => {
-        //e.preventDefault();
-        //this.backend.downloadWorkspace(e);
-    //}
-
-    //_clickWorkspace = (e) => {
-        //e.preventDefault();
-        //document.querySelector('#wsFileInput').dispatchEvent(new MouseEvent('click')); // ref does not work fhttps://github.com/developit/preact/issues/477
-    //}
-    //_uploadWorkspace = (e) => {
-        //e.preventDefault();
-        //var files = document.querySelector('#wsFileInput').files;
-        //var file = files[0];
-
-        //const uploadConfirm = e => {
-            //e.preventDefault()
-            //this.backend.uploadWorkspace(file, err => {
-                //if(err) {
-                    //alert(err);
-                    //this.props.functions.modal.close();
-                //}
-                //else this._reloadProjects(e, this.props.functions.modal.close)
-            //});
-        //}
-
-        //const body=(
-            //<div>
-                //<p>Warning, this will overwrite the entire workspace, press 'Import' to confirm.</p>
-                //<div style="margin-top: 10px;">
-                    //<a class="btn2" style="float: left; margin-right: 30px;" onClick={this.props.functions.modal.cancel}>Cancel</a>
-                    //<a class="btn2 filled" style="float: left;" onClick={uploadConfirm}>Import</a>
-                //</div>
-            //</div>
-        //);
-        //const modalData={
-            //title: "Import Saved Workspace",
-            //body: body,
-            //style: {"text-align":"center",height:"400px"},
-        //};
-        //const modal=(<Modal data={modalData} />);
-        //this.props.functions.modal.show({render: () => {return modal;}});
-
-        //e.target.value = '';
-    //}
-
     deleteProject = (project, cb) => {
         if(confirm("Are you sure you want to delete this project?")) {
             const delFn = (cb) => {
                 project.delete((status)=>{
-                    if(cb) cb(status);
+                    this._loadProjects( () => {
+                        if(cb) cb(status);
+                    });
                 });
             };
 
             if (this.getActiveProject() == project) {
                 this._closeProject((status) => {
-                    if(status==0) {
+                    if (status == 0) {
                         delFn((status) => {
                             // Open project if any
                             if(this._projectsList.length) {
@@ -690,7 +455,7 @@ export default class Control extends Component {
                 });
             }
             else {
-                delFn();
+                delFn(cb);
             }
         }
         else {
@@ -706,22 +471,6 @@ export default class Control extends Component {
         e.preventDefault();
         const item2=this._filterItem(item, {type: "make"});
         if(item2 && this.props.router.panes) this.props.router.panes.openItem(item2);
-    };
-
-    _reKeyNonMenuItem = (root, key, filter, key2, value) => {
-        const item = this._filterNonMenuItem(root, key, filter);
-        if (item) item.props[key2] = value;
-        return item;
-    };
-
-    _reKeyItem = (root, key, filter, key2, value) => {
-        const item = this._filterNonMenuItem(root, key, filter);
-        if (item) item.props[key2] = value;
-        return item;
-    };
-
-    _filterNonMenuItem = (root, key, filter) => {
-        return this._filterItem(root[key], filter);
     };
 
     _filterItem = (root, filter) => {
@@ -775,62 +524,6 @@ export default class Control extends Component {
             //TODO: this lookup is bad since it depends on the order of the menu items.
             if(this.props.router.panes) this.props.router.panes.openItem(project.props.state.children[0]);
         }
-    };
-
-    // Called from accounts dropdown
-    _clickNewAccount = (e, projectItem) => {
-        e.preventDefault();
-
-        var name;
-        for(var index=1;index<100000;index++) {
-            name="Account"+index;
-            if(projectItem.props.state.data.dappfile.accounts().filter((c)=>{
-                return c.name==name;
-            }).length==0) {
-                break;
-            }
-        }
-
-        var browserIndex=0;
-        var customIndex=0;
-        var dirty;
-        do {
-            dirty=false;
-            projectItem.props.state.data.dappfile.accounts().map((item)=>{
-                const account=projectItem.props.state.data.dappfile.getItem("accounts", [{name: item.name}]);
-                var index=parseInt(account.get("index", "browser"));
-                if(!isNaN(index) && index==browserIndex) {
-                    browserIndex=index+1;
-                    dirty=true;
-                }
-                var index=parseInt(account.get("index", "custom"));
-                if(!isNaN(index) && index==customIndex) {
-                    customIndex=index+1;
-                    dirty=true;
-                }
-            });
-        } while(dirty);
-
-        //const wallet=projectItem.props.state.data.dappfile.wallets()[0].name;
-        projectItem.props.state.data.dappfile.accounts().push({
-            name: name,
-            blockchain: "ethereum",
-            address: "0x0",
-        });
-        const account=projectItem.props.state.data.dappfile.getItem("accounts", [{name: name}]);
-        account.set("wallet", "development", "browser");
-        account.set("index", browserIndex, "browser");
-        account.set("wallet", "private", "custom");
-        account.set("index", browserIndex, "custom");
-        projectItem.props.state.data.dappfile.setItem("accounts", [{name: name}], account);
-
-        projectItem.save((status)=>{
-            if(status==0) {
-                const account = projectItem.filterNonMenuItem('accounts', {_key: name});
-                if(this.props.router.panes) this.props.router.panes.openItem(account);
-            }
-        });
-        this.redrawMain(true);
     };
 
     _clickNewContract = (e, projectItem) => {
@@ -911,229 +604,9 @@ export default class Control extends Component {
         });
     };
 
-    //_clickDownContract = (e, projectItem, contractIndex) => {
-        //e.preventDefault();
-        //e.stopPropagation();
-        //const c1 = projectItem.props.state.data.dappfile.contracts()[contractIndex];
-        //const c2 = projectItem.props.state.data.dappfile.contracts()[contractIndex+1];
-        //projectItem.props.state.data.dappfile.contracts()[contractIndex] = c2;
-        //projectItem.props.state.data.dappfile.contracts()[contractIndex+1] = c1;
-        //projectItem.save();
-        //this.redrawMain(true);
-    //};
-
-    //_clickUpContract = (e, projectItem, contractIndex) => {
-        //e.preventDefault();
-        //e.stopPropagation();
-        //const c1 = projectItem.props.state.data.dappfile.contracts()[contractIndex];
-        //const c2 = projectItem.props.state.data.dappfile.contracts()[contractIndex-1];
-        //projectItem.props.state.data.dappfile.contracts()[contractIndex] = c2;
-        //projectItem.props.state.data.dappfile.contracts()[contractIndex-1] = c1;
-        //projectItem.save();
-        //this.redrawMain(true);
-    //};
-
-    //_clickDeleteConstant = (e, projectItem, constantIndex) => {
-        //e.preventDefault();
-        //e.stopPropagation();
-        //projectItem.props.state.data.dappfile.constants().splice(constantIndex,1);
-        //projectItem.save();
-        //this.setState();
-    //};
-
     _clickEditAccount = (e, projectItem, accountIndex) => {
         const account = projectItem.filterNonMenuItem('accounts', {_index: accountIndex});
         this._openItem(e, account);
-    };
-
-    _clickDeleteAccount = (e, projectItem, accountIndex) => {
-        if(accountIndex==0) {
-            alert("You cannot delete the default account.");
-            return;
-        }
-        if(!confirm("Are you sure to delete account?")) return;
-        projectItem.props.state.data.dappfile.accounts().splice(accountIndex,1);
-        projectItem.save();
-        this.redrawMain(true);
-    };
-
-    //_renderAccountTitle = (level, index, item) => {
-        //var projectItem=item.props.state.project;
-        //var accountIndex=item.props.state.index;
-        //return (<div class={style.projectContractsTitleContainer} onClick={(e)=>this._openItem(e, item)}>
-            //<div>
-                //<a href="#">
-                    //{item.getTitle()}
-                //</a>
-            //</div>
-            //<div class={style.buttons}>
-                //<a href="#" title="Delete account" onClick={(e)=>{this._clickDeleteAccount(e, projectItem, accountIndex);}}>
-                    //<IconTrash />
-                //</a>
-            //</div>
-        //</div>);
-    //};
-
-    //_renderContractTitle = (level, index, item) => (
-        //<ItemContract
-            //item={item}
-            //openItem={this._openItem}
-            //clickUpContract={this._clickUpContract}
-            //clickDownContract={this._clickDownContract}
-            //clickDeleteContract={this._clickDeleteContract}
-        ///>
-    //);
-
-    _clickNewFile = (e, item) => {
-        e.preventDefault();
-        var projectItem=item.props.state.project;
-        if(item.props.type=="folder") {
-            const file = prompt("Enter new name of file or folder. If folder last character must be a slash (/).");
-            if(file) {
-                if(!file.match("(^[a-zA-Z0-9-_\.]+[/]?)$")) {
-                    alert("Illegal filename.");
-                    return false;
-                }
-                this.backend.newFile(projectItem.props.state.data.dir, item.props.state.path, file, (status) => {
-                    if(status==0) {
-                        this._reloadProjects();
-                    }
-                    else {
-                        alert("Could not create file/folder.");
-                    }
-                });
-            }
-        }
-    };
-
-    _clickDeleteFile = (e, item) => {
-        e.preventDefault();
-        var projectItem=item.props._project;
-        if(!confirm("Are you sure to delete " + item.props.state.fullpath + "?")) return false;
-        this.backend.deleteFile(projectItem.props.state.data.dir, item.props.state.fullpath, (status) => {
-            if(status==0) {
-                this._reloadProjects();
-            }
-            else {
-                alert("Could not delate file/folder.");
-            }
-        });
-    };
-
-    _clickRenameFile = (e, item) => {
-        e.preventDefault();
-        var projectItem=item.props.state.project;
-        const file = prompt("Enter new name.", item.props.state.file);
-        if(file) {
-            if(!file.match("(^[a-zA-Z0-9-_\.]+)$")) {
-                alert("Illegal filename.");
-                return false;
-            }
-            this.backend.renameFile(projectItem.props.state.data.dir, item.props.state.fullpath, file, (status) => {
-                if(status==0) {
-                    const oldFullpath = item.props.state.fullpath;
-                    const project = item.props.state.project;
-                    const fullpath = item.props.state.path + file + (item.props.type=="folder" ? "/":"");
-                    item.props.state.fullpath = fullpath;
-                    item.props.state.file = file;
-                    item.props.state.title = file;
-                    item.reKey(fullpath);
-                    console.log("renaming", fullpath, item, project._filecache);
-                    if(project._filecache && project._filecache[oldFullpath]) {
-                        console.log("move cache");
-                        project._filecache[fullpath] = project._filecache[oldFullpath];
-                        delete project._filecache[oldFullpath];
-                    }
-                    this._reloadProjects();
-                }
-                else {
-                    alert("Could not rename file/folder.");
-                }
-            });
-        }
-    };
-
-    _validateProject = (project) => {
-        // TODO: not complete
-        var valid=true;
-        if(! (project.dappfile.environments instanceof Array)) {
-            valid=false;
-        }
-
-        if(!valid) {
-            const name = project.dir || "<unknown>";
-            console.log("Invalid format of project " + name + ", ignoring.");
-            return false;
-        }
-
-        return true;
-    };
-
-    _xxxreloadProjects = (e, cb, redrawAll) => {
-        if(e) e.preventDefault();
-        this.backend.loadProjects((status, projects) => {
-            if(status!=0) {
-                alert('Could not load projects.');
-                return;
-            }
-
-            for(var index=0;index<projects.length;index++) {
-                var project=projects[index];
-                if(!this._validateProject(project)) {
-                    continue;
-                }
-                var found=false;
-                for(var index2=0;index2<this._projectsList.length;index2++) {
-                    var existingItem=this._projectsList[index2];
-                    if(project.inode == existingItem.props.inode) {
-                        // Update object, keep state.
-                        this._updateProject(existingItem, project);
-                        found=true;
-                        break;
-                    }
-                }
-                if(!found) {
-                    var newProject = this._newProject(project);
-                    if(newProject) {
-                        this._projectsList.push(newProject);
-                    }
-                }
-            }
-
-            for(var index2=0;index2<this._projectsList.length;index2++) {
-                var existingItem=this._projectsList[index2];
-                var found=false;
-                for(var index=0;index<projects.length;index++) {
-                    var project=projects[index];
-                    if(project.inode == existingItem.props.inode) {
-                        found=true;
-                        break;
-                    }
-                }
-                if(!found) {
-                    this._removeProject(existingItem);
-                }
-            }
-
-            if(cb) cb(0);
-            this.redrawMain(redrawAll);
-        });
-    };
-
-    _removeProject = (item) => {
-        item.props.state.status='removed';
-        const index=this._projectsList.indexOf(item);
-        if(index>-1) {
-            this._projectsList.splice(index,1);
-        }
-    };
-
-    _deleteProject = (projectItem, cb) => {
-        this.backend.deleteProject(projectItem.props.state.data.dir, ()=>{
-            this._reloadProjects(null, (status) => {
-                cb(status);
-            });
-        });
     };
 
     //_getProjectWindowCount=(projectItem)=> {

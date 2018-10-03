@@ -205,7 +205,12 @@ export default class Backend {
             setTimeout(()=>cb(3),1);
             return;
         }
-        if(path[0] != '/') {
+
+        if (path[path.length-1] != '/') {
+            path = path + '/';
+        }
+
+        if (path[0] != '/') {
             setTimeout(()=>cb(3),1);
             return;
         }
@@ -216,7 +221,7 @@ export default class Backend {
             var folder2=folder.children[parts[index]];
             if(!folder2) {
                 folder2={type:"d",name:parts[index],children:{}};
-                folder[parts[index]]=folder2;
+                folder.children[parts[index]]=folder2;
             }
             folder=folder2;
         }
@@ -235,10 +240,34 @@ export default class Backend {
     };
 
     /**
-     * Rename a file in a project.
+     * Move a file/folder within a project.
      *
      */
-    renameFile = (inode, path, file, cb) => {
+    moveFile = (inode, pathA, pathB, cb) => {
+        if (pathA[pathA.length - 1] == '/') {
+            pathA = pathA.substr(0, pathA.length - 1);
+        }
+        if (pathB[pathB.length - 1] == '/') {
+            pathB = pathB.substr(0, pathB.length - 1);
+        }
+        const a = pathA.match("^(.*)/([^/]+)$");
+        const b = pathB.match("^(.*)/([^/]+)$");
+
+        if (!a || !b) {
+            setTimeout(() => cb(2), 1);
+            return;
+        }
+
+        var partsA = a[1];
+        if (partsA[0] == '/') {
+            partsA = partsA.substr(1);
+        }
+
+        var partsB = b[1];
+        if (partsB[0] == '/') {
+            partsB = partsB.substr(1);
+        }
+
         const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
@@ -247,39 +276,65 @@ export default class Backend {
             return item.inode == inode;
         })[0];
 
-        if(!project) {
+        if (!project) {
             setTimeout(()=>cb(3),1);
             return;
         }
-        if(path[path.length-1]=="/") path=path.substring(0, path.length-1);
-        if(path[0] != '/') {
-            setTimeout(()=>cb(3),1);
-            return;
+
+        if (!project.files) project.files = {"/": {type: "d", children: {}}};
+
+        // Find the source folder
+        var parts = partsA.split("/");
+        if (parts.length == 1 && parts[0] == "" ) {
+            parts = [];
         }
-        if(!project.files) project.files={"/":{type:"d",children:{}}};
-        const parts=path.split("/");
-        var folder=project.files["/"];
-        for(var index=1;index<parts.length-1;index++) {
-            var folder2=folder.children[parts[index]];
-            if(!folder2) {
-                setTimeout(()=>cb(4),1);
+        console.log("parts", partsA, parts);
+        var sourceFolder = project.files["/"];
+        for (let index=0; index < parts.length; index++) {
+            let folder2 = sourceFolder.children[parts[index]];
+            if (!folder2) {
+                setTimeout(() => cb(4), 1);
                 return;
             }
-            folder=folder2;
+            sourceFolder = folder2;
         }
-        if(folder.children[file]) {
-            setTimeout(()=>cb(3),1);
+
+        console.log(sourceFolder);
+
+        if (!sourceFolder.children[a[2]]) {
+            setTimeout(() => cb(5), 1);
             return;
         }
-        const o=folder.children[parts[parts.length-1]];
-        if(!o) {
-            setTimeout(()=>cb(4),1);
+
+        // Find the target folder
+        var parts = partsB.split("/");
+        if (parts.length == 1 && parts[0] == "" ) {
+            parts = [];
+        }
+        var targetFolder = project.files["/"];
+        for (let index=0; index < parts.length; index++) {
+            let folder2 = targetFolder.children[parts[index]];
+            if (!folder2) {
+                folder2 = {type: "d", name: parts[index], children: {}};
+                targetFolder.children[parts[index]] = folder2;
+            }
+            targetFolder = folder2;
+        }
+
+        if (targetFolder.children[b[2]]) {
+            setTimeout(() => cb(6), 1);
             return;
         }
-        delete folder.children[parts[parts.length-1]];
-        folder.children[file]=o;
+
+        const o = sourceFolder.children[a[2]];
+        o.name = b[2];
+
+        delete sourceFolder.children[a[2]];
+
+        targetFolder.children[b[2]] = o;
+
         localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
-        setTimeout(()=>cb(0),1);
+        setTimeout(() => cb(0), 1);
     };
 
     /**
@@ -338,16 +393,22 @@ export default class Backend {
             return;
         }
 
-        if (!project.files) project.files={"/":{type:"d",children:{}}};
-        const parts=path.split("/");
-        var folder=project.files["/"];
-        for(var index=1;index<parts.length-1;index++) {
-            var folder2=folder.children[parts[index]];
-            if(!folder2) {
-                folder2={type:"d",name:parts[index],children:{}};
-                folder[parts[index]]=folder2;
+        if (path[path.length-1] != '/') {
+            path = path + '/';
+        }
+        if (path[0] == '/') {
+            path = path.substr(1);
+        }
+        if (!project.files) project.files = {"/": {type: "d", children: {}}};
+        const parts = path.split("/");
+        var folder = project.files["/"];
+        for(var index = 0;index < parts.length - 1; index++) {
+            var folder2 = folder.children[parts[index]];
+            if (!folder2) {
+                setTimeout(() => cb(2), 1);
+                return;
             }
-            folder=folder2;
+            folder = folder2;
         }
         const files=[];
         const dirs=[];
@@ -378,13 +439,14 @@ export default class Backend {
      *
      */
     deleteProject = (inode, cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
-        if(!data.projects) data.projects=[];
-        var projects=data.projects.filter((item)=>{
+        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        if (!data.projects) data.projects = [];
+
+        const projects = data.projects.filter( (item) => {
             return item.inode != inode;
         });
 
-        data.projects=projects;
+        data.projects = projects;
         localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
         cb();
     };
@@ -397,8 +459,8 @@ export default class Backend {
         const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
         const projects = [];
         (data.projects || []).map( (project) => {
-            const name = project.dir;
-            const title = (project.dappfile.project.info || {}).title;
+            const name = project.dir || "<unknown>";
+            const title = "<unknown>"; //(project.dappfile.project.info || {}).title;
             projects.push({
                 inode: project.inode,
                 name: name,
@@ -407,6 +469,22 @@ export default class Backend {
         });
         setTimeout(()=>cb(0, projects), 1);
     }
+
+    createProject = (files, cb) => {
+        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+
+        if (!data.projects) data.projects = [];
+
+        const inode = Math.floor(Math.random()*10000000);
+        // TODO: check if project with this inode already exists.
+        const project = {
+            inode: inode,
+            files: files
+        };
+        data.projects.push(project);
+        localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
+        setTimeout(() => cb(0), 1);
+    };
 
     //saveProject = (name, payload, cb, isNew, files) => {
         //const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
@@ -466,7 +544,7 @@ export default class Backend {
         }
         folder.children[parts[parts.length-1]]= {type:"f",contents:payload.contents};
         localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
-        setTimeout(()=>cb({status:0, hash:""}),1);
+        setTimeout(()=>cb({status:0}),1);
     };
 
     /**
@@ -503,8 +581,8 @@ export default class Backend {
             folder=folder2;
         }
         const file = folder.children[parts[parts.length-1]];
-        if(file) setTimeout(()=>cb({status:0, contents:file.contents || "", hash:""}),1);
-        else setTimeout(()=>cb({status:1, contents:"", hash:""}),1);
+        if(file) setTimeout(()=>cb({status:0, contents:file.contents || ""}),1);
+        else setTimeout(()=>cb({status:1}),1);
     };
 
     //downloadWorkspace = () => {

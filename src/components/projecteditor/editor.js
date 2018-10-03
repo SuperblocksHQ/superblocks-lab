@@ -22,19 +22,18 @@ import { IconSave, IconCompile, IconDeploy, IconConfigure, IconInteract } from '
 export default class Editor extends Component {
     constructor(props) {
         super(props);
-        this.id=props.id+"_editor";
-        this.props.parent.childComponent=this;
-        this.langmap={
-            js:"javascript",
-            sh:"shell",
-            bash:"shell",
-            md:"markdown",
+        this.id = props.id + "_editor";
+        this.props.parent.childComponent = this;
+        this.langmap = {
+            js: "javascript",
+            sh: "shell",
+            bash: "shell",
+            md: "markdown",
         };
         this.editorObj;
         this.monacoObj;
-        this.body={contents:"",state:-1};
-        this.language="";
-        var a=this.props.item.getFile().match(".*[.]([^.]+)$");
+        this.language = "";
+        const a = this.props.item.getFile().match(".*[.]([^.]+)$");
         if(a) {
             const suffix=a[1].toLowerCase();
             if(this.langmap[suffix]) {
@@ -44,6 +43,11 @@ export default class Editor extends Component {
                 this.language=suffix;
             }
         }
+        console.log(this.props.item);
+    }
+
+    componentWillReceiveProps() {
+        console.log("NEW PROPS");
     }
 
     componentDidMount() {
@@ -56,8 +60,8 @@ export default class Editor extends Component {
     };
 
     canClose = (cb) => {
-        if(this.body.state!=0) {
-            if(confirm("File is not saved, close anyways?")) {
+        if (!this.props.item.isSaved()) {
+            if(confirm("File is not saved, close anyway?")) {
                 this._finalize();
                 cb(0);
                 return
@@ -70,37 +74,33 @@ export default class Editor extends Component {
     };
 
     loadContents = () => {
-        this.props.item.load( (body) => {
-            console.log(body);
-            this.body=body;
-            this.body.state = 0;
+        this.props.item.load().then(() => {
             this.redraw();
+        }).catch(() => {
+            alert("Error: Could not load file.");
         });
     };
 
     getTitle = () => {
-        var prefix="";
-        if(this.body.state!=0) prefix = "*";
+        var prefix = "";
+        if (!this.props.item.isSaved()) prefix = "*";
         return prefix + this.props.item.getTitle();
     };
 
     save = (e) => {
         if(e) e.preventDefault();
-        this.props.item.save(this.body, (ret) => {
-            if(ret.status==0) {
-                this.body.state=0;
-                // Trigger other windows to refresh.
-                this.props.parent.props.parent.props.parent.redraw();
-            }
-            else if(ret.status==2) {
-            }
+        this.props.item.save().then(() => {
+            // Trigger other windows to refresh.
+            this.props.parent.props.parent.props.parent.redraw();
+        }).catch(() => {
+            alert("Error: Could not save file.");
         });
     };
 
     compile = (e) => {
         this.save(e);
         const subitem = this.props.item.getChildren().filter((elm) => {
-            return (elm.props.item.props.type2=="compile");
+            return (elm.getType2()=="compile");
 
         })[0];
         if(subitem) this.props.router.panes.openContractItem(subitem, this.props.parent.props.parent.props.id);
@@ -134,9 +134,10 @@ export default class Editor extends Component {
     };
 
     textChange = (value) => {
-        this.body.contents=value;
-        if(this.body.state!=1) {
-            this.body.state=1;
+        const wasSaved = this.props.item.isSaved();
+        this.props.item.setContents(value);
+        if (wasSaved != this.props.item.isSaved()) {
+            // Only redraw when saved state has changed.
             this.redraw();
         }
     };
@@ -165,7 +166,7 @@ export default class Editor extends Component {
 
     renderToolbar = () => {
         const stl={};
-        if(this.body.state!=0) stl['color']='#ee1010';
+        if (!this.props.item.isSaved()) stl['color']='#ee1010';
         return (
             <div class={style.toolbar} id={this.id+"_header"}>
                 <div class={style.buttons}>
@@ -198,7 +199,8 @@ export default class Editor extends Component {
 
     render() {
         const options = {
-            selectOnLineNumbers: true
+            selectOnLineNumbers: true,
+            readOnly: this.props.item.isReadOnly()
         };
         const toolbar=this.renderToolbar();
         const height=this.getHeight();
@@ -216,7 +218,7 @@ export default class Editor extends Component {
                 height={height}
                 language={this.language}
                 theme="vs-dark"
-                value={this.body.contents}
+                value={this.props.item.getContents()}
                 options={options}
                 onChange={(value)=>this.textChange(value)}
                 editorDidMount={(obj, monaco)=>this.editorDidMount(obj, monaco)}
