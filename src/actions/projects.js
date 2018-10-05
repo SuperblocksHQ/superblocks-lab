@@ -1,6 +1,6 @@
 export function selectProject(project) {
     return {
         type: 'SELECT_PROJECT',
-        data: project.getInode()
+        data: project ? project.getInode() : 0
     }
 }

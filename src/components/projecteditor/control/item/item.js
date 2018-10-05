@@ -212,6 +212,7 @@ export default class Item {
 
     _angleClicked = (e) => {
         e.preventDefault();
+        e.stopPropagation();
         this.props.state.open = !this.props.state.open;
         if(this.props.state.open && this.props.lazy) {
             this.getChildren(true, () => {

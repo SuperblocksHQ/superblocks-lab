@@ -187,7 +187,7 @@ export default class FileItem extends Item {
      */
     mv = (newFullPath) => {
         if (newFullPath[newFullPath.length - 1] == '/') {
-            // Cannot end with slash (nor be Lonesome Cowboy Slash).
+            // Cannot end with slash (nor be a (Lonesome) Cowboy Slash).
             return new Promise( (resolve, reject) => {
                 reject();
             });
@@ -218,14 +218,18 @@ export default class FileItem extends Item {
                         }
                     }
 
-                    if (this.notifyMoved) {
-                        this.notifyMoved(oldPath, () => { });
-                    }
                     const project = this.getProject();
                     const newPathArray = newPath.split('/');
                     project.getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
                         // Set new parent
                         this.props.state.__parent = newParent;
+
+                        // Update the dappfile
+                        if (this.notifyMoved) {
+                            this.notifyMoved(oldPath, () => { });
+                        }
+
+                        // Recache the children
                         newParent.getChildren(true, () => {
                             const children2 = newParent.getChildren();
                             this._copyState(children2, [this]);

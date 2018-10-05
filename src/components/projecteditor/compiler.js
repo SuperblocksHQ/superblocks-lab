@@ -139,16 +139,17 @@ export default class Compiler extends Component {
                 const metasrc=this._makeFileName(srcfilename, "meta");
                 const binsrc=this._makeFileName(srcfilename, "bin");
                 const hashsrc=this._makeFileName(srcfilename, "hash");
-                const delFiles=()=>{
+                const delFiles = () => {
                     this.callback(1);
-                    return;
-                    // TODO
-                    this.props.project.deleteFile(abisrc, ()=>{
-                        this.props.project.deleteFile(binsrc, ()=>{
-                            this.props.router.control._reloadProjects();
-                            this.callback(1);
-                        });
-                    });
+                    // Removed for now, if added back then all compile files should be deleted?
+                    //const project = this.props.item.getProject();
+
+                    //project.deleteFile(abisrc, () => {
+                        //project.deleteFile(binsrc, () => {
+                            //this.props.router.control.redrawMain(true);
+                            //this.callback(1);
+                        //});
+                    //});
                 };
 
                 this.props.functions.compiler.queue({input:JSON.stringify(input), files:files}, (data)=>{
@@ -262,11 +263,11 @@ export default class Compiler extends Component {
                         cb(status, bodies);
                     });
                 }).catch( () => {
-                    console.log("could not load file");
+                    console.log("could not load file", file);
                     cb(1)
                 });
             }).catch( () => {
-                console.log("could not find file");
+                console.log("could not find file", file);
                 cb(1)
             });
         });
