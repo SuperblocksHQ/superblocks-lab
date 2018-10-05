@@ -84,6 +84,18 @@ export default class Item {
         return this.props.state.name || "";
     };
 
+    setName = (name) => {
+        this.props.state.name = name;
+    };
+
+    /**
+     * Return the parent item, if any.
+     *
+     */
+    getParent = () => {
+        return this.props.state.__parent;
+    };
+
     /**
      * Set the children of this item.
      * Either an array or a function.
@@ -184,11 +196,11 @@ export default class Item {
     };
 
     redraw = () => {
-        this.router.control.redraw();
+        if (this.router) this.router.control.redraw();
     };
 
     redrawMain = (redrawAll) => {
-        this.router.main.redraw(redrawAll);
+        if (this.router) this.router.main.redraw(redrawAll);
     };
 
     _openItem = (e, item) => {

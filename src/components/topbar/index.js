@@ -108,7 +108,7 @@ class ProjectDialog extends Component {
             if (evt.target.readyState == FileReader.DONE) {
                 try {
                     const obj = JSON.parse(evt.target.result);
-                    if (!obj.dappfile || !obj.files) {
+                    if (!obj.files) {
                         alert('Error: Invalid project file');
                         return;
                     }
@@ -148,17 +148,37 @@ class ProjectDialog extends Component {
                 const modal=(<Modal data={modalData} />);
                 this.props.functions.modal.show({cancel:()=>{this.importProject4(project2);return true;}, render: () => {return modal;}});
             }
+            else if (status == 2) {
+                alert('Error: Could not import project.');
+            }
             else {
                 this.importProject4(project);
             }
         });
     };
 
-    importProject4 = (dappfileJSONObj) => {
-        var title;
-        var name = dappfileJSONObj.dir || "";
-        if(dappfileJSONObj.dappfile.project && dappfileJSONObj.dappfile.project.info) {
-            title = dappfileJSONObj.dappfile.project.info.title || "";
+    importProject4 = (obj) => {
+        var title="";
+        var name="";
+        var dappfile;
+
+        // Try to decode the `/dappfile.json`.
+        try {
+            dappfile = JSON.parse(obj.files['/'].children['dappfile.json'].contents);
+        }
+        catch (e) {
+            dappfile = {
+                project: {
+                    info: {}
+                }
+            };
+        }
+
+        try {
+            title = dappfile.project.info.title || "";
+            name = dappfile.project.info.name || "";
+        }
+        catch(e) {
         }
 
         do {
@@ -167,8 +187,8 @@ class ProjectDialog extends Component {
                 alert("Import cancelled.");
                 return;
             }
-            if(!name2.match(/^([a-zA-Z0-9-]+)$/) || name2.length > 20) {
-                alert('Illegal projectname. Only A-Za-z0-9 and dash (-) allowed. Max 20 characters.');
+            if(!name2.match(/^([a-zA-Z0-9-]+)$/) || name2.length > 30) {
+                alert('Illegal projectname. Only A-Za-z0-9 and dash (-) allowed. Max 30 characters.');
                 continue;
             }
             name = name2;
@@ -181,32 +201,25 @@ class ProjectDialog extends Component {
                 alert("Import cancelled.");
                 return;
             }
-            if (title2.match(/([\"\'\\]+)/) || title2.length > 20) {
-                alert('Illegal title. No special characters allowed. Max 20 characters.');
+            if (title2.match(/([\"\'\\]+)/) || title2.length > 40) {
+                alert('Illegal title. No special characters allowed. Max 40 characters.');
                 continue;
             }
             title = title2;
             break;
         } while (true);
 
-        const cb = (ret) => {
-            if(ret.status == 1) {
-                alert("A project by that name already exists, please choose a different name.");
-                this.importProject3(dappfileJSONObj);
-                return;
-            }
-            this.props.router.control._reloadProjects(null, (status) => {
-                const item=this.props.router.control._projectsList[this.props.router.control._projectsList.length-1];
-                if(item) {
-                    this.props.router.control.openProject(item);
-                }
-            });
-        };
+        try {
+            dappfile.project.info.name = name;
+            dappfile.project.info.title = title;
+            obj.files['/'].children['dappfile.json'].contents = JSON.stringify(dappfile);
+        }
+        catch (e) {
+            alert('Error: could not import project.');
+            return;
+        }
 
-        dappfileJSONObj.dappfile.project = {info:{title: title}};
-        dappfileJSONObj.dir = name;
-
-        this.props.router.control.backend.saveProject(name, {dappfile:dappfileJSONObj.dappfile}, cb, true, dappfileJSONObj.files);
+        this.props.router.control.importProject(obj.files);
     };
 
     deleteProject = (e, project) => {

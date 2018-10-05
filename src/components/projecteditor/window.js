@@ -94,7 +94,7 @@ export class Window {
         }
         else if(this.props.item.props.type=="contract" && this.props.item.props.type2=="configure") {
             return (
-                <ContractEditor id={this.subId} key={this.subId} project={this.props.item.props._project} contract={this.props.item.props._contract} parent={this} router={this.props.router} />
+                <ContractEditor id={this.subId} key={this.subId} item={this.props.item} parent={this} router={this.props.router} />
             );
         }
         else if(this.props.item.props.type=="project") {
@@ -175,11 +175,11 @@ export class Window {
         this.props.parent.closeWindow(this.getItemId());
     };
 
-    canClose = (cb) => {
+    canClose = (cb, silent) => {
         if(this.childComponent && this.childComponent.canClose) {
             this.childComponent.canClose((status)=>{
                 cb(status);
-            });
+            }, silent);
             return;
         }
         cb(0);

@@ -194,7 +194,8 @@ export default class FileItem extends Item {
         }
         return new Promise( (resolve, reject) => {
             const project = this.getProject();
-            project.moveFile(this.getFullPath(), newFullPath, (status) => {
+            const oldPath = this.getFullPath();
+            project.moveFile(oldPath, newFullPath, (status) => {
                 if (status != 0 ) {
                     reject(status);
                 }
@@ -204,7 +205,7 @@ export default class FileItem extends Item {
                     const a = newFullPath.match("^(.*)/([^/]+)$");
                     const newPath = a[1];
                     const filename = a[2];
-                    this.reKey(filename);
+                    this.reKey(filename, newFullPath);
                     this.props.state.file = filename;
                     this.props.state.title = filename;
 
@@ -217,6 +218,9 @@ export default class FileItem extends Item {
                         }
                     }
 
+                    if (this.notifyMoved) {
+                        this.notifyMoved(oldPath, () => { });
+                    }
                     const project = this.getProject();
                     const newPathArray = newPath.split('/');
                     project._getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
@@ -303,6 +307,8 @@ export default class FileItem extends Item {
         project.deleteFile(this.getFullPath(), (status) => {
             if (status == 0) {
                 this.setDeleted();
+                if (this.notifyDeleted) this.notifyDeleted();
+                if(this.router.panes) this.router.panes.closeItem(this, null, true);
                 this.props.state.__parent.getChildren(true, () => {
                     this.redrawMain(true);
                 });
@@ -319,10 +325,18 @@ export default class FileItem extends Item {
         const project = this.getProject();
         const newFile = prompt("Enter new name.", this.getFullPath());
         if (newFile) {
+            // TODO: we should only allow file name change here, not path move. Move we want drag and drop for.
+            // but until we have that we allow for giving paths here in the rename function.
             //if (!newFile.match("(^[a-zA-Z0-9-_\.]+)$")) {
                 //alert("Illegal filename.");
                 //return false;
             //}
+            const suffix1 = (this.getFullPath().match("^(.*)/[^/]+[.](.+)$") || [])[2] || "";
+            const suffix2 = (newFile.match("^(.*)/[^/]+[.](.+)$") || [])[2] || "";
+            if (suffix1.toLowerCase() == 'sol' && suffix1.toLowerCase() != suffix2.toLowerCase()) {
+                alert('A contract must have the .sol file ending.');
+                return;
+            }
             const newFullPath = newFile;
             this.mv(newFile).then( () => {
                 this.redrawMain(true);
@@ -407,14 +421,13 @@ export default class FileItem extends Item {
                             var fileItem;
                             if (this.getFullPath() == '/' && file.name == 'dappfile.json') {
                                 fileItem = this.getProject().getHiddenItem("dappfile");
-                                fileItem.props.onClick = this._openItem;
+                                fileItem.props.onClick = fileItem._openItem;
                                 fileItem.props.state.__parent = this;
                                 fileItem.props.state._tag = 0;
                             }
                             else {
                                 fileItem = new FileItem({
                                     type: "file",
-                                    onClick: this._openItem,
                                     state: {
                                         key: file.name,
                                         title: file.name,
@@ -424,26 +437,41 @@ export default class FileItem extends Item {
                                         _tag: 0
                                     }
                                 }, this.router);
+                                fileItem.props.onClick = fileItem._openItem;
                             }
 
                             if (fileItem.getType2() == 'contract') {
-                                const contractChildren = [
-                                    new Item({
-                                        type: "contract",
-                                        type2: "configure",
-                                        onClick: this._openItem,
-                                        icon: <IconConfigure />,
-                                        state: {
-                                            title: "Configure",
-                                            project: this.getProject(),
-                                            __parent: fileItem,
-                                            _tag: 1
-                                        }
-                                    })
-                                ];
-                                fileItem.setChildren(contractChildren);
-                            }
+                                // WOHA! This is a contract, let's get the ContractItem representation of it.
+                                var contractItem = this.getProject().getContract(fileItem.getFullPath());
+                                if (contractItem) {
+                                    // Replace file item with contract item.
+                                    fileItem = contractItem;
+                                    fileItem.props.onClick = fileItem._openItem;
+                                    fileItem.props.state.__parent = this;
+                                    fileItem.props.state._tag = 0;
+                                    fileItem.props.state.project = this.getProject();
+                                    fileItem.props.state.toggable = true;
 
+                                }
+
+                                // Set child items of the contract.
+                                const configureItem = new Item({
+                                    type: "contract",
+                                    type2: "configure",
+                                    icon: <IconConfigure />,
+                                    state: {
+                                        title: "Configure",
+                                        __parent: fileItem,
+                                        project: this.getProject(),
+                                        _tag: 1
+                                    }
+                                }, this.router);
+                                configureItem.props.onClick = configureItem._openItem;
+                                const contractChildren = [configureItem];
+                                //fileItem.setChildren(contractChildren);
+                                this._copyState(contractChildren, fileItem.props.state.children || []);
+                                fileItem.props.state.children=contractChildren;
+                            }
                             children.push(fileItem);
                         }
                     });

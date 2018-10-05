@@ -94,20 +94,18 @@ export class Pane {
         // Check if window can close
         const win=this.getWindow(winId);
         win.canClose((status)=>{
-            if(status==0) {
+            if (status == 0 || silent) {
                 this._closeWindow(winId);
-                if(silent!==true) {
-                    if(this.windows.length>0) {
-                        this.focusWindow(this.windows[0].getItemId());
-                    }
-                    else {
-                        this.props.parent.closePane(this.id);
-                    }
-                    this.props.parent.redraw();
+                if(this.windows.length>0) {
+                    this.focusWindow(this.windows[0].getItemId());
                 }
+                else {
+                    this.props.parent.closePane(this.id);
+                }
+                this.props.parent.redraw();
             }
             if(cb) cb(status);
-        });
+        }, silent);
     };
 
     _closeWindow = (winId) => {

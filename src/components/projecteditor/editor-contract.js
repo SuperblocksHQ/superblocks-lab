@@ -34,7 +34,7 @@ class ConstructorArgument extends Component {
     };
 
     render() {
-        const { argument, accounts, contractsBefore, index, onOptionSelected, onRemoveArgumentClicked } = this.props;
+        const { argument, accounts, otherContracts, index, onOptionSelected, onRemoveArgumentClicked, setDirty } = this.props;
         var type = "value";
         var value;
 
@@ -46,27 +46,27 @@ class ConstructorArgument extends Component {
 
             if (options.indexOf(argument[type]) == -1) {
                 // Chosen value does not exist
-                this.isDirty = true;
+                setDirty();
                 argument[type] = options[0];
             }
             value = this.getSelect(argument[type], options, (e) => {
-                this.isDirty = true;
+                setDirty();
                 argument[type] = e.target.value;
             });
         }
         else if (argument.contract != null) {
             type = "contract";
-            const options = contractsBefore;
+            const options = otherContracts;
             argument[type] = argument[type] || options[0];
 
             if (options.indexOf(argument[type]) == -1) {
                 // Chosen value does not exist
-                this.isDirty = true;
+                setDirty();
                 argument[type] = options[0];
             }
 
             value = this.getSelect(argument[type], options, (e) => {
-                this.isDirty = true;
+                setDirty();
                 argument[type] = e.target.value;
             });
         }
@@ -74,14 +74,14 @@ class ConstructorArgument extends Component {
             value = (
                 <div class={classNames(["superInputDark", style.valueContainer])}>
                     <input value={argument[type]} onChange={(e) => {
-                        this.isDirty=true;
+                        setDirty();
                         argument[type]=e.target.value;
                     }}/>
                 </div>
             );
         }
         const select = this.getSelect(type, ["account","contract","value"], (e) => {
-            this.isDirty = true;
+            setDirty();
             delete argument[type];
             argument[e.target.value] = "";
             onOptionSelected();
@@ -101,10 +101,11 @@ class ConstructorArgument extends Component {
 ConstructorArgument.propTypes = {
     argument: PropTypes.object.isRequired,
     accounts: PropTypes.array.isRequired,
-    contractsBefore: PropTypes.array.isRequired,
+    otherContracts: PropTypes.array.isRequired,
     index: PropTypes.number.isRequired,
     onOptionSelected: PropTypes.func.isRequired,
-    onRemoveArgumentClicked: PropTypes.func.isRequired
+    onRemoveArgumentClicked: PropTypes.func.isRequired,
+    setDirty: PropTypes.func.isRequired
 }
 
 export default class ContractEditor extends Component {
@@ -112,20 +113,23 @@ export default class ContractEditor extends Component {
         super(props);
         this.id=props.id+"_editor";
         this.props.parent.childComponent=this;
-        this.dappfile = this.props.project.props.state.data.dappfile;
-        this.contract = this.dappfile.getItem("contracts", [{name: props.contract}]);
-        this.contract.obj.args = this.contract.obj.args || [];
-        this.contract.obj.network = this.contract.obj.network || "browser";
-        this._originalsourcepath=this.contract.get("source");
+        this.setState({
+            isDirty: false
+        });
+        this._updateProps();
     }
 
     componentWillReceiveProps(props) {
-        this.dappfile = props.project.props.state.data.dappfile;
+        this._updateProps();
     }
 
-    componentDidMount() {
-        this.redraw();
-    }
+    _updateProps = () => {
+        if (!this.state.isDirty) {
+            // Only update internal props if we are clean.
+            this.state.name = this.props.item.getParent().getName() || "";  // Get the name of the ContractItem.
+            this.state.args = this.props.item.getParent().getArgs() || [];  // Get the args of the ContractItem.
+        }
+    };
 
     redraw = () => {
         this.setState();
@@ -134,8 +138,8 @@ export default class ContractEditor extends Component {
     focus = (rePerform) => {
     };
 
-    canClose = (cb) => {
-        if (this.isDirty) {
+    canClose = (cb, silent) => {
+        if (this.state.isDirty && !silent) {
             const flag = confirm("There is unsaved data. Do you want to close tab and loose the changes?");
             cb(flag ? 0 : 1);
             return;
@@ -145,97 +149,70 @@ export default class ContractEditor extends Component {
 
     save = (e) => {
         e.preventDefault();
-        if((this.contract.obj.name||"").length==0||(this.contract.obj.source||"").length==0) {
-            alert('Error: Missing fields.');
+
+        if (this.state.name.length == 0) {
+            alert('Error: Missing name.');
             return;
         }
-        if(!this.contract.obj.name.match(/^([a-zA-Z0-9-_]+)$/) || this.contract.obj.name.length > 16) {
-            alert('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 16 characters.');
+
+        if (!this.state.name.match(/^([a-zA-Z0-9-_]+)$/)) {
+            alert('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed..');
             return;
         }
-        for(var index=0;index<this.contract.obj.args.length;index++) {
-            const arg=this.contract.obj.args[index];
+
+        // Check all arguments so that they are valid.
+        for (let index = 0;index < this.state.args.length; index++) {
+            const arg = this.state.args[index];
             if(arg instanceof Object) {
-                if((arg.value || arg.value==="") || arg.account) {
+                if ((arg.value || arg.value === "") || arg.account) {
+                    // All good
                     continue;
                 }
                 else if(arg.contract) {
-                    if(this.getContractsBefore().indexOf(arg.contract)==-1) {
-                        alert('Error: Contract arguments are not valid, contract "'+arg.contract+'" must be declared before this contract for it to be able to reference its address in its constructor.');
+                    // Check so that the contract actually exists.
+                    if (this.getOtherContracts().indexOf(arg.contract) == -1) {
+                        alert('Error: Contract arguments are not valid, missing: "'+arg.contract+'".');
                         return;
                     }
                     continue;
                 }
             }
-            alert('Error: Arguments are not valid.');
+            alert('Error: Constructor arguments are not valid.');
             return;
         }
-        const finalize=()=>{
-            if(!this.dappfile.setItem("contracts", [{name: this.props.contract}], this.contract)) {
-                alert('Dappfile.yaml updated. You need to reload projects before saving.');
-                return;
-            }
-            this.props.project.save((status)=>{
-                if(status==0) {
-                    this.isDirty=false;
-                    this.props.parent.close();
-                    this.props.router.control._reloadProjects();
-                }
-            });
-        };
-        // TODO verify object validity?
-        if (this.props.contract != this.contract.get('name')) {
-            const contract2 = this.dappfile.getItem("contracts", [{name:this.contract.get("name")}]);
-            if (contract2) {
-                alert("A contract by this name already exists, choose a different name, please.");
-                return;
-            }
-            // Check if any affected windows are open.
-            this.props.router.control._closeAnyContractItemsOpen(this.props.contract, false, (status) => {
-                if (status != 0) {
-                    alert("Please close any editor, compile or deploy window which is open for this contract, then try again to rename it.");
-                    return;
-                }
-                // Rename the source file too.
-                const file=this.contract.get('source').match(".*/([^/]+$)")[1];
-                this.props.project.renameFile(this._originalsourcepath, file, (status) => {
-                    if (status == 4) {
-                        // File doesn't exist (yet).
-                        // Fall through
-                    }
-                    else if (status > 0) {
-                        alert("Error: Could not rename contract source file. Please close the tab containing the contract's source code and try again.");
-                        return;
-                    }
-                    else {
-                        alert("Warning: You must now manually rename the contract and the constructor in the source file to match the new file name, if the contract is used as argument to any other contract that needs to be updated and finally the app.js content will need to be adjusted for the new contract name.");
-                    }
-                    finalize();
+
+        // Update dappfile, reset dirty flag and redraw to have everything synked.
+        //
+        this.props.item.getParent().setName(this.state.name);
+        this.props.item.getParent().setArgs(this.state.args);
+        this.props.item.getProject().setContractName(this.props.item.getParent().getSource(), this.state.name, () => {
+            this.props.item.getProject().setContractArgs(this.props.item.getParent().getSource(), this.state.args, () => {
+                this.setState({
+                    isDirty: false
                 });
+                this.props.router.control.redrawMain();  // It's important we redraw main so that the file items get updated from the dappfile.
             });
-        }
-        else {
-            finalize();
-        }
-    };
+        });
+   };
 
     onChange = (e, key) => {
-        var value=e.target.value;
+        const value = e.target.value;
         if (key == "name") {
-            this.contract.set("source", "/contracts/"+value+".sol");
+            this.state.name = value;
+            this.setState({
+                isDirty: true
+            });
         }
-        this.contract.set(key, value);
-        this.isDirty = true;
-        this.setState();
     };
 
-    getContractsBefore = () => {
-        const contracts=[];
-        const list=this.props.project.props.state.data.dappfile.contracts();
-        for(var index=0;index<list.length;index++) {
-            const contract=list[index];
-            if(contract.name==this.props.contract) break;
-            contracts.push(contract.name);
+    getOtherContracts = () => {
+        // Get all contracts registered in the dappfile.
+        const list = this.props.item.getProject().getHiddenItem('contracts').getChildren();
+        const contracts = [];
+        for (var index = 0; index < list.length; index++) {
+            const contract = list[index];
+            if (contract.getName() == this.props.item.getParent().getName()) continue;
+            contracts.push(contract.getSource());
         }
         return contracts;
     };
@@ -243,15 +220,16 @@ export default class ContractEditor extends Component {
     renderArgs = () => {
         return (
             <div>
-                { this.contract.obj.args.map((arg, index) => (
+                { this.state.args.map((arg, index) => (
                     <div class={style.argumentContainer}>
                         <ConstructorArgument
                             index={index}
                             argument={arg}
                             accounts={this.getAccounts()}
-                            contractsBefore={this.getContractsBefore()}
+                            otherContracts={this.getOtherContracts()}
                             onOptionSelected={this.redraw}
                             onRemoveArgumentClicked={this.removeArgument}
+                            setDirty={() => {this.setState({isDirty: true})}}
                         /> , <br/>
                     </div>
                     ))
@@ -261,8 +239,8 @@ export default class ContractEditor extends Component {
     };
 
     getAccounts = () => {
-        const ret=[];
-        this.dappfile.accounts().map((account) => {
+        const ret = [];
+        this.props.item.getProject().getHiddenItem('accounts').getChildren().map((account) => {
             ret.push(account)
         })
         return ret;
@@ -270,28 +248,28 @@ export default class ContractEditor extends Component {
 
     addArgument = (e) => {
         e.preventDefault();
-        this.contract.obj.args.push({ value: "" })
-        this.setState();
+        this.state.args.push({ value: "" });
+        this.redraw();
     };
 
     removeArgument = (e, index) => {
         e.preventDefault();
         if (index > -1) {
-            this.contract.obj.args.splice(index, 1);
-            this.setState();
+            this.state.args.splice(index, 1);
+            this.redraw();
         }
     };
 
     render() {
-        if (!this.contract) {
-            return (<div>Could not find {this.props.contract} in Dappfile.yaml</div>);
+        if (!this.props.item) {
+            return (<div>Could not find contrat in dappfile.json</div>);
         }
-        const args=this.renderArgs();
+        const args = this.renderArgs();
         return (<div id={this.id} class={style.main}>
             <div class="scrollable-y" id={this.id+"_scrollable"}>
                 <div class={style.inner}>
                     <h1 class={style.title}>
-                        Edit Contract {this.props.contract}
+                        Edit Contract {this.props.item.getParent().getSource()}
                     </h1>
                     <div class={style.form}>
                         <form action="">
@@ -302,7 +280,7 @@ export default class ContractEditor extends Component {
                                         id="name"
                                         type="text"
                                         onKeyUp={(e)=>{this.onChange(e, 'name')}}
-                                        value={this.contract.get("name")}
+                                        value={this.state.name}
                                         onChange={(e)=>{this.onChange(e, 'name')}}
                                         />
                                 </div>
@@ -315,12 +293,12 @@ export default class ContractEditor extends Component {
                                     <br/>
                                     <b>IMPORTANT:</b> The number of arguments must match the number of arguments on the contract constructor.</p>
                                 <div class={style.argumentsContainer}>
-                                    <p><b>No. args: </b>{this.contract.obj.args.length}</p>
+                                    <p><b>No. args: </b>{this.state.args.length}</p>
                                     <div class={style.arguments}>
                                         <div>
-                                            <b>{this.contract.obj.name} (</b>
+                                            <b>{this.state.name} (</b>
                                             {
-                                                this.contract.obj.args.length ? args : null
+                                                this.state.args.length ? args : null
                                             }
                                             <button class={classNames(["btnNoBg", style.iconAdd])} onClick={this.addArgument}>
                                                 <IconAdd />
@@ -331,7 +309,7 @@ export default class ContractEditor extends Component {
                                 </div>
                             </div>
                             <div>
-                                <button href="#" class="btn2" onClick={this.save}>Save</button>
+                                <button href="#" class="btn2" disabled={!this.state.isDirty} onClick={this.save}>Save</button>
                             </div>
                         </form>
                     </div>

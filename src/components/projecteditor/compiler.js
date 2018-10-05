@@ -37,10 +37,6 @@ export default class Compiler extends Component {
         this.dappfile = props.project.props.state.data.dappfile;
     }
 
-    canClose = (cb) => {
-        cb(0);
-    };
-
     focus = (rePerform) => {
         if(rePerform) {
             if(!this.isRunning) {

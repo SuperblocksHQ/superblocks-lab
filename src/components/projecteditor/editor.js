@@ -59,8 +59,8 @@ export default class Editor extends Component {
         this.props.item.close();
     };
 
-    canClose = (cb) => {
-        if (!this.props.item.isSaved()) {
+    canClose = (cb, silent) => {
+        if (!this.props.item.isSaved() && !silent) {
             if(confirm("File is not saved, close anyway?")) {
                 this._finalize();
                 cb(0);
@@ -98,34 +98,37 @@ export default class Editor extends Component {
     };
 
     compile = (e) => {
+        e.preventDefault();
         this.save(e);
         const subitem = this.props.item.getChildren().filter((elm) => {
-            return (elm.getType2()=="compile");
+            return (elm.getType2() == "compile");
 
         })[0];
-        if(subitem) this.props.router.panes.openContractItem(subitem, this.props.parent.props.parent.props.id);
+        if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
     };
 
     deploy = (e) => {
         e.preventDefault();
+        this.save(e);
         const subitem = this.props.item.getChildren().filter((elm) => {
-            return (elm.props.item.props.type2=="deploy");
+            return (elm.getType2() == "deploy");
 
         })[0];
-        if(subitem) this.props.router.panes.openContractItem(subitem, this.props.parent.props.parent.props.id);
+        if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
     };
 
     configure = (e) => {
         e.preventDefault();
         const subitem = this.props.item.getChildren().filter((elm) => {
-            return (elm.props.item.props.type2=="configure");
+            return (elm.getType2() == "configure");
 
         })[0];
-        if(subitem) this.props.router.control.openContractItem(null, subitem, this.props.parent.props.parent.props.id);
+        if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id);
     };
 
     interact = (e) => {
         e.preventDefault();
+        this.save(e);
         const subitem = this.props.item.getChildren().filter((elm) => {
             return (elm.props.item.props.type2=="interact");
 

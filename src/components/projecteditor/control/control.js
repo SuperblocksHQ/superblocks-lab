@@ -247,7 +247,6 @@ export default class Control extends Component {
      * Set a project as active in the explorer.
      */
     _setProjectActive = (project) => {
-        console.log("se project active", project);
         this.setState({activeProject: project});
         this.props.selectProject(project);
     };
@@ -343,7 +342,6 @@ export default class Control extends Component {
         e.preventDefault();
         e.stopPropagation();
 
-        console.log("open", item);
         if(this.props.router.panes) this.props.router.panes.openItem(item);
     };
 
@@ -423,6 +421,27 @@ export default class Control extends Component {
             return;
         }
         if (cb) cb(1);
+    };
+
+    importProject = (files) => {
+
+        const cb = (status) => {
+            if (status == 0) {
+                this._loadProjects( () => {
+                    this._closeProject((status) => {
+                        if (status == 0) {
+                            // Open last project
+                            this.openProject(this._projectsList[this._projectsList.length-1]);
+                        }
+                    });
+                });
+            }
+            else {
+                alert('Error: could not import project.');
+            }
+        };
+
+        this.props.router.control.backend.createProject(files, cb);
     };
 
     deleteProject = (project, cb) => {

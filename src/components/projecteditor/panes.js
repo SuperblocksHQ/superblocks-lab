@@ -55,9 +55,9 @@ export default class Panes extends Component {
         pane.focusWindow(winId, rePerform, cb);
     };
 
-    closeWindow = (paneId, winId, cb) => {
+    closeWindow = (paneId, winId, cb, silent) => {
         var {pane}=this.getPane(paneId);
-        pane.closeWindow(winId, cb);
+        pane.closeWindow(winId, cb, silent);
     };
 
     removePane = (id) => {
@@ -135,6 +135,14 @@ export default class Panes extends Component {
         }
         this.setState();
         return true;
+    };
+
+    closeItem = (item, cb, silent) => {
+        // Check so item is already opened.
+        var {pane, winId} = this.getWindowByItem(item);
+        if(pane && winId) {
+            this.closeWindow(pane.id, winId, cb, silent);
+        }
     };
 
     tabRightClicked = (e, id) => {

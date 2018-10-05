@@ -19,6 +19,8 @@ import FileItem from './fileItem';
 import DappfileItem from './dappfileItem';
 import AccountsItem from './accountsItem';
 import AccountItem from './accountItem';
+import ContractsItem from './contractsItem';
+import ContractItem from './contractItem';
 import WalletsItem from './walletsItem';
 import WalletItem from './walletItem';
 import EnvironmentsItem from './environmentsItem';
@@ -85,6 +87,39 @@ export default class ProjectItem extends Item {
         return chosen;
     };
 
+    /**
+     * Get the ContractItem by source,
+     * create it if not existing.
+     *
+     */
+    getContract = (source) => {
+        const contractsItem = this.getHiddenItem("contracts");
+        var contractItem = contractsItem.getBySource(source);
+        if (!contractItem) {
+            // Let's create this item
+            const a = source.match("^(.*)/([^/]+)([.][Ss][Oo][Ll])$");
+            if (a) {
+                const name = a[2];
+                const file = name + a[3];
+                const args = [];
+                contractItem = new ContractItem({
+                    state: {
+                        key: file,
+                        source: source,
+                        file: file,
+                        title: file,
+                        name: name,
+                        args: args,
+                        project: this
+                    }
+                }, this.router);
+                // Update dappfile.
+                this.addContract(name, source, args)
+            }
+        }
+        return contractItem;
+    };
+
     getEndpoint = (network) => {
         const endpoint=(this.functions.networks.endpoints[network] || {}).endpoint;
         return endpoint;
@@ -129,6 +164,9 @@ export default class ProjectItem extends Item {
             const walletsItem = this._getWalletsItem();
             this.setHiddenItem('wallets', walletsItem);
 
+            const contractsItem = this._getContractsItem();
+            this.setHiddenItem('contracts', contractsItem);
+
             // Traverase the file structure to get `/dappfile.json`, this will prepare the file tree
             // so that the file `/dappfile.json` will get represented by the DappfileItem item created prior.
             this._getItemByPath(["", "dappfile.json"], this).then( (item) => {
@@ -149,7 +187,7 @@ export default class ProjectItem extends Item {
 
         // Create the Dappfile item directly, so we make sure that the dappfile.json does exist.
         dappfileItem.load().then( (ret) => {
-            // Save it as a hidden item to be used later.
+            // Save it as a hidden item to be used later as a visible item.
             this.setHiddenItem('dappfile', dappfileItem);
             finalize();
         }).catch( (err) => {
@@ -258,6 +296,50 @@ export default class ProjectItem extends Item {
         });
 
         return environmentsItem;
+    };
+
+    /**
+     * Create and return the ContractsItem.
+     */
+    _getContractsItem = () => {
+        var contractsItem;
+        const contractsChildren=() => {
+
+            // Newly generated children, which we copy state over to.
+            const children = [];
+            const contracts = this._getDappfile().contracts();
+            for (let index = 0; index < contracts.length; index++) {
+                var contract = contracts[index];
+                const file = contract.source.match("^(.*)/([^/]+)$")[2];
+                var childItem = new ContractItem({
+                    state: {
+                        key: file,
+                        source: contract.source,
+                        file: file,
+                        title: file,
+                        name: contract.name,
+                        args: contract.args,
+                        project: this
+                    }
+                }, this.router);
+                children.push(childItem);
+            }
+            // Copy over the state from cached children to new children, so they appear to be the same (but the objects are new).
+            contractsItem._copyState(children, contractsItem.props.state._children || []);
+
+            // Save cache generated.
+            contractsItem.props.state._children = children;
+            return children;
+        };
+
+        contractsItem = new ContractsItem({
+            state: {
+                project: this,
+                children: contractsChildren
+            }
+        });
+
+        return contractsItem;
     };
 
     /**
@@ -482,5 +564,100 @@ export default class ProjectItem extends Item {
             if (cb) cb (1);
         });
     };
+
+    /**
+     * Add a new contract to the dappfile.
+     */
+    addContract = (name, source, args, cb) => {
+        const dappfile = this._getDappfile();
+
+        dappfile.contracts().push({
+            source: source,
+            name: name,
+            args: args
+        });
+
+        this.saveDappfile().then( () => {
+            if (cb) cb (0);
+        }).catch( () => {
+            alert('Could not save dappfile.');
+            if (cb) cb (1);
+        });
+    };
+
+    /**
+     * Delete a contract from the dappfile.
+     */
+    deleteContract = (source, cb) => {
+        const dappfile = this._getDappfile();
+
+        var index = -1, counter = 0;
+        dappfile.contracts().map( (contract) => {
+            if (contract.source == source) {
+                index = counter;
+            }
+            counter++;
+        });
+        if (index > -1 ) {
+            dappfile.contracts().splice(index, 1);
+        }
+
+        // TODO: Go through all contracts arguments and replace contract source with value 0x0
+        // TODO: delete all build files for this contract.
+
+        this.saveDappfile().then( () => {
+            if (cb) cb (0);
+        }).catch( () => {
+            alert('Could not save dappfile.');
+            if (cb) cb (1);
+        });
+    };
+
+    setContractSource = (source, newSource, cb) => {
+        const dappfile = this._getDappfile();
+        const contract = dappfile.getItem('contracts', [{source: source}]);
+        contract.set("source", newSource);
+
+        // TODO: go through all contracts and update arguments.
+
+        this.saveDappfile().then( () => {
+            if (cb) cb (0);
+        }).catch( () => {
+            alert('Could not save dappfile.');
+            if (cb) cb (1);
+        });
+    };
+
+    setContractName = (source, newName, cb) => {
+        const dappfile = this._getDappfile();
+        const contract = dappfile.getItem('contracts', [{source: source}]);
+        contract.set("name", newName);
+        console.log("save name", newName);
+
+        // TODO: go through all contracts and update arguments.
+
+        this.saveDappfile().then( () => {
+            if (cb) cb (0);
+        }).catch( () => {
+            alert('Could not save dappfile (contract name).');
+            if (cb) cb (1);
+        });
+    };
+
+    setContractArgs = (source, args, cb) => {
+        const dappfile = this._getDappfile();
+        const contract = dappfile.getItem('contracts', [{source: source}]);
+        contract.set("args", args);
+
+        // TODO: go through all contracts and update arguments.
+
+        this.saveDappfile().then( () => {
+            if (cb) cb (0);
+        }).catch( () => {
+            alert('Could not save dappfile (contract args).');
+            if (cb) cb (1);
+        });
+    };
+
     /**************************************************************************/
 }
