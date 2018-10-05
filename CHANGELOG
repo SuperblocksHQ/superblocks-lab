@@ -1,6 +1,6 @@
 # Superblocks Lab - Change log
 
-## [current]
+## [1.0.2]
 
 * Fix: list changes in CHANGELOG file #178
 * Improvement: limit left side panel width when resizing #170
