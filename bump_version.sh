@@ -44,12 +44,12 @@ _version_date=$(date "+%Y-%m-%d")
 
 #
 # Files to change
-_src_components_app_file="./src/components/app/app.js"
+_src_components_app_file="./src/reducers/app.js"
 _src_manifest_file="./src/manifest.json"
 
 # Update files
 sed -i.bak "s/\"version\"\:.*/\"version\": \"${_version_name}\"/" "$_src_manifest_file"
-sed -i.bak "s/this\.\_version\=\".*/this\.\_version=\"${_version_name}\"\;/" "$_src_components_app_file"
+sed -i.bak "s/.*version\: \'.*/    version\: \'${_version_name}\'\,/" "$_src_components_app_file"
 
 #
 # Cleanup temporary files
