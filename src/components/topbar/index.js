@@ -87,7 +87,6 @@ class ProjectDialog extends Component {
         backend.downloadProject(project, keepState.toLowerCase() == "yes");
     };
 
-    // TODO:
     importProject = (e) => {
         e.preventDefault();
         var uploadAnchorNode = document.createElement('input');
@@ -167,11 +166,6 @@ class ProjectDialog extends Component {
             dappfile = JSON.parse(obj.files['/'].children['dappfile.json'].contents);
         }
         catch (e) {
-            dappfile = {
-                project: {
-                    info: {}
-                }
-            };
         }
 
         try {
@@ -179,6 +173,7 @@ class ProjectDialog extends Component {
             name = dappfile.project.info.name || "";
         }
         catch(e) {
+            dappfile.project = {info: {}};
         }
 
         do {

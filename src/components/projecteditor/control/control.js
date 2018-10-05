@@ -84,22 +84,11 @@ export default class Control extends Component {
     componentDidMount() {
         this._loadProjects( (status) => {
             if (status == 0) {
-                this._openLastProject();
-                this._showWelcome();
+                if (!this._openLastProject()) {
+                    this._showWelcome();
+                }
             }
         });
-
-        //this._reloadProjects(null, (status) => {
-            //// NOTE: Ideally all this logic should not leave in the component itself but most likely in an epic
-            //// which we can actually properly test
-            //let { selectedProjectId } = this.props;
-            //this._projectsList.forEach((project) => {
-                //if (selectedProjectId && selectedProjectId === project.props.state.data.dir) {
-                    //this.openProject(project);
-                //}
-            //});
-            //this._showWelcome();
-        //});
     }
 
     /**
@@ -161,11 +150,14 @@ export default class Control extends Component {
      */
     _openLastProject = () => {
         let { selectedProjectId } = this.props;
+        let found = false;
         this._projectsList.forEach((project) => {
             if (selectedProjectId && selectedProjectId === project.getInode()) {
                 this.openProject(project);
+                found = true;
             }
         });
+        return found;
     };
 
     /**
@@ -274,7 +266,14 @@ export default class Control extends Component {
         }
         const cb = (status) => {
             if (status == 0) {
-                this._loadProjects();
+                this._loadProjects( () => {
+                    this._closeProject((status) => {
+                        if (status == 0) {
+                            // Open last project
+                            this.openProject(this._projectsList[this._projectsList.length-1]);
+                        }
+                    });
+                });
             }
             else {
                 alert("A DApp with that name already exists, please choose a different name.");
@@ -463,7 +462,9 @@ export default class Control extends Component {
                                 this.openProject(this._projectsList[this._projectsList.length-1]);
                             }
                             else {
+                                this._setProjectActive(null);
                                 this._showWelcome();
+                                this.redrawMain(true);
                             }
                             if(cb) cb(status);
                         });

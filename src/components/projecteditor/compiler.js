@@ -26,7 +26,6 @@ export default class Compiler extends Component {
         this.id=props.id+"_compiler";
         this.props.parent.childComponent=this;
         this.consoleRows=[];
-        this.dappfile = this.props.project.props.state.data.dappfile;
         this.run();
     }
 
@@ -34,7 +33,6 @@ export default class Compiler extends Component {
     };
 
     componentWillReceiveProps(props) {
-        this.dappfile = props.project.props.state.data.dappfile;
     }
 
     focus = (rePerform) => {
@@ -69,7 +67,8 @@ export default class Compiler extends Component {
         this.isRunning=true;
         this.redraw();
 
-        const contracts=this.dappfile.contracts();
+        //const contracts=this.dappfile.contracts();
+        const contracts = this.props.item.getProject().getHiddenItem('contracts').getChildren();
 
         // TODO:
         // Load all addresses for all contracts, it they are available, to provide them as libraries.
@@ -78,7 +77,7 @@ export default class Compiler extends Component {
         // Load all contract source files.
         const sources=[];
         for(var index=0;index<contracts.length;index++) {
-            sources.push(contracts[index].source);
+            sources.push(contracts[index].getSource());
         }
 
         this._loadFiles(sources, (status, bodies) => {
@@ -91,7 +90,6 @@ export default class Compiler extends Component {
             this.consoleRows.length=0;
             // This timeout can be removed.
             setTimeout(()=>{
-                var srcfilename;
                 var contractbody;
                 this.consoleRows.push({channel:1,msg:"Using Solidity compiler version " + this.props.functions.compiler.getVersion()});
                 // Run through all sources loaded and chose one for compilation and the rest for import.
@@ -115,17 +113,18 @@ export default class Compiler extends Component {
                     }
                 };
                 const files={};
+                const srcfilename = this.props.item.getParent().getSource();
                 for(var index=0;index<contracts.length;index++) {
-                    const filename=contracts[index].source.match(".*/(.*)$")[1];
+                    const source=contracts[index].getSource();
                     // We only put the contract to be compiled in sources.
-                    if(contracts[index].name == this.props.contract) {
-                        srcfilename=contracts[index].source;
+                    if (source == srcfilename) {
+                        //srcfilename=contracts[index].source;
                         contractbody=bodies[index];
-                        input.sources[filename]={content:bodies[index]};
+                        input.sources[source]={content:bodies[index]};
                     }
                     else {
                         // Every other source file we put in files, to be importable.
-                        files[filename]=bodies[index];
+                        files[source] = bodies[index];
 
                         // TODO: handle libraries
                         // We want to check if this is a library contract and then add it here.
@@ -141,6 +140,9 @@ export default class Compiler extends Component {
                 const binsrc=this._makeFileName(srcfilename, "bin");
                 const hashsrc=this._makeFileName(srcfilename, "hash");
                 const delFiles=()=>{
+                    this.callback(1);
+                    return;
+                    // TODO
                     this.props.project.deleteFile(abisrc, ()=>{
                         this.props.project.deleteFile(binsrc, ()=>{
                             this.props.router.control._reloadProjects();
@@ -173,42 +175,38 @@ export default class Compiler extends Component {
                         }
                         else {
                             this.setState({status:"Successfully digested the source code."});
-                            const contractName=this.props.contract;
                             var contractObj;
                             const filename=srcfilename.match(".*/(.*)$")[1];
-                            if(data.contracts) contractObj=data.contracts[filename][contractName];
+                            if(data.contracts) contractObj=data.contracts[srcfilename][this.props.item.getParent().getName()];
                             if(contractObj && Object.keys(contractObj.evm.bytecode.linkReferences || {}).length>0) {
                                 contractObj=null;
-                                this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + contractName + " references library contracts. Superblocks Lab does not yet support library contract linking, only contract imports."});
+                                this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + srcfilename + " references library contracts. Superblocks Lab does not yet support library contract linking, only contract imports."});
                                 delFiles();
                             }
                             else if(contractObj) {
                                 const metadata=JSON.parse(contractObj.metadata);
                                 // Save ABI and BIN
                                 // First load, then save and close.
-                                const cb=(file, contents, cb2)=>{
-                                    this.props.project.loadFile(file, (body) => {
-                                        if(body.status<=1) {
-                                            body.contents=contents;
-                                            this.props.project.saveFile(file, (body) => {
-                                                if(body.status<=1) {
-                                                    this.props.project.closeFile(file);
-                                                    if(cb2) cb2();
-                                                }
-                                                else {
-                                                    this.consoleRows.push({channel:2,msg:"[ERROR] Could not save the result file."});
-                                                    delFiles();
-                                                    return;
-                                                }
-                                            });
-                                        }
-                                        else {
-                                            this.consoleRows.push({channel:2,msg:"[ERROR] Could not prepare the result file."});
+                                const cb=(fullPath, contents, cb2)=>{
+                                    const a = fullPath.match("^(.*/)([^/]+)$");
+                                    const path = a[1];
+                                    const file = a[2];
+                                    const project = this.props.item.getProject();
+
+                                    project.newFile(path, file, () => {
+                                        //if (path[path.length-1] != '/') {
+                                            //path = path + "/";
+                                        //}
+                                        //const fullPath = path + file;
+                                        project.getItemByPath(fullPath.split('/'), project).then( (item) => {
+                                            item.setContents(contents);
+                                            item.save().then(cb2).catch(delFiles);
+                                        }).catch( () => {
                                             delFiles();
-                                            return;
-                                        }
+                                        });
                                     });
                                 };
+
                                 cb(abisrc, JSON.stringify(metadata.output.abi), ()=>{
                                     const meta={
                                         compile: {
@@ -220,8 +218,7 @@ export default class Compiler extends Component {
                                             const hash=sha256(contractbody).toString();
                                             cb(hashsrc, hash, ()=>{
                                                 // This is the success exit point.
-                                                // Reload projects to update file list and open tabs.
-                                                this.props.router.control._reloadProjects();
+                                                this.props.router.control.redrawMain(true);
                                                 this.consoleRows.push({channel:1,msg:"Success in compilation"});
                                                 this.callback(0);
                                             });
@@ -231,10 +228,10 @@ export default class Compiler extends Component {
                             }
                             else {
                                 if (data.contracts) {
-                                    this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + contractName + " could not be compiled. The contract needs to be named the same as the contract's source file."});
+                                    this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + srcfilename + " could not be compiled. The contract is not found in the compiled output. Make sure the contract is configured correctly so that the name matches the (main) contract in the source file."});
                                 }
                                 else {
-                                    this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + contractName + " could not be compiled."});
+                                    this.consoleRows.push({channel:2,msg:"[ERROR] The contract " + srcfilename + " could not be compiled."});
                                 }
                                 delFiles();
                             }
@@ -247,25 +244,31 @@ export default class Compiler extends Component {
         },true);
     };
 
-    _loadFiles=(files, cb)=>{
-        const bodies=[];
+    _loadFiles = (files, cb) => {
+        const project = this.props.item.getProject();
+        const bodies = [];
         var fn;
         fn=((files, bodies, cb2)=>{
-            if(files.length==0) {
+            if (files.length == 0) {
                 cb2(0);
                 return;
             }
-            const file=files.shift();
-            this.props.project.loadFile(file, (body) => {
-                if(body.status!=0) {
-                    cb(1);
-                    return;
-                }
-                bodies.push(body.contents);
-                fn(files, bodies, (status)=>{
-                    cb2(status);
+            const file = files.shift();
+            const pathArray = file.split('/');
+            project.getItemByPath(pathArray, project).then( (item) => {
+                item.load().then( () => {
+                    bodies.push(item.getContents());
+                    fn(files, bodies, (status)=>{
+                        cb(status, bodies);
+                    });
+                }).catch( () => {
+                    console.log("could not load file");
+                    cb(1)
                 });
-            }, true, true);
+            }).catch( () => {
+                console.log("could not find file");
+                cb(1)
+            });
         });
         fn(files, bodies, (status)=>{
             cb(status, bodies);
@@ -293,7 +296,7 @@ export default class Compiler extends Component {
                 </div>
                 <div class={style.info}>
                     <span>
-                        Compile {this.props.contract}
+                        Compile {this.props.item.getParent().getSource()}
                     </span>
                 </div>
             </div>

@@ -109,8 +109,7 @@ export class Window {
                         id={this.subId}
                         key={this.subId}
                         functions={this.props.functions}
-                        project={this.props.item.props._project}
-                        contract={this.props.item.props._contract}
+                        item={this.props.item}
                         parent={this}
                         router={this.props.router} />
                 </div>

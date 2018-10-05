@@ -43,11 +43,9 @@ export default class Editor extends Component {
                 this.language=suffix;
             }
         }
-        console.log(this.props.item);
     }
 
     componentWillReceiveProps() {
-        console.log("NEW PROPS");
     }
 
     componentDidMount() {

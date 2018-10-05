@@ -169,7 +169,7 @@ export default class ProjectItem extends Item {
 
             // Traverase the file structure to get `/dappfile.json`, this will prepare the file tree
             // so that the file `/dappfile.json` will get represented by the DappfileItem item created prior.
-            this._getItemByPath(["", "dappfile.json"], this).then( (item) => {
+            this.getItemByPath(["", "dappfile.json"], this).then( (item) => {
                 cb(0);
             }).catch( () => {
                 alert("Error: Could not load dappfile.json.");
@@ -231,7 +231,7 @@ export default class ProjectItem extends Item {
      * @param item: current item who's children we are traversing.
      *
      */
-    _getItemByPath = (path, item) => {
+    getItemByPath = (path, item) => {
         return new Promise( (resolve, reject) => {
             const filename = path.shift();
 
@@ -244,7 +244,7 @@ export default class ProjectItem extends Item {
                             resolve(child);
                         }
                         else {
-                            this._getItemByPath(path, child).then( (item) => {
+                            this.getItemByPath(path, child).then( (item) => {
                                 resolve(item);
                             }).catch( () => {
                                 reject();
@@ -632,7 +632,6 @@ export default class ProjectItem extends Item {
         const dappfile = this._getDappfile();
         const contract = dappfile.getItem('contracts', [{source: source}]);
         contract.set("name", newName);
-        console.log("save name", newName);
 
         // TODO: go through all contracts and update arguments.
 

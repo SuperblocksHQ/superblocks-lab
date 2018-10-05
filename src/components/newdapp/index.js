@@ -19,6 +19,7 @@ import Proptypes from 'prop-types';
 import SelectedTemplate from './selectTemplate';
 import ProjectDetails from './projectDetails';
 import Templates from '../templates';
+import DappfileItem from '../projecteditor/control/item/dappfileItem';
 
 export default class NewDapp extends Component {
 
@@ -43,7 +44,19 @@ export default class NewDapp extends Component {
         const title = projectInfo.title;
 
         const files = this.state.selectedTemplate.files;
-        // TODO: update the dappfile.json with name and title.
+
+        // Try to decode the `/dappfile.json`.
+        var dappfile;
+        try {
+            dappfile = JSON.parse(files['/'].children['dappfile.json'].contents);
+        }
+        catch (e) {
+            dappfile = DappfileItem.getDefaultDappfile();
+            files['/'].children['dappfile.json'] = {type: 'f'};
+        }
+        dappfile.project.info.name = name;
+        dappfile.project.info.title = title;
+        files['/'].children['dappfile.json'].contents = JSON.stringify(dappfile);
 
         this.props.backend.createProject(files, status => this.props.cb(status));
 

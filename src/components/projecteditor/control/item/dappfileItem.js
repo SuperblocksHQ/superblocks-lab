@@ -79,7 +79,7 @@ export default class DappfileItem extends FileItem {
                 }
                 resolve();
             }).catch( () => {
-                this.props.state.dappfile = new Dappfile(this._getDefaultDappfile());
+                this.props.state.dappfile = new Dappfile(this.getDefaultDappfile());
                 this.save().then( () => {
                     resolve();
                 }).catch( () => {
@@ -103,8 +103,11 @@ export default class DappfileItem extends FileItem {
         return this.props.state.dappfile;
     };
 
-    _getDefaultDappfile = () => {
+    static getDefaultDappfile = () => {
         const obj = {
+            "project": {
+                "info": {}
+            },
             "environments": [
                 {
                     "name": "browser"
@@ -128,15 +131,7 @@ export default class DappfileItem extends FileItem {
                     "name": "mainnet"
                 }
             ],
-            "contracts": [
-                {
-                    "source": "/contracts/MyContract.sol",
-                    "args": [],
-                    "blockchain": "ethereum",
-                    "name": "MyContract",
-                    "network": "browser"
-                }
-            ],
+            "contracts": [],
             "wallets": [
                 {
                     "desc": "This is a wallet for local development",

@@ -223,7 +223,7 @@ export default class FileItem extends Item {
                     }
                     const project = this.getProject();
                     const newPathArray = newPath.split('/');
-                    project._getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
+                    project.getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
                         // Set new parent
                         this.props.state.__parent = newParent;
                         newParent.getChildren(true, () => {
@@ -460,6 +460,7 @@ export default class FileItem extends Item {
                                     type2: "configure",
                                     icon: <IconConfigure />,
                                     state: {
+                                        key: "configure",
                                         title: "Configure",
                                         __parent: fileItem,
                                         project: this.getProject(),
@@ -467,7 +468,22 @@ export default class FileItem extends Item {
                                     }
                                 }, this.router);
                                 configureItem.props.onClick = configureItem._openItem;
-                                const contractChildren = [configureItem];
+
+                                const compileItem = new Item({
+                                    type: "contract",
+                                    type2: "compile",
+                                    icon: <IconConfigure />,
+                                    state: {
+                                        key: "compile",
+                                        title: "Compile",
+                                        __parent: fileItem,
+                                        project: this.getProject(),
+                                        _tag: 1
+                                    }
+                                }, this.router);
+                                compileItem.props.onClick = compileItem._openItem;
+
+                                const contractChildren = [configureItem, compileItem];
                                 //fileItem.setChildren(contractChildren);
                                 this._copyState(contractChildren, fileItem.props.state.children || []);
                                 fileItem.props.state.children=contractChildren;
