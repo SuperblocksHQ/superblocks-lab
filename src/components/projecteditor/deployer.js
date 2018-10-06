@@ -29,7 +29,6 @@ export default class Deployer extends Component {
         this.id=props.id+"_deployer";
         this.props.parent.childComponent=this;
         this.consoleRows=[];
-        this.dappfile = this.props.project.props.state.data.dappfile;
         this.recompile=this.props.recompile || false;
         this.redeploy=this.props.redeploy || false;
         this.run();
@@ -39,7 +38,6 @@ export default class Deployer extends Component {
     };
 
     componentWillReceiveProps(props) {
-        this.dappfile = props.project.props.state.data.dappfile;
     }
 
     canClose = (cb) => {
@@ -80,8 +78,8 @@ export default class Deployer extends Component {
 
 
     compile = (cb) => {
-        const subitem = this.props.item.props._parentItem.getChildren().filter((elm) => {
-            return (elm.props.type2=="compile");
+        const subitem = this.props.item.getParent().getChildren().filter((elm) => {
+            return (elm.getType2() == "compile");
 
         })[0];
         if(subitem) this.props.router.panes.openItem(subitem, this.props.parent.props.parent.props.id, cb);
@@ -95,7 +93,7 @@ export default class Deployer extends Component {
         this._stop(msg);
         const callback=this.props.parent.callback;
         delete this.props.parent.callback;
-        this.props.router.control._reloadProjects(null, null, true);
+        this.props.router.control.redrawMain(true);
         if(callback) callback(status);
     };
 
@@ -132,11 +130,12 @@ export default class Deployer extends Component {
         this.consoleRows.length=0;
         this.redraw();
 
-        const env=this.props.project.props.state.data.env;
-        const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
-        const src=contract.get('source');
-        const tag=env;
-        this.network=env;
+        const project = this.props.item.getProject();
+        const env = project.getEnvironment();
+        const contract = this.props.item.getParent();
+        const src = contract.getSource();
+        const tag = env;
+        this.network = env;
 
         const endpoint=(this.props.functions.networks.endpoints[this.network] || {}).endpoint;
         if(!endpoint) {
@@ -163,19 +162,22 @@ export default class Deployer extends Component {
             addresssrc: this._makeFileName(src, this.network, "address"),
             txsrc: this._makeFileName(src, this.network, "tx"),
             deploysrc: this._makeFileName(src, this.network, "deploy"),
-            contractsjssrc: "/build/app/" + this.props.contract + "." + this.network + ".js",
+            contractsjssrc: "/build/app/" + this.props.item.getParent().getName() + "." + this.network + ".js",
         };
 
-        this.accountName = this.props.project.props.state.data.account;
+        this.accountName = project.getAccount();
         if(!this.accountName || this.accountName == "(locked)") {
             this._stderr("No account chosen. Please choose an account for the network in the left menu.");
             this.callback(1);
             return;
         }
-        const account = this.dappfile.getItem("accounts", [{name: this.accountName}]);
-        const accountIndex=account.get('index', env);
-        const walletName=account.get('wallet', env);
-        const wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
+        const accounts = this.props.item.getProject().getHiddenItem('accounts');
+        const account = accounts.getByName(this.accountName);
+        const accountIndex = account.getAccountIndex(env);
+        const walletName = account.getWallet(env);
+        const wallets = this.props.item.getProject().getHiddenItem('wallets');
+        const wallet = wallets.getByName(walletName);
+
         if(!wallet) {
             this._stderr("Can not deploy with chosen account on public network. Choose the first account in the list.");
             this.callback(1);
@@ -202,11 +204,11 @@ export default class Deployer extends Component {
                             this.callback(1);
                             return;
                         }
-                        const walletType=wallet.get('type');
+                        const walletType=wallet.getWalletType();
                         if(walletType=="external") {
-                            ///////////////////////////////////////////
-                            // SWAP THE WEB3 OBJECT TO THE EXTERNAL ONE.
-                            ///////////////////////////////////////////
+                            ///////////////////////////////////////////////
+                            // SWAP THE WEB3 OBJECT FOR THE EXTERNAL ONE //
+                            ///////////////////////////////////////////////
                             if(window.web3) {
                                 this._stdwarn("Switching to external provider, endpoint is now unknown.");
                                 obj.internalweb3=obj.web3;
@@ -292,8 +294,8 @@ export default class Deployer extends Component {
                                     }
                                     this._stdout("Got receipt: " + res);
                                     obj.txhash2=res;
-                                    const args=obj.contract.get("args") || [];
-                                    this.props.project.props.state.txlog.addTx({deployArgs:args,contract:this.props.contract,hash:res,context:'Contract deployment using external provider',network:obj.network});
+                                    const args=obj.contract.getArgs() || [];
+                                    project.getTxLog().addTx({deployArgs:args,contract:this.props.item.getParent().getName(),hash:res,context:'Contract deployment using external provider',network:obj.network});
                                     finalize(obj);
                                 });
                             }
@@ -340,20 +342,22 @@ export default class Deployer extends Component {
         }
         else if(arg.account) {
             const accountName = arg.account;
-            const account = this.dappfile.getItem("accounts", [{name: accountName}]);
+            const accounts = this.props.item.getProject().getHiddenItem('accounts');
+            const account = accounts.getByName(accountName);
             if(!account) {
                 this._stderr("Account " + (accountName||"") + " is referred to as constructor argument to the contract, but the account does not exist. Please reconfigure the contract.");
                 cb(1);
                 return;
             }
-            const accountIndex=account.get('index', env);
-            const walletName=account.get('wallet', env);
-            const wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
+            const accountIndex = account.getAccountIndex(env);
+            const walletName = account.getWallet(env);
+            const wallets = this.props.item.getProject().getHiddenItem('wallets');
+            const wallet = wallets.getByName(walletName);
             if(!wallet) {
                 // We expect a static value to have been set as the account address.
-                const accountAddress=account.get('address', env);
-                if(!accountAddress) {
-                    this._stderr("Wallet/Address not found for account: "+accountName);
+                const accountAddress = account.getAddress(env);
+                if (!accountAddress) {
+                    this._stderr("Wallet/Address not found for account: " + accountName);
                     cb(1);
                 }
                 else {
@@ -362,20 +366,20 @@ export default class Deployer extends Component {
                 }
                 return;
             }
-            const walletType=wallet.get('type');
-            if(walletType=="external") {
-                if(!window.web3) {
+            const walletType = wallet.getWalletType();
+            if (walletType == "external") {
+                if (!window.web3) {
                     this._stderr("External provider not found for passing accounts as constructor arguments. Metamask not installed?");
                     cb(1);
                     return;
                 }
                 const extAccounts = window.web3.eth.accounts || [];
-                if(extAccounts.length==0) {
+                if (extAccounts.length == 0) {
                     this._stderr("No external accounts found. Metamask unlocked?");
                     cb(1);
                     return;
                 }
-                else if(extAccounts.length<accountIndex+1) {
+                else if (extAccounts.length < accountIndex + 1) {
                     this._stderr("External account " + accountName + " has too high index, can't provide it as constructor argument (Metamask only unlocks one account).");
                     cb(1);
                     return;
@@ -399,39 +403,29 @@ export default class Deployer extends Component {
             }
         }
         else if(arg.contract) {
-            const contract = this.dappfile.getItem("contracts", [{name: arg.contract}]);
-            if(!contract) {
+            const contract = this.props.item.getParent();
+            if (!contract) {
                 this._stderr("Contract " + arg.contract + " is referenced as argument but doesn't exist.");
                 cb(1);
                 return;
             }
-            var index1=-1,index2=-1;
-            this.dappfile.contracts().map((c, index)=>{
-                if(c.name==arg.contract) index1=index;
-                if(c.name==this.props.contract) index2=index;
-            });
-            if(index1>index2) {
-                this._stderr("Contract " + arg.contract + " is referenced as argument but is below this contract in the order. Readjust order or reconfigure this contract.");
-                cb(1);
-                return;
-            }
-            const src=contract.get('source');
-            const tag=env;
-            const txsrc=this._makeFileName(src, this.network, "tx");
-            const deploysrc=this._makeFileName(src, this.network, "deploy");
-            const addresssrc=this._makeFileName(src, this.network, "address");
-            const files=[txsrc, addresssrc, deploysrc];
-            this._loadRawFiles(files, (status, bodies)=>{
-                if(status>0) {
+            const src = contract.getSource();
+            const tag = env;
+            const txsrc = this._makeFileName(src, this.network, "tx");
+            const deploysrc = this._makeFileName(src, this.network, "deploy");
+            const addresssrc = this._makeFileName(src, this.network, "address");
+            const files = [txsrc, addresssrc, deploysrc];
+            this._loadRawFiles(files, (status, bodies) => {
+                if (status > 0) {
                     this._stderr("Contract " + arg.contract + " is referenced as argument but is not deployed and therefore has no address. Deploy it prior to deploying this contract.");
                     cb(1);
                     return;
                 }
-                const txhash=bodies[2];
-                const address=bodies[1];
-                const code=bodies[0];
+                const txhash = bodies[2];
+                const address = bodies[1];
+                const code = bodies[0];
                 this._verifyContract(obj, address, txhash, code, (status)=>{
-                    if(status>0) {
+                    if (status > 0) {
                         this._stderr("Contract " + arg.contract + " is referenced as argument but it needs to be redeployed (on the same network). Redeploy it prior to deploying this contract.");
                         cb(1);
                         return;
@@ -449,11 +443,11 @@ export default class Deployer extends Component {
     };
     _verifyContract=(obj, address, tx, code, cb)=>{
         this._getInputByTx(obj, tx, (status, input)=>{
-            if(status>0) {
+            if (status > 0) {
                 cb(1);
                 return;
             }
-            if(input==code) {
+            if (input == code) {
                 cb(0);
                 return;
             }
@@ -461,17 +455,17 @@ export default class Deployer extends Component {
             return;
         });
     };
-    _loadRawFiles=(files, cb)=>{
-        const bodies=[];
+    _loadRawFiles = (files, cb) => {
+        const bodies = [];
         var fn;
-        fn=((files, bodies, cb2)=>{
-            if(files.length==0) {
+        fn = ((files, bodies, cb2) => {
+            if (files.length == 0) {
                 cb2(0);
                 return;
             }
-            const file=files.pop();
-            this.props.project.loadFile(file, (body) => {
-                if(body.status!=0) {
+            const file = files.pop();
+            this.props.item.getProject().loadFile(file, (body) => {
+                if (body.status != 0) {
                     cb(1);
                     return;
                 }
@@ -486,15 +480,15 @@ export default class Deployer extends Component {
         });
     };
 
-    _buildArgs=(obj, cb)=>{
+    _buildArgs=(obj, cb) => {
         var fn;
-        fn=(args, args2, env, tag, cb2)=>{
-            if(args.length==0) {
+        fn = (args, args2, env, tag, cb2) => {
+            if (args.length == 0) {
                 cb2(0);
                 return
             }
-            this._buildArgs2(obj, args, args2, env, tag, (status)=>{
-                if(status==0) {
+            this._buildArgs2(obj, args, args2, env, tag, (status) => {
+                if (status == 0) {
                     fn(args, args2, env, tag, (status)=>{
                         cb2(status);
                     });
@@ -504,10 +498,11 @@ export default class Deployer extends Component {
                 }
             });
         };
-        const args=obj.contract.get("args") || [];
-        const args2=[];
 
-        fn(args, args2, obj.env, obj.tag, (status)=>{
+        const args = obj.contract.getArgs() || [];
+        const args2 = [];
+
+        fn(args, args2, obj.env, obj.tag, (status) => {
             if(status==0) {
                 obj.args=args2;
                 this._stdout("Arguments parsed successfully: " + args2.join(" "));
@@ -541,15 +536,17 @@ export default class Deployer extends Component {
             }
         });
     };
-    _isCompileFresh=(obj, cb)=>{
+
+    _isCompileFresh = (obj, cb) => {
         // Check for fresh abi and bin.
-        this.props.project.loadFile(obj.src, (srcbody) => {
+        const project = this.props.item.getProject();
+        project.loadFile(obj.src, (srcbody) => {
             if(srcbody.status!=0) {cb(1);return}
-            this.props.project.loadFile(obj.abisrc, (abibody) => {
+            project.loadFile(obj.abisrc, (abibody) => {
                 if(abibody.status!=0) {cb(1);return}
-                this.props.project.loadFile(obj.binsrc, (binbody) => {
+                project.loadFile(obj.binsrc, (binbody) => {
                     if(binbody.status!=0) {cb(1);return}
-                    this.props.project.loadFile(obj.hashsrc, (hashbody) => {
+                    project.loadFile(obj.hashsrc, (hashbody) => {
                         if(hashbody.status!=0) {cb(1);return}
                         const hash=sha256(srcbody.contents).toString();
                         if(hash!=hashbody.contents) cb(1);
@@ -560,38 +557,39 @@ export default class Deployer extends Component {
         }, true, true);
     };
 
-    _loadFiles=(obj,cb)=>{
-        this.props.project.loadFile(obj.src, (srcbody) => {
+    _loadFiles = (obj,cb) => {
+        const project = this.props.item.getProject();
+        project.loadFile(obj.src, (srcbody) => {
             if(srcbody.status!=0) {
                 this._stderr("Could not load contract source file.");
                 cb(1);
                 return
             }
-            this.props.project.loadFile(obj.abisrc, (abibody) => {
+            project.loadFile(obj.abisrc, (abibody) => {
                 if(abibody.status!=0) {
                     this._stderr("Could not load contract ABI: " + obj.abisrc);
                     cb(1);
                     return
                 }
-                this.props.project.loadFile(obj.binsrc, (binbody) => {
+                project.loadFile(obj.binsrc, (binbody) => {
                     if(binbody.status!=0) {
                         this._stderr("Could not load contract binary.");
                         cb(1);
                         return
                     }
-                    this.props.project.loadFile(obj.metasrc, (metabody) => {
+                    project.loadFile(obj.metasrc, (metabody) => {
                         if(metabody.status!=0) {
                             this._stderr("Could not load contract meta file.");
                             cb(1);
                             return
                         }
-                        this.props.project.loadFile(obj.txsrc, (txbody) => {
+                        project.loadFile(obj.txsrc, (txbody) => {
                             // Allow non existing
-                            this.props.project.loadFile(obj.addresssrc, (addressbody) => {
+                            project.loadFile(obj.addresssrc, (addressbody) => {
                                 // Allow non existing
-                                this.props.project.loadFile(obj.deploysrc, (deploybody) => {
+                                project.loadFile(obj.deploysrc, (deploybody) => {
                                     // Allow non existing
-                                    this.props.project.loadFile(obj.hashsrc, (hashbody) => {
+                                    project.loadFile(obj.hashsrc, (hashbody) => {
                                         if(hashbody.status!=0) {
                                             this._stderr("Could not load contract hash.");
                                             cb(1);
@@ -615,14 +613,11 @@ export default class Deployer extends Component {
             }, true, true);
         }, true, true);
     };
+
     _buildBin=(obj, cb)=>{
-        var contract=null;
-        if(typeof(obj.abi) == "object") {
-            contract=obj.web3.eth.contract(obj.abi);
-        } else {
-            contract=obj.web3.eth.contract(JSON.parse(obj.abi));
-        }
-        const args=obj.args.concat([{data:obj.bin}]);
+        var contract = null;
+        contract = obj.web3.eth.contract(JSON.parse(obj.abi));
+        const args = obj.args.concat([{data:obj.bin}]);
         var bin2;
         var err="";
         try {
@@ -692,11 +687,13 @@ export default class Deployer extends Component {
             cb(0);
         }
     };
-    _openWallet=(obj, accountName, cb)=>{
-        const account = this.dappfile.getItem("accounts", [{name: accountName}]);
 
-        const walletName=account.get('wallet', obj.env);
-        const accountIndex=account.get('index', obj.env);
+    _openWallet = (obj, accountName, cb) => {
+        //const account = this.dappfile.getItem("accounts", [{name: accountName}]);
+        const accounts = this.props.item.getProject().getHiddenItem('accounts');
+        const account = accounts.getByName(accountName);
+        const accountIndex = account.getAccountIndex(obj.env);
+        const walletName = account.getWallet(obj.env);
 
         const getKey=()=>{
             this.props.functions.wallet.getKey(walletName, accountIndex, (status, key)=>{
@@ -774,8 +771,8 @@ export default class Deployer extends Component {
             if(err==null) {
                 this._stdout("Got receipt: " + res);
                 obj.txhash2=res;
-                const args=obj.contract.get("args") || [];
-                this.props.project.props.state.txlog.addTx({deployArgs:args,contract:this.props.contract,hash:res,context:'Contract deployment',network:obj.network});
+                const args=obj.contract.getArgs() || [];
+                this.props.item.getProject().getTxLog().addTx({deployArgs:args,contract:this.props.item.getParent().getName(),hash:res,context:'Contract deployment',network:obj.network});
                 cb(0);
             }
             else {
@@ -825,40 +822,56 @@ if(typeof(Contracts)==="undefined") var Contracts={};
         endpoint: "`+obj.endpoint+`",
         abi: `+obj.abi+`
     };
-    Contracts["`+this.props.contract+`"]=data;
+    Contracts["`+this.props.item.getParent().getName()+`"]=data;
     module.exports=data;
 })((typeof(module)==="undefined"?{}:module), Contracts);
 `;
         cb(0);
     }
-    _saveFiles=(obj,cb)=>{
-        this.props.project.loadFile(obj.addresssrc, (addressbody) => {
-            this.props.project.loadFile(obj.deploysrc, (deploybody) => {
-                this.props.project.loadFile(obj.contractsjssrc, (jsbody) => {
-                    this.props.project.loadFile(obj.txsrc, (txbody) => {
-                        txbody.contents=obj.txhash2;
-                        addressbody.contents=obj.address2;
-                        deploybody.contents=obj.bin2;
-                        jsbody.contents=obj.contractsjs;
-                        this.props.project.saveFile(obj.txsrc, (ret) => {
-                            this.props.project.saveFile(obj.deploysrc, (ret) => {
-                                this.props.project.saveFile(obj.addresssrc, (ret) => {
-                                    var fn=this.props.project.saveFile;
-                                    if(!jsbody.contents) fn=this.props.project.deleteFile;
-                                    fn(obj.contractsjssrc, (ret) => {
-                                        this.props.project.closeFile(obj.txsrc);
-                                        this.props.project.closeFile(obj.addresssrc);
-                                        this.props.project.closeFile(obj.deploysrc);
-                                        this.props.project.closeFile(obj.contractsjssrc);
-                                        cb(0);
-                                    });
-                                });
-                            });
-                        });
-                    });
+
+    _saveFiles = (obj, cb) => {
+        const project = this.props.item.getProject();
+        const list = [
+            {
+                fullPath: obj.addresssrc,
+                contents: obj.address2
+            },
+            {
+                fullPath: obj.deploysrc,
+                contents: obj.bin2
+            },
+            {
+                fullPath: obj.contractsjssrc,
+                contents: obj.contractsjs
+            },
+            {
+                fullPath: obj.txsrc,
+                contents: obj.txhash2
+            },
+        ];
+
+        const fn = (list) => {
+            const o = list.pop();
+            if (!o) {
+                cb(0);
+                return;
+            }
+            var {fullPath, contents} = o;
+            var a = fullPath.match("(.*/)([^/]+)");
+            const path = a[1];
+            const file = a[2];
+            project.newFile(path, file, () => {
+                project.getItemByPath(fullPath.split('/'), project).then( (item) => {
+                    item.setContents(contents);
+                    item.save().then( () => {cb(0)}).catch(cb(1));
+                }).catch( () => {
+                    cb(1);
                 });
             });
-        });
+            fn(list);
+        };
+
+        fn(list);
     };
 
     componentDidMount() {
@@ -870,7 +883,6 @@ if(typeof(Contracts)==="undefined") var Contracts={};
     };
 
     renderToolbar = () => {
-        const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
         const cls={};
         cls[style.running] = this.isRunning;
         return (
@@ -883,7 +895,7 @@ if(typeof(Contracts)==="undefined") var Contracts={};
                 </div>
                 <div class={style.info}>
                     <span>
-                        Deploy {this.props.contract}
+                        Deploy {this.props.item.getParent().getSource()}
                     </span>
                 </div>
             </div>

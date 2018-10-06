@@ -48,6 +48,7 @@ import {
 } from '../../../icons';
 
 import Backend from  '../backend';
+import TransactionLogData from '../../../blockexplorer/transactionlogdata';
 
 export default class ProjectItem extends Item {
     constructor(props, router, functions) {
@@ -57,7 +58,12 @@ export default class ProjectItem extends Item {
         super(props, router, functions);
         this.props.state.project = this;
         this.backend = new Backend();
+        this.txLog = new TransactionLogData({functions: functions, project: this});
     }
+
+    getTxLog = () => {
+        return this.txLog;
+    };
 
     getInode = () => {
         return this.props.inode;

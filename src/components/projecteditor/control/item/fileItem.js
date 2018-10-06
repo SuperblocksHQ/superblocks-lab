@@ -473,6 +473,20 @@ export default class FileItem extends Item {
                                 }, this.router);
                                 configureItem.props.onClick = configureItem._openItem;
 
+                                const interactItem = new Item({
+                                    type: "contract",
+                                    type2: "interact",
+                                    icon: <IconInteract />,
+                                    state: {
+                                        key: "interact",
+                                        title: "Interact",
+                                        __parent: fileItem,
+                                        project: this.getProject(),
+                                        _tag: 2
+                                    }
+                                }, this.router);
+                                configureItem.props.onClick = configureItem._openItem;
+
                                 const compileItem = new Item({
                                     type: "contract",
                                     type2: "compile",
@@ -482,12 +496,26 @@ export default class FileItem extends Item {
                                         title: "Compile",
                                         __parent: fileItem,
                                         project: this.getProject(),
-                                        _tag: 1
+                                        _tag: 3
                                     }
                                 }, this.router);
                                 compileItem.props.onClick = compileItem._openItem;
 
-                                const contractChildren = [configureItem, compileItem];
+                                const deployItem = new Item({
+                                    type: "contract",
+                                    type2: "deploy",
+                                    icon: <IconDeploy />,
+                                    state: {
+                                        key: "deploy",
+                                        title: "Deploy",
+                                        __parent: fileItem,
+                                        project: this.getProject(),
+                                        _tag: 4
+                                    }
+                                }, this.router);
+                                deployItem.props.onClick = deployItem._openItem;
+
+                                const contractChildren = [compileItem, deployItem, configureItem];
                                 //fileItem.setChildren(contractChildren);
                                 this._copyState(contractChildren, fileItem.props.state.children || []);
                                 fileItem.props.state.children=contractChildren;
