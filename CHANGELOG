@@ -113,11 +113,6 @@ filename does not match #104
 * Miscellaneous stability improvements
 - Remove miscellaneous unused code
 
-+ Add error checking to ctrs in clickNewContract
-+ Add length check to ctrs in clickNewContract
-+ Add comments explaning the magic indices in clickNewContract
-+ Add error checking when reading evm return data in call()
-* Fix erroneous index referencing ctrs in clickNewContract
 
 ## [1.0-beta22]
 
@@ -125,9 +120,11 @@ filename does not match #104
 + Add single dapp project import and export functionality
 + Add delete project functionality
 
+
 ## [1.0-beta21]
 
 + Add Solidity import feature to compiler
+
 
 ## [1.0-beta20]
 
@@ -137,5 +134,6 @@ filename does not match #104
 * Bug fix \#8 contract interaction displaying confusing results. Cred: Richard Bondi.
 - Remove unused Explorer component
 - Remove system.log trace
+
 
 ## [1.0-beta19]
