@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 
 /**
- * Simple wrapper component over the react-onclickoutside to maek easier the usage of the component
+ * Simple wrapper component over the react-onclickoutside to make easier the usage of the component
  */
 class DropdownBasic extends Component {
     render() {
@@ -34,11 +34,12 @@ export class DropdownContainer extends Component {
         }
     }
 
-    showMenu = (showMenu) => {
+    showMenu = () => {
         this.setState({ showMenu: true });
     }
 
-    closeMenu = () => {
+    closeMenu = (e) => {
+        e.stopPropagation();
         this.setState({ showMenu: false });
     }
 

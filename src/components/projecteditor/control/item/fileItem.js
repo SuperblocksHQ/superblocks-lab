@@ -39,6 +39,7 @@ import {
     IconEdit,
 } from '../../../icons';
 import style from '../style';
+import { DropdownContainer } from '../../../dropdown';
 
 export default class FileItem extends Item {
     constructor(props, router) {
@@ -279,7 +280,6 @@ export default class FileItem extends Item {
 
     _clickNewFile = (e) => {
         e.preventDefault();
-        e.stopPropagation();
 
         if (this.getType() == "folder") {
             const project = this.getProject();
@@ -306,7 +306,6 @@ export default class FileItem extends Item {
 
     _clickNewFolder = (e) => {
         e.preventDefault();
-        e.stopPropagation();
 
         if (this.getType() == "folder") {
             const project = this.getProject();
@@ -334,7 +333,7 @@ export default class FileItem extends Item {
 
     _clickDeleteFile = (e) => {
         e.preventDefault();
-        e.stopPropagation();
+
         if (!confirm("Are you sure to delete " + this.getFullPath() + "?")) {
             return false;
         }
@@ -356,7 +355,7 @@ export default class FileItem extends Item {
 
     _clickRenameFile = (e) => {
         e.preventDefault();
-        e.stopPropagation();
+
         const project = this.getProject();
         const newFile = prompt("Enter new name.", this.getFullPath());
         if (newFile) {
@@ -382,50 +381,107 @@ export default class FileItem extends Item {
         }
     };
 
+    fileRightClicked = (e, id) => {
+        // We save the pane id for when closing all other panes.
+        e.preventDefault();
+    };
+
     _renderFileTitle = (level, index) => {
         if (this.getType() == "file") {
-            return (
-                <div class={style.projectContractsTitleContainer} onClick={this._openItem}>
-                    <div class={style.title}>
-                        <a title={this.getTitle()} href="#">
-                            {this.getTitle()}
-                        </a>
-                    </div>
-                    {!this.isReadOnly() && <div class={style.buttons}>
-                        <a href="#" title="Rename file" onClick={this._clickRenameFile}>
+            const contextMenu=(
+                <div class={style.contextMenu}>
+                    <div onClick={this._clickRenameFile}>
+                        <div class={style.icon}>
                             <IconEdit />
-                        </a>
-                        <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
+                        </div>
+                        Rename
+                    </div>
+                    <div onClick={this._clickDeleteFile}>
+                        <div class={style.icon}>
                             <IconTrash />
-                        </a>
-                    </div>}
+                        </div>
+                        Delete
+                    </div>
                 </div>
             );
-        } else if (this.getType() == "folder") {
             return (
-                <div class={style.projectContractsTitleContainer} onClick={this._angleClicked}>
-                    <div class={style.title} title={this.getTitle()}>
-                        <a href="#">{this.getTitle()}</a>
-                    </div>
-                    <div class={style.buttons}>
-                        <a href="#" title="New File" onClick={this._clickNewFile}>
-                            <IconAddFile />
-                        </a>
-                        <a href="#" title="New Folder" onClick={this._clickNewFolder}>
-                            <IconAddFolder />
-                        </a>
-                        {
-                            this.getFullPath() != "/" &&
-                                <div style="display: inline;">
-                                    <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
+                <div class={style.projectContractsTitleContainer} onClick={this._openItem} onContextMenu={(e) => this.fileRightClicked(e, this.getId())}>
+                    <DropdownContainer dropdownContent={contextMenu} useRightClick={true}>
+                        <div>
+                            <div class={style.title}>
+                                <a title={this.getTitle()} href="#">
+                                    {this.getTitle()}
+                                </a>
+                            </div>
+                            { !this.isReadOnly() &&
+                                <div class={style.buttons}>
+                                    <a href="#" title="Rename file" onClick={this._clickRenameFile}>
                                         <IconEdit />
                                     </a>
-                                    <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
+                                    <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
                                         <IconTrash />
                                     </a>
                                 </div>
-                        }
+                            }
+                        </div>
+                    </DropdownContainer>
+                </div>
+            );
+        } else if (this.getType() == "folder") {
+            const contextMenu=(
+                <div class={style.contextMenu}>
+                    <div onClick={this._clickNewFile}>
+                        <div class={style.icon} >
+                            <IconAddFile />
+                        </div>
+                        Create File
                     </div>
+                    <div onClick={this._clickNewFolder}>
+                        <div class={style.icon} >
+                            <IconAddFolder />
+                        </div>
+                        Create Folder
+                    </div>
+                    <div onClick={this._clickRenameFile}>
+                        <div class={style.icon}>
+                            <IconEdit />
+                        </div>
+                        Rename
+                    </div>
+                    <div onClick={this._clickDeleteFile}>
+                        <div class={style.icon}>
+                            <IconTrash />
+                        </div>
+                        Delete
+                    </div>
+                </div>
+            );
+            return (
+                <div class={style.projectContractsTitleContainer} onClick={this._angleClicked} onContextMenu={(e) => this.fileRightClicked(e, this.getId())}>
+                    <DropdownContainer dropdownContent={contextMenu} useRightClick={true}>
+                        <div class={style.title} title={this.getTitle()}>
+                            <a href="#">{this.getTitle()}</a>
+                        </div>
+                        <div class={style.buttons}>
+                            <a href="#" title="New File" onClick={this._clickNewFile}>
+                                <IconAddFile />
+                            </a>
+                            <a href="#" title="New Folder" onClick={this._clickNewFolder}>
+                                <IconAddFolder />
+                            </a>
+                            {
+                                this.getFullPath() != "/" &&
+                                    <div style="display: inline;">
+                                        <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
+                                            <IconEdit />
+                                        </a>
+                                        <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
+                                            <IconTrash />
+                                        </a>
+                                    </div>
+                            }
+                        </div>
+                    </DropdownContainer>
                 </div>
             );
         }
