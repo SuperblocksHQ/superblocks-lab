@@ -26,15 +26,15 @@ export default class AppView extends Component {
         super(props);
         this.id=props.id+"_appview";;
         this.props.parent.childComponent=this;
-        this.dappfile = this.props.project.props.state.data.dappfile;
         this.provider=new SuperProvider({that:this});
         this._getEnv();
     }
 
     _getEnv=()=>{
         // Update the chosen network and account
-        const accountName = this.props.project.props.state.data.account;
-        const env=this.props.project.props.state.data.env;
+        const project = this.props.item.getProject();
+        const accountName = project.getAccount();
+        const env = project.getEnvironment();
         this.setState({account:accountName, network:env, env:env});
     };
 
@@ -44,7 +44,7 @@ export default class AppView extends Component {
             const obj=this.props.functions.networks.endpoints[key];
             if(obj.endpoint==endpoint) network=key;
         });
-        this.props.project.props.state.txlog.addTx({hash:hash,origin:'DApp',context:'DApp initiated transaction',network:network});
+        this.props.item.getProject().getTxLog().addTx({hash:hash,origin:'DApp',context:'DApp initiated transaction',network:network});
     };
 
     redraw = (props) => {
@@ -55,7 +55,6 @@ export default class AppView extends Component {
     };
 
     componentWillReceiveProps(props) {
-        this.dappfile = props.project.props.state.data.dappfile;
     }
 
     writeContent = (status, content) => {
@@ -91,38 +90,51 @@ export default class AppView extends Component {
     render2 = (cb) => {
         var js,css,html,contractjs;
         this.exportableContent = null;
-        this.props.project.loadFile("/app/app.html", (body) => {
+        const project = this.props.item.getProject();
+        project.loadFile("/app/app.html", (body) => {
             if(body.status!=0) {
             this.writeContent(1, "Missing file(s)");
                 return;
             }
             html=body.contents;
-            this.props.project.loadFile("/app/app.js", (body) => {
+            project.loadFile("/app/app.js", (body) => {
                 if(body.status!=0) {
                     this.writeContent(1, "Missing file(s)");
                     return;
                 }
                 js=body.contents;
-                this.props.project.loadFile("/app/app.css", (body) => {
+                project.loadFile("/app/app.css", (body) => {
                     if(body.status!=0) {
                         this.writeContent(1, "Missing file(s)");
                         return;
                     }
                     css=body.contents;
-                    const contracts=[];
-                    this.dappfile.contracts().map((item)=>{
-                        contracts.push(item.name);
-                    });
+                    //const contracts=[];
+                    //this.dappfile.contracts().map((item)=>{
+                        //contracts.push(item.name);
+                    //});
+                    const list = this.props.item.getProject().getHiddenItem('contracts').getChildren();
+                    const contracts = [];
+                    for (var index = 0; index < list.length; index++) {
+                        const contract = list[index];
+                        contracts.push(contract.getName());
+                    }
+
                     const env=this.state.env;
 
                     const contracts2=[];
                     const tag=env;
                     var endpoint;
+                    const project = this.props.item.getProject();
                     for(var index=0;index<contracts.length;index++) {
-                        const contract = this.dappfile.getItem("contracts", [{name: contracts[index]}]);
-                        const src = contract.get('source');
+                        const contract = project.getHiddenItem('contracts').getByName(contracts[index]);
+                        const src = contract.getSource();
                         const network=this.state.network;
-                        endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
+
+                        const env = project.getEnvironment();
+                        const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
+                        //endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
+                        //
                         const txsrc=this._makeFileName(src, network, "tx");
                         const deploysrc=this._makeFileName(src, network, "deploy");
                         contracts2.push([txsrc, deploysrc, endpoint]);
@@ -131,7 +143,7 @@ export default class AppView extends Component {
 
                     const files=[];
                     for(var index=0;index<contracts.length;index++) {
-                        files.push("/build/app/"+contracts[index]+"."+env+".js");
+                        files.push("/build/contracts/" + contracts[index] + '/' + contracts[index] + "." + env + ".js");
                     }
                     this._loadFiles(files, (status, bodies)=>{
                         if(status!=0) {
@@ -144,10 +156,10 @@ export default class AppView extends Component {
                                 return;
                             }
                             contractjs=bodies.join("\n");
-                            html=this.props.project.constantsReplace(html);
-                            css=this.props.project.constantsReplace(css);
-                            js=this.props.project.constantsReplace(js);
-                            contractjs=this.props.project.constantsReplace(contractjs);
+                            //html=this.props.project.constantsReplace(html);
+                            //css=this.props.project.constantsReplace(css);
+                            //js=this.props.project.constantsReplace(js);
+                            //contractjs=this.props.project.constantsReplace(contractjs);
                             var content=this.getInnerContent(html, css, contractjs+"\n"+js, endpoint, this._getAccountAddress());
                             // Save the exportable version.
                             this.exportableContent=this.getInnerContent(html, css, contractjs+"\n"+js);
@@ -195,7 +207,7 @@ export default class AppView extends Component {
         const fn = (e) => {
             e.preventDefault();
             this.props.functions.modal.cancel();
-            const exportName = "superblocks_dapp_" + this.props.project.props.state.data.dir + ".html";
+            const exportName = "superblocks_dapp_" + this.props.item.getProject().getName () + ".html";
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(this.exportableContent);
             var downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href",     dataStr);
@@ -225,7 +237,7 @@ export default class AppView extends Component {
         this.props.functions.modal.show({render: () => {return modal;}});
     };
 
-    _getAccount=()=>{
+    _getAccount = () => {
         return this.state.disableAccounts=="on" ? "(no provider)" : this.state.account;
     };
 
@@ -236,15 +248,24 @@ export default class AppView extends Component {
         if(accountName=="(locked)") return [];
         if(!accountName) return [];
 
-        const env=this.state.env;
-        const account = this.dappfile.getItem("accounts", [{name: accountName}]);
-        const accountIndex=account.get('index', env);
-        const walletName=account.get('wallet', env);
-        const wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
+        const project = this.props.item.getProject();
+        const env = project.getEnvironment();
+        const accounts = project.getHiddenItem('accounts');
+        const account = accounts.getByName(accountName);
+        const accountIndex = account.getAccountIndex(env);
+        const walletName = account.getWallet(env);
+        const wallets = this.props.item.getProject().getHiddenItem('wallets');
+        const wallet = wallets.getByName(walletName);
+
+        //const env=this.state.env;
+        //const account = this.dappfile.getItem("accounts", [{name: accountName}]);
+        //const accountIndex=account.get('index', env);
+        //const walletName=account.get('wallet', env);
+        //const wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
         if(!wallet) {
             return [];
         }
-        const walletType=wallet.get('type');
+        const walletType=wallet.getType();
 
         if(walletType=="external") {
             // Metamask seems to always only provide one (the chosen) account.
@@ -357,6 +378,7 @@ export default class AppView extends Component {
     };
 
     _loadFiles=(files, cb)=>{
+        const project = this.props.item.getProject();
         const bodies=[];
         var fn;
         fn=((files, bodies, cb2)=>{
@@ -365,7 +387,7 @@ export default class AppView extends Component {
                 return;
             }
             const file=files.shift();
-            this.props.project.loadFile(file, (body) => {
+            project.loadFile(file, (body) => {
                 if(body.status!=0) {
                     cb(1);
                     return;
@@ -410,8 +432,8 @@ export default class AppView extends Component {
         return html;
     };
 
-    _getTitle=()=>{
-        return "<title>"+(((this.dappfile.getObj().project ||{}).info||{}).title || "")+"</title>";
+    _getTitle = () => {
+        return "<title>" + this.props.item.getProject().getTitle() + "</title>";
     };
 
     run = (e) => {
@@ -424,7 +446,7 @@ export default class AppView extends Component {
     getAccounts = (useDefault) => {
         var index=0;
         const ret=[{name:"(no provider)",value:index++},{name:"(locked)",value:index++}];
-        this.dappfile.accounts().map((account) => {
+        this.props.item.getProject().getHiddenItem('accounts').getChildren().map((account) => {
             ret.push({name:account.name,value:index++});
         })
         return ret;

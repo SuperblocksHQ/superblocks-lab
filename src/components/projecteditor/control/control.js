@@ -308,33 +308,6 @@ export default class Control extends Component {
 
 
 
-    _openAppPreview = (e, item) => {
-        e.stopPropagation();
-
-        if (!this.props.router.panes) return;
-        var item2 = this._filterItem(item, {type2: "view"});
-        this.props.router.panes.openItem(item2);
-    };
-
-    _openAppComposite = (e,item) => {
-        e.stopPropagation();
-
-        if (!this.props.router.panes) return;
-        var item2 = this._filterItem(item, {type2: "html"});
-
-        if (!this.props.router.panes.openItem(item2)) return;
-
-        var { pane, winId } = this.props.router.panes.getWindowByItem(item2);
-
-        var item2 = this._filterItem(item, {type2: "js"});
-        this.props.router.panes.openItem(item2, pane.id);
-
-        var item2 = this._filterItem(item, {type2: "css"});
-        this.props.router.panes.openItem(item2, pane.id);
-
-        var item2 = this._filterItem(item, {type2: "view"});
-        this.props.router.panes.openItem(item2, pane.id);
-    };
 
     _openItem = (e, item) => {
         e.preventDefault();
@@ -660,25 +633,6 @@ export default class Control extends Component {
     
 
     _menuTop = (level, index, item) => <NetworkAccountSelector router={this.props.router} item={item} functions={this.props.functions} />;
-
-    _renderApplicationSectionTitle = (level, index, item) => {
-        var projectItem = item.props.state.project;
-        return (
-            <div class={style.projectContractsTitleContainer} onClick={ (e)=>this._angleClicked(e, item) }>
-                <div>
-                    { item.getTitle() }
-                </div>
-                <div class={style.buttons}>
-                    <button class="btnNoBg" onClick={(e)=>{ this._openAppPreview(e, item)} } title="Show Preview">
-                        <IconShowPreview />
-                    </button>
-                    <button class="btnNoBg" onClick={(e)=>{ this._openAppComposite(e, item)} } title="Mosaic View">
-                        <IconMosaic />
-                    </button>
-                </div>
-            </div>
-        );
-    };
 
 
 

@@ -58,11 +58,11 @@ export default class ProjectItem extends Item {
         super(props, router, functions);
         this.props.state.project = this;
         this.backend = new Backend();
-        this.txLog = new TransactionLogData({functions: functions, project: this});
+        this.props.state.txLog = new TransactionLogData({functions: functions, project: this});
     }
 
     getTxLog = () => {
-        return this.txLog;
+        return this.props.state.txLog;
     };
 
     getInode = () => {
@@ -75,6 +75,14 @@ export default class ProjectItem extends Item {
             return dappfile.getTitle();
         }
         return this.props.state.title || "";
+    };
+
+    getName = () => {
+        const dappfile = this._getDappfile();
+        if (dappfile) {
+            return dappfile.getName();
+        }
+        return this.props.state.name || "";
     };
 
     getEnvironment = () => {
@@ -172,6 +180,18 @@ export default class ProjectItem extends Item {
 
             const contractsItem = this._getContractsItem();
             this.setHiddenItem('contracts', contractsItem);
+
+            const previewItem = new Item({
+                type: "app",
+                type2: "view",
+                icon: <IconShowPreview />,
+                state: {
+                    title: "Preview",
+                    key: "app_preview",
+                    project: this,
+                }
+            }, this.router);
+            this.setHiddenItem('app_preview', previewItem);
 
             // Traverase the file structure to get `/dappfile.json`, this will prepare the file tree
             // so that the file `/dappfile.json` will get represented by the DappfileItem item created prior.
@@ -455,6 +475,21 @@ export default class ProjectItem extends Item {
     /** Only use these functions to alter the dappfile **/
 
     /**
+     * Set the name of the dapp.
+     */
+    setName = (name, cb) => {
+        const dappfile = this._getDappfile();
+        dappfile.setName(name);
+
+        this.saveDappfile().then( () => {
+            if (cb) cb (0);
+        }).catch( () => {
+            alert('Could not save dappfile.');
+            if (cb) cb (1);
+        });
+    };
+
+    /**
      * Set the title of the dapp.
      */
     setTitle = (title, cb) => {
@@ -528,9 +563,20 @@ export default class ProjectItem extends Item {
      */
     deleteAccount = (index, cb) => {
         const dappfile = this._getDappfile();
-        dappfile.accounts().splice(index,1);
+        const account = dappfile.accounts().splice(index,1)[0];
 
-        // TODO: Go through all contracts arguments and replace account address with value 0x0
+        const contracts = dappfile.contracts();
+        contracts.map( (contract) => {
+            const args = contract.args || [];
+            args.map( (arg) => {
+                if (arg.account && arg.account == account.name) {
+                    delete arg.account;
+                    arg.value = "0x0";
+                }
+            });
+            // NOTE: We do this synchronously now since we know we are dealing with localStorage.
+            this.setContractArgs(contract.source, args);
+        });
 
         this.saveDappfile().then( () => {
             if (cb) cb (0);

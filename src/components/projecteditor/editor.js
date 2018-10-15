@@ -75,7 +75,6 @@ export default class Editor extends Component {
         this.props.item.load().then(() => {
             this.redraw();
         }).catch(() => {
-            alert("Error: Could not load file.");
         });
     };
 

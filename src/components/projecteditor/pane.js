@@ -72,7 +72,7 @@ export class Pane {
         }
     };
 
-    closeAll = (cb) => {
+    closeAll = (cb, silent) => {
         //                                 _       _
         // A recursive callback function... \_(~)_/
         const fn=(status, cb)=>{
@@ -85,24 +85,24 @@ export class Pane {
                 return;
             }
             const win=this.windows[0];
-            this.closeWindow(win.getItemId(), (status)=>{fn(status, cb)}, true);
+            this.closeWindow(win.getItemId(), (status)=>{fn(status, cb)}, silent);
         };
         fn(0, cb);
     };
 
     closeWindow = (winId, cb, silent) => {
+        if (silent) {
+            // On silent we don't check, we just close the window.
+            this._closeWindow(winId);
+            if (cb) cb(0);
+            return;
+        }
+
         // Check if window can close
         const win=this.getWindow(winId);
         win.canClose((status)=>{
-            if (status == 0 || silent) {
+            if (status == 0) {
                 this._closeWindow(winId);
-                if(this.windows.length>0) {
-                    this.focusWindow(this.windows[0].getItemId());
-                }
-                else {
-                    this.props.parent.closePane(this.id);
-                }
-                this.props.parent.redraw();
             }
             if(cb) cb(status);
         }, silent);
@@ -112,6 +112,13 @@ export class Pane {
         this.windows=this.windows.filter((obj) => {
             return obj.getItemId() != winId;
         });
+        if(this.windows.length>0) {
+            this.focusWindow(this.windows[0].getItemId());
+        }
+        else {
+            this.props.parent.closePane(this.id);
+        }
+        this.props.parent.redraw();
     };
 
     focusWindow = (winId, rePerform, cb) => {

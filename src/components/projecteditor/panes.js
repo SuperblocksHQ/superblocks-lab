@@ -163,7 +163,7 @@ export default class Panes extends Component {
         this.closePane(paneId);
     }
 
-    closeAll = (cb, keepPaneId) => {
+    closeAll = (cb, keepPaneId, silent) => {
         const fn = () => {
             if(this.panes.length==0) {
                 if(cb) cb(0);
@@ -186,12 +186,12 @@ export default class Panes extends Component {
                 else {
                     if(cb) cb(1);
                 }
-            });
+            }, silent);
         };
         fn();
     };
 
-    closePane = (paneId, cb) => {
+    closePane = (paneId, cb, silent) => {
         var {pane,index}=this.getPane(paneId);
         pane.closeAll( (status) => {
             if(status==0) {
@@ -206,7 +206,7 @@ export default class Panes extends Component {
                 this.setState();
             }
             if(cb) cb(status);
-        });
+        }, null, silent);
     };
 
     closeAllPanes = (e) => {

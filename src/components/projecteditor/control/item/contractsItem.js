@@ -31,4 +31,13 @@ export default class ContractsItem extends Item {
             return contract.getSource() == source;
         })[0];
     };
+
+    /**
+     * Return contract item by it's name.
+     */
+    getByName = (name) => {
+        return this.getChildren().filter( (contract) => {
+            return contract.getName() == name;
+        })[0];
+    };
 }

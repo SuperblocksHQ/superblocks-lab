@@ -104,6 +104,14 @@ export default class Dappfile {
         return this.root.project.info.title || "";
     };
 
+    getName = () => {
+        return this.root.project.info.name || "";
+    };
+
+    setName = (name) => {
+        this.root.project.info.name = name;
+    };
+
     setTitle = (title) => {
         this.root.project.info.title = title;
     };

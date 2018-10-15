@@ -148,7 +148,7 @@ export default class Deployer extends Component {
             endpoint: endpoint,
             network: this.network,
             gasPrice: "0x3B9ACA00", //TODO
-            gasLimit: "0x788B60", //TODO
+            gasLimit: "0x288B60", //TODO
             recompile: this.recompile,
             redeploy: redeploy,
             contract: contract,
@@ -162,7 +162,7 @@ export default class Deployer extends Component {
             addresssrc: this._makeFileName(src, this.network, "address"),
             txsrc: this._makeFileName(src, this.network, "tx"),
             deploysrc: this._makeFileName(src, this.network, "deploy"),
-            contractsjssrc: "/build/app/" + this.props.item.getParent().getName() + "." + this.network + ".js",
+            contractsjssrc: "/build/contracts/" + this.props.item.getParent().getName() + '/' + this.props.item.getParent().getName() + "." + this.network + ".js",
         };
 
         this.accountName = project.getAccount();
@@ -294,7 +294,7 @@ export default class Deployer extends Component {
                                     }
                                     this._stdout("Got receipt: " + res);
                                     obj.txhash2=res;
-                                    const args=obj.contract.getArgs() || [];
+                                    const args = (obj.contract.getArgs() || []).slice(0);  // We MUST copy the array since we are shifting out the elements.
                                     project.getTxLog().addTx({deployArgs:args,contract:this.props.item.getParent().getName(),hash:res,context:'Contract deployment using external provider',network:obj.network});
                                     finalize(obj);
                                 });
@@ -403,13 +403,15 @@ export default class Deployer extends Component {
             }
         }
         else if(arg.contract) {
-            const contract = this.props.item.getParent();
+            const src = arg.contract;
+            const contracts = this.props.item.getProject().getHiddenItem('contracts');
+            const contract = contracts.getBySource(arg.contract);
             if (!contract) {
                 this._stderr("Contract " + arg.contract + " is referenced as argument but doesn't exist.");
                 cb(1);
                 return;
             }
-            const src = contract.getSource();
+
             const tag = env;
             const txsrc = this._makeFileName(src, this.network, "tx");
             const deploysrc = this._makeFileName(src, this.network, "deploy");
@@ -499,7 +501,7 @@ export default class Deployer extends Component {
             });
         };
 
-        const args = obj.contract.getArgs() || [];
+        const args = (obj.contract.getArgs() || []).slice(0);  // We MUST copy the array since we are shifting out the elements.
         const args2 = [];
 
         fn(args, args2, obj.env, obj.tag, (status) => {
@@ -771,7 +773,7 @@ export default class Deployer extends Component {
             if(err==null) {
                 this._stdout("Got receipt: " + res);
                 obj.txhash2=res;
-                const args=obj.contract.getArgs() || [];
+                const args = (obj.contract.getArgs() || []).slice(0);  // We MUST copy the array since we are shifting out the elements.
                 this.props.item.getProject().getTxLog().addTx({deployArgs:args,contract:this.props.item.getParent().getName(),hash:res,context:'Contract deployment',network:obj.network});
                 cb(0);
             }

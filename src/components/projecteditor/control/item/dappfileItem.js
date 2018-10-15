@@ -136,24 +136,20 @@ export default class DappfileItem extends FileItem {
                 {
                     "desc": "This is a wallet for local development",
                     "name": "development",
-                    "blockchain": "ethereum"
                 },
                 {
                     "desc": "A private wallet",
                     "name": "private",
-                    "blockchain": "ethereum"
                 },
                 {
                     "desc": "External wallet integrating with Metamask and other compatible wallets",
                     "name": "external",
-                    "blockchain": "ethereum",
                     "type": "external"
                 }
             ],
             "accounts": [
                 {
                     "name": "Default",
-                    "blockchain": "ethereum",
                     "_environments": [
                         {
                             "name": "browser",

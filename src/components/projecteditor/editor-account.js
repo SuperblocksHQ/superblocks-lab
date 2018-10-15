@@ -38,6 +38,15 @@ export default class AccountEditor extends Component {
         this.setState();
     };
 
+    canClose = (cb, silent) => {
+        if ((this.state.accountBalanceDirty || this.state.accountAddressDirty || this.state.accountNameDirty) && !silent) {
+            const flag = confirm("There is unsaved data. Do you want to close tab and loose the changes?");
+            cb(flag ? 0 : 1);
+            return;
+        }
+        cb(0);
+    };
+
     environments = () => {
         const project = this.props.item.getProject();
         const items = project.getHiddenItem("environments");

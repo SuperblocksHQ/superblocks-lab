@@ -27,7 +27,6 @@ export default class ContractInteraction extends Component {
         super(props);
         this.id=props.id+"_contractinteraction";
         this.props.parent.childComponent=this;
-        this.dappfile = this.props.project.props.state.data.dappfile;
         this.provider=new SuperProvider({that:this});
         this.setState({account:null});
         this.contract_address="";
@@ -42,13 +41,17 @@ export default class ContractInteraction extends Component {
             const obj=this.props.functions.networks.endpoints[key];
             if(obj.endpoint==endpoint) network=key;
         });
-        this.props.project.props.state.txlog.addTx({hash:hash,context:'Contract interaction',network:network});
+        //this.props.project.props.state.txlog.addTx({hash:hash,context:'Contract interaction',network:network});
+        this.props.item.getProject().getTxLog().addTx({hash: hash, context: 'Contract interaction', network: network});
     };
 
-    _getEnv=()=>{
+    _getEnv = () => {
         // Update the chosen network and account
-        const accountName = this.props.project.props.state.data.account;
-        const env=this.props.project.props.state.data.env;
+        //const accountName = this.props.project.props.state.data.account;
+        const project = this.props.item.getProject();
+        const accountName = project.getAccount();
+        //const env=this.props.project.props.state.data.env;
+        const env = project.getEnvironment();
         this.setState({account:accountName, network:env});
     };
 
@@ -60,7 +63,6 @@ export default class ContractInteraction extends Component {
     };
 
     componentWillReceiveProps(props) {
-        this.dappfile = props.project.props.state.data.dappfile;
     }
 
     writeContent = (status, content) => {
@@ -97,19 +99,24 @@ export default class ContractInteraction extends Component {
     };
 
     render2 = () => {
-        const env=this.state.network;
-        const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
+        const project = this.props.item.getProject();
+        //const env=this.state.network;
+        const env = project.getEnvironment();
+        //const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
+        const contract = this.props.item.getParent();
+
         if (!contract) return;  // This gets called twice, with the previous contract name, after renaming a contract.
-        const src=contract.get('source');
-        const network=this.state.network;
+        const src=contract.getSource();
+        //const network=this.state.network;
+        const network = env;
         const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
         const tag=env;
         const srcabi=this._makeFileName(src, "", "abi");
         const addresssrc=this._makeFileName(src, network, "address");
         const txsrc=this._makeFileName(src, network, "tx");
         const deploysrc=this._makeFileName(src, network, "deploy");
-        const contracts=[this.props.contract];
-        this.props.project.loadFile(addresssrc, (body) => {
+        const contracts=[contract.getName()];
+        project.loadFile(addresssrc, (body) => {
             if(body.status!=0) {
                 this.writeContent(1, "Missing file(s), contract not deployed?");
                 return;
@@ -120,7 +127,7 @@ export default class ContractInteraction extends Component {
                     this.writeContent(1, "Contract does not exist. When running the in-browser blockchain it gets wiped on every refresh.");
                     return;
                 }
-                this.props.project.loadFile(srcabi, (body) => {
+                project.loadFile(srcabi, (body) => {
                     if(body.status!=0) {
                         this.writeContent(1, "Missing file(s)");
                         return;
@@ -134,7 +141,7 @@ export default class ContractInteraction extends Component {
                             this.writeContent(1, "Missing contract javascript file, have you deployed all contracts?");
                             return;
                         }
-                        const rendered=Generator.render(abi, this.props.contract);
+                        const rendered=Generator.render(abi, contract.getName());
                         const content=this.getOuterContent(rendered.html, jsbodies.join("\n")+rendered.js, endpoint, this._getAccountAddress());
                         this.writeContent(0, content);
                     });
@@ -152,15 +159,24 @@ export default class ContractInteraction extends Component {
         const accountName=this._getAccount();
         if(!accountName) return [];
 
-        const env=this.state.network;
-        const account = this.dappfile.getItem("accounts", [{name: accountName}]);
-        const accountIndex=account.get('index', env);
-        const walletName=account.get('wallet', env);
-        const wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
+        //const env=this.state.network;
+        const env = this.props.item.getProject().getEnvironment();
+        //const account = this.dappfile.getItem("accounts", [{name: accountName}]);
+        //const accountIndex=account.get('index', env);
+        //const walletName=account.get('wallet', env);
+        //const wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
+
+        const accounts = this.props.item.getProject().getHiddenItem('accounts');
+        const account = accounts.getByName(accountName);
+        const accountIndex = account.getAccountIndex(env);
+        const walletName = account.getWallet(env);
+        const wallets = this.props.item.getProject().getHiddenItem('wallets');
+        const wallet = wallets.getByName(walletName);
+
         if(!wallet) {
             return [];
         }
-        const walletType=wallet.get('type');
+        const walletType=wallet.getWalletType();
 
         if(walletType=="external") {
             // Metamask seems to always only provide one (the chosen) account.
@@ -248,7 +264,7 @@ export default class ContractInteraction extends Component {
                 return;
             }
             const file=files.shift();
-            this.props.project.loadFile(file, (body) => {
+            this.props.item.getProject().loadFile(file, (body) => {
                 if(body.status!=0) {
                     cb(1);
                     return;
@@ -264,11 +280,11 @@ export default class ContractInteraction extends Component {
         });
     };
 
-    _loadJsFiles=(contracts, env, cb)=>{
+    _loadJsFiles=(contracts, network, cb)=>{
         const files=[];
         const bodies=[];
         for(var index=0;index<contracts.length;index++) {
-            files.push("/build/app/"+contracts[index]+"."+env+".js");
+            files.push("/build/app/" + contracts[index] + "." + network + ".js");
         }
         var fn;
         fn=((files, bodies, cb2)=>{
@@ -277,7 +293,7 @@ export default class ContractInteraction extends Component {
                 return;
             }
             const file=files.shift();
-            this.props.project.loadFile(file, (body) => {
+            this.props.item.getProject().loadFile(file, (body) => {
                 bodies.push(body.contents);
                 fn(files, bodies, (status)=>{
                     cb2(status);
@@ -464,9 +480,6 @@ export default class ContractInteraction extends Component {
     };
 
     renderToolbar = () => {
-        const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
-        const env=this.state.network;
-        const network=this.state.network;
         return (
             <div class={style.toolbar} id={this.id+"_header"}>
                 <div class={style.buttons}>
@@ -488,7 +501,6 @@ export default class ContractInteraction extends Component {
         if(this.updateBalanceBusy) return;
         this.updateBalanceBusy=true;
         const env=this.state.network;
-        const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
         const network=this.state.network;
         const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
         const web3=this._getWeb3(endpoint);

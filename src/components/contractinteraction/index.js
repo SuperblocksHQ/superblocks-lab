@@ -237,10 +237,10 @@ var render=function(abi, contract) {
             }
             var value=0;
             if(item.payable) {
-                value=parseInt(document.getElementById(id+"_payable").value)||0;
+                value=new _web3.BigNumber(document.getElementById(id+"_payable").value||"0");
             }
-            var gas=parseInt(document.getElementById(id+"_gas").value)||"300000";
-            var gasPrice=parseInt(document.getElementById(id+"_gasPrice").value)||"1000000000";
+            var gas=document.getElementById(id+"_gas").value||"300000";
+            var gasPrice=document.getElementById(id+"_gasPrice").value||"1000000000";
             args.push({from: accounts[0], value: value, gas: gas, gasPrice: gasPrice});
         }
         const fn=item.name;

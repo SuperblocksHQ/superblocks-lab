@@ -145,12 +145,12 @@ export class Window {
         }
         else if(this.props.item.props.type=="app" && this.props.item.props.type2=="view") {
             return (
-                <AppView id={this.subId} parent={this} project={this.props.item.props._project} router={this.props.router} functions={this.props.functions} />
+                <AppView id={this.subId} parent={this} item={this.props.item} router={this.props.router} functions={this.props.functions} />
             );
         }
         else if(this.props.item.props.type=="contract" && this.props.item.props.type2=="interact") {
             return (
-                <ContractInteraction id={this.subId} parent={this} contract={this.props.item.props._contract} project={this.props.item.props._project} router={this.props.router} functions={this.props.functions} />
+                <ContractInteraction id={this.subId} parent={this} item={this.props.item} router={this.props.router} functions={this.props.functions} />
             );
         }
         else if(this.props.item.props.type=="transaction_log") {

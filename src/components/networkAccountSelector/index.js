@@ -243,14 +243,15 @@ class AccountSelector extends Component {
 
         const accountsItem = project.getHiddenItem("accounts");
 
-        var isCurrent = (accountsItem.getChildren()[index].getName() == project.getAccount());
+        const account = accountsItem.getChildren()[index];
+        const isCurrent = (account.getName() == project.getAccount());
 
         if (isCurrent) {
             accountsItem.setChosen(null);
         }
 
         project.deleteAccount(index, () => {
-            // TODO: close any item open.
+            this.props.router.panes.closeItem(account, null, true);
             this.props.router.main.redraw(true);
         });
     };

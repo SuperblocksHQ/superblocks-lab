@@ -74,6 +74,7 @@ export default class Backend {
             }
         }
         catch (e) {
+            console.log("Could not convert project", e);
             cb(2);
             return;
         }
@@ -104,10 +105,21 @@ export default class Backend {
         });
 
         const contracts = dappfile.contracts.map( (contract) => {
+            // Go through args to see if there are any contract names, if so switch to contract source.
+            const args = contract.args || [];
+            const args2 = args.map( (arg) => {
+                if (arg.contract) {
+                    const targetContract = dappfile.contracts.filter( (c) => {
+                        return (c.name == arg.contract);
+                    })[0];
+                    arg.contract = targetContract.source;
+                }
+                return arg;
+            });
             return {
                 name: contract.name,
                 source: contract.source,
-                args: contract.args
+                args: args2
             };
         });
 
@@ -127,21 +139,21 @@ export default class Backend {
         };
 
         files['/'].children['dappfile.json'] = {type: 'f', contents: JSON.stringify(dappfile2)};
+        const build = files['/'].children['build'] || {children: {}, type: 'd'};
+        files['/'].children['build'] = build;
+        const contractsDir = build.children['contracts'] || {children: {}, type: 'd'};
+        build.children['contracts'] = contractsDir;
 
         // Move .dotfiles to their new locations.
         // Go through all .dotfiles below `/contracts`, do some regex to figure stuff out
         // and then move them to new locations.
         const createFile = (subdir, file, contents) => {
             // Create a file below `/build`.
-            const build = files['/'].children['build'] || {children: {}, type: 'd'};
-            files['/'].children['build'] = build;
-            const dir = build.children[subdir] || {children: {}, type: 'd'};
-            build.children[subdir] = dir;
+            const dir = contractsDir.children[subdir] || {children: {}, type: 'd'};
+            contractsDir.children[subdir] = dir;
             dir.children[file] = {type: 'f', contents: contents};
         };
         const children = files['/'].children['contracts'].children;
-        // TODO: move .js files.
-        // what are the final filenames, actually?
         do {
             var ready = true;
             const keys = Object.keys(children);
@@ -151,7 +163,7 @@ export default class Backend {
                 if (file['type'] != 'f') {
                     continue;
                 }
-                var a = name.match("^[.](.+).sol.([^.]+)([.]?.*).(deploy|abi|meta|bin|hash|address|tx)$");
+                var a = name.match("^[.](.+).sol.([^.]+)([.]?.*).(deploy|address|tx)$");
                 if (a) {
                     const contractName = a[1];
                     const networkName = a[2];
@@ -161,8 +173,49 @@ export default class Backend {
                     ready = false;
                     break;
                 }
+                var a = name.match("^[.](.+).sol.([^.]+)([.]?.*).(abi|meta|bin|hash)$");
+                if (a) {
+                    const contractName = a[1];
+                    const networkName = a[2];
+                    const type = a[4];
+                    createFile(contractName, contractName + "." + type, file.contents);
+                    delete children[name];
+                    ready = false;
+                    break;
+                }
             };
         } while (!ready);
+
+        // Move .js files.
+        var childrenJs;
+        var ready = false;
+        try {
+            childrenJs = files['/'].children['app'].children['contracts'].children;
+            delete files['/'].children['app'].children['contracts'];
+        } catch (e) {
+            ready = true;
+        }
+        while (!ready) {
+            ready = true;
+            const keys = Object.keys(childrenJs);
+            for (let index=0; index < keys.length; index++) {
+                const name = keys[index];
+                const file = childrenJs[name];
+                if (file['type'] != 'f') {
+                    continue;
+                }
+                var a = name.match("^[.]([^.]+).([^.]+)[.](js)$");
+                if (a) {
+                    const contractName = a[1];
+                    const networkName = a[2];
+                    const type = a[3];
+                    createFile(contractName, contractName + "." + networkName + "." + type, file.contents);
+                    delete childrenJs[name];
+                    ready = false;
+                    break;
+                }
+            };
+        }
 
         const newProject = {
             inode: project.inode,

@@ -104,17 +104,26 @@ export default class SuperProvider {
                 callback(err,null);
                 return;
             }
-            const env=this.that.props.project.props.state.data.env;
-            const account = this.that.dappfile.getItem("accounts", [{name: accountName}]);
-            const walletName=account.get('wallet', env);
-            const wallet = this.that.dappfile.getItem("wallets", [{name: walletName}]);
+            //const account = this.that.dappfile.getItem("accounts", [{name: accountName}]);
+            const accounts = this.that.props.item.getProject().getHiddenItem('accounts');
+            const account = accounts.getByName(accountName);
+
+            //const env=this.that.props.project.props.state.data.env;
+            const env = this.that.props.item.getProject().getEnvironment();
+            //const walletName=account.get('wallet', env);
+            const walletName=account.getWallet(env);
+            //const wallet = this.that.dappfile.getItem("wallets", [{name: walletName}]);
+
+            const wallets = this.that.props.item.getProject().getHiddenItem('wallets');
+            const wallet = wallets.getByName(walletName);
+
             if(!wallet) {
                 const err="Wallet not found.";
                 alert(err);
                 callback(err,null);
                 return;
             }
-            const walletType=wallet.get('type');
+            const walletType=wallet.getWalletType();
 
             if(walletType=="external") {
                 if(data.endpoint.toLowerCase()=="http://superblocks-browser") {
@@ -224,10 +233,16 @@ export default class SuperProvider {
     };
 
     _openWallet=(obj, accountName, cb)=>{
-        const account = this.that.dappfile.getItem("accounts", [{name: accountName}]);
+        //const account = this.that.dappfile.getItem("accounts", [{name: accountName}]);
 
-        const walletName=account.get('wallet', obj.env);
-        const accountIndex=account.get('index', obj.env);
+        const accounts = this.that.props.item.getProject().getHiddenItem('accounts');
+        const account = accounts.getByName(accountName);
+
+        //const walletName=account.get('wallet', obj.env);
+        //const accountIndex=account.get('index', obj.env);
+
+        const accountIndex = account.getAccountIndex(obj.env);
+        const walletName = account.getWallet(obj.env);
 
         const getKey=()=>{
             this.that.props.functions.wallet.getKey(walletName, accountIndex, (status, key)=>{

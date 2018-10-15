@@ -393,6 +393,70 @@ export default class FileItem extends Item {
         }
     };
 
+    // Just gonna put this here for now
+    _renderApplicationSectionTitle = (level, index, item) => {
+        return (
+            <div class={style.projectContractsTitleContainer} onClick={item._angleClicked}>
+                <div>
+                    { item.getTitle() }
+                </div>
+                <div class={style.buttons}>
+                    <button class="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
+                        <IconShowPreview />
+                    </button>
+                    <button class="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
+                        <IconMosaic />
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    _openAppPreview = (e, item) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        const view = item.getProject().getHiddenItem("app_preview");
+
+        if(this.router.panes) this.router.panes.openItem(view);
+    };
+
+    _openAppComposite = (e,item) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        const html = item.getProject().getItemByPath(['app.html'], item);
+        const css = item.getProject().getItemByPath(['app.css'], item);
+        const js = item.getProject().getItemByPath(['app.js'], item);
+        const view = item.getProject().getHiddenItem("app_preview");
+        Promise.all([html, js, css, view]).then( (a) => {
+            if(this.router.panes) {
+                for (let index=0; index < a.length; index++) {
+                    var item = a[index];
+                    var { pane, winId } = this.router.panes.getWindowByItem(a[0]);
+                }
+                if (! winId) {
+                    this.router.panes.openItem(a[0]);
+                    var { pane, winId } = this.router.panes.getWindowByItem(a[0]);
+                }
+                for (let index=0; index < a.length; index++) {
+                    var item = a[index];
+                    var o = this.router.panes.getWindowByItem(item);
+                    if (o.winId && o.pane.id != pane.id) {
+                        this.router.panes.closeItem(item, null, true);
+                        o.winId = null;
+                    }
+                    if (! o.winId) {
+                        this.router.panes.openItem(item, pane.id);
+                    }
+                }
+            }
+        }).catch( (e) => {
+            const path = item.getFullPath();
+            alert("Could not find " + path + "/app.{html,css,js} files.");
+        });
+    };
+
     _renderChildren = (cb) => {
         if (this.getType() == 'folder') {
             const project = this.getProject();
@@ -402,9 +466,10 @@ export default class FileItem extends Item {
                     list.map( (file) => {
                         if (file.type == "d") {
                             var render;
-                            //if (fullpath == "/app/") {
-                                //render = this._renderApplicationSectionTitle;
-                            //}
+                            if (this.getFullPath() == "/" && file.name == "app") {
+                                console.log(this.getFullPath(), file.name);
+                                render = this._renderApplicationSectionTitle;
+                            }
                             //if (this.props.filter) {
                                 //render = this.
                             //}
@@ -485,7 +550,7 @@ export default class FileItem extends Item {
                                         _tag: 2
                                     }
                                 }, this.router);
-                                configureItem.props.onClick = configureItem._openItem;
+                                interactItem.props.onClick = interactItem._openItem;
 
                                 const compileItem = new Item({
                                     type: "contract",
@@ -515,7 +580,7 @@ export default class FileItem extends Item {
                                 }, this.router);
                                 deployItem.props.onClick = deployItem._openItem;
 
-                                const contractChildren = [compileItem, deployItem, configureItem];
+                                const contractChildren = [compileItem, deployItem, configureItem, interactItem];
                                 //fileItem.setChildren(contractChildren);
                                 this._copyState(contractChildren, fileItem.props.state.children || []);
                                 fileItem.props.state.children=contractChildren;

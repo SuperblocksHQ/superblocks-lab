@@ -196,8 +196,8 @@ class ProjectDialog extends Component {
                 alert("Import cancelled.");
                 return;
             }
-            if (title2.match(/([\"\'\\]+)/) || title2.length > 40) {
-                alert('Illegal title. No special characters allowed. Max 40 characters.');
+            if (title2.match(/([\"\'\\]+)/) || title2.length > 100) {
+                alert('Illegal title. No special characters allowed. Max 100 characters.');
                 continue;
             }
             title = title2;

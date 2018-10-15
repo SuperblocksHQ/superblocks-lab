@@ -26,11 +26,13 @@ export default class AppEditor extends Component {
         this.id=props.id+"_editor";
         this.props.parent.childComponent=this;
 
-        //this.dappfile = this.props.project.props.state.data.dappfile;
-        //this.project = this.dappfile.getObj().project || {};
-        //this.project.info=this.project.info||{};
-        //this.project.info.title=this.project.info.title||"";
-        this.setState({form:{title:this.props.item.getProject().getTitle()}});
+        this.setState({
+            form: {
+                title: this.props.item.getProject().getTitle(),
+                name: this.props.item.getProject().getName()
+            },
+            isDirty: false,
+        });
     }
 
     componentWillReceiveProps(props) {
@@ -46,34 +48,38 @@ export default class AppEditor extends Component {
     focus = (rePerform) => {
     };
 
+    canClose = (cb, silent) => {
+        if (this.state.isDirty && !silent) {
+            const flag = confirm("There is unsaved data. Do you want to close tab and loose the changes?");
+            cb(flag ? 0 : 1);
+            return;
+        }
+        cb(0);
+    };
+
     save = (e) => {
         e.preventDefault();
         if(this.state.form.title.length==0) {
             alert("Please give the project a snappy title.");
             return false;
         }
-        if(this.state.form.title.match(/([\"\']+)/)) {
-            alert('Illegal title. No special characters allowed.');
+        if(!this.state.form.name.match(/^([a-zA-Z0-9-]+)$/)) {
+            alert('Illegal projectname. Only A-Za-z0-9 and dash (-) allowed. Max 30 characters.');
             return false;
         }
+        this.props.item.getProject().setName(this.state.form.name);
         this.props.item.getProject().setTitle(this.state.form.title);
         this.props.item.getProject().saveDappfile().then( () => {
-
+            this.setState({isDirty:false});
+            this.props.router.control.redrawMain(true);
         });
-        //this.project.info.title=this.state.form.title;
-        //this.dappfile.getObj().project=this.project;
-        //this.props.project.save((status)=>{
-            //if(status==0) {
-                //this.props.parent.close();
-            //}
-        //});
     };
 
     onChange = (e, key) => {
         var value=e.target.value;
         const form=this.state.form;
         form[key]=value;
-        this.setState(form);
+        this.setState({isDirty:true, form:form});
     };
 
     render() {
@@ -86,10 +92,14 @@ export default class AppEditor extends Component {
                     <div class={style.form}>
                         <form action="">
                             <div class={style.field}>
-                                <p>Title:</p>
-                                <input maxLength="30" type="text" value={this.state.form.title} onChange={(e)=>{this.onChange(e, 'title')}} />
+                                <p>Name:</p>
+                                <input maxLength="30" type="text" value={this.state.form.name} onKeyUp={(e)=>{this.onChange(e, 'name')}} onChange={(e)=>{this.onChange(e, 'name')}} />
                             </div>
-                            <a href="#" class="btn2" onClick={this.save}>Save</a>
+                            <div class={style.field}>
+                                <p>Title:</p>
+                                <input maxLength="100" type="text" value={this.state.form.title} onKeyUp={(e)=>{this.onChange(e, 'title')}} onChange={(e)=>{this.onChange(e, 'title')}} />
+                            </div>
+                            <button href="#" class="btn2" disabled={!this.state.isDirty} onClick={this.save}>Save</button>
                         </form>
                     </div>
                 </div>

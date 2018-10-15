@@ -41,7 +41,7 @@ class ConstructorArgument extends Component {
         if (argument.account != null) {
             type = "account";
             const options = [];
-            accounts.map((account) => options.push(account.name));
+            accounts.map((account) => options.push(account.getName()));
             argument[type] = argument[type] || options[0];
 
             if (options.indexOf(argument[type]) == -1) {
