@@ -37,7 +37,7 @@ export default class ContractItem extends FileItem {
      *
      */
     notifyMoved = (oldPath, cb) => {
-        this.getProject().setContractSource(oldPath, this.getFullPath(), cb);
+        this.getProject().moveContract(oldPath, this.getFullPath(), cb);
     }
 
     /**

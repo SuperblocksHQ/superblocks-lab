@@ -569,6 +569,7 @@ export default class ProjectItem extends Item {
         const dappfile = this._getDappfile();
         const account = dappfile.accounts().splice(index,1)[0];
 
+        // Go through all contracts arguments and replace account argument with "0x0".
         const contracts = dappfile.contracts();
         contracts.map( (contract) => {
             const args = contract.args || [];
@@ -598,7 +599,18 @@ export default class ProjectItem extends Item {
             }
         });
 
-        // TODO: Go through all contracts arguments and replace old account name with new
+        // Go through all contracts arguments and replace old account name with new name.
+        const contracts = dappfile.contracts();
+        contracts.map( (contract) => {
+            const args = contract.args || [];
+            args.map( (arg) => {
+                if (arg.account && arg.account == oldname) {
+                    arg.account = newname;
+                }
+            });
+            // NOTE: We do this synchronously now since we know we are dealing with localStorage.
+            this.setContractArgs(contract.source, args);
+        });
 
         this.saveDappfile().then( () => {
             if (cb) cb (0);
@@ -658,8 +670,21 @@ export default class ProjectItem extends Item {
             dappfile.contracts().splice(index, 1);
         }
 
-        // TODO: Go through all contracts arguments and replace contract source with value 0x0
-        // TODO: delete all build files for this contract.
+        // Go through all contracts arguments and replace contract source with value 0x0
+        const contracts = dappfile.contracts();
+        contracts.map( (contract) => {
+            const args = contract.args || [];
+            args.map( (arg) => {
+                if (arg.contract && arg.contract == source) {
+                    delete arg.contract;
+                    arg.value = "0x0";
+                }
+            });
+            // NOTE: We do this synchronously now since we know we are dealing with localStorage.
+            this.setContractArgs(contract.source, args);
+        });
+
+        this._deleteContractBuildFiles(source);
 
         this.saveDappfile().then( () => {
             if (cb) cb (0);
@@ -669,12 +694,29 @@ export default class ProjectItem extends Item {
         });
     };
 
-    setContractSource = (source, newSource, cb) => {
+    _deleteContractBuildFiles = (source) => {
+        // TODO
+    };
+
+    moveContract = (source, newSource, cb) => {
         const dappfile = this._getDappfile();
         const contract = dappfile.getItem('contracts', [{source: source}]);
         contract.set("source", newSource);
 
-        // TODO: go through all contracts and update arguments.
+        // Go through all contracts arguments and replace contract source with new value.
+        const contracts = dappfile.contracts();
+        contracts.map( (contract) => {
+            const args = contract.args || [];
+            args.map( (arg) => {
+                if (arg.contract && arg.contract == source) {
+                    arg.contract = newSource;
+                }
+            });
+            // NOTE: We do this synchronously now since we know we are dealing with localStorage.
+            this.setContractArgs(contract.source, args);
+        });
+
+        // TODO: move all build files for this contract.
 
         this.saveDappfile().then( () => {
             if (cb) cb (0);
@@ -689,8 +731,6 @@ export default class ProjectItem extends Item {
         const contract = dappfile.getItem('contracts', [{source: source}]);
         contract.set("name", newName);
 
-        // TODO: go through all contracts and update arguments.
-
         this.saveDappfile().then( () => {
             if (cb) cb (0);
         }).catch( () => {
@@ -703,8 +743,6 @@ export default class ProjectItem extends Item {
         const dappfile = this._getDappfile();
         const contract = dappfile.getItem('contracts', [{source: source}]);
         contract.set("args", args);
-
-        // TODO: go through all contracts and update arguments.
 
         this.saveDappfile().then( () => {
             if (cb) cb (0);
