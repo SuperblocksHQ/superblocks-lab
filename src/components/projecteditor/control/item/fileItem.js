@@ -414,7 +414,7 @@ export default class FileItem extends Item {
                                 </a>
                             </div>
                             { !this.isReadOnly() &&
-                                <div class={style.buttons}>
+                                <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
                                     <a href="#" title="Rename file" onClick={this._clickRenameFile}>
                                         <IconEdit />
                                     </a>
@@ -462,7 +462,7 @@ export default class FileItem extends Item {
                         <div class={style.title} title={this.getTitle()}>
                             <a href="#">{this.getTitle()}</a>
                         </div>
-                        <div class={style.buttons}>
+                        <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
                             <a href="#" title="New File" onClick={this._clickNewFile}>
                                 <IconAddFile />
                             </a>
@@ -649,7 +649,7 @@ export default class FileItem extends Item {
                                 const compileItem = new Item({
                                     type: "contract",
                                     type2: "compile",
-                                    icon: <IconConfigure />,
+                                    icon: <IconCompile />,
                                     state: {
                                         key: "compile",
                                         title: "Compile",
