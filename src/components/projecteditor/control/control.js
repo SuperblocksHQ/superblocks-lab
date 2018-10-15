@@ -43,7 +43,7 @@ import {
     IconClone,
     IconInteract,
     IconContract,
-    IconAddContract,
+    IconAddFile,
     IconHtml,
     IconJS,
     IconCss,
@@ -492,7 +492,7 @@ export default class Control extends Component {
                 //</div>
                 //<div class={style.buttons}>
                     //<button class="btnNoBg" title="New contract" onClick={(e)=>{this._clickNewContract(e, projectItem);}}>
-                        //<IconAddContract />
+                        //<IconAddFile />
                     //</button>
                 //</div>
             //</div>
@@ -630,7 +630,7 @@ export default class Control extends Component {
     //
     //
     //
-    
+
 
     _menuTop = (level, index, item) => <NetworkAccountSelector router={this.props.router} item={item} functions={this.props.functions} />;
 

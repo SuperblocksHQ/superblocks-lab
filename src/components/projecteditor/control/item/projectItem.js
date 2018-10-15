@@ -38,7 +38,7 @@ import {
     IconClone,
     IconInteract,
     IconContract,
-    IconAddContract,
+    IconAddFile,
     IconHtml,
     IconJS,
     IconCss,

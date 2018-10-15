@@ -61,7 +61,7 @@ class IconImg extends Component {
 }
 
 export const IconDeployGreen = ({...props}) => <IconImg src={'/static/img/icon-deploy-green.svg'} {...props} />;
-export const IconAddContract = ({...props}) => <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16"><polygon points="12,3 8,3 8,4 11,4 11,7 14,7 14,14 6,14 6,8 5,8 5,15 15,15 15,6"/><path d="M7 3.018h-2v-2.018h-1.981v2.018h-2.019v1.982h2.019v2h1.981v-2h2v-1.982z" {...props}/></svg>;
+export const IconAddFile = ({...props}) => <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16"><polygon points="12,3 8,3 8,4 11,4 11,7 14,7 14,14 6,14 6,8 5,8 5,15 15,15 15,6"/><path d="M7 3.018h-2v-2.018h-1.981v2.018h-2.019v1.982h2.019v2h1.981v-2h2v-1.982z" {...props}/></svg>;
 export const IconRun = () => <FaIcon icon={iconRun} />;
 export const IconSave = () => <FaIcon icon={iconSave} />;
 export const IconCompile = () => <FaIcon icon={iconCompile} />;

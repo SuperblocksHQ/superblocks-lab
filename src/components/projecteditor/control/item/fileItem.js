@@ -28,13 +28,14 @@ import {
     IconClone,
     IconInteract,
     IconContract,
-    IconAddContract,
+    IconAddFile,
     IconHtml,
     IconJS,
     IconCss,
     IconMd,
     IconShowPreview,
     IconMosaic,
+    IconEdit,
 } from '../../../icons';
 import style from '../style';
 
@@ -353,43 +354,49 @@ export default class FileItem extends Item {
 
     _renderFileTitle = (level, index) => {
         if (this.getType() == "file") {
-            return (<div class={style.projectContractsTitleContainer} onClick={this._openItem}>
-                <div class={style.title}>
-                    <a title={this.getTitle()} href="#">
-                        {this.getTitle()}
-                    </a>
-                </div>
-                {!this.isReadOnly() && <div class={style.buttons}>
-                    <a href="#" title="Rename file" onClick={this._clickRenameFile}>
-                        <IconClone />
-                    </a>
-                    <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
-                        <IconTrash />
-                    </a>
-                </div>}
-            </div>);
-        }
-        else if(this.getType() == "folder") {
-            return (<div class={style.projectContractsTitleContainer} onClick={this._angleClicked}>
-                <div class={style.title} title={this.getTitle()}>
-                    <a href="#">{this.getTitle()}</a>
-                </div>
-                <div class={style.buttons}>
-                    <a href="#" title="New..." onClick={this._clickNewFile}>
-                        <IconFile />
-                    </a>
-                    {this.getFullPath() != "/" &&
-                    <div style="display: inline;">
-                        <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
-                            <IconClone />
-                        </a>
-                        <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
-                            <IconTrash />
+            return (
+                <div class={style.projectContractsTitleContainer} onClick={this._openItem}>
+                    <div class={style.title}>
+                        <a title={this.getTitle()} href="#">
+                            {this.getTitle()}
                         </a>
                     </div>
-                    }
+                    {!this.isReadOnly() && <div class={style.buttons}>
+                        <a href="#" title="Rename file" onClick={this._clickRenameFile}>
+                            <IconEdit />
+                        </a>
+                        <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
+                            <IconTrash />
+                        </a>
+                    </div>}
                 </div>
-            </div>);
+            );
+        } else if (this.getType() == "folder") {
+            return (
+                <div class={style.projectContractsTitleContainer} onClick={this._angleClicked}>
+                    <div class={style.title} title={this.getTitle()}>
+                        <a href="#">{this.getTitle()}</a>
+                    </div>
+                    <div class={style.buttons}>
+                        <a href="#" title="New..." onClick={this._clickNewFile}>
+                            <IconAddFile />
+                        </a>
+                        <a href="#" title="New..." onClick={this._clickNewFile}>
+                            <IconAddFile />
+                        </a>
+                        {this.getFullPath() != "/" &&
+                        <div style="display: inline;">
+                            <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
+                                <IconEdit />
+                            </a>
+                            <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
+                                <IconTrash />
+                            </a>
+                        </div>
+                        }
+                    </div>
+                </div>
+            );
         }
     };
 
