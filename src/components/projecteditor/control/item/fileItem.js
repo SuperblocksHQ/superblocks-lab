@@ -29,6 +29,7 @@ import {
     IconInteract,
     IconContract,
     IconAddFile,
+    IconAddFolder,
     IconHtml,
     IconJS,
     IconCss,
@@ -280,10 +281,11 @@ export default class FileItem extends Item {
         e.preventDefault();
         e.stopPropagation();
 
-        if(this.getType() == "folder") {
+        if (this.getType() == "folder") {
             const project = this.getProject();
-            const file = prompt("Enter new name of file or folder. If folder last character must be a slash (/).");
-            if(file) {
+            const file = prompt("Enter the new file's name");
+
+            if (file) {
                 if(!file.match("(^[a-zA-Z0-9-_\.]+[/]?)$")) {
                     alert("Illegal filename.");
                     return false;
@@ -295,7 +297,35 @@ export default class FileItem extends Item {
                         });
                     }
                     else {
-                        alert("Could not create file/folder.", status);
+                        alert("Could not create the file.", status);
+                    }
+                });
+            }
+        }
+    };
+
+    _clickNewFolder = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (this.getType() == "folder") {
+            const project = this.getProject();
+            const file = prompt("Enter the new folder's name");
+
+            if (file) {
+                if(!file.match("(^[a-zA-Z0-9-_\.]+)$")) {
+                    alert("Illegal foldername.");
+                    return false;
+                }
+
+                project.newFolder(this.getFullPath(), file, (status) => {
+                    if (status == 0) {
+                        this.getChildren(true, () => {
+                            this.redrawMain(true);
+                        });
+                    }
+                    else {
+                        alert("Could not create the folder.", status);
                     }
                 });
             }
@@ -378,21 +408,22 @@ export default class FileItem extends Item {
                         <a href="#">{this.getTitle()}</a>
                     </div>
                     <div class={style.buttons}>
-                        <a href="#" title="New..." onClick={this._clickNewFile}>
+                        <a href="#" title="New File" onClick={this._clickNewFile}>
                             <IconAddFile />
                         </a>
-                        <a href="#" title="New..." onClick={this._clickNewFile}>
-                            <IconAddFile />
+                        <a href="#" title="New Folder" onClick={this._clickNewFolder}>
+                            <IconAddFolder />
                         </a>
-                        {this.getFullPath() != "/" &&
-                        <div style="display: inline;">
-                            <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
-                                <IconEdit />
-                            </a>
-                            <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
-                                <IconTrash />
-                            </a>
-                        </div>
+                        {
+                            this.getFullPath() != "/" &&
+                                <div style="display: inline;">
+                                    <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
+                                        <IconEdit />
+                                    </a>
+                                    <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
+                                        <IconTrash />
+                                    </a>
+                                </div>
                         }
                     </div>
                 </div>

@@ -455,6 +455,10 @@ export default class ProjectItem extends Item {
         this.backend.newFile(this.getInode(), path, file, cb);
     };
 
+    newFolder = (path, file, cb) => {
+        this.backend.newFolder(this.getInode(), path, file, cb);
+    };
+
     moveFile = (sourcePath, targetPath, cb) => {
         this.backend.moveFile(this.getInode(), sourcePath, targetPath, cb);
     };

@@ -402,6 +402,19 @@ export default class Backend {
         setTimeout(()=>cb(0),1);
     };
 
+
+     /**
+     * Create a new folder for a project.
+     *
+     */
+    newFolder = (inode, path, file, cb) => {
+
+        // NOTE: Appending a "/" at the end of the name to make sure it is treated as a folder (backend.js requirement)
+        const formattedFileName = file.concat("/");
+
+        this.newFile(inode, path, formattedFileName, cb);
+    }
+
     /**
      * Move a file/folder within a project.
      *
