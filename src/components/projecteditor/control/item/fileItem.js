@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+import { h, Component } from 'preact';
 import Item from './item';
 import {
     IconTrash,
@@ -178,6 +179,23 @@ export default class FileItem extends Item {
     setReadOnly = (flag) => {
         this.props.state.isReadOnly = flag;
     };
+/*
+    state = {
+        showActions: false
+    };
+
+    showActions = () => {
+        this.setState({
+            showActions: true
+        })
+    };
+
+    hideActions = () => {
+        this.setState({
+            showActions: false
+        })
+    };
+*/
 
     /**
      * Move/Rename this file in storage.
@@ -378,44 +396,14 @@ export default class FileItem extends Item {
 
     _renderFileTitle = (level, index) => {
         if (this.getType() == "file") {
-            const contextMenu=(
-                <div class={style.contextMenu}>
-                    <div onClick={this._clickRenameFile}>
-                        <div class={style.icon}>
-                            <IconEdit />
-                        </div>
-                        Rename
-                    </div>
-                    <div onClick={this._clickDeleteFile}>
-                        <div class={style.icon}>
-                            <IconTrash />
-                        </div>
-                        Delete
-                    </div>
-                </div>
-            );
             return (
-                <DropdownContainer dropdownContent={contextMenu} useRightClick={true} onContextMenu={(e) => e.preventDefault()}>
-                    <div class={style.projectContractsTitleContainer} onClick={this._openItem}>
-                            <div>
-                                <div class={style.title}>
-                                    <a title={this.getTitle()} href="#">
-                                        {this.getTitle()}
-                                    </a>
-                                </div>
-                                { !this.isReadOnly() &&
-                                    <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
-                                        <a href="#" title="Rename file" onClick={this._clickRenameFile}>
-                                            <IconEdit />
-                                        </a>
-                                        <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
-                                            <IconTrash />
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                    </div>
-                </DropdownContainer>
+                <FileEntry
+                   openItem={this._openItem}
+                   title={this.getTitle()}
+                   isReadOnly={this.isReadOnly()}
+                   clickRenameFile={this._clickRenameFile}
+                   clickDeleteFile={this._clickDeleteFile}
+               />
             );
         } else if (this.getType() == "folder") {
             const contextMenu=(
@@ -683,4 +671,124 @@ export default class FileItem extends Item {
             if (cb) cb();
         }
     };
+}
+
+
+class FileEntry extends Component {
+    render() {
+        const {
+            openItem,
+            title,
+            isReadOnly,
+            clickRenameFile,
+            clickDeleteFile,
+        } = this.props;
+
+        const contextMenu = (
+            <div class={style.contextMenu}>
+                <div onClick={clickRenameFile}>
+                    <div class={style.icon}>
+                        <IconEdit />
+                    </div>
+                    Rename
+                </div>
+                <div onClick={clickDeleteFile}>
+                    <div class={style.icon}>
+                        <IconTrash />
+                    </div>
+                    Delete
+                </div>
+            </div>
+        );
+
+        return (
+            <DropdownContainer
+                dropdownContent={contextMenu}
+                useRightClick={true}
+                onContextMenu={e => e.preventDefault()}
+            >
+
+                <div
+                    class={style.projectContractsTitleContainer}
+                    onClick={openItem}
+                >
+                    <ShowActions
+                        isReadOnly={isReadOnly}
+                        actionContainer={
+                            <FadeInComponent>
+                                <div class={style.buttons} onClick={e => e.stopPropagation()}>
+                                    <a href="#" title="Rename file" onClick={clickRenameFile}>
+                                        <IconEdit />
+                                    </a>
+                                    <a href="#" title="Delete file" onClick={clickDeleteFile} >
+                                        <IconTrash />
+                                    </a>
+                                </div>  
+                            </FadeInComponent>
+                        }
+                    >
+                        <div>
+                            <div class={style.title}>
+                                <a title={title} href="#">
+                                    {title}
+                                </a>
+                            </div>
+                        </div>
+                    </ShowActions>
+                </div>
+            </DropdownContainer>
+        );
+    }
+}
+
+class ShowActions extends Component {
+    state = {
+        showActions: false
+    }
+
+    showActions = () => {
+        this.setState({ showActions: true });
+    }
+
+    hideActions = () => {
+        this.setState({ showActions: false });
+    }
+
+    render() {
+        const { actionContainer, isReadOnly } = this.props;
+
+        return(
+            <div onMouseEnter={this.showActions} onMouseLeave={this.hideActions}>
+                { this.props.children }
+                { !isReadOnly && 
+                    this.state.showActions ? actionContainer : null }
+            </div>
+
+        );
+    }
+}
+
+class FadeInComponent extends Component {
+    state = {
+        animate: false
+    }
+
+    componentDidMount() {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this.setState({ animate: true });
+            });
+        });
+    } 
+
+    render() {
+        return(
+            <div style={{
+                opacity: this.state.animate ? 1 : 0,
+                transition: 'opacity .3s',
+            }}>
+                { this.props.children }
+            </div>
+        );
+    }
 }

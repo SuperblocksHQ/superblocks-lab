@@ -310,6 +310,7 @@ select {
 }
 .projectContractsTitleContainer {
     display: flex;
+    align-items: center;
     position: relative;
     .title {
         overflow: hidden;
@@ -324,11 +325,15 @@ select {
         float: right;
         overflow: hidden;
         text-align: right;
-        button {
-            color: #c7c7c7;
+        button, a {
+            color: #fff;
+            opacity: .6;
             font-size: 0.8em;
+            padding-left: 4px;
+            padding-right: 4px;
+            transition: opacity .2s;
             &:hover {
-                color: #fff;
+                opacity: 1;
                 text-decoration: none;
             }
         }
@@ -370,6 +375,9 @@ select {
         .icon {
             margin-left: 10px;
             margin-right: 20px;
+        }
+        .icon:hover {
+            border-left: 0;
         }
     }
 }
