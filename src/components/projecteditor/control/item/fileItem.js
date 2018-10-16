@@ -140,10 +140,6 @@ export default class FileItem extends Item {
      */
     save = () => {
         return new Promise( (resolve, reject) => {
-            if (this.isDeleted()) {
-                reject();
-                return;
-            }
             const project = this.getProject();
             project.saveFile(this.getFullPath(), this.getContents(), (ret) => {
                 if (ret.status != 0 ) {
@@ -240,26 +236,33 @@ export default class FileItem extends Item {
 
                         // Update the dappfile
                         if (this.notifyMoved) {
-                            this.notifyMoved(oldPath, () => { });
+                            var promise = this.notifyMoved(oldPath);
+                        }
+                        else {
+                            var promise = Promise.resolve();
                         }
 
-                        const project = this.getProject();
-                        const newPathArray = newPath.split('/');
-                        project.getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
-                            // Set new parent
-                            this.props.state.__parent = newParent;
+                        promise
+                            .then( () => {
+                                const project = this.getProject();
+                                const newPathArray = newPath.split('/');
+                                project.getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
+                                    // Set new parent
+                                    this.props.state.__parent = newParent;
 
-                            // Recache the children
-                            newParent.getChildren(true, () => {
-                                const children2 = newParent.getChildren();
-                                this._copyState(children2, [this]);
-                                resolve();
+                                    // Recache the children
+                                    newParent.getChildren(true, () => {
+                                        const children2 = newParent.getChildren();
+                                        this._copyState(children2, [this]);
+                                        resolve();
+                                    });
+                                }).catch( () => {
+                                    alert("Error: Unexpected error when moving file.");
+                                    location.reload();
+                                    return;
+                                });
+
                             });
-                        }).catch( () => {
-                            alert("Error: Unexpected error when moving file.");
-                            location.reload();
-                            return;
-                        });
                     }
                 });
             });
@@ -288,27 +291,31 @@ export default class FileItem extends Item {
         this.setContents(this.props.state.savedContents);
     };
 
-    setDeleted = () => {
-        this.props.state.isDeleted = true;
-    };
-
-    isDeleted = () => {
-        return this.props.state.isDeleted;
-    };
-
     /**
      * Default implementation for when a file has been deleted.
      * If this is a directory then it will notify all files/directories below.
      *
      */
     notifyDeleted = () => {
-        if (this.getType() == "folder") {
-            // NOTE: This relies on that all children already have been loaded and cached, the old list, before deleting, that is.
-            // Since the fresh list obviously will not have the items in it which we want to deleting.
-            this.getChildren().map( (child) => {
-                if (child.notifyDeleted) child.notifyDeleted();
-            });
-        }
+        return new Promise( (resolve, reject) => {
+            if (this.getType() == "folder") {
+                // NOTE: This relies on that all children already have been loaded and cached, the old list, before deleting, that is.
+                // Since the fresh list obviously will not have the items in it which we want to notify.
+                const promises = this.getChildren().map( (child) => {
+                    if (child.notifyDeleted) {
+                        return child.notifyDeleted();
+                    }
+                    else {
+                        if(this.router.panes) this.router.panes.closeItem(child, null, true);
+                    }
+                });
+                Promise.all(promises).then( resolve );
+            }
+            else {
+                if(this.router.panes) this.router.panes.closeItem(this, null, true);
+                resolve();
+            }
+        });
     };
 
     /**
@@ -316,14 +323,22 @@ export default class FileItem extends Item {
      * If this is a directory then it will notify all files/directories below.
      *
      */
-    notifyMoved = (oldPath, cb) => {
-        if (this.getType() == "folder") {
-            // NOTE: This relies on that all children already have been loaded and cached, the old list, before moving, that is.
-            // Since the fresh list obviously will not have the items in it which we want to notify.
-            this.getChildren().map( (child) => {
-                if (child.notifyMoved) child.notifyMoved(oldPath + "/" + child.getFile(), cb);
-            });
-        }
+    notifyMoved = (oldPath) => {
+        return new Promise( (resolve, reject) => {
+            if (this.getType() == "folder") {
+                // NOTE: This relies on that all children already have been loaded and cached, the old list, before moving, that is.
+                // Since the fresh list obviously will not have the items in it which we want to notify.
+                const promises = this.getChildren().map( (child) => {
+                    if (child.notifyMoved) {
+                        return child.notifyMoved(oldPath + "/" + child.getFile());
+                    }
+                });
+                Promise.all(promises).then( resolve );
+            }
+            else {
+                resolve();
+            }
+        });
     };
 
     _clickNewFile = (e) => {
@@ -386,21 +401,37 @@ export default class FileItem extends Item {
             return false;
         }
 
-        // We need to load the file tree below this item (if any) to be able to notify those items about the delete.
-        this._loadFileTree().then( () => {
-            const project = this.getProject();
-            project.deleteFile(this.getFullPath(), (status) => {
-                if (status == 0) {
-                    this.setDeleted();
-                    if (this.notifyDeleted) this.notifyDeleted();
-                    if(this.router.panes) this.router.panes.closeItem(this, null, true);
-                    this.props.state.__parent.getChildren(true, () => {
-                        this.redrawMain(true);
-                    });
-                }
-                else {
-                    alert("Could not delete file/folder.", status);
-                }
+        this.delete();
+    };
+
+    delete = () => {
+        return new Promise( (resolve, reject) => {
+            // We need to load the file tree below this item (if any) to be able to notify those items about the delete.
+            this._loadFileTree().then( () => {
+                const project = this.getProject();
+                project.deleteFile(this.getFullPath(), (status) => {
+                    if (status == 0) {
+                        if (this.notifyDeleted) {
+                            var promise = this.notifyDeleted();
+                        }
+                        else {
+                            var promise = Promise.resolve();
+                            if(this.router.panes) this.router.panes.closeItem(this, null, true);
+                        }
+
+                        promise
+                            .then( () => {
+                                this.props.state.__parent.getChildren(true, () => {
+                                    this.redrawMain(true);
+                                    resolve();
+                                });
+                            });
+                    }
+                    else {
+                        alert("Could not delete file/folder.", status);
+                        reject();
+                    }
+                });
             });
         });
     };

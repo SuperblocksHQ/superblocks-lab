@@ -663,11 +663,10 @@ export default class ProjectItem extends Item {
                     arg.value = "0x0";
                 }
             });
+
             // NOTE: We do this synchronously now since we know we are dealing with localStorage.
             this.setContractArgs(contract.source, args);
         });
-
-        this._deleteContractBuildFiles(source);
 
         this.saveDappfile().then( () => {
             if (cb) cb (0);
@@ -675,10 +674,6 @@ export default class ProjectItem extends Item {
             alert('Could not save dappfile.');
             if (cb) cb (1);
         });
-    };
-
-    _deleteContractBuildFiles = (source) => {
-        // TODO
     };
 
     moveContract = (source, newSource, cb) => {
@@ -698,8 +693,6 @@ export default class ProjectItem extends Item {
             // NOTE: We do this synchronously now since we know we are dealing with localStorage.
             this.setContractArgs(contract.source, args);
         });
-
-        // TODO: move all build files for this contract.
 
         this.saveDappfile().then( () => {
             if (cb) cb (0);

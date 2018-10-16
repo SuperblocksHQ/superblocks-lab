@@ -28,8 +28,45 @@ export default class ContractItem extends FileItem {
      *
      */
     notifyDeleted = () => {
-        this.getProject().deleteContract(this.getSource());
+        return new Promise( (resolve) => {
+            this.getProject().deleteContract(this.getSource(), () => {
+                // Close the contract item if open
+                if(this.router.panes) this.router.panes.closeItem(this, null, true);
+
+                // Close the child items if open
+                this.getChildren().map( (item) => {
+                    if(this.router.panes) this.router.panes.closeItem(item, null, true);
+                });
+
+                this._deleteContractBuildFiles(this.getSource());
+                resolve();
+            });
+        });
     }
+
+    /**
+     * Delete the build directory for this contract source file.
+     *
+     */
+    _deleteContractBuildFiles = (source, cb) => {
+        const a = source.match(/^(.*\/)([^/]+)$/);
+        const dir=a[1];
+        const filename=a[2];
+        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const contractName = a2[1];
+        const path = "/build" + dir + contractName;
+
+        this.getProject().getItemByPath(path.split('/'), this.getProject())
+            .then( (item) => {
+                item.delete()
+                    .then( () => {if (cb) cb(0)});
+            })
+            .catch( () => {if (cb) cb(0)});
+    };
+
+    _moveContractBuildFiles = (source) => {
+        // TODO
+    };
 
     /**
      * Notifies us the contract file has been renamed.
@@ -37,11 +74,24 @@ export default class ContractItem extends FileItem {
      *
      */
     notifyMoved = (oldPath, cb) => {
-        this.getProject().moveContract(oldPath, this.getFullPath(), cb);
+        return new Promise( (resolve) => {
+            console.log("notify moved", oldPath, this.getFullPath());
+            this.getProject().moveContract(oldPath, this.getFullPath(), resolve);
+            this._setSource(this.getFullPath());
+            this._moveContractBuildFiles(this.getSource());
+        });
     }
 
     /**
-     * Return the source path for the contract file.
+     * Set the source of the contract.
+     * Note when renaming we must update this so that it matches the getFullPath of the parent fileItem.
+     */
+    _setSource = (source) => {
+        this.props.state.source = source;
+    };
+
+    /**
+     * Return the source path for the contract file, as defined in the dappfile.
      */
     getSource = () => {
         return this.props.state.source;
