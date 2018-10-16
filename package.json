@@ -1,18 +1,21 @@
 {
   "private": true,
-  "name": "Superblocks",
+  "name": "superblocks-lab",
   "version": "1.0.0",
   "license": "GPL",
   "scripts": {
-    "start": "make",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
     "test": "jest",
     "test:watch": "npm test -- --watch"
   },
   "eslintConfig": {
-    "extends": "eslint-config-synacor"
+    "extends": "react-app"
   },
   "eslintIgnore": [
-    "build/*"
+    "build/*",
+    "src/*"
   ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -21,8 +24,6 @@
     "babel-preset-env": "^1.7.0",
     "babelify": "^8.0.0",
     "browserify": "^16.1.1",
-    "eslint": "^4.9.0",
-    "eslint-config-synacor": "^2.0.2",
     "ethereumjs-abi": "^0.6.5",
     "ethereumjs-account": "^2.0.4",
     "ethereumjs-blockchain": "^2.1.0",
@@ -50,16 +51,24 @@
     "preact": "^8.2.6",
     "preact-compat": "^3.17.0",
     "prop-types": "^15.6.2",
+    "react": "^16.5.2",
     "react-dnd": "^5.0.0",
     "react-dnd-html5-backend": "^5.0.1",
     "react-fetch": "^0.0.9",
     "react-monaco-editor": "^0.13.0",
     "react-onclickoutside": "^6.7.1",
     "react-redux": "^5.0.7",
+    "react-scripts": "^2.0.5",
     "redux": "^4.0.0",
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
     "web3": "0.19"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

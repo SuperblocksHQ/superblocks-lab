@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import style from './style-editor-contract';
@@ -140,7 +140,7 @@ export default class ContractEditor extends Component {
 
     canClose = (cb, silent) => {
         if (this.state.isDirty && !silent) {
-            const flag = confirm("There is unsaved data. Do you want to close tab and loose the changes?");
+            const flag = window.confirm("There is unsaved data. Do you want to close tab and loose the changes?");
             cb(flag ? 0 : 1);
             return;
         }

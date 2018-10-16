@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+import React from 'react';
 import Web3 from 'web3';
 import Tx from '../../ethereumjs-tx-1.3.3.min.js';
 import Modal from '../modal/index.js';

@@ -23,26 +23,12 @@
 // renaming an item such as it's `key` value is changed. then `reKey` the item and manipulate the dappfile config,
 // the reloading and recreation of items will then merge gracefully.
 
+import React from 'react';
 import {
-    IconTrash,
-    IconGem,
     IconFile,
     IconFolder,
     IconFolderOpen,
-    IconCube,
-    IconConfigure,
-    IconCompile,
-    IconDeploy,
-    IconClone,
-    IconInteract,
     IconContract,
-    IconAddFile,
-    IconHtml,
-    IconJS,
-    IconCss,
-    IconMd,
-    IconShowPreview,
-    IconMosaic,
 } from '../../../icons';
 import Caret from '../../../caret';
 

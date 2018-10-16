@@ -44279,9 +44279,9 @@ RIPEMD160.prototype._update = function update(msg, start) {
 
 RIPEMD160.prototype._digest = function digest(enc) {
   if (enc === 'hex')
-    return utils.toHex32(this.h, 'little');
+    return utils.toHex32(this.'little');
   else
-    return utils.split32(this.h, 'little');
+    return utils.split32(this.'little');
 };
 
 function f(j, x, y, z) {
@@ -44435,9 +44435,9 @@ SHA1.prototype._update = function _update(msg, start) {
 
 SHA1.prototype._digest = function digest(enc) {
   if (enc === 'hex')
-    return utils.toHex32(this.h, 'big');
+    return utils.toHex32(this.'big');
   else
-    return utils.split32(this.h, 'big');
+    return utils.split32(this.'big');
 };
 
 },{"../common":170,"../utils":180,"./common":179}],175:[function(require,module,exports){
@@ -44550,7 +44550,7 @@ SHA256.prototype._update = function _update(msg, start) {
 
   assert(this.k.length === W.length);
   for (i = 0; i < W.length; i++) {
-    var T1 = sum32_5(h, s1_256(e), ch32(e, f, g), this.k[i], W[i]);
+    var T1 = sum32_5(s1_256(e), ch32(e, f, g), this.k[i], W[i]);
     var T2 = sum32(s0_256(a), maj32(a, b, c));
     h = g;
     g = f;
@@ -44574,9 +44574,9 @@ SHA256.prototype._update = function _update(msg, start) {
 
 SHA256.prototype._digest = function digest(enc) {
   if (enc === 'hex')
-    return utils.toHex32(this.h, 'big');
+    return utils.toHex32(this.'big');
   else
-    return utils.split32(this.h, 'big');
+    return utils.split32(this.'big');
 };
 
 },{"../common":170,"../utils":180,"./common":179,"minimalistic-assert":275}],177:[function(require,module,exports){
@@ -44815,21 +44815,21 @@ SHA512.prototype._update = function _update(msg, start) {
     al = sum64_lo(T1_hi, T1_lo, T2_hi, T2_lo);
   }
 
-  sum64(this.h, 0, ah, al);
-  sum64(this.h, 2, bh, bl);
-  sum64(this.h, 4, ch, cl);
-  sum64(this.h, 6, dh, dl);
-  sum64(this.h, 8, eh, el);
-  sum64(this.h, 10, fh, fl);
-  sum64(this.h, 12, gh, gl);
-  sum64(this.h, 14, hh, hl);
+  sum64(this.0, ah, al);
+  sum64(this.2, bh, bl);
+  sum64(this.4, ch, cl);
+  sum64(this.6, dh, dl);
+  sum64(this.8, eh, el);
+  sum64(this.10, fh, fl);
+  sum64(this.12, gh, gl);
+  sum64(this.14, hh, hl);
 };
 
 SHA512.prototype._digest = function digest(enc) {
   if (enc === 'hex')
-    return utils.toHex32(this.h, 'big');
+    return utils.toHex32(this.'big');
   else
-    return utils.split32(this.h, 'big');
+    return utils.split32(this.'big');
 };
 
 function ch64_hi(xh, xl, yh, yl, zh) {
@@ -45771,7 +45771,7 @@ module.exports = Array.isArray || function (arr) {
     }
 
     var block, code, end = false, index = 0, start = 0, length = message.length,
-        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
+        n, i, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
         b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
         b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
         b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
@@ -60314,8 +60314,8 @@ Sha384.prototype.init = function () {
 Sha384.prototype._hash = function () {
   var H = Buffer.allocUnsafe(48)
 
-  function writeInt64BE (h, l, offset) {
-    H.writeInt32BE(h, offset)
+  function writeInt64BE (l, offset) {
+    H.writeInt32BE(offset)
     H.writeInt32BE(l, offset + 4)
   }
 
@@ -60574,8 +60574,8 @@ Sha512.prototype._update = function (M) {
 Sha512.prototype._hash = function () {
   var H = Buffer.allocUnsafe(64)
 
-  function writeInt64BE (h, l, offset) {
-    H.writeInt32BE(h, offset)
+  function writeInt64BE (l, offset) {
+    H.writeInt32BE(offset)
     H.writeInt32BE(l, offset + 4)
   }
 

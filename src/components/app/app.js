@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component } from 'preact';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 
 import Backend from  '../projecteditor/control/backend';

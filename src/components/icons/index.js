@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 
 import FaIcon  from '@fortawesome/react-fontawesome';
 import iconRun from '@fortawesome/fontawesome-free-solid/faBolt';

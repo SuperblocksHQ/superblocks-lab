@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import style from './style';
 import Caret from '../caret';
@@ -9,7 +9,7 @@ import {
     IconAskQuestion
 } from '../icons';
 
-const LinkItem = ({ icon, title, link } = props) => (
+const LinkItem = ({ icon, title, link }) => (
     <a href={link} class={classNames([style.link, style.item])} target="_blank" rel="noopener noreferrer">
         <div class={style.icon}>
             {icon}
