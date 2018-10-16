@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { h, Component } from 'preact';
-import Item from './item';
+import Item from '../item';
 import {
     IconTrash,
     IconFile,
@@ -33,9 +33,11 @@ import {
     IconShowPreview,
     IconMosaic,
     IconEdit,
-} from '../../../icons';
-import style from '../style';
-import { DropdownContainer } from '../../../dropdown';
+} from '../../../../icons';
+import style from '../../style';
+import { DropdownContainer } from '../../../../dropdown';
+import { DirectoryEntry } from './directoryEntry';
+import { FileEntry } from './fileEntry';
 
 export default class FileItem extends Item {
     constructor(props, router) {
@@ -406,61 +408,17 @@ export default class FileItem extends Item {
                />
             );
         } else if (this.getType() == "folder") {
-            const contextMenu=(
-                <div class={style.contextMenu}>
-                    <div onClick={this._clickNewFile}>
-                        <div class={style.icon} >
-                            <IconAddFile />
-                        </div>
-                        Create File
-                    </div>
-                    <div onClick={this._clickNewFolder}>
-                        <div class={style.icon} >
-                            <IconAddFolder />
-                        </div>
-                        Create Folder
-                    </div>
-                    <div onClick={this._clickRenameFile}>
-                        <div class={style.icon}>
-                            <IconEdit />
-                        </div>
-                        Rename
-                    </div>
-                    <div onClick={this._clickDeleteFile}>
-                        <div class={style.icon}>
-                            <IconTrash />
-                        </div>
-                        Delete
-                    </div>
-                </div>
-            );
             return (
-                <DropdownContainer dropdownContent={contextMenu} useRightClick={true}>
-                    <div class={style.projectContractsTitleContainer} onClick={this._angleClicked} onContextMenu={(e) => e.preventDefault()}>
-                        <div class={style.title} title={this.getTitle()}>
-                            <a href="#">{this.getTitle()}</a>
-                        </div>
-                        <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
-                            <a href="#" title="New File" onClick={this._clickNewFile}>
-                                <IconAddFile />
-                            </a>
-                            <a href="#" title="New Folder" onClick={this._clickNewFolder}>
-                                <IconAddFolder />
-                            </a>
-                            {
-                                this.getFullPath() != "/" &&
-                                    <div style="display: inline;">
-                                        <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
-                                            <IconEdit />
-                                        </a>
-                                        <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
-                                            <IconTrash />
-                                        </a>
-                                    </div>
-                            }
-                        </div>
-                    </div>
-                </DropdownContainer>
+                <DirectoryEntry
+                    angleClicked={this._angleClicked}
+                    title={this.getTitle()}
+                    isReadOnly={this.isReadOnly()}
+                    fullPath={this.getFullPath()}
+                    clickNewFile={this._clickNewFile}
+                    clickNewFolder={this._clickNewFolder}
+                    clickRenameFile={this._clickRenameFile}
+                    clickDeleteFile={this._clickDeleteFile}
+                />
             );
         }
     };
@@ -674,121 +632,8 @@ export default class FileItem extends Item {
 }
 
 
-class FileEntry extends Component {
-    render() {
-        const {
-            openItem,
-            title,
-            isReadOnly,
-            clickRenameFile,
-            clickDeleteFile,
-        } = this.props;
 
-        const contextMenu = (
-            <div class={style.contextMenu}>
-                <div onClick={clickRenameFile}>
-                    <div class={style.icon}>
-                        <IconEdit />
-                    </div>
-                    Rename
-                </div>
-                <div onClick={clickDeleteFile}>
-                    <div class={style.icon}>
-                        <IconTrash />
-                    </div>
-                    Delete
-                </div>
-            </div>
-        );
 
-        return (
-            <DropdownContainer
-                dropdownContent={contextMenu}
-                useRightClick={true}
-                onContextMenu={e => e.preventDefault()}
-            >
 
-                <div
-                    class={style.projectContractsTitleContainer}
-                    onClick={openItem}
-                >
-                    <ShowActions
-                        isReadOnly={isReadOnly}
-                        actionContainer={
-                            <FadeInComponent>
-                                <div class={style.buttons} onClick={e => e.stopPropagation()}>
-                                    <a href="#" title="Rename file" onClick={clickRenameFile}>
-                                        <IconEdit />
-                                    </a>
-                                    <a href="#" title="Delete file" onClick={clickDeleteFile} >
-                                        <IconTrash />
-                                    </a>
-                                </div>  
-                            </FadeInComponent>
-                        }
-                    >
-                        <div>
-                            <div class={style.title}>
-                                <a title={title} href="#">
-                                    {title}
-                                </a>
-                            </div>
-                        </div>
-                    </ShowActions>
-                </div>
-            </DropdownContainer>
-        );
-    }
-}
 
-class ShowActions extends Component {
-    state = {
-        showActions: false
-    }
 
-    showActions = () => {
-        this.setState({ showActions: true });
-    }
-
-    hideActions = () => {
-        this.setState({ showActions: false });
-    }
-
-    render() {
-        const { actionContainer, isReadOnly } = this.props;
-
-        return(
-            <div onMouseEnter={this.showActions} onMouseLeave={this.hideActions}>
-                { this.props.children }
-                { !isReadOnly && 
-                    this.state.showActions ? actionContainer : null }
-            </div>
-
-        );
-    }
-}
-
-class FadeInComponent extends Component {
-    state = {
-        animate: false
-    }
-
-    componentDidMount() {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                this.setState({ animate: true });
-            });
-        });
-    } 
-
-    render() {
-        return(
-            <div style={{
-                opacity: this.state.animate ? 1 : 0,
-                transition: 'opacity .3s',
-            }}>
-                { this.props.children }
-            </div>
-        );
-    }
-}
