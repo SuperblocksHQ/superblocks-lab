@@ -17,15 +17,10 @@
 import Item from './item';
 import {
     IconTrash,
-    IconGem,
     IconFile,
-    IconFolder,
-    IconFolderOpen,
-    IconCube,
     IconConfigure,
     IconCompile,
     IconDeploy,
-    IconClone,
     IconInteract,
     IconContract,
     IconAddFile,
@@ -438,11 +433,6 @@ export default class FileItem extends Item {
         }
     };
 
-    fileRightClicked = (e, id) => {
-        // We save the pane id for when closing all other panes.
-        e.preventDefault();
-    };
-
     _renderFileTitle = (level, index) => {
         if (this.getType() == "file") {
             const contextMenu=(
@@ -462,27 +452,27 @@ export default class FileItem extends Item {
                 </div>
             );
             return (
-                <div class={style.projectContractsTitleContainer} onClick={this._openItem} onContextMenu={(e) => this.fileRightClicked(e, this.getId())}>
-                    <DropdownContainer dropdownContent={contextMenu} useRightClick={true}>
-                        <div>
-                            <div class={style.title}>
-                                <a title={this.getTitle()} href="#">
-                                    {this.getTitle()}
-                                </a>
-                            </div>
-                            { !this.isReadOnly() &&
-                                <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
-                                    <a href="#" title="Rename file" onClick={this._clickRenameFile}>
-                                        <IconEdit />
-                                    </a>
-                                    <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
-                                        <IconTrash />
+                <DropdownContainer dropdownContent={contextMenu} useRightClick={true} onContextMenu={(e) => e.preventDefault()}>
+                    <div class={style.projectContractsTitleContainer} onClick={this._openItem}>
+                            <div>
+                                <div class={style.title}>
+                                    <a title={this.getTitle()} href="#">
+                                        {this.getTitle()}
                                     </a>
                                 </div>
-                            }
-                        </div>
-                    </DropdownContainer>
-                </div>
+                                { !this.isReadOnly() &&
+                                    <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
+                                        <a href="#" title="Rename file" onClick={this._clickRenameFile}>
+                                            <IconEdit />
+                                        </a>
+                                        <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
+                                            <IconTrash />
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                    </div>
+                </DropdownContainer>
             );
         } else if (this.getType() == "folder") {
             const contextMenu=(
@@ -514,8 +504,8 @@ export default class FileItem extends Item {
                 </div>
             );
             return (
-                <div class={style.projectContractsTitleContainer} onClick={this._angleClicked} onContextMenu={(e) => this.fileRightClicked(e, this.getId())}>
-                    <DropdownContainer dropdownContent={contextMenu} useRightClick={true}>
+                <DropdownContainer dropdownContent={contextMenu} useRightClick={true}>
+                    <div class={style.projectContractsTitleContainer} onClick={this._angleClicked} onContextMenu={(e) => e.preventDefault()}>
                         <div class={style.title} title={this.getTitle()}>
                             <a href="#">{this.getTitle()}</a>
                         </div>
@@ -538,8 +528,8 @@ export default class FileItem extends Item {
                                     </div>
                             }
                         </div>
-                    </DropdownContainer>
-                </div>
+                    </div>
+                </DropdownContainer>
             );
         }
     };
@@ -730,7 +720,7 @@ export default class FileItem extends Item {
                                 }, this.router);
                                 deployItem.props.onClick = deployItem._openItem;
 
-                                const contractChildren = [compileItem, deployItem, configureItem, interactItem];
+                                const contractChildren = [configureItem, compileItem, deployItem, interactItem];
                                 //fileItem.setChildren(contractChildren);
                                 this._copyState(contractChildren, fileItem.props.state.children || []);
                                 fileItem.props.state.children=contractChildren;

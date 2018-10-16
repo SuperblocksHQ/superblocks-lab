@@ -26,23 +26,6 @@ import WalletItem from './walletItem';
 import EnvironmentsItem from './environmentsItem';
 import EnvironmentItem from './environmentItem';
 import {
-    IconTrash,
-    IconGem,
-    IconFile,
-    IconFolder,
-    IconFolderOpen,
-    IconCube,
-    IconConfigure,
-    IconCompile,
-    IconDeploy,
-    IconClone,
-    IconInteract,
-    IconContract,
-    IconAddFile,
-    IconHtml,
-    IconJS,
-    IconCss,
-    IconMd,
     IconShowPreview,
     IconMosaic,
 } from '../../../icons';
