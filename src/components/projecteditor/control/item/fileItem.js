@@ -664,7 +664,7 @@ export default class FileItem extends Item {
                                 }, this.router);
                                 deployItem.props.onClick = deployItem._openItem;
 
-                                const contractChildren = [compileItem, deployItem, configureItem, interactItem];
+                                const contractChildren = [configureItem, compileItem, deployItem, interactItem];
                                 //fileItem.setChildren(contractChildren);
                                 this._copyState(contractChildren, fileItem.props.state.children || []);
                                 fileItem.props.state.children=contractChildren;
