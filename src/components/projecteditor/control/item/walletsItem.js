@@ -18,15 +18,15 @@ import Item from './item';
 
 export default class WalletsItem extends Item {
     constructor(props, router) {
-        props.type = props.type || "wallets";
+        props.type = props.type || 'wallets';
         super(props, router);
     }
 
     /**
      * Return wallet item by it's name.
      */
-    getByName = (name) => {
-        return this.getChildren().filter( (wallet) => {
+    getByName = name => {
+        return this.getChildren().filter(wallet => {
             return wallet.getName() == name;
         })[0];
     };

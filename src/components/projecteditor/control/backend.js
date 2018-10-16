@@ -14,46 +14,47 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-const DAPP_FORMAT_VERSION = "dapps1.1.0";
+const DAPP_FORMAT_VERSION = 'dapps1.1.0';
 export default class Backend {
-    constructor() {
-    }
+    constructor() {}
 
     // Make sure projects created for an older version are converted to the current format.
     // dapps1.0 is the 1.0 BETA which is deprecated.
     // dapps1.0.0 is the released 1.0 format and will be converted into 1.1.0.
-    convertProjects = (cb) => {
+    convertProjects = cb => {
         if (!localStorage.getItem(DAPP_FORMAT_VERSION)) {
-            if (localStorage.getItem("dapps1.0.0")) {
+            if (localStorage.getItem('dapps1.0.0')) {
                 // Convert from 1.0 (beta) to 1.0.0.
-                const data=JSON.parse(localStorage.getItem("dapps1.0.0"));
-                const newProjects=[];
-                for (let i=0; i<data.projects.length; i++) {
-                    const project=data.projects[i];
+                const data = JSON.parse(localStorage.getItem('dapps1.0.0'));
+                const newProjects = [];
+                for (let i = 0; i < data.projects.length; i++) {
+                    const project = data.projects[i];
                     var newProject = null;
                     try {
-                        newProject=this._convertProject1_0_0to1_1_0(project);
-                    }
-                    catch (e) {
+                        newProject = this._convertProject1_0_0to1_1_0(project);
+                    } catch (e) {
                         console.error(e, newProject);
                     }
                     if (newProject) {
                         newProjects.push(newProject);
-                    }
-                    else {
-                        alert("A project could not be converted into the new format.");
+                    } else {
+                        alert(
+                            'A project could not be converted into the new format.'
+                        );
                     }
                 }
                 // store projects.
-                const newData = { projects:newProjects };
-                localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(newData));
-                cb(1);  // Indicate that there are converted projects.
+                const newData = { projects: newProjects };
+                localStorage.setItem(
+                    DAPP_FORMAT_VERSION,
+                    JSON.stringify(newData)
+                );
+                cb(1); // Indicate that there are converted projects.
             } else {
                 // Nothing to convert
                 cb(0);
             }
-        }
-        else {
+        } else {
             // Already converted.
             cb(0);
         }
@@ -68,21 +69,19 @@ export default class Backend {
                 isConverted = true;
             }
 
-            if (project.format == "dapps1.0.0") {
+            if (project.format == 'dapps1.0.0') {
                 project = this._convertProject1_0_0to1_1_0(project);
                 isConverted = true;
             }
-        }
-        catch (e) {
-            console.log("Could not convert project", e);
+        } catch (e) {
+            console.log('Could not convert project', e);
             cb(2);
             return;
         }
 
         if (isConverted) {
             cb(1, project);
-        }
-        else {
+        } else {
             cb(0);
         }
     };
@@ -92,25 +91,25 @@ export default class Backend {
      * It only takes what we recognize.
      *
      */
-    _convertProject1_0_0to1_1_0 = (project) => {
+    _convertProject1_0_0to1_1_0 = project => {
         const files = project.files;
         const dappfile = project.dappfile;
 
-        const wallets = dappfile.wallets.map( (wallet) => {
+        const wallets = dappfile.wallets.map(wallet => {
             return {
                 name: wallet.name,
                 desc: wallet.desc,
-                type: wallet.type
+                type: wallet.type,
             };
         });
 
-        const contracts = dappfile.contracts.map( (contract) => {
+        const contracts = dappfile.contracts.map(contract => {
             // Go through args to see if there are any contract names, if so switch to contract source.
             const args = contract.args || [];
-            const args2 = args.map( (arg) => {
+            const args2 = args.map(arg => {
                 if (arg.contract) {
-                    const targetContract = dappfile.contracts.filter( (c) => {
-                        return (c.name == arg.contract);
+                    const targetContract = dappfile.contracts.filter(c => {
+                        return c.name == arg.contract;
                     })[0];
                     arg.contract = targetContract.source;
                 }
@@ -119,14 +118,14 @@ export default class Backend {
             return {
                 name: contract.name,
                 source: contract.source,
-                args: args2
+                args: args2,
             };
         });
 
-        const accounts = dappfile.accounts.map( (account) => {
+        const accounts = dappfile.accounts.map(account => {
             return {
                 name: account.name,
-                _environments: account._environments
+                _environments: account._environments,
             };
         });
 
@@ -135,13 +134,22 @@ export default class Backend {
             environments: dappfile.environments,
             wallets: wallets,
             contracts: contracts,
-            accounts: accounts
+            accounts: accounts,
         };
 
-        files['/'].children['dappfile.json'] = {type: 'f', contents: JSON.stringify(dappfile2)};
-        const build = files['/'].children['build'] || {children: {}, type: 'd'};
+        files['/'].children['dappfile.json'] = {
+            type: 'f',
+            contents: JSON.stringify(dappfile2),
+        };
+        const build = files['/'].children['build'] || {
+            children: {},
+            type: 'd',
+        };
         files['/'].children['build'] = build;
-        const contractsDir = build.children['contracts'] || {children: {}, type: 'd'};
+        const contractsDir = build.children['contracts'] || {
+            children: {},
+            type: 'd',
+        };
         build.children['contracts'] = contractsDir;
 
         // Move .dotfiles to their new locations.
@@ -149,48 +157,64 @@ export default class Backend {
         // and then move them to new locations.
         const createFile = (subdir, file, contents) => {
             // Create a file below `/build`.
-            const dir = contractsDir.children[subdir] || {children: {}, type: 'd'};
+            const dir = contractsDir.children[subdir] || {
+                children: {},
+                type: 'd',
+            };
             contractsDir.children[subdir] = dir;
-            dir.children[file] = {type: 'f', contents: contents};
+            dir.children[file] = { type: 'f', contents: contents };
         };
         const children = files['/'].children['contracts'].children;
         do {
             var ready = true;
             const keys = Object.keys(children);
-            for (let index=0; index < keys.length; index++) {
+            for (let index = 0; index < keys.length; index++) {
                 const name = keys[index];
                 const file = children[name];
                 if (file['type'] != 'f') {
                     continue;
                 }
-                var a = name.match("^[.](.+).sol.([^.]+)([.]?.*).(deploy|address|tx)$");
+                var a = name.match(
+                    '^[.](.+).sol.([^.]+)([.]?.*).(deploy|address|tx)$'
+                );
                 if (a) {
                     const contractName = a[1];
                     const networkName = a[2];
                     const type = a[4];
-                    createFile(contractName, contractName + "." + networkName + "." + type, file.contents);
+                    createFile(
+                        contractName,
+                        contractName + '.' + networkName + '.' + type,
+                        file.contents
+                    );
                     delete children[name];
                     ready = false;
                     break;
                 }
-                var a = name.match("^[.](.+).sol.([^.]+)([.]?.*).(abi|meta|bin|hash)$");
+                var a = name.match(
+                    '^[.](.+).sol.([^.]+)([.]?.*).(abi|meta|bin|hash)$'
+                );
                 if (a) {
                     const contractName = a[1];
                     const networkName = a[2];
                     const type = a[4];
-                    createFile(contractName, contractName + "." + type, file.contents);
+                    createFile(
+                        contractName,
+                        contractName + '.' + type,
+                        file.contents
+                    );
                     delete children[name];
                     ready = false;
                     break;
                 }
-            };
+            }
         } while (!ready);
 
         // Move .js files.
         var childrenJs;
         var ready = false;
         try {
-            childrenJs = files['/'].children['app'].children['contracts'].children;
+            childrenJs =
+                files['/'].children['app'].children['contracts'].children;
             delete files['/'].children['app'].children['contracts'];
         } catch (e) {
             ready = true;
@@ -198,23 +222,27 @@ export default class Backend {
         while (!ready) {
             ready = true;
             const keys = Object.keys(childrenJs);
-            for (let index=0; index < keys.length; index++) {
+            for (let index = 0; index < keys.length; index++) {
                 const name = keys[index];
                 const file = childrenJs[name];
                 if (file['type'] != 'f') {
                     continue;
                 }
-                var a = name.match("^[.]([^.]+).([^.]+)[.](js)$");
+                var a = name.match('^[.]([^.]+).([^.]+)[.](js)$');
                 if (a) {
                     const contractName = a[1];
                     const networkName = a[2];
                     const type = a[3];
-                    createFile(contractName, contractName + "." + networkName + "." + type, file.contents);
+                    createFile(
+                        contractName,
+                        contractName + '.' + networkName + '.' + type,
+                        file.contents
+                    );
                     delete childrenJs[name];
                     ready = false;
                     break;
                 }
-            };
+            }
         }
 
         const newProject = {
@@ -225,117 +253,118 @@ export default class Backend {
         return newProject;
     };
 
-    _convertProject1_0to1_0_0 = (project) => {
+    _convertProject1_0to1_0_0 = project => {
         const environments = [
             {
-                "name": "browser"
+                name: 'browser',
             },
             {
-                "name": "custom"
+                name: 'custom',
             },
             {
-                "name": "rinkeby"
+                name: 'rinkeby',
             },
             {
-                "name": "ropsten"
+                name: 'ropsten',
             },
             {
-                "name": "kovan"
+                name: 'kovan',
             },
             {
-                "name": "infuranet"
+                name: 'infuranet',
             },
             {
-                "name": "mainnet"
-            }
+                name: 'mainnet',
+            },
         ];
         const wallets = [
             {
-                "desc": "This is a wallet for local development",
-                "name": "development",
-                "blockchain": "ethereum"
+                desc: 'This is a wallet for local development',
+                name: 'development',
+                blockchain: 'ethereum',
             },
             {
-                "desc": "A private wallet",
-                "name": "private",
-                "blockchain": "ethereum"
+                desc: 'A private wallet',
+                name: 'private',
+                blockchain: 'ethereum',
             },
             {
-                "desc": "External wallet integrating with Metamask and other compatible wallets",
-                "name": "external",
-                "blockchain": "ethereum",
-                "type": "external"
-            }
+                desc:
+                    'External wallet integrating with Metamask and other compatible wallets',
+                name: 'external',
+                blockchain: 'ethereum',
+                type: 'external',
+            },
         ];
         const accounts = [
             {
-                "name": "Default",
-                "blockchain": "ethereum",
-                "_environments": [
+                name: 'Default',
+                blockchain: 'ethereum',
+                _environments: [
                     {
-                        "name": "browser",
-                        "data": {
-                            "wallet": "development",
-                            "index": 0,
-                        }
+                        name: 'browser',
+                        data: {
+                            wallet: 'development',
+                            index: 0,
+                        },
                     },
                     {
-                        "name": "custom",
-                        "data": {
-                            "wallet": "private",
-                            "index": 0,
-                        }
+                        name: 'custom',
+                        data: {
+                            wallet: 'private',
+                            index: 0,
+                        },
                     },
                     {
-                        "name": "rinkeby",
-                        "data": {
-                            "wallet": "external",
-                            "index": 0,
-                        }
+                        name: 'rinkeby',
+                        data: {
+                            wallet: 'external',
+                            index: 0,
+                        },
                     },
                     {
-                        "name": "ropsten",
-                        "data": {
-                            "wallet": "external",
-                            "index": 0,
-                        }
+                        name: 'ropsten',
+                        data: {
+                            wallet: 'external',
+                            index: 0,
+                        },
                     },
                     {
-                        "name": "kovan",
-                        "data": {
-                            "wallet": "external",
-                            "index": 0,
-                        }
+                        name: 'kovan',
+                        data: {
+                            wallet: 'external',
+                            index: 0,
+                        },
                     },
                     {
-                        "name": "infuranet",
-                        "data": {
-                            "wallet": "external",
-                            "index": 0,
-                        }
+                        name: 'infuranet',
+                        data: {
+                            wallet: 'external',
+                            index: 0,
+                        },
                     },
                     {
-                        "name": "mainnet",
-                        "data": {
-                            "wallet": "external",
-                            "index": 0,
-                        }
+                        name: 'mainnet',
+                        data: {
+                            wallet: 'external',
+                            index: 0,
+                        },
                     },
                 ],
             },
         ];
         const files = project.files;
-        const contracts = project.dappfile.contracts.map((contract) => {
+        const contracts = project.dappfile.contracts.map(contract => {
             return {
                 source: contract.source,
                 args: contract.args,
-                blockchain: "ethereum",
+                blockchain: 'ethereum',
                 name: contract.name,
             };
         });
 
         const newProject = {
-            format: "dapps1.0.0",
+            format: 'dapps1.0.0',
             dir: project.dir,
             inode: project.inode,
             files: files,
@@ -345,7 +374,7 @@ export default class Backend {
                 accounts: accounts,
                 contracts: contracts,
                 project: project.dappfile.project,
-            }
+            },
         };
 
         return newProject;
@@ -356,64 +385,67 @@ export default class Backend {
      *
      */
     newFile = (inode, path, file, cb) => {
-        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
 
-        var project = data.projects.filter( (item) => {
+        var project = data.projects.filter(item => {
             return item.inode == inode;
         })[0];
 
-        if(!project) {
-            setTimeout(()=>cb(3),1);
+        if (!project) {
+            setTimeout(() => cb(3), 1);
             return;
         }
 
-        if (path[path.length-1] != '/') {
+        if (path[path.length - 1] != '/') {
             path = path + '/';
         }
 
         if (path[0] != '/') {
-            setTimeout(()=>cb(3),1);
+            setTimeout(() => cb(3), 1);
             return;
         }
-        if(!project.files) project.files={"/":{type:"d",children:{}}};
-        const parts=path.split("/");
-        var folder=project.files["/"];
-        for(var index=1;index<parts.length-1;index++) {
-            var folder2=folder.children[parts[index]];
-            if(!folder2) {
-                folder2={type:"d",name:parts[index],children:{}};
-                folder.children[parts[index]]=folder2;
+        if (!project.files)
+            project.files = { '/': { type: 'd', children: {} } };
+        const parts = path.split('/');
+        var folder = project.files['/'];
+        for (var index = 1; index < parts.length - 1; index++) {
+            var folder2 = folder.children[parts[index]];
+            if (!folder2) {
+                folder2 = { type: 'd', name: parts[index], children: {} };
+                folder.children[parts[index]] = folder2;
             }
-            folder=folder2;
+            folder = folder2;
         }
-        var type="f";
-        if(file[file.length-1]=='/') {
-            type="d";
-            file=file.substring(0,file.length-1);
+        var type = 'f';
+        if (file[file.length - 1] == '/') {
+            type = 'd';
+            file = file.substring(0, file.length - 1);
         }
-        if(folder.children[file]) {
-            setTimeout(()=>cb(3),1);
+        if (folder.children[file]) {
+            setTimeout(() => cb(3), 1);
             return;
         }
-        folder.children[file]={type:type,children:(type=="d"?{}:null)};
+        folder.children[file] = {
+            type: type,
+            children: type == 'd' ? {} : null,
+        };
         localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
-        setTimeout(()=>cb(0),1);
+        setTimeout(() => cb(0), 1);
     };
 
-
-     /**
+    /**
      * Create a new folder for a project.
      *
      */
     newFolder = (inode, path, file, cb) => {
-
         // NOTE: Appending a "/" at the end of the name to make sure it is treated as a folder (backend.js requirement)
-        const formattedFileName = file.concat("/");
+        const formattedFileName = file.concat('/');
 
         this.newFile(inode, path, formattedFileName, cb);
-    }
+    };
 
     /**
      * Move a file/folder within a project.
@@ -426,8 +458,8 @@ export default class Backend {
         if (pathB[pathB.length - 1] == '/') {
             pathB = pathB.substr(0, pathB.length - 1);
         }
-        const a = pathA.match("^(.*)/([^/]+)$");
-        const b = pathB.match("^(.*)/([^/]+)$");
+        const a = pathA.match('^(.*)/([^/]+)$');
+        const b = pathB.match('^(.*)/([^/]+)$');
 
         if (!a || !b) {
             setTimeout(() => cb(2), 1);
@@ -444,28 +476,30 @@ export default class Backend {
             partsB = partsB.substr(1);
         }
 
-        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
 
-        var project = data.projects.filter( (item) => {
+        var project = data.projects.filter(item => {
             return item.inode == inode;
         })[0];
 
         if (!project) {
-            setTimeout(()=>cb(3),1);
+            setTimeout(() => cb(3), 1);
             return;
         }
 
-        if (!project.files) project.files = {"/": {type: "d", children: {}}};
+        if (!project.files)
+            project.files = { '/': { type: 'd', children: {} } };
 
         // Find the source folder
-        var parts = partsA.split("/");
-        if (parts.length == 1 && parts[0] == "" ) {
+        var parts = partsA.split('/');
+        if (parts.length == 1 && parts[0] == '') {
             parts = [];
         }
-        var sourceFolder = project.files["/"];
-        for (let index=0; index < parts.length; index++) {
+        var sourceFolder = project.files['/'];
+        for (let index = 0; index < parts.length; index++) {
             let folder2 = sourceFolder.children[parts[index]];
             if (!folder2) {
                 setTimeout(() => cb(4), 1);
@@ -480,15 +514,15 @@ export default class Backend {
         }
 
         // Find the target folder
-        var parts = partsB.split("/");
-        if (parts.length == 1 && parts[0] == "" ) {
+        var parts = partsB.split('/');
+        if (parts.length == 1 && parts[0] == '') {
             parts = [];
         }
-        var targetFolder = project.files["/"];
-        for (let index=0; index < parts.length; index++) {
+        var targetFolder = project.files['/'];
+        for (let index = 0; index < parts.length; index++) {
             let folder2 = targetFolder.children[parts[index]];
             if (!folder2) {
-                folder2 = {type: "d", name: parts[index], children: {}};
+                folder2 = { type: 'd', name: parts[index], children: {} };
                 targetFolder.children[parts[index]] = folder2;
             }
             targetFolder = folder2;
@@ -515,37 +549,40 @@ export default class Backend {
      *
      */
     deleteFile = (inode, path, cb) => {
-        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
 
-        var project = data.projects.filter( (item) => {
+        var project = data.projects.filter(item => {
             return item.inode == inode;
         })[0];
 
-        if(!project) {
-            if(cb) setTimeout(()=>cb(3),1);
+        if (!project) {
+            if (cb) setTimeout(() => cb(3), 1);
             return;
         }
-        if(path[path.length-1]=="/") path=path.substring(0, path.length-1);
-        if(path[0] != '/') {
-            if(cb) setTimeout(()=>cb(3),1);
+        if (path[path.length - 1] == '/')
+            path = path.substring(0, path.length - 1);
+        if (path[0] != '/') {
+            if (cb) setTimeout(() => cb(3), 1);
             return;
         }
-        if(!project.files) project.files={"/":{type:"d",children:{}}};
-        const parts=path.split("/");
-        var folder=project.files["/"];
-        for(var index=1;index<parts.length-1;index++) {
-            var folder2=folder.children[parts[index]];
-            if(!folder2) {
-                folder2={type:"d",name:parts[index],children:{}};
-                folder[parts[index]]=folder2;
+        if (!project.files)
+            project.files = { '/': { type: 'd', children: {} } };
+        const parts = path.split('/');
+        var folder = project.files['/'];
+        for (var index = 1; index < parts.length - 1; index++) {
+            var folder2 = folder.children[parts[index]];
+            if (!folder2) {
+                folder2 = { type: 'd', name: parts[index], children: {} };
+                folder[parts[index]] = folder2;
             }
-            folder=folder2;
+            folder = folder2;
         }
-        delete folder.children[parts[parts.length-1]];
+        delete folder.children[parts[parts.length - 1]];
         localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
-        if(cb) setTimeout(()=>cb(0),1);
+        if (cb) setTimeout(() => cb(0), 1);
     };
 
     /**
@@ -553,11 +590,12 @@ export default class Backend {
      *
      */
     listFiles = (inode, path, cb) => {
-        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
 
-        var project = data.projects.filter( (item) => {
+        var project = data.projects.filter(item => {
             return item.inode == inode;
         })[0];
 
@@ -566,16 +604,17 @@ export default class Backend {
             return;
         }
 
-        if (path[path.length-1] != '/') {
+        if (path[path.length - 1] != '/') {
             path = path + '/';
         }
         if (path[0] == '/') {
             path = path.substr(1);
         }
-        if (!project.files) project.files = {"/": {type: "d", children: {}}};
-        const parts = path.split("/");
-        var folder = project.files["/"];
-        for(var index = 0;index < parts.length - 1; index++) {
+        if (!project.files)
+            project.files = { '/': { type: 'd', children: {} } };
+        const parts = path.split('/');
+        var folder = project.files['/'];
+        for (var index = 0; index < parts.length - 1; index++) {
             var folder2 = folder.children[parts[index]];
             if (!folder2) {
                 setTimeout(() => cb(2), 1);
@@ -583,17 +622,16 @@ export default class Backend {
             }
             folder = folder2;
         }
-        const files=[];
-        const dirs=[];
-        const keys=Object.keys(folder.children);
-        for(var index=0;index<keys.length;index++) {
-            const key=keys[index];
-            const file=folder.children[key];
-            if(file.type=="f") files.push({name:key, type:file.type});
-            if(file.type=="d") dirs.push({name:key, type:file.type});
-
+        const files = [];
+        const dirs = [];
+        const keys = Object.keys(folder.children);
+        for (var index = 0; index < keys.length; index++) {
+            const key = keys[index];
+            const file = folder.children[key];
+            if (file.type == 'f') files.push({ name: key, type: file.type });
+            if (file.type == 'd') dirs.push({ name: key, type: file.type });
         }
-        setTimeout(()=>cb(0,dirs.concat(files)),1);
+        setTimeout(() => cb(0, dirs.concat(files)), 1);
     };
 
     /**
@@ -601,10 +639,11 @@ export default class Backend {
      *
      */
     deleteProject = (inode, cb) => {
-        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
         if (!data.projects) data.projects = [];
 
-        const projects = data.projects.filter( (item) => {
+        const projects = data.projects.filter(item => {
             return item.inode != inode;
         });
 
@@ -617,38 +656,40 @@ export default class Backend {
      * Load the light versions of all projects.
      *
      */
-    loadProjects = (cb) => {
-        const data=JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+    loadProjects = cb => {
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
         const projects = [];
-        (data.projects || []).map( (project) => {
+        (data.projects || []).map(project => {
             // We need to parse the `/dappfile.json`
             var name, title;
             try {
-                const dappfile = JSON.parse(project.files['/'].children['dappfile.json'].contents);
+                const dappfile = JSON.parse(
+                    project.files['/'].children['dappfile.json'].contents
+                );
                 title = dappfile.project.info.title;
                 name = dappfile.project.info.name;
-            }
-            catch (e) {
-            }
+            } catch (e) {}
             projects.push({
                 inode: project.inode,
-                name: name || "<unknown>",
-                title: title || "<unknown>"
+                name: name || '<unknown>',
+                title: title || '<unknown>',
             });
         });
-        setTimeout(()=>cb(0, projects), 1);
-    }
+        setTimeout(() => cb(0, projects), 1);
+    };
 
     createProject = (files, cb) => {
-        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
 
-        const inode = Math.floor(Math.random()*10000000);
+        const inode = Math.floor(Math.random() * 10000000);
         // TODO: check if project with this inode already exists.
         const project = {
             inode: inode,
-            files: files
+            files: files,
         };
         data.projects.push(project);
         localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
@@ -660,37 +701,42 @@ export default class Backend {
      *
      */
     saveFile = (inode, payload, cb) => {
-        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
 
-        var project = data.projects.filter( (item) => {
+        var project = data.projects.filter(item => {
             return item.inode == inode;
         })[0];
 
-        if(!project) {
-            setTimeout(()=>cb({status:3}),1);
+        if (!project) {
+            setTimeout(() => cb({ status: 3 }), 1);
             return;
         }
-        const path=payload.path;
-        if(path[0] != '/') {
-            setTimeout(()=>cb({status:3}),1);
+        const path = payload.path;
+        if (path[0] != '/') {
+            setTimeout(() => cb({ status: 3 }), 1);
             return;
         }
-        if(!project.files) project.files={"/":{type:"d",children:{}}};
-        const parts=path.split("/");
-        var folder=project.files["/"];
-        for(var index=1;index<parts.length-1;index++) {
-            var folder2=folder.children[parts[index]];
-            if(!folder2) {
-                folder2={type:"d",children:{}};
-                folder.children[parts[index]]=folder2;
+        if (!project.files)
+            project.files = { '/': { type: 'd', children: {} } };
+        const parts = path.split('/');
+        var folder = project.files['/'];
+        for (var index = 1; index < parts.length - 1; index++) {
+            var folder2 = folder.children[parts[index]];
+            if (!folder2) {
+                folder2 = { type: 'd', children: {} };
+                folder.children[parts[index]] = folder2;
             }
-            folder=folder2;
+            folder = folder2;
         }
-        folder.children[parts[parts.length-1]]= {type:"f",contents:payload.contents};
+        folder.children[parts[parts.length - 1]] = {
+            type: 'f',
+            contents: payload.contents,
+        };
         localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
-        setTimeout(()=>cb({status:0}),1);
+        setTimeout(() => cb({ status: 0 }), 1);
     };
 
     /**
@@ -698,82 +744,93 @@ export default class Backend {
      *
      */
     loadFile = (inode, path, cb) => {
-        const data = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const data =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
 
-        var project = data.projects.filter( (item) => {
+        var project = data.projects.filter(item => {
             return item.inode == inode;
         })[0];
 
-        if(!project) {
-            setTimeout(()=>cb({status:3}),1);
+        if (!project) {
+            setTimeout(() => cb({ status: 3 }), 1);
             return;
         }
 
-        if(path[0] != '/') {
-            setTimeout(()=>cb({status:3}),1);
+        if (path[0] != '/') {
+            setTimeout(() => cb({ status: 3 }), 1);
             return;
         }
-        if(!project.files) project.files={"/":{type:"d",children:{}}};
-        const parts=path.split("/");
-        var folder=project.files["/"];
-        for(var index=1;index<parts.length-1;index++) {
-            var folder2=folder.children[parts[index]];
-            if(!folder2) {
-                folder2={type:"d",name:parts[index],children:{}};
-                folder[parts[index]]=folder2;
+        if (!project.files)
+            project.files = { '/': { type: 'd', children: {} } };
+        const parts = path.split('/');
+        var folder = project.files['/'];
+        for (var index = 1; index < parts.length - 1; index++) {
+            var folder2 = folder.children[parts[index]];
+            if (!folder2) {
+                folder2 = { type: 'd', name: parts[index], children: {} };
+                folder[parts[index]] = folder2;
             }
-            folder=folder2;
+            folder = folder2;
         }
-        const file = folder.children[parts[parts.length-1]];
-        if(file) setTimeout(()=>cb({status:0, contents:file.contents || ""}),1);
-        else setTimeout(()=>cb({status:1}),1);
+        const file = folder.children[parts[parts.length - 1]];
+        if (file)
+            setTimeout(
+                () => cb({ status: 0, contents: file.contents || '' }),
+                1
+            );
+        else setTimeout(() => cb({ status: 1 }), 1);
     };
 
-    _deleteBuildDir = (root) => {
+    _deleteBuildDir = root => {
         delete root['/']['children']['build'];
     };
 
     //_clearDotfiles = (root) => {
-        //// This will clear all keys starting with a dot.
-        //// Changes are done in place in the 'root' object.
-        //const keys=Object.keys(root);
-        //for(var index=0;index<keys.length;index++) {
-            //const key=keys[index];
-            //if(key[0]=='.') {
-                //delete root[key];
-                //continue;
-            //}
-            //const node=root[key];
-            //if(node.type=='d') {
-                //this._clearDotfiles(node.children);
-            //}
-        //}
+    //// This will clear all keys starting with a dot.
+    //// Changes are done in place in the 'root' object.
+    //const keys=Object.keys(root);
+    //for(var index=0;index<keys.length;index++) {
+    //const key=keys[index];
+    //if(key[0]=='.') {
+    //delete root[key];
+    //continue;
+    //}
+    //const node=root[key];
+    //if(node.type=='d') {
+    //this._clearDotfiles(node.children);
+    //}
+    //}
     //};
 
     downloadProject = (project, keepState) => {
-        const exportName = "superblocks_project_" + project.getName();
-        const workspace = JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
+        const exportName = 'superblocks_project_' + project.getName();
+        const workspace =
+            JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         // TODO: create zipfile of filesystem
         // project.serialize()
         const project2 = JSON.parse(JSON.stringify(project));
         delete project2._filecache;
         delete project2.inode;
-        project2.dappfile.project = {info: {title: (project2.dappfile.project.info || {}).title}};
+        project2.dappfile.project = {
+            info: { title: (project2.dappfile.project.info || {}).title },
+        };
         project2.format = DAPP_FORMAT_VERSION;
 
-        if(!keepState) {
+        if (!keepState) {
             this._deleteBuildDir(project2.files);
         }
 
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(project2));
+        var dataStr =
+            'data:text/json;charset=utf-8,' +
+            encodeURIComponent(JSON.stringify(project2));
         var downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href",     dataStr);
-        downloadAnchorNode.setAttribute("download", exportName + ".json");
+        downloadAnchorNode.setAttribute('href', dataStr);
+        downloadAnchorNode.setAttribute('download', exportName + '.json');
         document.body.appendChild(downloadAnchorNode); // required for firefox
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
-    }
+    };
 }

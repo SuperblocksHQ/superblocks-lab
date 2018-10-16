@@ -21,7 +21,7 @@ import PropTypes from 'prop-types';
 import style from './style';
 import Item from './item/item';
 import ProjectItem from './item/projectItem';
-import Backend from  './backend';
+import Backend from './backend';
 import Dappfile from './dappfile';
 import NewDapp from '../../newdapp';
 import Modal from '../../modal';
@@ -52,36 +52,35 @@ import {
     IconMosaic,
 } from '../../icons';
 
-
 export default class Control extends Component {
     constructor(props) {
         super(props);
         this.backend = new Backend();
         this._projectsList = [];
         const menu = new Item({
-            type: "top",
-            classes: ["menutop"],
+            type: 'top',
+            classes: ['menutop'],
             render: this._menuTop,
             icon: null,
             state: {
-                title: "Top menu",
+                title: 'Top menu',
                 toggable: false,
                 children: () => {
                     var children = [];
                     const project = this.getActiveProject();
                     if (project) children.push(project);
                     return children;
-                }
-            }
+                },
+            },
         });
         this.setState({
-            menu: menu
+            menu: menu,
         });
-        props.router.register("control", this);
+        props.router.register('control', this);
     }
 
     componentDidMount() {
-        this._loadProjects( (status) => {
+        this._loadProjects(status => {
             if (status == 0) {
                 if (!this._openLastProject()) {
                     this._showWelcome();
@@ -102,7 +101,7 @@ export default class Control extends Component {
      * Redraw the Main component.
      *
      */
-    redrawMain = (redrawAll) => {
+    redrawMain = redrawAll => {
         this.props.router.main.redraw(redrawAll);
     };
 
@@ -111,30 +110,34 @@ export default class Control extends Component {
      * and update the list of projects if necessary.
      *
      */
-    _loadProjects = (cb) => {
-        this.backend.loadProjects( (status, lightProjects) => {
+    _loadProjects = cb => {
+        this.backend.loadProjects((status, lightProjects) => {
             if (status != 0) {
-                alert("Error: Could not load projects list.");
-            }
-            else {
+                alert('Error: Could not load projects list.');
+            } else {
                 // Iterate over all loaded projects,
                 // see if already loaded, else add it to the list.
                 const projectsList = [];
-                lightProjects.map( (lightProject) => {
-                    const exists = this._projectsList.filter( (project) => {
-                        if (project.getInode() == lightProject.inode) {
-                            projectsList.push(project);
-                            return true;
-                        }
-                    }).length > 0;
-                    if (!exists) {
-                        const project = new ProjectItem({
-                            inode: lightProject.inode,
-                            state: {
-                                name: lightProject.name,
-                                title: lightProject.title
+                lightProjects.map(lightProject => {
+                    const exists =
+                        this._projectsList.filter(project => {
+                            if (project.getInode() == lightProject.inode) {
+                                projectsList.push(project);
+                                return true;
                             }
-                        }, this.props.router, this.props.functions);
+                        }).length > 0;
+                    if (!exists) {
+                        const project = new ProjectItem(
+                            {
+                                inode: lightProject.inode,
+                                state: {
+                                    name: lightProject.name,
+                                    title: lightProject.title,
+                                },
+                            },
+                            this.props.router,
+                            this.props.functions
+                        );
                         projectsList.push(project);
                     }
                 });
@@ -150,7 +153,7 @@ export default class Control extends Component {
     _openLastProject = () => {
         let { selectedProjectId } = this.props;
         let found = false;
-        this._projectsList.forEach((project) => {
+        this._projectsList.forEach(project => {
             if (selectedProjectId && selectedProjectId === project.getInode()) {
                 this.openProject(project);
                 found = true;
@@ -165,16 +168,16 @@ export default class Control extends Component {
      *
      */
     _showWelcome = () => {
-        if(!this.getActiveProject()) {
+        if (!this.getActiveProject()) {
             const item = new Item({
-                type: "info",
-                type2: "welcome",
+                type: 'info',
+                type2: 'welcome',
                 icon: <IconCube />,
                 state: {
-                    title: "Welcome",
+                    title: 'Welcome',
                 },
             });
-            if(this.props.router.panes) this.props.router.panes.openItem(item);
+            if (this.props.router.panes) this.props.router.panes.openItem(item);
         }
     };
 
@@ -182,12 +185,12 @@ export default class Control extends Component {
      * Request to close all open windows,
      * if all windows successfully closed then remove project from explorer.
      */
-    _closeProject = (cb) => {
-        this.props.router.panes.closeAll((status) => {
-            if(status==0) {
-                this.setState({activeProject: null});
+    _closeProject = cb => {
+        this.props.router.panes.closeAll(status => {
+            if (status == 0) {
+                this.setState({ activeProject: null });
             }
-            if(cb) cb(status);
+            if (cb) cb(status);
         });
     };
 
@@ -201,17 +204,16 @@ export default class Control extends Component {
             return;
         }
 
-        this._closeProject((status) => {
+        this._closeProject(status => {
             if (status == 0) {
-                project.load( (status) => {
+                project.load(status => {
                     if (status == 0) {
                         this._setProjectActive(project);
                         this.redrawMain(true);
                     }
                     if (cb) cb(status);
                 });
-            }
-            else {
+            } else {
                 this.redrawMain(true);
                 if (cb) cb(status);
             }
@@ -222,7 +224,7 @@ export default class Control extends Component {
      * Return the active project (as shown in the explorer).
      *
      */
-    getActiveProject =() => {
+    getActiveProject = () => {
         return this.state.activeProject;
     };
 
@@ -237,18 +239,19 @@ export default class Control extends Component {
     /**
      * Set a project as active in the explorer.
      */
-    _setProjectActive = (project) => {
-        this.setState({activeProject: project});
+    _setProjectActive = project => {
+        this.setState({ activeProject: project });
         this.props.selectProject(project);
     };
 
     /**
      * Open the project config item for the active project.
      */
-    openProjectConfig = (item) => {
+    openProjectConfig = item => {
         const project = this.getActiveProject();
         if (project) {
-            if(this.props.router.panes) this.props.router.panes.openItem(project);
+            if (this.props.router.panes)
+                this.props.router.panes.openItem(project);
         }
     };
 
@@ -256,64 +259,53 @@ export default class Control extends Component {
      * Open the dialog about creating a new project.
      * Create the new project and open it.
      */
-    newDapp = (e) => {
+    newDapp = e => {
         e.preventDefault();
         const project = this.getActiveProject();
         if (project && !project.isSaved()) {
-            alert("Please save the current project first.");
+            alert('Please save the current project first.');
             return;
         }
-        const cb = (status) => {
+        const cb = status => {
             if (status == 0) {
-                this._loadProjects( () => {
-                    this._closeProject((status) => {
+                this._loadProjects(() => {
+                    this._closeProject(status => {
                         if (status == 0) {
                             // Open last project
-                            this.openProject(this._projectsList[this._projectsList.length-1]);
+                            this.openProject(
+                                this._projectsList[
+                                    this._projectsList.length - 1
+                                ]
+                            );
                         }
                     });
                 });
-            }
-            else {
-                alert("A DApp with that name already exists, please choose a different name.");
+            } else {
+                alert(
+                    'A DApp with that name already exists, please choose a different name.'
+                );
             }
         };
-        const modal={};
-        modal.render=() => {return (<NewDapp backend={this.backend} router={this.props.router} functions={this.props.functions} modal={modal} cb={cb} />)};
+        const modal = {};
+        modal.render = () => {
+            return (
+                <NewDapp
+                    backend={this.backend}
+                    router={this.props.router}
+                    functions={this.props.functions}
+                    modal={modal}
+                    cb={cb}
+                />
+            );
+        };
         this.props.functions.modal.show(modal);
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     _openItem = (e, item) => {
         e.preventDefault();
         e.stopPropagation();
 
-        if(this.props.router.panes) this.props.router.panes.openItem(item);
+        if (this.props.router.panes) this.props.router.panes.openItem(item);
     };
 
     openContractItem = (e, item, id) => {
@@ -325,44 +317,48 @@ export default class Control extends Component {
         const fullpath = item.props.state.fullpath;
         const dappfile = item.props.state.project.props.state.data.dappfile;
         // Check so that the contract file is represented in the Dappfile, otherwise create that representation.
-        var contract=dappfile.contracts().filter( (c) => {
-            return (c.source == fullpath)
+        var contract = dappfile.contracts().filter(c => {
+            return c.source == fullpath;
         })[0];
 
         if (!contract) {
-            var name = fullpath.match(".*[/](.+)[.]([^.]+)$")[1];
-            contract =
-                {
-                    name: name,
-                    args: [],
-                    source: fullpath,
-                    blockchain: "ethereum",
-                }
+            var name = fullpath.match('.*[/](.+)[.]([^.]+)$')[1];
+            contract = {
+                name: name,
+                args: [],
+                source: fullpath,
+                blockchain: 'ethereum',
+            };
             dappfile.contracts().push(contract);
             // TODO: new to save the file.
         }
 
         item.props.state.contract = contract;
 
-        if(this.props.router.panes) this.props.router.panes.openItem(item, id);
+        if (this.props.router.panes) this.props.router.panes.openItem(item, id);
     };
 
     _closeAnyContractItemsOpen = (contractName, includeConfigure, cb) => {
         const project = this.getActiveProject();
-        if(project) {
+        if (project) {
             // TODO: this lookup is bad since it depends on the order of the menu items.
             // TODO: look through project object for the contract named contractName, then get the item for the Editor, Compiler, Deployer and Interact window.
             const items = [];
-            const item = project.props.state.children[1].getChildren()[0].props.state._children.filter( (item) => {
-                return item.props.state.contract && item.props.state.contract.name == contractName;
-            })[0];
+            const item = project.props.state.children[1]
+                .getChildren()[0]
+                .props.state._children.filter(item => {
+                    return (
+                        item.props.state.contract &&
+                        item.props.state.contract.name == contractName
+                    );
+                })[0];
             if (!item) {
                 if (cb) cb(2);
-                    return;
+                return;
             }
             items.push(item);
             if (includeConfigure) {
-                items.push(item.props.state.children[0]);  // Configure item
+                items.push(item.props.state.children[0]); // Configure item
             }
             items.push(item.props.state.children[1]);
             items.push(item.props.state.children[2]);
@@ -374,17 +370,22 @@ export default class Control extends Component {
                     return;
                 }
                 const item = items.pop();
-                const {pane, winId} = this.props.router.panes.getWindowByItem(item);
+                const { pane, winId } = this.props.router.panes.getWindowByItem(
+                    item
+                );
                 if (pane && winId) {
-                    this.props.router.panes.closeWindow(pane.id, winId, (status) => {
-                        if (status != 0) {
-                            if (cb) cb(status);
-                            return;
+                    this.props.router.panes.closeWindow(
+                        pane.id,
+                        winId,
+                        status => {
+                            if (status != 0) {
+                                if (cb) cb(status);
+                                return;
+                            }
+                            close(items, cb);
                         }
-                        close(items, cb);
-                    });
-                }
-                else {
+                    );
+                } else {
                     close(items, cb);
                 }
             };
@@ -394,20 +395,22 @@ export default class Control extends Component {
         if (cb) cb(1);
     };
 
-    importProject = (files) => {
-
-        const cb = (status) => {
+    importProject = files => {
+        const cb = status => {
             if (status == 0) {
-                this._loadProjects( () => {
-                    this._closeProject((status) => {
+                this._loadProjects(() => {
+                    this._closeProject(status => {
                         if (status == 0) {
                             // Open last project
-                            this.openProject(this._projectsList[this._projectsList.length-1]);
+                            this.openProject(
+                                this._projectsList[
+                                    this._projectsList.length - 1
+                                ]
+                            );
                         }
                     });
                 });
-            }
-            else {
+            } else {
                 alert('Error: could not import project.');
             }
         };
@@ -416,42 +419,42 @@ export default class Control extends Component {
     };
 
     deleteProject = (project, cb) => {
-        if(confirm("Are you sure you want to delete this project?")) {
-            const delFn = (cb) => {
-                project.delete((status)=>{
-                    this._loadProjects( () => {
-                        if(cb) cb(status);
+        if (confirm('Are you sure you want to delete this project?')) {
+            const delFn = cb => {
+                project.delete(status => {
+                    this._loadProjects(() => {
+                        if (cb) cb(status);
                     });
                 });
             };
 
             if (this.getActiveProject() == project) {
-                this._closeProject((status) => {
+                this._closeProject(status => {
                     if (status == 0) {
-                        delFn((status) => {
+                        delFn(status => {
                             // Open project if any
-                            if(this._projectsList.length) {
-                                this.openProject(this._projectsList[this._projectsList.length-1]);
-                            }
-                            else {
+                            if (this._projectsList.length) {
+                                this.openProject(
+                                    this._projectsList[
+                                        this._projectsList.length - 1
+                                    ]
+                                );
+                            } else {
                                 this._setProjectActive(null);
                                 this._showWelcome();
                                 this.redrawMain(true);
                             }
-                            if(cb) cb(status);
+                            if (cb) cb(status);
                         });
-                    }
-                    else {
-                        if(cb) cb(status);
+                    } else {
+                        if (cb) cb(status);
                     }
                 });
-            }
-            else {
+            } else {
                 delFn(cb);
             }
-        }
-        else {
-            if(cb) cb(1);
+        } else {
+            if (cb) cb(1);
         }
     };
 
@@ -461,60 +464,64 @@ export default class Control extends Component {
 
     _openContractMake = (e, item) => {
         e.preventDefault();
-        const item2=this._filterItem(item, {type: "make"});
-        if(item2 && this.props.router.panes) this.props.router.panes.openItem(item2);
+        const item2 = this._filterItem(item, { type: 'make' });
+        if (item2 && this.props.router.panes)
+            this.props.router.panes.openItem(item2);
     };
 
     _filterItem = (root, filter) => {
         if (this._filterItemCmp(root, filter)) {
             return root;
         }
-        return root.getChildren().filter((item)=>{
+        return root.getChildren().filter(item => {
             return this._filterItemCmp(item, filter);
         })[0];
     };
 
     _filterItemCmp = (item, filter) => {
-        const keys=Object.keys(filter);
-        for(var index=0;index<keys.length;index++) {
-            const key=keys[index];
-            if(item.props[key] != filter[key]) return false;
+        const keys = Object.keys(filter);
+        for (var index = 0; index < keys.length; index++) {
+            const key = keys[index];
+            if (item.props[key] != filter[key]) return false;
         }
         return true;
     };
 
     //_renderContractsSectionTitle = (level, index, item) => {
-        //var projectItem = item.props.state.project;
-        //return (
-            //<div class={classnames([style.projectContractsTitleContainer])} onClick={(e)=>this._angleClicked(e, item)}>
-                //<div>
-                    //<div>{item.getTitle()}</div>
-                //</div>
-                //<div class={style.buttons}>
-                    //<button class="btnNoBg" title="New contract" onClick={(e)=>{this._clickNewContract(e, projectItem);}}>
-                        //<IconAddFile />
-                    //</button>
-                //</div>
-            //</div>
-        //);
+    //var projectItem = item.props.state.project;
+    //return (
+    //<div class={classnames([style.projectContractsTitleContainer])} onClick={(e)=>this._angleClicked(e, item)}>
+    //<div>
+    //<div>{item.getTitle()}</div>
+    //</div>
+    //<div class={style.buttons}>
+    //<button class="btnNoBg" title="New contract" onClick={(e)=>{this._clickNewContract(e, projectItem);}}>
+    //<IconAddFile />
+    //</button>
+    //</div>
+    //</div>
+    //);
     //};
 
     //_renderLearnSectionTitle = (level, index, item) => {
-        //return (
-            //<div class={classnames([style.projectContractsTitleContainer, 'mt-4'])} onClick={ (e)=>this._angleClicked(e, item) }>
-                //<div>
-                    //{ item.getTitle() }
-                //</div>
-            //</div>
-        //);
+    //return (
+    //<div class={classnames([style.projectContractsTitleContainer, 'mt-4'])} onClick={ (e)=>this._angleClicked(e, item) }>
+    //<div>
+    //{ item.getTitle() }
+    //</div>
+    //</div>
+    //);
     //};
 
     openTransactionHistory = () => {
         // Open the transaction history tab for the open project.
         const project = this.getActiveProject();
-        if(project) {
+        if (project) {
             //TODO: this lookup is bad since it depends on the order of the menu items.
-            if(this.props.router.panes) this.props.router.panes.openItem(project.props.state.children[0]);
+            if (this.props.router.panes)
+                this.props.router.panes.openItem(
+                    project.props.state.children[0]
+                );
         }
     };
 
@@ -523,51 +530,60 @@ export default class Control extends Component {
         e.stopPropagation();
 
         var name;
-        name = prompt("Please give the contract a name:");
+        name = prompt('Please give the contract a name:');
         if (!name) return;
-        if(!name.match(/^([a-zA-Z0-9-_]+)$/) || name.length > 16) {
-            alert('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 16 characters.');
+        if (!name.match(/^([a-zA-Z0-9-_]+)$/) || name.length > 16) {
+            alert(
+                'Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 16 characters.'
+            );
             return;
         }
-        if(projectItem.props.state.data.dappfile.contracts().filter((c)=>{
-            return c.name==name;
-        }).length>0) {
-            alert("A contract by this name already exists, choose a different name, please.");
+        if (
+            projectItem.props.state.data.dappfile.contracts().filter(c => {
+                return c.name == name;
+            }).length > 0
+        ) {
+            alert(
+                'A contract by this name already exists, choose a different name, please.'
+            );
             return;
         }
         //for(var index=0;index<100000;index++) {
-            //name="Contract"+index;
-            //if(projectItem.props.state.data.dappfile.contracts().filter((c)=>{
-                //return c.name==name;
-            //}).length==0) {
-                //break;
-            //}
+        //name="Contract"+index;
+        //if(projectItem.props.state.data.dappfile.contracts().filter((c)=>{
+        //return c.name==name;
+        //}).length==0) {
+        //break;
         //}
-        var account="";
-        if(projectItem.props.state.data.dappfile.accounts().length>0) account=projectItem.props.state.data.dappfile.accounts()[0].name
+        //}
+        var account = '';
+        if (projectItem.props.state.data.dappfile.accounts().length > 0)
+            account = projectItem.props.state.data.dappfile.accounts()[0].name;
         projectItem.props.state.data.dappfile.contracts().push({
             name: name,
             account: account,
-            source: "/contracts/"+name+".sol",
-            blockchain: "ethereum",
+            source: '/contracts/' + name + '.sol',
+            blockchain: 'ethereum',
         });
-        projectItem.save((status)=>{
-            if(status==0) {
+        projectItem.save(status => {
+            if (status == 0) {
                 // Note: children[0] holds the "Transaction Logs", so the actual starting
                 //       position for contracts starts at children index 1.
                 //
                 // TODO: this lookup is bad.
-                const ctrs=projectItem.props.state.children[1].props.state._children;
+                const ctrs =
+                    projectItem.props.state.children[1].props.state._children;
 
                 // Note: The following check asserts there exists at least 1 valid element plus one.
                 //       The extra position (plus one) is reserved to the "make contract" prop, appended to the end
                 //       of the contracts array (ctrs).
                 //       The extra position is the last valid element at index ctrs.length-1
                 //       The last valid contract element is at index ctrs.length-2
-                if(ctrs && ctrs.length >= 2) {
-                    const contract=ctrs[ctrs.length-2];
-                    const item=contract.props.state.children[0];
-                    if(this.props.router.panes) this.props.router.panes.openItem(item);
+                if (ctrs && ctrs.length >= 2) {
+                    const contract = ctrs[ctrs.length - 2];
+                    const item = contract.props.state.children[0];
+                    if (this.props.router.panes)
+                        this.props.router.panes.openItem(item);
                 }
             }
         });
@@ -577,19 +593,27 @@ export default class Control extends Component {
     _clickDeleteContract = (e, projectItem, contractIndex) => {
         e.preventDefault();
         e.stopPropagation();
-        if(!confirm("Really delete contract?")) return;
-        const contract=projectItem.props.state.data.dappfile.contracts()[contractIndex];
-        this._closeAnyContractItemsOpen(contract.name, true, (status) => {
+        if (!confirm('Really delete contract?')) return;
+        const contract = projectItem.props.state.data.dappfile.contracts()[
+            contractIndex
+        ];
+        this._closeAnyContractItemsOpen(contract.name, true, status => {
             if (status != 0) {
-                alert("Could not delete contract, close editor/compiler/deployer/interaction windows and try again.");
+                alert(
+                    'Could not delete contract, close editor/compiler/deployer/interaction windows and try again.'
+                );
                 return;
             }
-            projectItem.deleteFile(contract.source, (status)=>{
-                if(status>0) {
-                    alert("Could not delete contract, close editor and try again.");
+            projectItem.deleteFile(contract.source, status => {
+                if (status > 0) {
+                    alert(
+                        'Could not delete contract, close editor and try again.'
+                    );
                     return;
                 }
-                projectItem.props.state.data.dappfile.contracts().splice(contractIndex,1);
+                projectItem.props.state.data.dappfile
+                    .contracts()
+                    .splice(contractIndex, 1);
                 projectItem.save();
                 this.redrawMain(true);
             });
@@ -597,23 +621,25 @@ export default class Control extends Component {
     };
 
     _clickEditAccount = (e, projectItem, accountIndex) => {
-        const account = projectItem.filterNonMenuItem('accounts', {_index: accountIndex});
+        const account = projectItem.filterNonMenuItem('accounts', {
+            _index: accountIndex,
+        });
         this._openItem(e, account);
     };
 
     //_getProjectWindowCount=(projectItem)=> {
-        //var count=0;
-        //if(this.props.router.panes) {
-            //this.props.router.panes.panes.map((pane, index)=> {
-                //pane.windows.map((win, index2)=> {
-                    //if(win.props.item.props.state.project && win.props.item.props.state.project.getId()==projectItem.getId()) {
-                        //count++;
-                    //}
-                //});
-            //});
-        //}
+    //var count=0;
+    //if(this.props.router.panes) {
+    //this.props.router.panes.panes.map((pane, index)=> {
+    //pane.windows.map((win, index2)=> {
+    //if(win.props.item.props.state.project && win.props.item.props.state.project.getId()==projectItem.getId()) {
+    //count++;
+    //}
+    //});
+    //});
+    //}
 
-        //return count;
+    //return count;
     //};
     //
     //
@@ -631,13 +657,13 @@ export default class Control extends Component {
     //
     //
 
-
-    _menuTop = (level, index, item) => <NetworkAccountSelector router={this.props.router} item={item} functions={this.props.functions} />;
-
-
-
-
-
+    _menuTop = (level, index, item) => (
+        <NetworkAccountSelector
+            router={this.props.router}
+            item={item}
+            functions={this.props.functions}
+        />
+    );
 
     render() {
         //const item=this._renderItem(0, 0, this.state.menu);
@@ -647,7 +673,7 @@ export default class Control extends Component {
             <div class="full">
                 <div class={style.treemenu}>
                     {item}
-                    <LearnAndResources class="mt-3"/>
+                    <LearnAndResources class="mt-3" />
                 </div>
             </div>
         );
@@ -657,5 +683,5 @@ export default class Control extends Component {
 Control.propTypes = {
     appVersion: PropTypes.string.isRequired,
     selectProject: PropTypes.func.isRequired,
-    selectedProjectId: PropTypes.number
-}
+    selectedProjectId: PropTypes.number,
+};

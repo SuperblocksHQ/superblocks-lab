@@ -22,24 +22,23 @@ import Templates from '../templates';
 import DappfileItem from '../projecteditor/control/item/dappfileItem';
 
 export default class NewDapp extends Component {
-
     state = {
         selectedTemplate: null,
         currentStep: 1,
-    }
+    };
 
     onCloseClickHandle = () => {
         this.closeModal();
-    }
+    };
 
-    onTemplateSelectedHandle = (selectedTemplate) => {
+    onTemplateSelectedHandle = selectedTemplate => {
         this.setState({
             currentStep: 2,
-            selectedTemplate: selectedTemplate
-        })
-    }
+            selectedTemplate: selectedTemplate,
+        });
+    };
 
-    onProjectDetailsDone = (projectInfo) => {
+    onProjectDetailsDone = projectInfo => {
         const name = projectInfo.name;
         const title = projectInfo.title;
 
@@ -48,20 +47,25 @@ export default class NewDapp extends Component {
         // Try to decode the `/dappfile.json`.
         var dappfile;
         try {
-            dappfile = JSON.parse(files['/'].children['dappfile.json'].contents);
-        }
-        catch (e) {
+            dappfile = JSON.parse(
+                files['/'].children['dappfile.json'].contents
+            );
+        } catch (e) {
             dappfile = DappfileItem.getDefaultDappfile();
-            files['/'].children['dappfile.json'] = {type: 'f'};
+            files['/'].children['dappfile.json'] = { type: 'f' };
         }
         dappfile.project.info.name = name;
         dappfile.project.info.title = title;
-        files['/'].children['dappfile.json'].contents = JSON.stringify(dappfile);
+        files['/'].children['dappfile.json'].contents = JSON.stringify(
+            dappfile
+        );
 
-        this.props.backend.createProject(files, status => this.props.cb(status));
+        this.props.backend.createProject(files, status =>
+            this.props.cb(status)
+        );
 
         this.closeModal();
-    }
+    };
 
     closeModal() {
         this.props.functions.modal.cancel();
@@ -69,45 +73,62 @@ export default class NewDapp extends Component {
 
     pop = () => {
         this.setState({
-            currentStep:  this.state.currentStep - 1
-        })
-    }
+            currentStep: this.state.currentStep - 1,
+        });
+    };
 
     render() {
         let step;
         switch (this.state.currentStep) {
             case 1:
-                step = <SelectedTemplate
-                            categories={Templates.categories}
-                            templates={Templates.templates}
-                            onTemplateSelected={this.onTemplateSelectedHandle}
-                            onBackPress={this.closeModal}
-                            onCloseClick={this.onCloseClickHandle}/>;
+                step = (
+                    <SelectedTemplate
+                        categories={Templates.categories}
+                        templates={Templates.templates}
+                        onTemplateSelected={this.onTemplateSelectedHandle}
+                        onBackPress={this.closeModal}
+                        onCloseClick={this.onCloseClickHandle}
+                    />
+                );
                 break;
             case 2:
-                step = <ProjectDetails
-                            projectName={this.state.projectInfo ? this.state.projectInfo.name : ""}
-                            projectTitle={this.state.projectInfo ? this.state.projectInfo.title : ""}
-                            onProjectDetailsDone={this.onProjectDetailsDone}
-                            onCloseClick={this.onCloseClickHandle}
-                            onBackClick={this.pop}/>;
+                step = (
+                    <ProjectDetails
+                        projectName={
+                            this.state.projectInfo
+                                ? this.state.projectInfo.name
+                                : ''
+                        }
+                        projectTitle={
+                            this.state.projectInfo
+                                ? this.state.projectInfo.title
+                                : ''
+                        }
+                        onProjectDetailsDone={this.onProjectDetailsDone}
+                        onCloseClick={this.onCloseClickHandle}
+                        onBackClick={this.pop}
+                    />
+                );
                 break;
             default:
-                step = <AddProjectDetails onStep1Done={this.onStep1DoneHandle}/>;
+                step = (
+                    <SelectedTemplate
+                        categories={Templates.categories}
+                        templates={Templates.templates}
+                        onTemplateSelected={this.onTemplateSelectedHandle}
+                        onBackPress={this.closeModal}
+                        onCloseClick={this.onCloseClickHandle}
+                    />
+                );
                 break;
         }
 
-        return (
-            <div>
-                {step}
-            </div>
-        );
+        return <div>{step}</div>;
     }
 }
-
 
 NewDapp.proptypes = {
     modal: Proptypes.object.isRequired,
     functions: Proptypes.object.isRequired,
-    cb: Proptypes.func.isRequired
-}
+    cb: Proptypes.func.isRequired,
+};

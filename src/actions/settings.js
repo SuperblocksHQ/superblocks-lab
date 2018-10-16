@@ -4,6 +4,6 @@
 export function showSplashNoMore() {
     return {
         type: 'SHOW_SPLASH',
-        data: false
-    }
+        data: false,
+    };
 }

@@ -8,14 +8,17 @@ import { selectProject } from '../../../actions/projects';
 const mapStateToProps = state => ({
     appVersion: getAppVersion(state),
     selectedProjectId: getSelectedProjectId(state),
-  });
+});
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return {
-        selectProject: (project) => {
-            dispatch(selectProject(project))
-        }
-    }
-}
+        selectProject: project => {
+            dispatch(selectProject(project));
+        },
+    };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Control);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Control);

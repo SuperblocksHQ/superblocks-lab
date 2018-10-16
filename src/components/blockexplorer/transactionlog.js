@@ -23,29 +23,31 @@ import RenderTransactions from './rendertransactions';
 export default class TransactionLog extends Component {
     constructor(props) {
         super(props);
-        this.id=props.id+"_transaction_log";
+        this.id = props.id + '_transaction_log';
 
-        const txlog=props.project.props.state.txlog;
+        const txlog = props.project.props.state.txlog;
         this.renderTransactions = new RenderTransactions(txlog, false, () => {
             this.setState();
         });
 
-        setInterval(()=>this.setState(), 1000);
+        setInterval(() => this.setState(), 1000);
     }
 
     render() {
-        const env=this.props.project.props.state.data.env;
+        const env = this.props.project.props.state.data.env;
         const network = env;
-        const transactions=this.renderTransactions.renderTransactions(network);
+        const transactions = this.renderTransactions.renderTransactions(
+            network
+        );
 
         var noTransactionsMessage;
-        if(!transactions.children || transactions.children.length < 1) {
-            noTransactionsMessage = ( <div>No transactions to show</div> );
+        if (!transactions.children || transactions.children.length < 1) {
+            noTransactionsMessage = <div>No transactions to show</div>;
         }
 
         return (
             <div id={this.id} class={style.main}>
-                <div class="scrollable-y" id={this.id+"_scrollable"}>
+                <div class="scrollable-y" id={this.id + '_scrollable'}>
                     <div class={style.inner}>
                         {noTransactionsMessage}
                         {transactions}

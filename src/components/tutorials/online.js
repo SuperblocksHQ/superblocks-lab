@@ -20,7 +20,7 @@ import style from './style';
 export default class TutorialsOnline extends Component {
     constructor(props) {
         super(props);
-        this.id=props.id+"_tutorial_online";
+        this.id = props.id + '_tutorial_online';
     }
 
     redraw = () => {
@@ -28,10 +28,12 @@ export default class TutorialsOnline extends Component {
     };
 
     render() {
-        return (<div id={this.id} class={style.main}>
-                <div class="scrollable-y" id={this.id+"_scrollable"}>
-                    <iframe src="https://superblocks.com/studio/tutorials/"></iframe>
+        return (
+            <div id={this.id} class={style.main}>
+                <div class="scrollable-y" id={this.id + '_scrollable'}>
+                    <iframe src="https://superblocks.com/studio/tutorials/" />
                 </div>
-                </div>);
+            </div>
+        );
     }
 }

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Superblocks AB
 //
 // This file is part of Superblocks Lab.
@@ -18,7 +17,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-import Backend from  '../projecteditor/control/backend';
+import Backend from '../projecteditor/control/backend';
 import Modal from '../modal';
 import ProjectEditor from '../projecteditor';
 import { Wallet } from '../projecteditor/wallet';
@@ -28,57 +27,57 @@ import EVM from '../evm';
 export default class App extends Component {
     constructor(props) {
         super(props);
-        this.idCounter=0;
+        this.idCounter = 0;
 
-        this.session={
+        this.session = {
             start_time: Date.now(),
         };
 
         // Map network to endpoint.
         const endpoints = {
             browser: {
-                endpoint: "http://superblocks-browser",
+                endpoint: 'http://superblocks-browser',
                 chainId: undefined,
                 interval: 1000,
             },
             custom: {
-                endpoint: "http://localhost:8545/",
+                endpoint: 'http://localhost:8545/',
                 chainId: undefined,
                 interval: 2000,
             },
             infuranet: {
-                endpoint: "https://infuranet.infura.io/",
+                endpoint: 'https://infuranet.infura.io/',
                 chainId: 5810,
                 interval: 5000,
             },
             kovan: {
-                endpoint: "https://kovan.infura.io/",
+                endpoint: 'https://kovan.infura.io/',
                 chainId: 42,
                 interval: 5000,
             },
             mainnet: {
-                endpoint: "https://mainnet.infura.io/",
+                endpoint: 'https://mainnet.infura.io/',
                 chainId: 1,
                 interval: 10000,
             },
             ropsten: {
-                endpoint: "https://ropsten.infura.io/",
+                endpoint: 'https://ropsten.infura.io/',
                 chainId: 3,
                 interval: 2500,
             },
             rinkeby: {
-                endpoint: "https://rinkeby.infura.io/",
+                endpoint: 'https://rinkeby.infura.io/',
                 chainId: 4,
                 interval: 2500,
             },
         };
 
         // Used to communicate between components, events is probably a better way of doing this.
-        this.router={
+        this.router = {
             register: this.register,
         };
 
-        this.router.register("app", this);
+        this.router.register('app', this);
 
         this.functions = {
             modal: {
@@ -95,115 +94,169 @@ export default class App extends Component {
             },
             generateId: this.generateId,
         };
-        this.knownWalletSeed="butter toward celery cupboard blind morning item night fatal theme display toy";
-        this.functions.wallet = new Wallet({functions: this.functions, length:30});
+        this.knownWalletSeed =
+            'butter toward celery cupboard blind morning item night fatal theme display toy';
+        this.functions.wallet = new Wallet({
+            functions: this.functions,
+            length: 30,
+        });
         // The development wallets seed is well known and the first few addresses are seeded
         // with ether in the genesis block.
-        this.setState({modals:[]});
-        console.log("Known development Ethereum wallet seed is: "+this.knownWalletSeed);
+        this.setState({ modals: [] });
+        console.log(
+            'Known development Ethereum wallet seed is: ' + this.knownWalletSeed
+        );
 
-        this._convertProjects((status)  => {
-            this.isReady=true;
+        this._convertProjects(status => {
+            this.isReady = true;
             this._init();
         });
     }
 
-    _convertProjects = (cb) => {
+    _convertProjects = cb => {
         const backend = new Backend();
-        backend.convertProjects((status) => {
+        backend.convertProjects(status => {
             if (status == 1) {
-                const modalData={
-                    title: "Projects converted",
+                const modalData = {
+                    title: 'Projects converted',
                     body: (
                         <div>
                             <div>
-                                Your projects have been converted to the new Superblocks Lab format.<br />
-                                You might need to reconfigure your accounts and contract arguments due to these
-                                changes. We are sorry for any inconvenience.
+                                Your projects have been converted to the new
+                                Superblocks Lab format.
+                                <br />
+                                You might need to reconfigure your accounts and
+                                contract arguments due to these changes. We are
+                                sorry for any inconvenience.
                             </div>
                             <div>
-                                Please see the Superblocks Lab help center for more information on this topic.
+                                Please see the Superblocks Lab help center for
+                                more information on this topic.
                             </div>
                         </div>
                     ),
-                    style: {width:"680px"},
+                    style: { width: '680px' },
                 };
-                const modal=(<Modal data={modalData} />);
-                this.functions.modal.show({cancel:()=>{cb(0);return true;}, render: () => {return modal;}});
-            }
-            else {
+                const modal = <Modal data={modalData} />;
+                this.functions.modal.show({
+                    cancel: () => {
+                        cb(0);
+                        return true;
+                    },
+                    render: () => {
+                        return modal;
+                    },
+                });
+            } else {
                 cb(0);
             }
         });
     };
 
-    redraw = (all) => {
+    redraw = all => {
         this.setState();
-    }
+    };
 
     register = (name, obj) => {
         this.router[name] = obj;
     };
 
-    _init=()=>{
+    _init = () => {
         let { showSplash, appVersion } = this.props;
-        const modalData={
-            title: "Loading Superblocks Lab",
-            body: "Initializing Wallet, Solidity compiler and Ethereum Virtual Machine...",
-            style: {"text-align":"center"},
+        const modalData = {
+            title: 'Loading Superblocks Lab',
+            body:
+                'Initializing Wallet, Solidity compiler and Ethereum Virtual Machine...',
+            style: { 'text-align': 'center' },
         };
-        var walletSeeded=false;
-        const modal=(<Modal data={modalData} />);
-        this.functions.modal.show({cancel: ()=>{return false}, render: () => {return modal;}});
-        this.functions.compiler=new Solc({id:this.generateId()});
-        this.functions.EVM=new EVM({id:this.generateId()});
-        this.functions.wallet.openWallet("development", this.knownWalletSeed, () => {walletSeeded=true;});
-        const fn=()=>{
-            if (this.functions.EVM.isReady() && this.functions.compiler.isReady() && walletSeeded) {
-                console.log("Superblocks Lab " + appVersion + " Ready.");
+        var walletSeeded = false;
+        const modal = <Modal data={modalData} />;
+        this.functions.modal.show({
+            cancel: () => {
+                return false;
+            },
+            render: () => {
+                return modal;
+            },
+        });
+        this.functions.compiler = new Solc({ id: this.generateId() });
+        this.functions.EVM = new EVM({ id: this.generateId() });
+        this.functions.wallet.openWallet(
+            'development',
+            this.knownWalletSeed,
+            () => {
+                walletSeeded = true;
+            }
+        );
+        const fn = () => {
+            if (
+                this.functions.EVM.isReady() &&
+                this.functions.compiler.isReady() &&
+                walletSeeded
+            ) {
+                console.log('Superblocks Lab ' + appVersion + ' Ready.');
                 this.functions.modal.close();
 
                 if (showSplash) {
                     this._showSplash();
                 }
-            }
-            else {
-                setTimeout(fn,500);
+            } else {
+                setTimeout(fn, 500);
             }
         };
         fn();
     };
 
-    _showSplash=()=>{
+    _showSplash = () => {
         let { showSplashNoMore } = this.props;
 
-        const body=(
+        const body = (
             <div class="splash">
                 <p class="splash_text">
                     Let's watch a short video to help you get started.
                 </p>
                 <p class="splash_video">
-                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/KSF24hkf0-o?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    <iframe
+                        width="560"
+                        height="315"
+                        src="https://www.youtube-nocookie.com/embed/KSF24hkf0-o?rel=0"
+                        frameborder="0"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen
+                    />
                 </p>
                 <p class="splash_cancel">
-                    <a href="#" onClick={()=>{
-                        // Idealy this should be inside the action and not here.
-                        this.functions.modal.cancel();
-                        showSplashNoMore();
-                    }}>No thanks</a>
+                    <a
+                        href="#"
+                        onClick={() => {
+                            // Idealy this should be inside the action and not here.
+                            this.functions.modal.cancel();
+                            showSplashNoMore();
+                        }}
+                    >
+                        No thanks
+                    </a>
                 </p>
             </div>
         );
-        const modalData={
-            title: "Welcome to Superblocks Lab!",
+        const modalData = {
+            title: 'Welcome to Superblocks Lab!',
             body: body,
-            style: {width:"680px","xbackground-color":"#73618b",xcolor:"#fef7ff"},
+            style: {
+                width: '680px',
+                'xbackground-color': '#73618b',
+                xcolor: '#fef7ff',
+            },
         };
-        const modal=(<Modal data={modalData} />);
-        this.functions.modal.show({render: () => {return modal;}});
+        const modal = <Modal data={modalData} />;
+        this.functions.modal.show({
+            render: () => {
+                return modal;
+            },
+        });
     };
 
-    session_start_time = ()=>{
+    session_start_time = () => {
         return this.session.start_time;
     };
 
@@ -213,47 +266,62 @@ export default class App extends Component {
 
     getClassNames = () => {
         return classNames({
-            'modals':  this.state.modals.length>0
+            modals: this.state.modals.length > 0,
         });
     };
 
     getCurrentModalIndex = () => {
-        return this.state.modals.length-1;
+        return this.state.modals.length - 1;
     };
 
-    showModal = (modal) => {
+    showModal = modal => {
         this.state.modals.push(modal);
         this.setState();
     };
 
-    closeModal = (index) => {
-        if(index==null) index=this.state.modals.length-1;
-        var modal=this.state.modals[index];
-        this.state.modals.splice(index,1);
+    closeModal = index => {
+        if (index == null) index = this.state.modals.length - 1;
+        var modal = this.state.modals[index];
+        this.state.modals.splice(index, 1);
         this.setState();
     };
 
     getModal = () => {
         return this.state.modals.map((elm, index) => {
-            const stl={position: "absolute"};
-            stl["z-index"] = index;
-            if(index<this.state.modals.length-1) stl["opacity"] = "0.33";
-            return (<div id={"app_modal_"+index} style={stl} class="full" onClick={this.modalOutside}>{elm.render()}</div>);
+            const stl = { position: 'absolute' };
+            stl['z-index'] = index;
+            if (index < this.state.modals.length - 1) stl['opacity'] = '0.33';
+            return (
+                <div
+                    id={'app_modal_' + index}
+                    style={stl}
+                    class="full"
+                    onClick={this.modalOutside}
+                >
+                    {elm.render()}
+                </div>
+            );
         });
     };
 
-    cancelModal = (e) => {
-        if(e) { e.preventDefault(); e.stopPropagation(); }
-        const index=this.state.modals.length-1;
-        var modal=this.state.modals[index];
-        if(modal.cancel && modal.cancel(modal)===false) return;
-        this.state.modals.splice(index,1);
+    cancelModal = e => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const index = this.state.modals.length - 1;
+        var modal = this.state.modals[index];
+        if (modal.cancel && modal.cancel(modal) === false) return;
+        this.state.modals.splice(index, 1);
         this.setState();
     };
 
-    modalOutside = (e) => {
-        if(e) { e.preventDefault(); e.stopPropagation(); }
-        if(e.target.id.indexOf("app_modal")===0) {
+    modalOutside = e => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (e.target.id.indexOf('app_modal') === 0) {
             this.cancelModal();
         }
     };
@@ -264,10 +332,13 @@ export default class App extends Component {
             <div id="app" className={this.getClassNames()}>
                 <div id="app_content">
                     <div class="maincontent">
-                        { this.isReady && <ProjectEditor
-                            key="projedit"
-                            router={this.router}
-                            functions={this.functions} /> }
+                        {this.isReady && (
+                            <ProjectEditor
+                                key="projedit"
+                                router={this.router}
+                                functions={this.functions}
+                            />
+                        )}
                     </div>
                 </div>
                 <div id="app_modal" onClick={this.modalOutside}>

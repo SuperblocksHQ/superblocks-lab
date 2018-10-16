@@ -22,13 +22,12 @@ import style from './style-editor-account';
 export default class AccountEditor extends Component {
     constructor(props) {
         super(props);
-        this.id=props.id+"_editor";;
-        this.props.parent.childComponent=this;
-        this.setEnv("browser");
+        this.id = props.id + '_editor';
+        this.props.parent.childComponent = this;
+        this.setEnv('browser');
     }
 
-    componentWillReceiveProps(props) {
-    }
+    componentWillReceiveProps(props) {}
 
     componentDidMount() {
         this.redraw();
@@ -39,8 +38,15 @@ export default class AccountEditor extends Component {
     };
 
     canClose = (cb, silent) => {
-        if ((this.state.accountBalanceDirty || this.state.accountAddressDirty || this.state.accountNameDirty) && !silent) {
-            const flag = confirm("There is unsaved data. Do you want to close tab and loose the changes?");
+        if (
+            (this.state.accountBalanceDirty ||
+                this.state.accountAddressDirty ||
+                this.state.accountNameDirty) &&
+            !silent
+        ) {
+            const flag = confirm(
+                'There is unsaved data. Do you want to close tab and loose the changes?'
+            );
             cb(flag ? 0 : 1);
             return;
         }
@@ -49,56 +55,59 @@ export default class AccountEditor extends Component {
 
     environments = () => {
         const project = this.props.item.getProject();
-        const items = project.getHiddenItem("environments");
+        const items = project.getHiddenItem('environments');
         return items.getChildren();
     };
 
-    setEnv = (env) => {
+    setEnv = env => {
         // Set all initial values of the account.
-        var isLocked=false;
-        var walletType=null;
+        var isLocked = false;
+        var walletType = null;
         var address;
         var walletItem = null;
         const walletName = this.props.item.getWallet(env);
         const accountIndex = this.props.item.getAccountIndex(env);
-        if(walletName) {
-            walletItem = this.props.item.getProject().getHiddenItem('wallets').getByName(walletName);
+        if (walletName) {
+            walletItem = this.props.item
+                .getProject()
+                .getHiddenItem('wallets')
+                .getByName(walletName);
         }
-        if(walletItem) {
-            walletType=walletItem.getWalletType();
-            if(walletType=="external") {
-                if(!window.web3) {
-                    if(this.props.functions.wallet.isOpen(walletName)) {
-                        address=this.props.functions.wallet.getAddress(walletName, accountIndex);
+        if (walletItem) {
+            walletType = walletItem.getWalletType();
+            if (walletType == 'external') {
+                if (!window.web3) {
+                    if (this.props.functions.wallet.isOpen(walletName)) {
+                        address = this.props.functions.wallet.getAddress(
+                            walletName,
+                            accountIndex
+                        );
+                    } else {
+                        isLocked = true;
                     }
-                    else {
-                        isLocked=true;
-                    }
-
-                }
-                else {
+                } else {
                     const extAccounts = window.web3.eth.accounts || [];
-                    isLocked = extAccounts.length<1;
-                    address=extAccounts[0];
+                    isLocked = extAccounts.length < 1;
+                    address = extAccounts[0];
                 }
-            }
-            else {
+            } else {
                 // Local wallet
-                if(this.props.functions.wallet.isOpen(walletName)) {
-                    address=this.props.functions.wallet.getAddress(walletName, accountIndex);
-                }
-                else {
-                    isLocked=true;
+                if (this.props.functions.wallet.isOpen(walletName)) {
+                    address = this.props.functions.wallet.getAddress(
+                        walletName,
+                        accountIndex
+                    );
+                } else {
+                    isLocked = true;
                 }
             }
-        }
-        else {
+        } else {
             address = this.props.item.getAddress(env);
         }
 
-        const network=env;
+        const network = env;
         // Initial (editable) values
-        this.form={
+        this.form = {
             env: env,
             name: this.props.item.getName(),
             walletName: walletName,
@@ -106,54 +115,62 @@ export default class AccountEditor extends Component {
             walletType: walletType,
             address: address,
             balance: 0,
-            balanceFormatted: "0",
-            balanceError: "",
+            balanceFormatted: '0',
+            balanceError: '',
             isLocked: isLocked,
-            web3: this._getWeb3((this.props.functions.networks.endpoints[network] || {}).endpoint),
+            web3: this._getWeb3(
+                (this.props.functions.networks.endpoints[network] || {})
+                    .endpoint
+            ),
         };
         this._fetchBalance(address);
         this.redraw();
     };
 
-    _getWeb3=(endpoint)=>{
+    _getWeb3 = endpoint => {
         var provider;
-        if(endpoint.toLowerCase()=="http://superblocks-browser") {
-            provider=this.props.functions.EVM.getProvider();
+        if (endpoint.toLowerCase() == 'http://superblocks-browser') {
+            provider = this.props.functions.EVM.getProvider();
+        } else {
+            provider = new Web3.providers.HttpProvider(endpoint);
         }
-        else {
-            provider=new Web3.providers.HttpProvider(endpoint);
-        }
-        var web3=new Web3(provider);
+        var web3 = new Web3(provider);
         return web3;
     };
 
-    _fetchBalance=(address)=>{
+    _fetchBalance = address => {
         // Get balance and update this.form.balance
-        if(!address || address.length<5) {
+        if (!address || address.length < 5) {
             // a 0x00 address...
             return;
         }
-        const form=this.form;  // Grab the reference so we avoid race conditions updating the same object when changing environments.
+        const form = this.form; // Grab the reference so we avoid race conditions updating the same object when changing environments.
 
-        this.form.web3.eth.getBalance(address,(err,res)=>{
-            if(err) {
-                this.form.balance=0;
-                this.form.balanceError="<could not get balance>";
-            }
-            else {
-                this.form.balance=res.toNumber();
-                this.form.balanceOriginal=this.form.balance;
-                this.form.balanceFormatted=this.form.web3.fromWei(this.form.balance);
-                this.form.balanceError="";
+        this.form.web3.eth.getBalance(address, (err, res) => {
+            if (err) {
+                this.form.balance = 0;
+                this.form.balanceError = '<could not get balance>';
+            } else {
+                this.form.balance = res.toNumber();
+                this.form.balanceOriginal = this.form.balance;
+                this.form.balanceFormatted = this.form.web3.fromWei(
+                    this.form.balance
+                );
+                this.form.balanceError = '';
             }
             this.redraw();
         });
     };
 
-    _save = (cb) => {
-        if(this.props.item.getName() != this.form.name) {
+    _save = cb => {
+        if (this.props.item.getName() != this.form.name) {
             // Name is changing, check for clash.
-            if (this.props.item.getProject().getHiddenItem('accounts').getByName(this.form.name)) {
+            if (
+                this.props.item
+                    .getProject()
+                    .getHiddenItem('accounts')
+                    .getByName(this.form.name)
+            ) {
                 alert('Error: An account with that name already exists.');
                 cb(1);
                 return;
@@ -162,10 +179,12 @@ export default class AccountEditor extends Component {
 
         const oldname = this.props.item.getName();
         this.props.item.reKey(this.form.name);
-        this.props.item.getProject().setAccountName(oldname, this.form.name, () => {
-            this.props.router.main.redraw(true);
-            cb(0);
-        });
+        this.props.item
+            .getProject()
+            .setAccountName(oldname, this.form.name, () => {
+                this.props.router.main.redraw(true);
+                cb(0);
+            });
     };
 
     onEnvChange = (e, value) => {
@@ -173,77 +192,100 @@ export default class AccountEditor extends Component {
         this.setEnv(value);
     };
 
-    unlockWallet = (name) => {
-        this.props.functions.wallet.openWallet(name, null, (status)=>{
-            if(status===0) {
+    unlockWallet = name => {
+        this.props.functions.wallet.openWallet(name, null, status => {
+            if (status === 0) {
                 // Reload data (for the same env)
                 this.setEnv(this.form.env);
-            }
-            else if(status===1) {
+            } else if (status === 1) {
                 // Cancelled
                 return;
-            }
-            else {
-                alert("Computer says no. The seed entered is not a valid 12 word seed.");
+            } else {
+                alert(
+                    'Computer says no. The seed entered is not a valid 12 word seed.'
+                );
             }
         });
     };
 
-    onNameChange=(e)=>{
-        var value=e.target.value;
-        this.form.name=value;
-        this.setState({accountNameDirty:true});
+    onNameChange = e => {
+        var value = e.target.value;
+        this.form.name = value;
+        this.setState({ accountNameDirty: true });
     };
 
-    _nameSave=(e)=> {
+    _nameSave = e => {
         e.preventDefault();
 
-        if(!this.form.name.match(/^([a-zA-Z0-9-_]+)$/)) {
-            alert('Illegal account name. Only A-Za-z0-9, dash (-) and underscore (_) allowed.');
+        if (!this.form.name.match(/^([a-zA-Z0-9-_]+)$/)) {
+            alert(
+                'Illegal account name. Only A-Za-z0-9, dash (-) and underscore (_) allowed.'
+            );
             return;
         }
 
-        if(this._save((status)=>{
-            if(status==0) {
-                this.setState({accountNameDirty:false});
-            }
-        }));
-    };
-
-    onAddressChange=(e)=>{
-        var value=e.target.value;
-        this.form.address=value;
-        this.setState({accountAddressDirty:true});
-    };
-
-    _staticAddressSave=(e)=>{
-        e.preventDefault();
-
-        if(! (this.form.address.match(/^0x([a-fA-F0-9]){40}$/) || this.form.address=="0x0") ) {
-            alert('Illegal Ethereum account address. Must be on format: 0xabcdef0123456789, 42 characters in total or 0x0.');
-            return;
-        }
-
-        this.props.item.getProject().setAccountAddress(this.props.item.getName(), this.form.address, this.form.env, () => {
-            if(this._save((status)=>{
-                if(status==0) {
-                    this.setState({accountAddressDirty:false});
+        if (
+            this._save(status => {
+                if (status == 0) {
+                    this.setState({ accountNameDirty: false });
                 }
-            }));
-        });
+            })
+        );
     };
 
-    onBalanceChange=(e)=>{
-        var value=e.target.value;
-        this.form.balance=value;
-        this.form.balanceFormatted=this.form.web3.fromWei(this.form.balance);
-        this.setState({accountBalanceDirty:true});
+    onAddressChange = e => {
+        var value = e.target.value;
+        this.form.address = value;
+        this.setState({ accountAddressDirty: true });
     };
 
-    _balanceSave=(e)=>{
+    _staticAddressSave = e => {
         e.preventDefault();
 
-        if(!this.form.balance.match(/^([0-9]+)$/) || !isNaN(parseInt(this.form.balance))) {
+        if (
+            !(
+                this.form.address.match(/^0x([a-fA-F0-9]){40}$/) ||
+                this.form.address == '0x0'
+            )
+        ) {
+            alert(
+                'Illegal Ethereum account address. Must be on format: 0xabcdef0123456789, 42 characters in total or 0x0.'
+            );
+            return;
+        }
+
+        this.props.item
+            .getProject()
+            .setAccountAddress(
+                this.props.item.getName(),
+                this.form.address,
+                this.form.env,
+                () => {
+                    if (
+                        this._save(status => {
+                            if (status == 0) {
+                                this.setState({ accountAddressDirty: false });
+                            }
+                        })
+                    );
+                }
+            );
+    };
+
+    onBalanceChange = e => {
+        var value = e.target.value;
+        this.form.balance = value;
+        this.form.balanceFormatted = this.form.web3.fromWei(this.form.balance);
+        this.setState({ accountBalanceDirty: true });
+    };
+
+    _balanceSave = e => {
+        e.preventDefault();
+
+        if (
+            !this.form.balance.match(/^([0-9]+)$/) ||
+            !isNaN(parseInt(this.form.balance))
+        ) {
             alert('Bad integer format.');
             return;
         }
@@ -258,68 +300,97 @@ export default class AccountEditor extends Component {
                 <div>
                     <div class="superInputDarkInline">
                         <label for="address">Address</label>
-                        <input type="text"
-                                id="address"
-                                onKeyUp={(e)=>{this.onAddressChange(e)}}
-                                onChange={(e)=>{this.onAddressChange(e)}}
-                                value={this.form.address} />
+                        <input
+                            type="text"
+                            id="address"
+                            onKeyUp={e => {
+                                this.onAddressChange(e);
+                            }}
+                            onChange={e => {
+                                this.onAddressChange(e);
+                            }}
+                            value={this.form.address}
+                        />
 
-                        <button class="btn2" disabled={!this.state.accountAddressDirty} onClick={this._staticAddressSave}>Save</button>
+                        <button
+                            class="btn2"
+                            disabled={!this.state.accountAddressDirty}
+                            onClick={this._staticAddressSave}
+                        >
+                            Save
+                        </button>
                     </div>
                     <p>
-                        <b>NOTE:</b> This account only has a public address which you need to set yourself.
-                        This means that the account cannot be used for any transactions.
-                        The reason for this feature is that this account can be passed as argument to contract constructors.
+                        <b>NOTE:</b> This account only has a public address
+                        which you need to set yourself. This means that the
+                        account cannot be used for any transactions. The reason
+                        for this feature is that this account can be passed as
+                        argument to contract constructors.
                     </p>
                 </div>
             );
-        }
-        else {
+        } else {
             // Check for external web3 provider
-            if (this.form.walletType == "external") {
+            if (this.form.walletType == 'external') {
                 if (this.form.isLocked) {
                     return (
                         <p>
-                            Metamask is locked. Unlock Metamask to see address and balance of this account.
+                            Metamask is locked. Unlock Metamask to see address
+                            and balance of this account.
                         </p>
                     );
-                }
-                else {
+                } else {
                     return (
                         <div>
-                            <h3>
-                                Metamask account
-                            </h3>
+                            <h3>Metamask account</h3>
                             <p>
                                 <b>Address:</b> {this.form.address}
                             </p>
                             <p>
-                                <b>Balance:</b> {this.form.balance} wei ({this.form.balanceFormatted} Ether) {this.form.balanceError}
+                                <b>Balance:</b> {this.form.balance} wei (
+                                {this.form.balanceFormatted} Ether){' '}
+                                {this.form.balanceError}
                             </p>
                         </div>
                     );
                 }
-            }
-            else {
+            } else {
                 // Regular wallet
                 if (this.form.isLocked) {
                     return (
                         <div>
                             <p>
-                                This wallet is locked. Unlock the wallet to show the address and the balance.
+                                This wallet is locked. Unlock the wallet to show
+                                the address and the balance.
                             </p>
-                            <button class="btn2" onClick={(e)=>{e.preventDefault(); this.unlockWallet(this.form.walletName); }}>
+                            <button
+                                class="btn2"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    this.unlockWallet(this.form.walletName);
+                                }}
+                            >
                                 Unlock
                             </button>
                         </div>
                     );
                 } else {
                     var unlockDifferentAccountButton;
-                    if(this.form.walletName === "private" || (this.form.walletName === "external" && !window.web3) ) {
+                    if (
+                        this.form.walletName === 'private' ||
+                        (this.form.walletName === 'external' && !window.web3)
+                    ) {
                         unlockDifferentAccountButton = (
-                            <button class="btn2" onClick={(e)=>{e.preventDefault(); this.unlockWallet(this.form.walletName); }}>
+                            <button
+                                class="btn2"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    this.unlockWallet(this.form.walletName);
+                                }}
+                            >
                                 Unlock a different account
-                            </button>);
+                            </button>
+                        );
                     }
 
                     return (
@@ -328,9 +399,11 @@ export default class AccountEditor extends Component {
                                 <b>Address:</b> {this.form.address}
                             </p>
                             <p>
-                                <b>Balance:</b> {this.form.balance} wei ({this.form.balanceFormatted} Ether) {this.form.balanceError}
+                                <b>Balance:</b> {this.form.balance} wei (
+                                {this.form.balanceFormatted} Ether){' '}
+                                {this.form.balanceError}
                             </p>
-                            { unlockDifferentAccountButton }
+                            {unlockDifferentAccountButton}
                         </div>
                     );
                 }
@@ -339,62 +412,114 @@ export default class AccountEditor extends Component {
     };
 
     render() {
-        const accountContent=this._renderAccountContent();
-        return (<div id={this.id} class={style.main}>
-            <div class="scrollable-y" id={this.id+"_scrollable"}>
-                <div class={style.inner}>
-                    <h1 class={style.title}>
-                        Edit Account
-                    </h1>
-                    <div class={style.form}>
-                        <form action="">
-                            <div class={style.field}>
-                                <div class="superInputDarkInline">
-                                    <label for="name">Name</label>
-                                    <input type="text"
+        const accountContent = this._renderAccountContent();
+        return (
+            <div id={this.id} class={style.main}>
+                <div class="scrollable-y" id={this.id + '_scrollable'}>
+                    <div class={style.inner}>
+                        <h1 class={style.title}>Edit Account</h1>
+                        <div class={style.form}>
+                            <form action="">
+                                <div class={style.field}>
+                                    <div class="superInputDarkInline">
+                                        <label for="name">Name</label>
+                                        <input
+                                            type="text"
                                             id="name"
                                             value={this.form.name}
-                                            onKeyUp={(e)=>{this.onNameChange(e)}}
-                                            onChange={(e)=>{this.onNameChange(e)}} />
+                                            onKeyUp={e => {
+                                                this.onNameChange(e);
+                                            }}
+                                            onChange={e => {
+                                                this.onNameChange(e);
+                                            }}
+                                        />
 
-                                    <button class="btn2" disabled={!this.state.accountNameDirty} onClick={this._nameSave}>Save name</button>
-                                </div>
-                                <div class={style.networkContainer}>
-                                    <div class={style.networkHeader}>
-                                        <div class={style.titleContainer}>
-                                            <h3 class={style.title}>Configure the account for each network</h3>
-                                        </div>
-                                        <div class={style.subtitle}>
-                                            Each account must be configured for each of the networks available.
-                                            <a href="#" target="_blank" rel="noopener noreferrer"> Click here</a> to access our Help Center and find more information about this.
-                                        </div>
+                                        <button
+                                            class="btn2"
+                                            disabled={
+                                                !this.state.accountNameDirty
+                                            }
+                                            onClick={this._nameSave}
+                                        >
+                                            Save name
+                                        </button>
                                     </div>
-                                    <div class={style.networkSelector}>
-                                        <div class={style.networks}>
-                                            <ul>
-                                                {
-                                                    this.environments().map( (env) => {
-                                                        const cls={};
-                                                        if (env.getName() == this.form.env) {
-                                                            cls[style.active] = true;
+                                    <div class={style.networkContainer}>
+                                        <div class={style.networkHeader}>
+                                            <div class={style.titleContainer}>
+                                                <h3 class={style.title}>
+                                                    Configure the account for
+                                                    each network
+                                                </h3>
+                                            </div>
+                                            <div class={style.subtitle}>
+                                                Each account must be configured
+                                                for each of the networks
+                                                available.
+                                                <a
+                                                    href="#"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {' '}
+                                                    Click here
+                                                </a>{' '}
+                                                to access our Help Center and
+                                                find more information about
+                                                this.
+                                            </div>
+                                        </div>
+                                        <div class={style.networkSelector}>
+                                            <div class={style.networks}>
+                                                <ul>
+                                                    {this.environments().map(
+                                                        env => {
+                                                            const cls = {};
+                                                            if (
+                                                                env.getName() ==
+                                                                this.form.env
+                                                            ) {
+                                                                cls[
+                                                                    style.active
+                                                                ] = true;
+                                                            }
+                                                            return (
+                                                                <li
+                                                                    className={classnames(
+                                                                        [cls]
+                                                                    )}
+                                                                >
+                                                                    <div
+                                                                        class={
+                                                                            style.networkName
+                                                                        }
+                                                                        onClick={e => {
+                                                                            this.onEnvChange(
+                                                                                e,
+                                                                                env.getName()
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        {env.getName()}
+                                                                    </div>
+                                                                </li>
+                                                            );
                                                         }
-                                                        return (
-                                                            <li className={classnames([cls])}>
-                                                                <div class={style.networkName} onClick={(e)=>{this.onEnvChange(e, env.getName())}}>{env.getName()}</div>
-                                                            </li>);
-                                                })}
-                                            </ul>
-                                        </div>
-                                        <div class={style.networkInfo}>
-                                            {accountContent}
+                                                    )}
+                                                </ul>
+                                            </div>
+                                            <div class={style.networkInfo}>
+                                                {accountContent}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>);
+        );
     }
 }

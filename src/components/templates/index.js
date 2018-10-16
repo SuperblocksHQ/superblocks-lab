@@ -14,36 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-const Empty = require("./empty.json");
-const HelloWorld = require("./hello.json");
-const NewsFeed = require("./newsfeed.json");
-const RaiseToSummon = require("./raisetosummon.json");
+const Empty = require('./empty.json');
+const HelloWorld = require('./hello.json');
+const NewsFeed = require('./newsfeed.json');
+const RaiseToSummon = require('./raisetosummon.json');
 
 export default class Templates {
-
     static categories = [
         {
-            "id": 0,
-            "name": "All"
+            id: 0,
+            name: 'All',
         },
         {
-            "id": 1,
-            "name": "Crowdfunding"
+            id: 1,
+            name: 'Crowdfunding',
         },
         {
-            "id": 2,
-            "name": "Generic"
+            id: 2,
+            name: 'Generic',
         },
         {
-            "id": 3,
-            "name": "Introduction"
+            id: 3,
+            name: 'Introduction',
         },
-    ]
+    ];
 
-    static templates = [
-        Empty,
-        HelloWorld,
-        NewsFeed,
-        RaiseToSummon
-    ]
+    static templates = [Empty, HelloWorld, NewsFeed, RaiseToSummon];
 }

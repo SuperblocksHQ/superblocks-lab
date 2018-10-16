@@ -18,7 +18,7 @@ import Item from './item';
 
 export default class ContractsItem extends Item {
     constructor(props, router) {
-        props.type = props.type || "contracts";
+        props.type = props.type || 'contracts';
         super(props, router);
         props.render = this._renderFileTitle;
     }
@@ -26,8 +26,8 @@ export default class ContractsItem extends Item {
     /**
      * Return contract item by it's source.
      */
-    getBySource = (source) => {
-        return this.getChildren().filter( (contract) => {
+    getBySource = source => {
+        return this.getChildren().filter(contract => {
             return contract.getSource() == source;
         })[0];
     };
@@ -35,8 +35,8 @@ export default class ContractsItem extends Item {
     /**
      * Return contract item by it's name.
      */
-    getByName = (name) => {
-        return this.getChildren().filter( (contract) => {
+    getByName = name => {
+        return this.getChildren().filter(contract => {
             return contract.getName() == name;
         })[0];
     };

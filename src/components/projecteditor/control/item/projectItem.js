@@ -26,23 +26,23 @@ import WalletsItem from './walletsItem';
 import WalletItem from './walletItem';
 import EnvironmentsItem from './environmentsItem';
 import EnvironmentItem from './environmentItem';
-import {
-    IconShowPreview,
-    IconMosaic,
-} from '../../../icons';
+import { IconShowPreview, IconMosaic } from '../../../icons';
 
-import Backend from  '../backend';
+import Backend from '../backend';
 import TransactionLogData from '../../../blockexplorer/transactionlogdata';
 
 export default class ProjectItem extends Item {
     constructor(props, router, functions) {
         props.state = props.state || {};
-        props.type = props.type || "project";
-        props.classes = props.classes || ["project"];
+        props.type = props.type || 'project';
+        props.classes = props.classes || ['project'];
         super(props, router, functions);
         this.props.state.project = this;
         this.backend = new Backend();
-        this.props.state.txLog = new TransactionLogData({functions: functions, project: this});
+        this.props.state.txLog = new TransactionLogData({
+            functions: functions,
+            project: this,
+        });
     }
 
     getTxLog = () => {
@@ -58,7 +58,7 @@ export default class ProjectItem extends Item {
         if (dappfile) {
             return dappfile.getTitle();
         }
-        return this.props.state.title || "";
+        return this.props.state.title || '';
     };
 
     getName = () => {
@@ -66,21 +66,23 @@ export default class ProjectItem extends Item {
         if (dappfile) {
             return dappfile.getName();
         }
-        return this.props.state.name || "";
+        return this.props.state.name || '';
     };
 
     getEnvironment = () => {
-        const environmentsItem = this.getHiddenItem("environments");
+        const environmentsItem = this.getHiddenItem('environments');
         const firstEnv = environmentsItem.getChildren()[0];
-        const defaultEnv = (firstEnv ? firstEnv.getName() : "browser");
+        const defaultEnv = firstEnv ? firstEnv.getName() : 'browser';
         const chosen = environmentsItem.getChosen() || defaultEnv;
         return chosen;
     };
 
     getAccount = () => {
-        const accountsItem = this.getHiddenItem("accounts");
+        const accountsItem = this.getHiddenItem('accounts');
         const firstAccount = accountsItem.getChildren()[0];
-        const defaultAccount = (firstAccount ? firstAccount.getName() : "Default");
+        const defaultAccount = firstAccount
+            ? firstAccount.getName()
+            : 'Default';
         const chosen = accountsItem.getChosen() || defaultAccount;
         return chosen;
     };
@@ -90,40 +92,44 @@ export default class ProjectItem extends Item {
      * create it if not existing.
      *
      */
-    getContract = (source) => {
-        const contractsItem = this.getHiddenItem("contracts");
+    getContract = source => {
+        const contractsItem = this.getHiddenItem('contracts');
         var contractItem = contractsItem.getBySource(source);
         if (!contractItem) {
             // Let's create this item
-            const a = source.match("^(.*)/([^/]+)([.][Ss][Oo][Ll])$");
+            const a = source.match('^(.*)/([^/]+)([.][Ss][Oo][Ll])$');
             if (a) {
                 const name = a[2];
                 const file = name + a[3];
                 const args = [];
-                contractItem = new ContractItem({
-                    state: {
-                        key: file,
-                        source: source,
-                        file: file,
-                        title: file,
-                        name: name,
-                        args: args,
-                        project: this
-                    }
-                }, this.router);
+                contractItem = new ContractItem(
+                    {
+                        state: {
+                            key: file,
+                            source: source,
+                            file: file,
+                            title: file,
+                            name: name,
+                            args: args,
+                            project: this,
+                        },
+                    },
+                    this.router
+                );
                 // Update dappfile.
-                this.addContract(name, source, args)
+                this.addContract(name, source, args);
             }
         }
         return contractItem;
     };
 
-    getEndpoint = (network) => {
-        const endpoint=(this.functions.networks.endpoints[network] || {}).endpoint;
+    getEndpoint = network => {
+        const endpoint = (this.functions.networks.endpoints[network] || {})
+            .endpoint;
         return endpoint;
     };
 
-    delete = (cb) => {
+    delete = cb => {
         this.backend.deleteProject(this.getInode(), cb);
     };
 
@@ -137,20 +143,23 @@ export default class ProjectItem extends Item {
      * loading the dappfile into cache and initializing the filesystem.
      *
      */
-    load = (cb) => {
+    load = cb => {
         const finalize = () => {
-            const fileItem = new FileItem({
-                type: "folder",
-                lazy: true,
-                classes: ["files"],
-                state: {
-                    key: "",
-                    open: true,
-                    title: "Files",
-                    file: "",
-                    project: this
-                }
-            }, this.router);
+            const fileItem = new FileItem(
+                {
+                    type: 'folder',
+                    lazy: true,
+                    classes: ['files'],
+                    state: {
+                        key: '',
+                        open: true,
+                        title: 'Files',
+                        file: '',
+                        project: this,
+                    },
+                },
+                this.router
+            );
             this.setChildren([fileItem]);
 
             const accountsItem = this._getAccountsItem();
@@ -165,45 +174,56 @@ export default class ProjectItem extends Item {
             const contractsItem = this._getContractsItem();
             this.setHiddenItem('contracts', contractsItem);
 
-            const previewItem = new Item({
-                type: "app",
-                type2: "view",
-                icon: <IconShowPreview />,
-                state: {
-                    title: "Preview",
-                    key: "app_preview",
-                    project: this,
-                }
-            }, this.router);
+            const previewItem = new Item(
+                {
+                    type: 'app',
+                    type2: 'view',
+                    icon: <IconShowPreview />,
+                    state: {
+                        title: 'Preview',
+                        key: 'app_preview',
+                        project: this,
+                    },
+                },
+                this.router
+            );
             this.setHiddenItem('app_preview', previewItem);
 
             // Traverase the file structure to get `/dappfile.json`, this will prepare the file tree
             // so that the file `/dappfile.json` will get represented by the DappfileItem item created prior.
-            this.getItemByPath(["", "dappfile.json"], this).then( (item) => {
-                cb(0);
-            }).catch( () => {
-                alert("Error: Could not load dappfile.json.");
-            });
+            this.getItemByPath(['', 'dappfile.json'], this)
+                .then(item => {
+                    cb(0);
+                })
+                .catch(() => {
+                    alert('Error: Could not load dappfile.json.');
+                });
         };
 
-        const dappfileItem = new DappfileItem({
-            state: {
-                key: "dappfile.json",
-                title: "dappfile.json",
-                file: "dappfile.json",
-                project: this,
-            }
-        }, this.router);
+        const dappfileItem = new DappfileItem(
+            {
+                state: {
+                    key: 'dappfile.json',
+                    title: 'dappfile.json',
+                    file: 'dappfile.json',
+                    project: this,
+                },
+            },
+            this.router
+        );
 
         // Create the Dappfile item directly, so we make sure that the dappfile.json does exist.
-        dappfileItem.load().then( (ret) => {
-            // Save it as a hidden item to be used later as a visible item.
-            this.setHiddenItem('dappfile', dappfileItem);
-            finalize();
-        }).catch( (err) => {
-            console.error("Dappfile not accessible.", err);
-            cb(1);
-        });
+        dappfileItem
+            .load()
+            .then(ret => {
+                // Save it as a hidden item to be used later as a visible item.
+                this.setHiddenItem('dappfile', dappfileItem);
+                finalize();
+            })
+            .catch(err => {
+                console.error('Dappfile not accessible.', err);
+                cb(1);
+            });
     };
 
     /**
@@ -242,7 +262,7 @@ export default class ProjectItem extends Item {
      *
      */
     getItemByPath = (path, item) => {
-        return new Promise( (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const filename = path.shift();
 
             item.getChildren(true, () => {
@@ -252,13 +272,14 @@ export default class ProjectItem extends Item {
                     if (child.getFile() == filename) {
                         if (path.length == 0) {
                             resolve(child);
-                        }
-                        else {
-                            this.getItemByPath(path, child).then( (item) => {
-                                resolve(item);
-                            }).catch( () => {
-                                reject();
-                            });
+                        } else {
+                            this.getItemByPath(path, child)
+                                .then(item => {
+                                    resolve(item);
+                                })
+                                .catch(() => {
+                                    reject();
+                                });
                         }
                         return;
                     }
@@ -266,15 +287,14 @@ export default class ProjectItem extends Item {
                 reject();
             });
         });
-    }
+    };
 
     /**
      * Create and return the EnvironmentsItem.
      */
     _getEnvironmentsItem = () => {
         var environmentsItem;
-        const environmentsChildren=() => {
-
+        const environmentsChildren = () => {
             // Newly generated children, which we copy state over to.
             const children = [];
             const environments = this._getDappfile().environments();
@@ -285,13 +305,16 @@ export default class ProjectItem extends Item {
                         key: environment.name,
                         title: environment.name,
                         name: environment.name,
-                        project: this
-                    }
+                        project: this,
+                    },
                 });
                 children.push(childItem);
             }
             // Copy over the state from cached children to new children, so they appear to be the same (but the objects are new).
-            environmentsItem._copyState(children, environmentsItem.props.state._children || []);
+            environmentsItem._copyState(
+                children,
+                environmentsItem.props.state._children || []
+            );
 
             // Save cache generated.
             environmentsItem.props.state._children = children;
@@ -301,8 +324,8 @@ export default class ProjectItem extends Item {
         environmentsItem = new EnvironmentsItem({
             state: {
                 project: this,
-                children: environmentsChildren
-            }
+                children: environmentsChildren,
+            },
         });
 
         return environmentsItem;
@@ -313,29 +336,34 @@ export default class ProjectItem extends Item {
      */
     _getContractsItem = () => {
         var contractsItem;
-        const contractsChildren=() => {
-
+        const contractsChildren = () => {
             // Newly generated children, which we copy state over to.
             const children = [];
             const contracts = this._getDappfile().contracts();
             for (let index = 0; index < contracts.length; index++) {
                 var contract = contracts[index];
-                const file = contract.source.match("^(.*)/([^/]+)$")[2];
-                var childItem = new ContractItem({
-                    state: {
-                        key: file,
-                        source: contract.source,
-                        file: file,
-                        title: file,
-                        name: contract.name,
-                        args: contract.args,
-                        project: this
-                    }
-                }, this.router);
+                const file = contract.source.match('^(.*)/([^/]+)$')[2];
+                var childItem = new ContractItem(
+                    {
+                        state: {
+                            key: file,
+                            source: contract.source,
+                            file: file,
+                            title: file,
+                            name: contract.name,
+                            args: contract.args,
+                            project: this,
+                        },
+                    },
+                    this.router
+                );
                 children.push(childItem);
             }
             // Copy over the state from cached children to new children, so they appear to be the same (but the objects are new).
-            contractsItem._copyState(children, contractsItem.props.state._children || []);
+            contractsItem._copyState(
+                children,
+                contractsItem.props.state._children || []
+            );
 
             // Save cache generated.
             contractsItem.props.state._children = children;
@@ -345,8 +373,8 @@ export default class ProjectItem extends Item {
         contractsItem = new ContractsItem({
             state: {
                 project: this,
-                children: contractsChildren
-            }
+                children: contractsChildren,
+            },
         });
 
         return contractsItem;
@@ -357,8 +385,7 @@ export default class ProjectItem extends Item {
      */
     _getWalletsItem = () => {
         var walletsItem;
-        const walletsChildren=() => {
-
+        const walletsChildren = () => {
             // Newly generated children, which we copy state over to.
             const children = [];
             const wallets = this._getDappfile().wallets();
@@ -371,13 +398,16 @@ export default class ProjectItem extends Item {
                         title: wallet.name,
                         name: wallet.name,
                         desc: wallet.desc,
-                        project: this
-                    }
+                        project: this,
+                    },
                 });
                 children.push(childItem);
             }
             // Copy over the state from cached children to new children, so they appear to be the same (but the objects are new).
-            walletsItem._copyState(children, walletsItem.props.state._children || []);
+            walletsItem._copyState(
+                children,
+                walletsItem.props.state._children || []
+            );
 
             // Save cache generated.
             walletsItem.props.state._children = children;
@@ -387,8 +417,8 @@ export default class ProjectItem extends Item {
         walletsItem = new WalletsItem({
             state: {
                 project: this,
-                children: walletsChildren
-            }
+                children: walletsChildren,
+            },
         });
 
         return walletsItem;
@@ -399,8 +429,7 @@ export default class ProjectItem extends Item {
      */
     _getAccountsItem = () => {
         var accountsItem;
-        const accountsChildren=() => {
-
+        const accountsChildren = () => {
             // Newly generated children, which we copy state over to.
             const children = [];
             const accounts = this._getDappfile().accounts();
@@ -412,13 +441,16 @@ export default class ProjectItem extends Item {
                         _environments: account._environments,
                         title: account.name,
                         name: account.name,
-                        project: this
-                    }
+                        project: this,
+                    },
                 });
                 children.push(childItem);
             }
             // Copy over the state from cached children to new children, so they appear to be the same (but the objects are new).
-            accountsItem._copyState(children, accountsItem.props.state._children || []);
+            accountsItem._copyState(
+                children,
+                accountsItem.props.state._children || []
+            );
 
             // Save cache generated.
             accountsItem.props.state._children = children;
@@ -428,8 +460,8 @@ export default class ProjectItem extends Item {
         accountsItem = new AccountsItem({
             state: {
                 project: this,
-                children: accountsChildren
-            }
+                children: accountsChildren,
+            },
         });
 
         return accountsItem;
@@ -456,7 +488,11 @@ export default class ProjectItem extends Item {
     };
 
     saveFile = (path, contents, cb) => {
-        this.backend.saveFile(this.getInode(), {contents:contents,path:path}, cb);
+        this.backend.saveFile(
+            this.getInode(),
+            { contents: contents, path: path },
+            cb
+        );
     };
 
     /************************** Dappfile operations ***************************/
@@ -469,12 +505,14 @@ export default class ProjectItem extends Item {
         const dappfile = this._getDappfile();
         dappfile.setName(name);
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     /**
@@ -484,26 +522,30 @@ export default class ProjectItem extends Item {
         const dappfile = this._getDappfile();
         dappfile.setTitle(title);
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     /**
      * Add a new account to the dappfile.
      *
      */
-    addAccount = (cb) => {
+    addAccount = cb => {
         const dappfile = this._getDappfile();
         var name;
-        for(var index = 1; index < 100000; index++) {
-            name = "Account" + index;
-            if (dappfile.accounts().filter( (c) => {
-                return c.name == name;
-            }).length==0) {
+        for (var index = 1; index < 100000; index++) {
+            name = 'Account' + index;
+            if (
+                dappfile.accounts().filter(c => {
+                    return c.name == name;
+                }).length == 0
+            ) {
                 break;
             }
         }
@@ -513,37 +555,41 @@ export default class ProjectItem extends Item {
         var dirty;
         do {
             dirty = false;
-            dappfile.accounts().map( (item) => {
-                const account = dappfile.getItem("accounts", [{name: item.name}]);
-                var index = parseInt(account.get("index", "browser"));
+            dappfile.accounts().map(item => {
+                const account = dappfile.getItem('accounts', [
+                    { name: item.name },
+                ]);
+                var index = parseInt(account.get('index', 'browser'));
                 if (!isNaN(index) && index == browserIndex) {
                     browserIndex = index + 1;
                     dirty = true;
                 }
-                var index = parseInt(account.get("index", "custom"));
+                var index = parseInt(account.get('index', 'custom'));
                 if (!isNaN(index) && index == customIndex) {
                     customIndex = index + 1;
                     dirty = true;
                 }
             });
-        } while(dirty);
+        } while (dirty);
 
         dappfile.accounts().push({
             name: name,
-            address: "0x0",
+            address: '0x0',
         });
-        const account = dappfile.getItem("accounts", [{name: name}]);
-        account.set("wallet", "development", "browser");
-        account.set("index", browserIndex, "browser");
-        account.set("wallet", "private", "custom");
-        account.set("index", browserIndex, "custom");
+        const account = dappfile.getItem('accounts', [{ name: name }]);
+        account.set('wallet', 'development', 'browser');
+        account.set('index', browserIndex, 'browser');
+        account.set('wallet', 'private', 'custom');
+        account.set('index', browserIndex, 'custom');
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     /**
@@ -551,32 +597,34 @@ export default class ProjectItem extends Item {
      */
     deleteAccount = (index, cb) => {
         const dappfile = this._getDappfile();
-        const account = dappfile.accounts().splice(index,1)[0];
+        const account = dappfile.accounts().splice(index, 1)[0];
 
         const contracts = dappfile.contracts();
-        contracts.map( (contract) => {
+        contracts.map(contract => {
             const args = contract.args || [];
-            args.map( (arg) => {
+            args.map(arg => {
                 if (arg.account && arg.account == account.name) {
                     delete arg.account;
-                    arg.value = "0x0";
+                    arg.value = '0x0';
                 }
             });
             // NOTE: We do this synchronously now since we know we are dealing with localStorage.
             this.setContractArgs(contract.source, args);
         });
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     setAccountName = (oldname, newname, cb) => {
         const dappfile = this._getDappfile();
-        dappfile.accounts().map( (account) => {
+        dappfile.accounts().map(account => {
             if (account.name == oldname) {
                 account.name = newname;
             }
@@ -584,25 +632,29 @@ export default class ProjectItem extends Item {
 
         // TODO: Go through all contracts arguments and replace old account name with new
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     setAccountAddress = (name, address, env, cb) => {
         const dappfile = this._getDappfile();
-        const account = dappfile.getItem('accounts', [{name: name}]);
-        account.set("address", address, env);
+        const account = dappfile.getItem('accounts', [{ name: name }]);
+        account.set('address', address, env);
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     /**
@@ -614,15 +666,17 @@ export default class ProjectItem extends Item {
         dappfile.contracts().push({
             source: source,
             name: name,
-            args: args
+            args: args,
         });
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     /**
@@ -631,71 +685,80 @@ export default class ProjectItem extends Item {
     deleteContract = (source, cb) => {
         const dappfile = this._getDappfile();
 
-        var index = -1, counter = 0;
-        dappfile.contracts().map( (contract) => {
+        var index = -1,
+            counter = 0;
+        dappfile.contracts().map(contract => {
             if (contract.source == source) {
                 index = counter;
             }
             counter++;
         });
-        if (index > -1 ) {
+        if (index > -1) {
             dappfile.contracts().splice(index, 1);
         }
 
         // TODO: Go through all contracts arguments and replace contract source with value 0x0
         // TODO: delete all build files for this contract.
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     setContractSource = (source, newSource, cb) => {
         const dappfile = this._getDappfile();
-        const contract = dappfile.getItem('contracts', [{source: source}]);
-        contract.set("source", newSource);
+        const contract = dappfile.getItem('contracts', [{ source: source }]);
+        contract.set('source', newSource);
 
         // TODO: go through all contracts and update arguments.
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile.');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile.');
+                if (cb) cb(1);
+            });
     };
 
     setContractName = (source, newName, cb) => {
         const dappfile = this._getDappfile();
-        const contract = dappfile.getItem('contracts', [{source: source}]);
-        contract.set("name", newName);
+        const contract = dappfile.getItem('contracts', [{ source: source }]);
+        contract.set('name', newName);
 
         // TODO: go through all contracts and update arguments.
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile (contract name).');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile (contract name).');
+                if (cb) cb(1);
+            });
     };
 
     setContractArgs = (source, args, cb) => {
         const dappfile = this._getDappfile();
-        const contract = dappfile.getItem('contracts', [{source: source}]);
-        contract.set("args", args);
+        const contract = dappfile.getItem('contracts', [{ source: source }]);
+        contract.set('args', args);
 
         // TODO: go through all contracts and update arguments.
 
-        this.saveDappfile().then( () => {
-            if (cb) cb (0);
-        }).catch( () => {
-            alert('Could not save dappfile (contract args).');
-            if (cb) cb (1);
-        });
+        this.saveDappfile()
+            .then(() => {
+                if (cb) cb(0);
+            })
+            .catch(() => {
+                alert('Could not save dappfile (contract args).');
+                if (cb) cb(1);
+            });
     };
 
     /**************************************************************************/

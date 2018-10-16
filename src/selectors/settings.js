@@ -1,1 +1,1 @@
-export const getShowSplashScreen = (state) => state.settings.showSplash;
+export const getShowSplashScreen = state => state.settings.showSplash;

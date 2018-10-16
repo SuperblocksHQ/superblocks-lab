@@ -18,7 +18,7 @@ import Item from './item';
 
 export default class AccountItem extends Item {
     constructor(props, router) {
-        props.type = props.type || "wallet";
+        props.type = props.type || 'wallet';
         super(props, router);
     }
 

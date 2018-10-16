@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DropdownContainer } from '../dropdown';
-import style from "./style";
+import style from './style';
 import {
     IconDeployGreen,
     IconDropdown,
@@ -12,42 +12,50 @@ import {
     IconEdit,
     IconMetamask,
     IconMetamaskLocked,
-    IconPublicAddress
+    IconPublicAddress,
 } from '../icons';
 
 class NetworkDropdown extends Component {
-
     render() {
         var networks, chosenNetwork;
         const project = this.props.router.control.getActiveProject();
         if (!project) {
             // Setup default network just for show.
-            networks = [{
-                getName: () => {return "browser"}
-            }];
-            chosenNetwork = "browser";
-        }
-        else {
+            networks = [
+                {
+                    getName: () => {
+                        return 'browser';
+                    },
+                },
+            ];
+            chosenNetwork = 'browser';
+        } else {
             chosenNetwork = project.getEnvironment();
-            const environmentsItem = project.getHiddenItem("environments");
+            const environmentsItem = project.getHiddenItem('environments');
             networks = environmentsItem.getChildren();
         }
 
-        const renderedNetworks = networks.map((network) => {
-            const cls={};
+        const renderedNetworks = networks.map(network => {
+            const cls = {};
             cls[style.networkLink] = true;
             cls[style.capitalize] = true;
-            if (network.getName() == this.props.networkSelected) cls[style.networkLinkChosen] = true;
+            if (network.getName() == this.props.networkSelected)
+                cls[style.networkLinkChosen] = true;
             return (
-                <div onClick={(e)=>{e.preventDefault(); this.props.onNetworkSelected(network.getName())}} className={classnames(cls)}>
+                <div
+                    onClick={e => {
+                        e.preventDefault();
+                        this.props.onNetworkSelected(network.getName());
+                    }}
+                    className={classnames(cls)}
+                >
                     {network.getName()}
-                </div>);
+                </div>
+            );
         });
         return (
             <div class={style.networks}>
-                <div class={style.title}>
-                    Select a Network
-                </div>
+                <div class={style.title}>Select a Network</div>
                 {renderedNetworks}
             </div>
         );
@@ -56,8 +64,8 @@ class NetworkDropdown extends Component {
 
 NetworkDropdown.propTypes = {
     networkSelected: PropTypes.string.isRequired,
-    onNetworkSelected: PropTypes.func.isRequired
-}
+    onNetworkSelected: PropTypes.func.isRequired,
+};
 
 // Note: We display networks, which really are environments, which map to networks.
 // This is due to a simplification where we do not show environments, only networks, but technically it's environments which we work with.
@@ -66,20 +74,20 @@ class NetworkSelector extends Component {
     constructor(props) {
         super(props);
 
-        var network = "browser";
+        var network = 'browser';
         const project = this.props.router.control.getActiveProject();
         if (project) {
             network = project.getEnvironment();
         }
 
         this.setState({
-            network: network
+            network: network,
         });
     }
 
-    onNetworkSelectedHandle=(network)=>{
+    onNetworkSelectedHandle = network => {
         const project = this.props.router.control.getActiveProject();
-        project.getHiddenItem("environments").setChosen(network);
+        project.getHiddenItem('environments').setChosen(network);
         this.setState({
             network: network,
         });
@@ -87,7 +95,7 @@ class NetworkSelector extends Component {
     };
 
     render() {
-        var endpoint = "";
+        var endpoint = '';
         const project = this.props.router.control.getActiveProject();
         if (project) {
             endpoint = project.getEndpoint(this.state.network);
@@ -107,72 +115,97 @@ class NetworkSelector extends Component {
                     <div class={style.capitalize} title={endpoint}>
                         {this.state.network}
                     </div>
-                    <div class={ style.dropdownIcon }>
+                    <div class={style.dropdownIcon}>
                         <IconDropdown />
                     </div>
                 </div>
             </DropdownContainer>
-        )
+        );
     }
 }
 
 class AccountDropdown extends Component {
-
     render() {
         var accounts, chosenAccount;
         const project = this.props.router.control.getActiveProject();
         if (!project) {
             // Setup default account just for show.
-            accounts = [{
-                getName: () => {return "Default"}
-            }];
-            chosenAccount = "Default";
-        }
-        else {
+            accounts = [
+                {
+                    getName: () => {
+                        return 'Default';
+                    },
+                },
+            ];
+            chosenAccount = 'Default';
+        } else {
             chosenAccount = project.getAccount();
-            const accountsItem = project.getHiddenItem("accounts");
+            const accountsItem = project.getHiddenItem('accounts');
             accounts = accountsItem.getChildren();
         }
 
         const renderedAccounts = accounts.map((account, index) => {
-            const cls={};
-            cls[style.accountLink]=true;
-            if (account.getName() == chosenAccount) cls[style.accountLinkChosen]=true;
+            const cls = {};
+            cls[style.accountLink] = true;
+            if (account.getName() == chosenAccount)
+                cls[style.accountLinkChosen] = true;
 
             var deleteButton;
-            if(index !== 0) {
-                deleteButton=(<button class="btnNoBg" onClick={(e)=>{this.props.onAccountDelete(e, index)}}>
-                                  <IconTrash />
-                              </button>)
+            if (index !== 0) {
+                deleteButton = (
+                    <button
+                        class="btnNoBg"
+                        onClick={e => {
+                            this.props.onAccountDelete(e, index);
+                        }}
+                    >
+                        <IconTrash />
+                    </button>
+                );
             } else {
-                deleteButton=(<button class="btnNoBg">
-                                  <i>&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                              </button>)
+                deleteButton = (
+                    <button class="btnNoBg">
+                        <i>&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                    </button>
+                );
             }
 
             return (
                 <div>
-                    <div className={classnames(cls)} onClick={(e)=>{e.preventDefault(); this.props.onAccountChosen(account.getName())}}>
+                    <div
+                        className={classnames(cls)}
+                        onClick={e => {
+                            e.preventDefault();
+                            this.props.onAccountChosen(account.getName());
+                        }}
+                    >
                         <div>{account.getName()}</div>
                         <div style="margin-left: auto;">
-                            <button class="btnNoBg" onClick={(e)=>{this.props.onAccountEdit(e, index)}}>
+                            <button
+                                class="btnNoBg"
+                                onClick={e => {
+                                    this.props.onAccountEdit(e, index);
+                                }}
+                            >
                                 <IconEdit />
                             </button>
-                            { deleteButton }
+                            {deleteButton}
                         </div>
-
                     </div>
                 </div>
             );
         });
         return (
             <div class={classnames([style.accounts])}>
-                <div class={style.title}>
-                    Select an Account
-                </div>
+                <div class={style.title}>Select an Account</div>
                 {renderedAccounts}
                 <div class={style.newAccount}>
-                    <button class="btnNoBg" onClick={this.props.onNewAccountClicked}>+ New Account</button>
+                    <button
+                        class="btnNoBg"
+                        onClick={this.props.onNewAccountClicked}
+                    >
+                        + New Account
+                    </button>
                 </div>
             </div>
         );
@@ -185,7 +218,7 @@ AccountDropdown.propTypes = {
     onAccountEdit: PropTypes.func.isRequired,
     onAccountDelete: PropTypes.func.isRequired,
     onNewAccountClicked: PropTypes.func.isRequired,
-}
+};
 
 class AccountSelector extends Component {
     constructor(props) {
@@ -198,29 +231,29 @@ class AccountSelector extends Component {
     }
 
     componentDidMount() {
-        this.timer=setInterval(this.updateBalances, 3000);
+        this.timer = setInterval(this.updateBalances, 3000);
     }
 
     componentWillUnmount() {
         clearInterval(this.timer);
     }
 
-    accountChosen=(account) => {
+    accountChosen = account => {
         const project = this.props.router.control.getActiveProject();
         if (!project) return;
-        const accountsItem = project.getHiddenItem("accounts");
+        const accountsItem = project.getHiddenItem('accounts');
         accountsItem.setChosen(account);
         this.props.router.main.redraw(true);
     };
 
-    accountEdit=(e, index) => {
+    accountEdit = (e, index) => {
         e.preventDefault();
         e.stopPropagation();
 
         const project = this.props.router.control.getActiveProject();
         if (!project) return;
 
-        const accountsItem = project.getHiddenItem("accounts");
+        const accountsItem = project.getHiddenItem('accounts');
 
         const item = accountsItem.getChildren()[index];
 
@@ -235,16 +268,16 @@ class AccountSelector extends Component {
         if (!project) return;
 
         if (index == 0) {
-            alert("You cannot delete the default account.");
+            alert('You cannot delete the default account.');
             return;
         }
 
-        if (!confirm("Are you sure to delete account?")) return;
+        if (!confirm('Are you sure to delete account?')) return;
 
-        const accountsItem = project.getHiddenItem("accounts");
+        const accountsItem = project.getHiddenItem('accounts');
 
         const account = accountsItem.getChildren()[index];
-        const isCurrent = (account.getName() == project.getAccount());
+        const isCurrent = account.getName() == project.getAccount();
 
         if (isCurrent) {
             accountsItem.setChosen(null);
@@ -256,12 +289,12 @@ class AccountSelector extends Component {
         });
     };
 
-    onNewAccountClickHandle = (e) => {
+    onNewAccountClickHandle = e => {
         e.preventDefault();
         e.stopPropagation();
         const project = this.props.router.control.getActiveProject();
         if (!project) return;
-        project.addAccount( () => {
+        project.addAccount(() => {
             // TODO: how to open new item?
             this.props.router.main.redraw(true);
         });
@@ -284,10 +317,10 @@ class AccountSelector extends Component {
         const network = chosenEnv;
         var isLocked = false;
         var walletType = null;
-        var address = "";
+        var address = '';
         var accountType;
 
-        const accountsItem = project.getHiddenItem("accounts");
+        const accountsItem = project.getHiddenItem('accounts');
         const accountItem = accountsItem.getByName(accountName);
 
         const walletName = accountItem.getWallet(chosenEnv);
@@ -295,61 +328,58 @@ class AccountSelector extends Component {
 
         var walletItem;
         if (walletName) {
-            const walletsItem = project.getHiddenItem("wallets");
+            const walletsItem = project.getHiddenItem('wallets');
             walletItem = walletsItem.getByName(walletName);
         }
 
-        if(walletItem) {
+        if (walletItem) {
             walletType = walletItem.getWalletType();
-            if(walletType=="external") {
-                accountType="metamask";
-                if(!window.web3) {
-                    isLocked=true;
-                }
-                else {
+            if (walletType == 'external') {
+                accountType = 'metamask';
+                if (!window.web3) {
+                    isLocked = true;
+                } else {
                     const extAccounts = window.web3.eth.accounts || [];
-                    isLocked = extAccounts.length<1;
-                    address=extAccounts[0];
+                    isLocked = extAccounts.length < 1;
+                    address = extAccounts[0];
                 }
-            }
-            else {
-                accountType="wallet";
-                if(this.props.functions.wallet.isOpen(walletName)) {
+            } else {
+                accountType = 'wallet';
+                if (this.props.functions.wallet.isOpen(walletName)) {
                     try {
-                        address=this.props.functions.wallet.getAddress(walletName, accountIndex);
+                        address = this.props.functions.wallet.getAddress(
+                            walletName,
+                            accountIndex
+                        );
+                    } catch (ex) {
+                        address = '0x0';
                     }
-                    catch(ex) {
-                        address="0x0";
-                    }
-                }
-                else {
-                    isLocked=true;
+                } else {
+                    isLocked = true;
                 }
             }
-        }
-        else {
+        } else {
             address = accountItem.getAddress(chosenEnv);
-            accountType = "pseudo";
+            accountType = 'pseudo';
         }
 
-        return {accountType, isLocked, network, address};
+        return { accountType, isLocked, network, address };
     };
 
     accountBalance = () => {
         // Return cached balance of account
-        const {accountType, isLocked, network, address} = this.accountType();
-        return ((this.state.balances[network] || {})[address] || "0") + " eth";
+        const { accountType, isLocked, network, address } = this.accountType();
+        return ((this.state.balances[network] || {})[address] || '0') + ' eth';
     };
 
-    getWeb3 = (endpoint) => {
+    getWeb3 = endpoint => {
         var provider;
-        if(endpoint.toLowerCase()=="http://superblocks-browser") {
-            provider=this.props.functions.EVM.getProvider();
+        if (endpoint.toLowerCase() == 'http://superblocks-browser') {
+            provider = this.props.functions.EVM.getProvider();
+        } else {
+            provider = new Web3.providers.HttpProvider(endpoint);
         }
-        else {
-            provider=new Web3.providers.HttpProvider(endpoint);
-        }
-        var web3=new Web3(provider);
+        var web3 = new Web3(provider);
         return web3;
     };
 
@@ -358,20 +388,21 @@ class AccountSelector extends Component {
         if (!project) return {};
 
         if (this.updateBalanceBusy) return;
-        this.updateBalanceBusy=true;
+        this.updateBalanceBusy = true;
 
-        const {accountType, isLocked, network, address} = this.accountType();
+        const { accountType, isLocked, network, address } = this.accountType();
 
-        if (!address || address.length<5) {
+        if (!address || address.length < 5) {
             // a 0x00 address...
-            this.updateBalanceBusy=false;
+            this.updateBalanceBusy = false;
             return;
         }
-        this.fetchBalance(network, address, (res) => {
-            const a = this.state.balances[network] = this.state.balances[network] || {};
-            a[address]=res;
+        this.fetchBalance(network, address, res => {
+            const a = (this.state.balances[network] =
+                this.state.balances[network] || {});
+            a[address] = res;
             this.setState();
-            this.updateBalanceBusy=false;
+            this.updateBalanceBusy = false;
         });
     };
 
@@ -379,27 +410,26 @@ class AccountSelector extends Component {
         const project = this.props.router.control.getActiveProject();
         const endpoint = project.getEndpoint(network);
         const web3 = this.getWeb3(endpoint);
-        web3.eth.getBalance(address,(err,res)=>{
-            if(err) {
-                cb("<unknown balance>");
-            }
-            else {
+        web3.eth.getBalance(address, (err, res) => {
+            if (err) {
+                cb('<unknown balance>');
+            } else {
                 cb(web3.fromWei(res.toNumber()));
             }
         });
     };
 
-    unlockWallet = (e) => {
+    unlockWallet = e => {
         e.preventDefault();
 
         const project = this.props.router.control.getActiveProject();
         const chosenEnv = project.getEnvironment();
         const accountName = project.getAccount();
-        const accountsItem = project.getHiddenItem("accounts");
+        const accountsItem = project.getHiddenItem('accounts');
         const accountItem = accountsItem.getByName(accountName);
         const walletName = accountItem.getWallet(chosenEnv);
 
-        this.props.functions.wallet.openWallet(walletName, null, (status) => {
+        this.props.functions.wallet.openWallet(walletName, null, status => {
             if (status === 0) {
                 this.props.router.main.redraw(true);
             }
@@ -410,62 +440,55 @@ class AccountSelector extends Component {
         const project = this.props.router.control.getActiveProject();
         if (!project) return;
         const account = project.getAccount();
-        const {accountType, isLocked, network, address} = this.accountType();
+        const { accountType, isLocked, network, address } = this.accountType();
         if (!network) return;
         const accountBalance = this.accountBalance();
         var accountIcon;
 
-        if (accountType == "metamask") {
+        if (accountType == 'metamask') {
             if (isLocked) {
                 accountIcon = (
                     <IconMetamaskLocked alt="locked metamask account" />
                 );
+            } else {
+                accountIcon = <IconMetamask alt="available metamask account" />;
             }
-            else {
-                accountIcon = (
-                    <IconMetamask alt="available metamask account" />
-                );
-            }
-        }
-        else if (accountType == "wallet") {
+        } else if (accountType == 'wallet') {
             if (isLocked) {
                 accountIcon = (
                     <IconLock alt="locked wallet account" size="xs" />
                 );
-            }
-            else {
+            } else {
                 accountIcon = (
                     <IconLockOpen alt="open wallet account" size="xs" />
                 );
             }
-        }
-        else if (accountType=="pseudo") {
+        } else if (accountType == 'pseudo') {
             accountIcon = (
-                <IconPublicAddress alt="pseudo account with only a public address"/>
+                <IconPublicAddress alt="pseudo account with only a public address" />
             );
         }
         return (
             <DropdownContainer
                 dropdownContent={
                     <AccountDropdown
-                            router={this.props.router}
-                            onAccountChosen={this.accountChosen}
-                            onAccountEdit={this.accountEdit}
-                            onAccountDelete={this.accountDelete}
-                            onNewAccountClicked={this.onNewAccountClickHandle}
-                        />
+                        router={this.props.router}
+                        onAccountChosen={this.accountChosen}
+                        onAccountEdit={this.accountEdit}
+                        onAccountDelete={this.accountDelete}
+                        onNewAccountClicked={this.onNewAccountClickHandle}
+                    />
                 }
             >
                 <div class={classnames([style.selector, style.account])}>
                     {accountIcon}
                     <div title={address} class={style.nameContainer}>
-                        {account}<br />
-                        <span style="font-size: 0.5em;">
-                            {accountBalance}
-                        </span>
+                        {account}
+                        <br />
+                        <span style="font-size: 0.5em;">{accountBalance}</span>
                     </div>
-                    <div class={ style.dropdownIcon }>
-                        <IconDropdown height="8" width="10"/>
+                    <div class={style.dropdownIcon}>
+                        <IconDropdown height="8" width="10" />
                     </div>
                 </div>
             </DropdownContainer>
@@ -474,13 +497,13 @@ class AccountSelector extends Component {
 }
 
 export default class NetworkAcccountSelector extends Component {
-    render () {
+    render() {
         let { ...props } = this.props;
         return (
-        <div class={ style.container }>
+            <div class={style.container}>
                 <IconDeployGreen />
                 <NetworkSelector {...props} />
-                <div class={ style.separator } />
+                <div class={style.separator} />
                 <AccountSelector {...props} />
             </div>
         );

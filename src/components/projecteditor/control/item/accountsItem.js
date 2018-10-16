@@ -18,7 +18,7 @@ import Item from './item';
 
 export default class AccountsItem extends Item {
     constructor(props, router) {
-        props.type = props.type || "accounts";
+        props.type = props.type || 'accounts';
         super(props, router);
     }
 
@@ -34,15 +34,15 @@ export default class AccountsItem extends Item {
      * Save which account is chosen.
      * @param account: The account name
      */
-    setChosen = (account) => {
+    setChosen = account => {
         this.props.state.chosen = account;
     };
 
     /**
      * Return account item by it's name.
      */
-    getByName = (name) => {
-        return this.getChildren().filter( (account) => {
+    getByName = name => {
+        return this.getChildren().filter(account => {
             return account.getName() == name;
         })[0];
     };

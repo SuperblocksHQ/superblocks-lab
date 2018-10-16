@@ -40,12 +40,12 @@ import Dappfile from '../dappfile';
 
 export default class DappfileItem extends FileItem {
     constructor(props, router) {
-        props.type2 = props.type2 || "dappfile";
-        props.state.file = props.state.file || "dappfile.json";
-        props.state.title = props.state.title || "dappfile.json";
+        props.type2 = props.type2 || 'dappfile';
+        props.state.file = props.state.file || 'dappfile.json';
+        props.state.title = props.state.title || 'dappfile.json';
         super(props, router);
 
-        this.props.state.contents = "{}";
+        this.props.state.contents = '{}';
         this.setReadOnly(true);
 
         // NOTE (FIXME): this is how I shadow parent functions. simply `super.load()` didn't work for me.
@@ -63,30 +63,35 @@ export default class DappfileItem extends FileItem {
      *
      */
     __load = () => {
-        return new Promise( (resolve, reject) => {
-            this._load().then( () => {
-                // Decode JSON
-                try {
-                    const dappfileObj = JSON.parse(this.getContents());
-                    if (!Dappfile.validateDappfile(dappfileObj)) {
-                        throw("Invalid dappfile.json.");
+        return new Promise((resolve, reject) => {
+            this._load()
+                .then(() => {
+                    // Decode JSON
+                    try {
+                        const dappfileObj = JSON.parse(this.getContents());
+                        if (!Dappfile.validateDappfile(dappfileObj)) {
+                            throw 'Invalid dappfile.json.';
+                        }
+                        this.props.state.dappfile = new Dappfile(dappfileObj);
+                    } catch (e) {
+                        console.error(e);
+                        this.props.state.dappfile = new Dappfile();
                     }
-                    this.props.state.dappfile = new Dappfile(dappfileObj);
-                }
-                catch (e) {
-                    console.error(e);
-                    this.props.state.dappfile = new Dappfile();
-                }
-                resolve();
-            }).catch( () => {
-                this.props.state.dappfile = new Dappfile(this.getDefaultDappfile());
-                this.save().then( () => {
                     resolve();
-                }).catch( () => {
-                    reject();
+                })
+                .catch(() => {
+                    this.props.state.dappfile = new Dappfile(
+                        this.getDefaultDappfile()
+                    );
+                    this.save()
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch(() => {
+                            reject();
+                        });
                 });
-            });
-        })
+        });
     };
 
     /**
@@ -97,7 +102,7 @@ export default class DappfileItem extends FileItem {
     __save = () => {
         this.setContents(this.getDappfile().dump());
         return this._save();
-    }
+    };
 
     getDappfile = () => {
         return this.props.state.dappfile;
@@ -105,104 +110,105 @@ export default class DappfileItem extends FileItem {
 
     static getDefaultDappfile = () => {
         const obj = {
-            "project": {
-                "info": {}
+            project: {
+                info: {},
             },
-            "environments": [
+            environments: [
                 {
-                    "name": "browser"
+                    name: 'browser',
                 },
                 {
-                    "name": "custom"
+                    name: 'custom',
                 },
                 {
-                    "name": "rinkeby"
+                    name: 'rinkeby',
                 },
                 {
-                    "name": "ropsten"
+                    name: 'ropsten',
                 },
                 {
-                    "name": "kovan"
+                    name: 'kovan',
                 },
                 {
-                    "name": "infuranet"
+                    name: 'infuranet',
                 },
                 {
-                    "name": "mainnet"
-                }
+                    name: 'mainnet',
+                },
             ],
-            "contracts": [],
-            "wallets": [
+            contracts: [],
+            wallets: [
                 {
-                    "desc": "This is a wallet for local development",
-                    "name": "development",
+                    desc: 'This is a wallet for local development',
+                    name: 'development',
                 },
                 {
-                    "desc": "A private wallet",
-                    "name": "private",
+                    desc: 'A private wallet',
+                    name: 'private',
                 },
                 {
-                    "desc": "External wallet integrating with Metamask and other compatible wallets",
-                    "name": "external",
-                    "type": "external"
-                }
+                    desc:
+                        'External wallet integrating with Metamask and other compatible wallets',
+                    name: 'external',
+                    type: 'external',
+                },
             ],
-            "accounts": [
+            accounts: [
                 {
-                    "name": "Default",
-                    "_environments": [
+                    name: 'Default',
+                    _environments: [
                         {
-                            "name": "browser",
-                            "data": {
-                                "wallet": "development",
-                                "index": 0
-                            }
+                            name: 'browser',
+                            data: {
+                                wallet: 'development',
+                                index: 0,
+                            },
                         },
                         {
-                            "name": "custom",
-                            "data": {
-                                "wallet": "private",
-                                "index": 0
-                            }
+                            name: 'custom',
+                            data: {
+                                wallet: 'private',
+                                index: 0,
+                            },
                         },
                         {
-                            "name": "rinkeby",
-                            "data": {
-                                "wallet": "external",
-                                "index": 0
-                            }
+                            name: 'rinkeby',
+                            data: {
+                                wallet: 'external',
+                                index: 0,
+                            },
                         },
                         {
-                            "name": "ropsten",
-                            "data": {
-                                "wallet": "external",
-                                "index": 0
-                            }
+                            name: 'ropsten',
+                            data: {
+                                wallet: 'external',
+                                index: 0,
+                            },
                         },
                         {
-                            "name": "kovan",
-                            "data": {
-                                "wallet": "external",
-                                "index": 0
-                            }
+                            name: 'kovan',
+                            data: {
+                                wallet: 'external',
+                                index: 0,
+                            },
                         },
                         {
-                            "name": "infuranet",
-                            "data": {
-                                "wallet": "external",
-                                "index": 0
-                            }
+                            name: 'infuranet',
+                            data: {
+                                wallet: 'external',
+                                index: 0,
+                            },
                         },
                         {
-                            "name": "mainnet",
-                            "data": {
-                                "wallet": "external",
-                                "index": 0
-                            }
-                        }
-                    ]
-                }
-            ]
+                            name: 'mainnet',
+                            data: {
+                                wallet: 'external',
+                                index: 0,
+                            },
+                        },
+                    ],
+                },
+            ],
         };
         return obj;
     };

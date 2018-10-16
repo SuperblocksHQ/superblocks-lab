@@ -16,11 +16,7 @@
 
 import React, { Component } from 'react';
 import style from './style';
-import {
-    IconGithub,
-    IconTwitter,
-    IconTelegram
-} from '../icons';
+import { IconGithub, IconTwitter, IconTelegram } from '../icons';
 
 export default class ContactContainer extends Component {
     render() {
@@ -28,19 +24,32 @@ export default class ContactContainer extends Component {
         return (
             <div class={style.container}>
                 <div style="display: inline-block">
-                    <a href="https://twitter.com/getsuperblocks" target="_blank" rel="noopener noreferrer" class={style.contactIcon}>
+                    <a
+                        href="https://twitter.com/getsuperblocks"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class={style.contactIcon}
+                    >
                         <IconTwitter />
                     </a>
-                    <a href="https://github.com/SuperblocksHQ/superblocks-lab" target="_blank" rel="noopener noreferrer" class={style.contactIcon}>
+                    <a
+                        href="https://github.com/SuperblocksHQ/superblocks-lab"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class={style.contactIcon}
+                    >
                         <IconGithub />
                     </a>
-                    <a href="https://t.me/GetSuperblocks" target="_blank" rel="noopener noreferrer" class={style.contactIcon}>
+                    <a
+                        href="https://t.me/GetSuperblocks"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class={style.contactIcon}
+                    >
                         <IconTelegram />
                     </a>
                 </div>
-                <div class={style.version}>
-                    {appVersion}
-                </div>
+                <div class={style.version}>{appVersion}</div>
             </div>
         );
     }

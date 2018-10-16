@@ -41,8 +41,11 @@ export default class Item {
     constructor(props, router, functions) {
         if (props.state == null) props.state = {};
         if (props.state.id == null) props.state.id = this.generateId();
-        if (props.state.toggable == null) props.state.toggable = (props.state.children != null && props.state.children.length > 0);
-        if (props.state.toggable && props.state.open == null) props.state.open = true;
+        if (props.state.toggable == null)
+            props.state.toggable =
+                props.state.children != null && props.state.children.length > 0;
+        if (props.state.toggable && props.state.open == null)
+            props.state.open = true;
         this.props = props;
         this.router = router;
         this.functions = functions;
@@ -50,7 +53,7 @@ export default class Item {
         // If item is open then we auto load the children, but we can't do it directly from the constructor since
         // a derived class might not be ready for it. So we put it in a timeout.
         if (this.props.state.open) {
-            setTimeout( () => {
+            setTimeout(() => {
                 this.getChildren(true, () => {
                     this.redraw();
                 });
@@ -59,7 +62,7 @@ export default class Item {
     }
 
     generateId = () => {
-        return "Item_" + (++Item.idCounter);
+        return 'Item_' + ++Item.idCounter;
     };
 
     getId = () => {
@@ -67,10 +70,10 @@ export default class Item {
     };
 
     getName = () => {
-        return this.props.state.name || "";
+        return this.props.state.name || '';
     };
 
-    setName = (name) => {
+    setName = name => {
         this.props.state.name = name;
     };
 
@@ -87,7 +90,7 @@ export default class Item {
      * Either an array or a function.
      *
      */
-    setChildren = (children) => {
+    setChildren = children => {
         this.props.state.children = children;
         if (this.props.state.children) {
             this.props.state.toggable = true;
@@ -107,14 +110,15 @@ export default class Item {
         this.props.state.hiddenItems[key] = item;
     };
 
-    getHiddenItem = (key) => {
+    getHiddenItem = key => {
         this.props.state.hiddenItems = this.props.state.hiddenItems || {};
         return this.props.state.hiddenItems[key];
     };
 
     getChildren = (force, cb) => {
         if (this.props.state.children instanceof Function) {
-            if(this.props.lazy && !force) return this.props.state._children || [];
+            if (this.props.lazy && !force)
+                return this.props.state._children || [];
             return this.props.state.children(cb) || [];
             // We need to return empty set first time since it is async.
             // The callback will trigger when children are ready and cached.
@@ -126,7 +130,7 @@ export default class Item {
 
     getTitle = () => {
         return (this.props.state || {}).title;
-    }
+    };
 
     getIcon = () => {
         return this.props.icon ? this.props.icon : <IconFile />;
@@ -148,18 +152,18 @@ export default class Item {
         return this.props.state.project;
     };
 
-    reKey = (newKey) => {
+    reKey = newKey => {
         this.props.state.key = newKey;
     };
 
     _copyState = (target, source) => {
-        var ret=[];
-        for(var index=0;index<target.length;index++) {
-            var targetChild=target[index];
-            for(var index2=0;index2<source.length;index2++) {
-                var sourceChild=source[index2];
+        var ret = [];
+        for (var index = 0; index < target.length; index++) {
+            var targetChild = target[index];
+            for (var index2 = 0; index2 < source.length; index2++) {
+                var sourceChild = source[index2];
                 // Compare properties.
-                if(this._cmpItem(targetChild.props, sourceChild.props)) {
+                if (this._cmpItem(targetChild.props, sourceChild.props)) {
                     // Copy over original state object to new item.
                     // But copy back all value which are double underscored, those we actually want the latest properties of,
                     // such as `__parent`, which will refer to the newly created parent item.
@@ -168,7 +172,7 @@ export default class Item {
                     const keys = Object.keys(newState);
                     for (let index = 0; index < keys.length; index++) {
                         let key = keys[index];
-                        if (key.substr(0, 2) == "__") {
+                        if (key.substr(0, 2) == '__') {
                             targetChild.props.state[key] = newState[key];
                         }
                     }
@@ -178,14 +182,14 @@ export default class Item {
     };
 
     _cmpItem = (item1, item2) => {
-        return (item1.state.key === item2.state.key);
+        return item1.state.key === item2.state.key;
     };
 
     redraw = () => {
         if (this.router) this.router.control.redraw();
     };
 
-    redrawMain = (redrawAll) => {
+    redrawMain = redrawAll => {
         if (this.router) this.router.main.redraw(redrawAll);
     };
 
@@ -193,14 +197,14 @@ export default class Item {
         e.preventDefault();
         e.stopPropagation();
 
-        if(this.router.panes) this.router.panes.openItem(this);
+        if (this.router.panes) this.router.panes.openItem(this);
     };
 
-    _angleClicked = (e) => {
+    _angleClicked = e => {
         e.preventDefault();
         e.stopPropagation();
         this.props.state.open = !this.props.state.open;
-        if(this.props.state.open && this.props.lazy) {
+        if (this.props.state.open && this.props.lazy) {
             this.getChildren(true, () => {
                 // Since we get child list async, we need to redraw when we got it.
                 this.redraw();
@@ -212,18 +216,18 @@ export default class Item {
 
     _renderIcons = (level, index) => {
         var caret;
-        var isToggable = this.props.state.toggable && (this.getChildren().length>0 || this.props.lazy);
+        var isToggable =
+            this.props.state.toggable &&
+            (this.getChildren().length > 0 || this.props.lazy);
         if (isToggable) {
             caret = (
                 <Caret
                     expanded={this.props.state.open}
-                    onClick={(e)=>this._angleClicked(e)} />
+                    onClick={e => this._angleClicked(e)}
+                />
             );
-        }
-        else {
-            caret = (
-                <div class={style.nocaret}></div>
-            );
+        } else {
+            caret = <div class={style.nocaret} />;
         }
 
         var iconOpen;
@@ -231,89 +235,86 @@ export default class Item {
         if (this.props.icon !== undefined) {
             iconOpen = this.props.icon;
             iconCollapsed = this.props.iconCollapsed || iconOpen;
-        }
-        else {
-            if (this.props.type == "folder") {
+        } else {
+            if (this.props.type == 'folder') {
                 iconOpen = <IconFolderOpen />;
                 iconCollapsed = <IconFolder />;
-            }
-            else if (this.props.type2=="contract") {
+            } else if (this.props.type2 == 'contract') {
                 iconOpen = <IconContract />;
                 iconCollapsed = <IconContract />;
-            }
-            else {
-                iconOpen= <IconFile />;
-                iconCollapsed= <IconFile />;
+            } else {
+                iconOpen = <IconFile />;
+                iconCollapsed = <IconFile />;
             }
         }
 
         var icon;
-        if(iconOpen == null) {
-            icon = (
-                <div class={style.noicon}></div>
-            );
-        }
-        else {
-            var iconIcon=iconCollapsed;;
+        if (iconOpen == null) {
+            icon = <div class={style.noicon} />;
+        } else {
+            var iconIcon = iconCollapsed;
             if (this.props.state.open) {
                 iconIcon = iconOpen;
             }
             if (isToggable) {
                 icon = (
-                    <div class={style.icon} onClick={(e)=>this._angleClicked(e)}>
-                        { iconIcon }
+                    <div
+                        class={style.icon}
+                        onClick={e => this._angleClicked(e)}
+                    >
+                        {iconIcon}
                     </div>
                 );
-            }
-            else {
+            } else {
                 if (this.props.onClick) {
                     icon = (
-                        <div class={style.icon} onClick={(e)=>{this.props.onClick(e,this)}}>
-                            { iconIcon }
+                        <div
+                            class={style.icon}
+                            onClick={e => {
+                                this.props.onClick(e, this);
+                            }}
+                        >
+                            {iconIcon}
                         </div>
                     );
-                }
-                else {
-                    icon = (
-                        <div class={style.icon}>
-                            { iconIcon }
-                        </div>
-                    );
+                } else {
+                    icon = <div class={style.icon}>{iconIcon}</div>;
                 }
             }
         }
 
-        return (<div class={style.icons}>{caret}{icon}</div>);
+        return (
+            <div class={style.icons}>
+                {caret}
+                {icon}
+            </div>
+        );
     };
 
     _getClasses = (level, index) => {
-        const cls={};
-        cls[style.item]=true;
-        if(style["level"+level]) cls[style["level"+level]]=true;
-        if(style["index"+index]) cls[style["index"+index]]=true;
-        if(this.getChildren().length>0 || this.props.lazy) cls[style.haschildren]=true;
-        for(var i=0;i<(this.props.classes||[]).length;i++) {
-            var classs=this.props.classes[i];
-            if(style[classs]) {
-                cls[style[classs]]=true;
-            }
-            else {
-                cls[classs]=true;
+        const cls = {};
+        cls[style.item] = true;
+        if (style['level' + level]) cls[style['level' + level]] = true;
+        if (style['index' + index]) cls[style['index' + index]] = true;
+        if (this.getChildren().length > 0 || this.props.lazy)
+            cls[style.haschildren] = true;
+        for (var i = 0; i < (this.props.classes || []).length; i++) {
+            var classs = this.props.classes[i];
+            if (style[classs]) {
+                cls[style[classs]] = true;
+            } else {
+                cls[classs] = true;
             }
         }
         return cls;
     };
 
     _packageChildren = (level, index, renderedChildren) => {
-        if(renderedChildren.length==0) return;
-        const cls={};
-        cls[style.children]=true;
-        if(this.props.state.open==false) cls[style.collapsed]=true;
-        return (
-            <div className={classnames(cls)}>
-                {renderedChildren}
-            </div>
-        );
+        if (renderedChildren.length == 0) return;
+        const cls = {};
+        cls[style.children] = true;
+        if (this.props.state.open == false) cls[style.collapsed] = true;
+        return <div className={classnames(cls)}>{renderedChildren}</div>;
     };
 
     /**
@@ -331,16 +332,24 @@ export default class Item {
         var output;
         if (this.props.render) {
             output = this.props.render(level, index, this);
-        }
-        else {
+        } else {
             output = this._defaultRender(level, index, this);
         }
 
         const icons = this._renderIcons(level, index);
-        const childrenPkg = this._packageChildren(level, index, renderedChildren);
+        const childrenPkg = this._packageChildren(
+            level,
+            index,
+            renderedChildren
+        );
         const classes = this._getClasses(level, index);
         return (
-            <div className={classnames(classes)} onClick={this.props.onClick ? (e) => this.props.onClick(e, this) : null}>
+            <div
+                className={classnames(classes)}
+                onClick={
+                    this.props.onClick ? e => this.props.onClick(e, this) : null
+                }
+            >
                 <div class={style.header}>
                     {icons}
                     {output}
@@ -351,10 +360,10 @@ export default class Item {
     };
 
     render = (level, index) => {
-        level = (level !== undefined ? level : 0);
-        index = (index !== undefined ? index : 0);
+        level = level !== undefined ? level : 0;
+        index = index !== undefined ? index : 0;
         const renderedChildren = this.getChildren().map((item, index2) => {
-            return item.render(level+1, index2);
+            return item.render(level + 1, index2);
         });
         return this._render2(level, index, renderedChildren);
     };

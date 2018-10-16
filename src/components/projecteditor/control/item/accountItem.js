@@ -18,28 +18,28 @@ import Item from './item';
 
 export default class AccountItem extends Item {
     constructor(props, router) {
-        props.type = props.type || "account";
+        props.type = props.type || 'account';
         super(props, router);
     }
 
     /**
      * Get the wallet name for the account under a given environment.
      */
-    getWallet = (env) => {
+    getWallet = env => {
         return this._getData(env, 'wallet');
     };
 
     /**
      * Get the account index for the account under a given environment.
      */
-    getAccountIndex = (env) => {
+    getAccountIndex = env => {
         return this._getData(env, 'index');
     };
 
     /**
      * For pseudo accounts, get the static address under a given environment.
      */
-    getAddress = (env) => {
+    getAddress = env => {
         return this._getData(env, 'address');
     };
 
@@ -47,7 +47,7 @@ export default class AccountItem extends Item {
      * Set this items key values to a new key.
      *
      */
-    reKey = (newkey) => {
+    reKey = newkey => {
         this.props.state.key = newkey;
         this.props.state.name = newkey;
         this.props.state.title = newkey;
@@ -56,7 +56,7 @@ export default class AccountItem extends Item {
     _getData = (env, key) => {
         var value = this.props.state[key];
         if (value === undefined) {
-            const envObj = this.props.state._environments.filter( envObj => {
+            const envObj = this.props.state._environments.filter(envObj => {
                 return envObj.name == env;
             })[0];
             if (envObj) {

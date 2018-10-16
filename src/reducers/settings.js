@@ -6,8 +6,8 @@ export default function settingsReducer(state = initialState, action) {
     switch (action.type) {
         case 'SHOW_SPLASH': {
             return {
-            ...state,
-            showSplash: action.data,
+                ...state,
+                showSplash: action.data,
             };
         }
         default:

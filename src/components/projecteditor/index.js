@@ -25,24 +25,30 @@ import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
 import { IconTransactions, IconClose } from '../icons';
 
 export default class ProjectEditor extends Component {
-
     state = {
         controlPanelWidth: 280,
         draggin: false,
-        showTransactions: false
-    }
+        showTransactions: false,
+    };
 
     constructor(props) {
         super(props);
 
-        this.props.router.register("main", this);
+        this.props.router.register('main', this);
 
         // Mute defalt ctrl-s behavior.
-        window.addEventListener("keydown", function(e) {
-            if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
-                e.preventDefault();
-            }
-        }, false);
+        window.addEventListener(
+            'keydown',
+            function(e) {
+                if (
+                    e.keyCode == 83 &&
+                    (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)
+                ) {
+                    e.preventDefault();
+                }
+            },
+            false
+        );
     }
 
     // we could get away with not having this (and just having the listeners on
@@ -51,44 +57,44 @@ export default class ProjectEditor extends Component {
     // etc.
     componentDidUpdate(props, state) {
         if (this.state.dragging && !state.dragging) {
-            document.addEventListener('mousemove', this.onMouseMove)
-            document.addEventListener('mouseup', this.onMouseUp)
+            document.addEventListener('mousemove', this.onMouseMove);
+            document.addEventListener('mouseup', this.onMouseUp);
         } else if (!this.state.dragging && state.dragging) {
-            document.removeEventListener('mousemove', this.onMouseMove)
-            document.removeEventListener('mouseup', this.onMouseUp)
+            document.removeEventListener('mousemove', this.onMouseMove);
+            document.removeEventListener('mouseup', this.onMouseUp);
         }
     }
 
-    redraw = (all) => {
-        if(this.props.router.control) {
+    redraw = all => {
+        if (this.props.router.control) {
             this.props.router.control.redraw();
         }
-        if(this.props.router.app) {
+        if (this.props.router.app) {
             this.props.router.app.redraw(all);
         }
-        if(this.props.router.panes) {
+        if (this.props.router.panes) {
             this.props.router.panes.redraw(all);
         }
-    }
+    };
 
-    onMouseMove = (e) => {
+    onMouseMove = e => {
         e.stopPropagation();
         e.preventDefault();
 
         if (!this.state.dragging) return;
         this.setState({
-            controlPanelWidth: e.pageX
+            controlPanelWidth: e.pageX,
         });
-    }
+    };
 
-    onMouseUp = (e) => {
+    onMouseUp = e => {
         e.stopPropagation();
         e.preventDefault();
 
         this.setState({ dragging: false });
-    }
+    };
 
-    onMouseDown = (e) => {
+    onMouseDown = e => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -96,76 +102,125 @@ export default class ProjectEditor extends Component {
         if (e.button !== 0) return;
         this.setState({
             dragging: true,
-            controlPanelWidth: e.screenX
+            controlPanelWidth: e.screenX,
         });
-    }
+    };
 
     onShowHideTransactionsClicked = () => {
         this.setState({
-            showTransactions: !this.state.showTransactions
+            showTransactions: !this.state.showTransactions,
         });
         this.redraw(true);
-    }
+    };
 
     onProjectSelectedHandle = () => {
         this.setState({
-            showTransactions: false
+            showTransactions: false,
         });
-    }
+    };
 
     render() {
-        var endpoint="";
+        var endpoint = '';
         var project;
         if (this.props.router && this.props.router.control) {
-            project = this.props.router.control && this.props.router.control.getActiveProject();
+            project =
+                this.props.router.control &&
+                this.props.router.control.getActiveProject();
             if (project) {
                 const network = project.getEnvironment();
-                endpoint = (this.props.functions.networks.endpoints[network] || {}).endpoint;
+                endpoint = (
+                    this.props.functions.networks.endpoints[network] || {}
+                ).endpoint;
             }
         }
         const { controlPanelWidth, showTransactions } = this.state;
         return (
             <div class={style.projecteditor} id="main_container">
-                <TopBar router={this.props.router} functions={this.props.functions} onProjectSelected={this.onProjectSelectedHandle} />
+                <TopBar
+                    router={this.props.router}
+                    functions={this.props.functions}
+                    onProjectSelected={this.onProjectSelectedHandle}
+                />
                 <div style="display: flex; height: 100%">
-                    <div key="main_control" id="main_control" class={style.control} style={{width: controlPanelWidth}}>
-                        <Control router={this.props.router} functions={this.props.functions} />
+                    <div
+                        key="main_control"
+                        id="main_control"
+                        class={style.control}
+                        style={{ width: controlPanelWidth }}
+                    >
+                        <Control
+                            router={this.props.router}
+                            functions={this.props.functions}
+                        />
                         <ContactContainer />
                     </div>
-                    <span class="resizer vertical" onMouseDown={this.onMouseDown}></span>
+                    <span
+                        class="resizer vertical"
+                        onMouseDown={this.onMouseDown}
+                    />
                     <div style="position: relative; width: 100%">
-                        <div key="main_panes" id="main_panes" class={style.panescontainer} >
-                            <Panes router={this.props.router} functions={this.props.functions} isActionPanelShowing={showTransactions} />
-                            {
-                                showTransactions ?
-                                    <div class={style.actionContainer} >
-                                        <div class={style.header}>
-                                            <span class={style.title}>Transactions History</span>
-                                            <button class={classNames([style.icon, "btnNoBg"])} onClick={this.onShowHideTransactionsClicked}>
-                                                <IconClose />
-                                            </button>
-                                        </div>
-                                        <TransactionLogPanel router={this.props.router} />
+                        <div
+                            key="main_panes"
+                            id="main_panes"
+                            class={style.panescontainer}
+                        >
+                            <Panes
+                                router={this.props.router}
+                                functions={this.props.functions}
+                                isActionPanelShowing={showTransactions}
+                            />
+                            {showTransactions ? (
+                                <div class={style.actionContainer}>
+                                    <div class={style.header}>
+                                        <span class={style.title}>
+                                            Transactions History
+                                        </span>
+                                        <button
+                                            class={classNames([
+                                                style.icon,
+                                                'btnNoBg',
+                                            ])}
+                                            onClick={
+                                                this
+                                                    .onShowHideTransactionsClicked
+                                            }
+                                        >
+                                            <IconClose />
+                                        </button>
                                     </div>
-                                : null
-                            }
+                                    <TransactionLogPanel
+                                        router={this.props.router}
+                                    />
+                                </div>
+                            ) : null}
                         </div>
                         <div class={style.actionPanel}>
                             <div class={style.actions}>
-                                <button class={classNames([style.action, "btnNoBg"])} onClick={this.onShowHideTransactionsClicked}>
+                                <button
+                                    class={classNames([
+                                        style.action,
+                                        'btnNoBg',
+                                    ])}
+                                    onClick={this.onShowHideTransactionsClicked}
+                                >
                                     <IconTransactions />
-                                    <span class={style.verticalText}>Transactions</span>
+                                    <span class={style.verticalText}>
+                                        Transactions
+                                    </span>
                                 </button>
                             </div>
                         </div>
                         <div class="bottom-status-bar">
                             <span class="left">
                                 <span class="note">Note</span>
-                                <span class="note-text">All files are stored in the browser only, download to backup</span>
+                                <span class="note-text">
+                                    All files are stored in the browser only,
+                                    download to backup
+                                </span>
                             </span>
                             <span class="right">{endpoint}</span>
                         </div>
-                </div>
+                    </div>
                 </div>
             </div>
         );

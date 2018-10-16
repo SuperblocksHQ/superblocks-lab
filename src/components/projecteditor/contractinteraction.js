@@ -25,24 +25,31 @@ import Web3 from 'web3';
 export default class ContractInteraction extends Component {
     constructor(props) {
         super(props);
-        this.id=props.id+"_contractinteraction";
-        this.props.parent.childComponent=this;
-        this.provider=new SuperProvider({that:this});
-        this.setState({account:null});
-        this.contract_address="";
-        this.contract_balance="? eth";
-        this.contract_balance_wei="";
+        this.id = props.id + '_contractinteraction';
+        this.props.parent.childComponent = this;
+        this.provider = new SuperProvider({ that: this });
+        this.setState({ account: null });
+        this.contract_address = '';
+        this.contract_balance = '? eth';
+        this.contract_balance_wei = '';
         this._getEnv();
     }
 
-    notifyTx=(hash, endpoint)=>{
+    notifyTx = (hash, endpoint) => {
         var network;
-        Object.keys(this.props.functions.networks.endpoints).map((key)=>{
-            const obj=this.props.functions.networks.endpoints[key];
-            if(obj.endpoint==endpoint) network=key;
+        Object.keys(this.props.functions.networks.endpoints).map(key => {
+            const obj = this.props.functions.networks.endpoints[key];
+            if (obj.endpoint == endpoint) network = key;
         });
         //this.props.project.props.state.txlog.addTx({hash:hash,context:'Contract interaction',network:network});
-        this.props.item.getProject().getTxLog().addTx({hash: hash, context: 'Contract interaction', network: network});
+        this.props.item
+            .getProject()
+            .getTxLog()
+            .addTx({
+                hash: hash,
+                context: 'Contract interaction',
+                network: network,
+            });
     };
 
     _getEnv = () => {
@@ -52,50 +59,64 @@ export default class ContractInteraction extends Component {
         const accountName = project.getAccount();
         //const env=this.props.project.props.state.data.env;
         const env = project.getEnvironment();
-        this.setState({account:accountName, network:env});
+        this.setState({ account: accountName, network: env });
     };
 
-    redraw = (props) => {
+    redraw = props => {
         this._getEnv();
-        if((props||{}).all) this.lastContent=null;  // To force a render.
+        if ((props || {}).all) this.lastContent = null; // To force a render.
         this.setState();
         this.render2();
     };
 
-    componentWillReceiveProps(props) {
-    }
+    componentWillReceiveProps(props) {}
 
     writeContent = (status, content) => {
-        if(!this.iframeDiv) return;
-        content=content||this.lastContent||"No content";
-        if(status>0) {
+        if (!this.iframeDiv) return;
+        content = content || this.lastContent || 'No content';
+        if (status > 0) {
             // Add surrounding html
-            content=`<html><head><style>body {background-color: #fff; color: #333;text-align:center;}</style></head><body><h1>`+content+`</h1></body></html>`;
+            content =
+                `<html><head><style>body {background-color: #fff; color: #333;text-align:center;}</style></head><body><h1>` +
+                content +
+                `</h1></body></html>`;
         }
-        if(content==this.lastContent) return;
-        this.lastContent=content;
+        if (content == this.lastContent) return;
+        this.lastContent = content;
         while (this.iframeDiv.firstChild) {
             this.iframeDiv.removeChild(this.iframeDiv.firstChild);
         }
-        const iframe = document.createElement("iframe");
-        iframe.sandbox="allow-scripts allow-modals allow-forms";
-        iframe.srcdoc=content;
+        const iframe = document.createElement('iframe');
+        iframe.sandbox = 'allow-scripts allow-modals allow-forms';
+        iframe.srcdoc = content;
         this.iframeDiv.appendChild(iframe);
-        this.iframe=iframe;
+        this.iframe = iframe;
         this.provider.initIframe(iframe);
         this.setState(); // To update data outside of iframe.
     };
 
-    _makeFileName=(path, tag, suffix)=>{
+    _makeFileName = (path, tag, suffix) => {
         const a = path.match(/^(.*\/)([^/]+)$/);
-        const dir=a[1];
-        const filename=a[2];
+        const dir = a[1];
+        const filename = a[2];
         const a2 = filename.match(/^([^.]+)\.sol$/);
         const contractName = a2[1];
         if (tag) {
-            return "/build" + dir + contractName + "/" + contractName + "." + tag + "." + suffix;
+            return (
+                '/build' +
+                dir +
+                contractName +
+                '/' +
+                contractName +
+                '.' +
+                tag +
+                '.' +
+                suffix
+            );
         }
-        return "/build" + dir + contractName + "/" + contractName + "." + suffix;
+        return (
+            '/build' + dir + contractName + '/' + contractName + '.' + suffix
+        );
     };
 
     render2 = () => {
@@ -105,59 +126,92 @@ export default class ContractInteraction extends Component {
         //const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
         const contract = this.props.item.getParent();
 
-        if (!contract) return;  // This gets called twice, with the previous contract name, after renaming a contract.
-        const src=contract.getSource();
+        if (!contract) return; // This gets called twice, with the previous contract name, after renaming a contract.
+        const src = contract.getSource();
         //const network=this.state.network;
         const network = env;
-        const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
-        const tag=env;
-        const srcabi=this._makeFileName(src, "", "abi");
-        const addresssrc=this._makeFileName(src, network, "address");
-        const txsrc=this._makeFileName(src, network, "tx");
-        const deploysrc=this._makeFileName(src, network, "deploy");
-        const contracts=[contract.getName()];
-        project.loadFile(addresssrc, (body) => {
-            if(body.status!=0) {
-                this.writeContent(1, "Missing file(s), contract not deployed?");
-                return;
-            }
-            this.contract_address=body.contents;
-            this._verifyContract(txsrc, deploysrc, endpoint, (status)=>{
-                if(status!=0) {
-                    this.writeContent(1, "Contract does not exist. When running the in-browser blockchain it gets wiped on every refresh.");
+        const endpoint = (
+            this.props.functions.networks.endpoints[network] || {}
+        ).endpoint;
+        const tag = env;
+        const srcabi = this._makeFileName(src, '', 'abi');
+        const addresssrc = this._makeFileName(src, network, 'address');
+        const txsrc = this._makeFileName(src, network, 'tx');
+        const deploysrc = this._makeFileName(src, network, 'deploy');
+        const contracts = [contract.getName()];
+        project.loadFile(
+            addresssrc,
+            body => {
+                if (body.status != 0) {
+                    this.writeContent(
+                        1,
+                        'Missing file(s), contract not deployed?'
+                    );
                     return;
                 }
-                project.loadFile(srcabi, (body) => {
-                    if(body.status!=0) {
-                        this.writeContent(1, "Missing file(s)");
+                this.contract_address = body.contents;
+                this._verifyContract(txsrc, deploysrc, endpoint, status => {
+                    if (status != 0) {
+                        this.writeContent(
+                            1,
+                            'Contract does not exist. When running the in-browser blockchain it gets wiped on every refresh.'
+                        );
                         return;
                     }
-                    var abi=body.contents;
-                    if(typeof(body.contents) != "object") {
-                        abi=JSON.parse(body.contents);
-                    }
-                    this._loadJsFiles(contracts, env, (status, jsbodies)=>{
-                        if(status!=0) {
-                            this.writeContent(1, "Missing contract javascript file, have you deployed all contracts?");
-                            return;
-                        }
-                        const rendered=Generator.render(abi, contract.getName());
-                        const content=this.getOuterContent(rendered.html, jsbodies.join("\n")+rendered.js, endpoint, this._getAccountAddress());
-                        this.writeContent(0, content);
-                    });
-                }, true, true);
-            });
-        }, true, true);
+                    project.loadFile(
+                        srcabi,
+                        body => {
+                            if (body.status != 0) {
+                                this.writeContent(1, 'Missing file(s)');
+                                return;
+                            }
+                            var abi = body.contents;
+                            if (typeof body.contents != 'object') {
+                                abi = JSON.parse(body.contents);
+                            }
+                            this._loadJsFiles(
+                                contracts,
+                                env,
+                                (status, jsbodies) => {
+                                    if (status != 0) {
+                                        this.writeContent(
+                                            1,
+                                            'Missing contract javascript file, have you deployed all contracts?'
+                                        );
+                                        return;
+                                    }
+                                    const rendered = Generator.render(
+                                        abi,
+                                        contract.getName()
+                                    );
+                                    const content = this.getOuterContent(
+                                        rendered.html,
+                                        jsbodies.join('\n') + rendered.js,
+                                        endpoint,
+                                        this._getAccountAddress()
+                                    );
+                                    this.writeContent(0, content);
+                                }
+                            );
+                        },
+                        true,
+                        true
+                    );
+                });
+            },
+            true,
+            true
+        );
     };
 
-    _getAccount=()=>{
+    _getAccount = () => {
         return this.state.account;
     };
 
-    _getAccountAddress=()=>{
+    _getAccountAddress = () => {
         // Check given account, try to open and get address, else return [].
-        const accountName=this._getAccount();
-        if(!accountName) return [];
+        const accountName = this._getAccount();
+        if (!accountName) return [];
 
         //const env=this.state.network;
         const env = this.props.item.getProject().getEnvironment();
@@ -173,50 +227,53 @@ export default class ContractInteraction extends Component {
         const wallets = this.props.item.getProject().getHiddenItem('wallets');
         const wallet = wallets.getByName(walletName);
 
-        if(!wallet) {
+        if (!wallet) {
             return [];
         }
-        const walletType=wallet.getWalletType();
+        const walletType = wallet.getWalletType();
 
-        if(walletType=="external") {
+        if (walletType == 'external') {
             // Metamask seems to always only provide one (the chosen) account.
             var extAccounts = [];
-            if(window.web3 && window.web3.eth) extAccounts = window.web3.eth.accounts || [];
-            if(extAccounts.length<accountIndex+1) {
+            if (window.web3 && window.web3.eth)
+                extAccounts = window.web3.eth.accounts || [];
+            if (extAccounts.length < accountIndex + 1) {
                 // Account not matched
                 return [];
             }
             return [extAccounts[accountIndex]];
         }
 
-        if(this.props.functions.wallet.isOpen(walletName)) {
-            const address=this.props.functions.wallet.getAddress(walletName, accountIndex);
+        if (this.props.functions.wallet.isOpen(walletName)) {
+            const address = this.props.functions.wallet.getAddress(
+                walletName,
+                accountIndex
+            );
             return [address];
         }
 
         return [];
     };
 
-    _getWeb3=(endpoint)=>{
+    _getWeb3 = endpoint => {
         var provider;
-        if(endpoint.toLowerCase()=="http://superblocks-browser") {
-            provider=this.props.functions.EVM.getProvider();
+        if (endpoint.toLowerCase() == 'http://superblocks-browser') {
+            provider = this.props.functions.EVM.getProvider();
+        } else {
+            var provider = new Web3.providers.HttpProvider(endpoint);
         }
-        else {
-            var provider=new Web3.providers.HttpProvider(endpoint);
-        }
-        var web3=new Web3(provider);
+        var web3 = new Web3(provider);
         return web3;
     };
 
-    _getInputByTx = (tx, endpoint, cb)=>{
-        const web3=this._getWeb3(endpoint);
-        web3.eth.getTransaction(tx, (err, res)=>{
-            if(err) {
+    _getInputByTx = (tx, endpoint, cb) => {
+        const web3 = this._getWeb3(endpoint);
+        web3.eth.getTransaction(tx, (err, res) => {
+            if (err) {
                 cb(1);
                 return;
             }
-            if(res) {
+            if (res) {
                 cb(0, res.input);
                 return;
             }
@@ -225,27 +282,28 @@ export default class ContractInteraction extends Component {
         });
     };
 
-    _verifyContract=(txsrc, deploysrc, endpoint, cb)=>{
-        this._loadFiles([txsrc,deploysrc], (status, bodies)=>{
-            if(status>0) {
+    _verifyContract = (txsrc, deploysrc, endpoint, cb) => {
+        this._loadFiles([txsrc, deploysrc], (status, bodies) => {
+            if (status > 0) {
                 cb(status);
                 return;
             }
-            const tx=bodies[0];
-            const code=bodies[1];
-            if(this._codecache==null) this._codecache={};
-            if(this._codecache[endpoint]==null) this._codecache[endpoint]={};
-            if(this._codecache[endpoint][tx]==code) {
+            const tx = bodies[0];
+            const code = bodies[1];
+            if (this._codecache == null) this._codecache = {};
+            if (this._codecache[endpoint] == null)
+                this._codecache[endpoint] = {};
+            if (this._codecache[endpoint][tx] == code) {
                 cb(0);
                 return;
             }
-            this._getInputByTx(tx, endpoint, (status, input)=>{
-                if(status>0) {
+            this._getInputByTx(tx, endpoint, (status, input) => {
+                if (status > 0) {
                     cb(1);
                     return;
                 }
-                if(input==code) {
-                    this._codecache[endpoint][tx]=code;
+                if (input == code) {
+                    this._codecache[endpoint][tx] = code;
                     cb(0);
                     return;
                 }
@@ -255,62 +313,81 @@ export default class ContractInteraction extends Component {
         });
     };
 
-    _loadFiles=(files, cb)=>{
-        const bodies=[];
+    _loadFiles = (files, cb) => {
+        const bodies = [];
         var fn;
-        fn=((files, bodies, cb2)=>{
-            if(files.length==0) {
+        fn = (files, bodies, cb2) => {
+            if (files.length == 0) {
                 cb2(0);
                 return;
             }
-            const file=files.shift();
-            this.props.item.getProject().loadFile(file, (body) => {
-                if(body.status!=0) {
-                    cb(1);
-                    return;
-                }
-                bodies.push(body.contents);
-                fn(files, bodies, (status)=>{
-                    cb2(status);
-                });
-            }, true, true);
-        });
-        fn(files, bodies, (status)=>{
+            const file = files.shift();
+            this.props.item.getProject().loadFile(
+                file,
+                body => {
+                    if (body.status != 0) {
+                        cb(1);
+                        return;
+                    }
+                    bodies.push(body.contents);
+                    fn(files, bodies, status => {
+                        cb2(status);
+                    });
+                },
+                true,
+                true
+            );
+        };
+        fn(files, bodies, status => {
             cb(status, bodies);
         });
     };
 
-    _loadJsFiles=(contracts, network, cb)=>{
-        const files=[];
-        const bodies=[];
-        for(var index=0;index<contracts.length;index++) {
-            files.push("/build/app/" + contracts[index] + "." + network + ".js");
+    _loadJsFiles = (contracts, network, cb) => {
+        const files = [];
+        const bodies = [];
+        for (var index = 0; index < contracts.length; index++) {
+            files.push(
+                '/build/app/' + contracts[index] + '.' + network + '.js'
+            );
         }
         var fn;
-        fn=((files, bodies, cb2)=>{
-            if(files.length==0) {
+        fn = (files, bodies, cb2) => {
+            if (files.length == 0) {
                 cb2(0);
                 return;
             }
-            const file=files.shift();
-            this.props.item.getProject().loadFile(file, (body) => {
-                bodies.push(body.contents);
-                fn(files, bodies, (status)=>{
-                    cb2(status);
-                });
-            }, true, true);
-        });
-        fn(files, bodies, (status)=>{
+            const file = files.shift();
+            this.props.item.getProject().loadFile(
+                file,
+                body => {
+                    bodies.push(body.contents);
+                    fn(files, bodies, status => {
+                        cb2(status);
+                    });
+                },
+                true,
+                true
+            );
+        };
+        fn(files, bodies, status => {
             cb(status, bodies);
         });
     };
 
-    _getProvider=(endpoint, accounts)=>{
-        var ts=this.props.functions.session.start_time();
-        const js=`<script type="text/javascript" src="/static/js/web3provider.js?ts=`+ts+`">
+    _getProvider = (endpoint, accounts) => {
+        var ts = this.props.functions.session.start_time();
+        const js =
+            `<script type="text/javascript" src="/static/js/web3provider.js?ts=` +
+            ts +
+            `">
     </script>
     <script type="text/javascript">
-        window.web3={currentProvider:new DevKitProvider.provider("`+endpoint+`"),eth:{accounts:`+JSON.stringify(accounts)+`}};
+        window.web3={currentProvider:new DevKitProvider.provider("` +
+            endpoint +
+            `"),eth:{accounts:` +
+            JSON.stringify(accounts) +
+            `}};
         console.log("Using Superblocks web3 provider.");
     </script>
 `;
@@ -318,11 +395,14 @@ export default class ContractInteraction extends Component {
     };
 
     getOuterContent = (html, js, endpoint, accounts) => {
-        const html2=`<!DOCTYPE html>
+        const html2 =
+            `<!DOCTYPE html>
 <html lang="en">
     <head>
         <script type="text/javascript" src="https://unpkg.com/web3@0.20.5/dist/web3.min.js"></script>
-        `+(endpoint!=null?this._getProvider(endpoint, accounts):"")+`
+        ` +
+            (endpoint != null ? this._getProvider(endpoint, accounts) : '') +
+            `
     </head>
     <style>
             html, body {
@@ -462,94 +542,103 @@ export default class ContractInteraction extends Component {
             }
     </style>
     <script type="text/javascript">
-        `+js+`
+        ` +
+            js +
+            `
     </script>
     <body>
-        `+html+`
+        ` +
+            html +
+            `
     </body>
 </html>
 `;
         return html2;
     };
 
-    run = (e) => {
+    run = e => {
         e.preventDefault();
-        e.stopPropagation();  // Don't auto focus on the window.
-        this.lastContent=null;  // To force a render.
+        e.stopPropagation(); // Don't auto focus on the window.
+        this.lastContent = null; // To force a render.
         this.render2();
     };
 
     renderToolbar = () => {
         return (
-            <div class={style.toolbar} id={this.id+"_header"}>
+            <div class={style.toolbar} id={this.id + '_header'}>
                 <div class={style.buttons}>
-                    <a href="#" title="Refresh" onClick={this.run}><IconRun /></a>
+                    <a href="#" title="Refresh" onClick={this.run}>
+                        <IconRun />
+                    </a>
                 </div>
                 <div class={style.info}>
                     <span>
-                        Contract address: {this.contract_address}&nbsp;
+                        Contract address: {this.contract_address}
+                        &nbsp;
                     </span>
                     <span title={this.contract_balance_wei}>
-                        Balance: {this.contract_balance}&nbsp;
+                        Balance: {this.contract_balance}
+                        &nbsp;
                     </span>
                 </div>
             </div>
         );
     };
 
-    updateBalance=()=>{
-        if(this.updateBalanceBusy) return;
-        this.updateBalanceBusy=true;
-        const env=this.state.network;
-        const network=this.state.network;
-        const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
-        const web3=this._getWeb3(endpoint);
-        if(this.contract_address.length<5) {
-            this.updateBalanceBusy=false;
-            this.contract_balance="? eth";
-            this.contract_balance_wei="";
+    updateBalance = () => {
+        if (this.updateBalanceBusy) return;
+        this.updateBalanceBusy = true;
+        const env = this.state.network;
+        const network = this.state.network;
+        const endpoint = (
+            this.props.functions.networks.endpoints[network] || {}
+        ).endpoint;
+        const web3 = this._getWeb3(endpoint);
+        if (this.contract_address.length < 5) {
+            this.updateBalanceBusy = false;
+            this.contract_balance = '? eth';
+            this.contract_balance_wei = '';
             this.setState();
             return;
         }
-        web3.eth.getBalance(this.contract_address,(err,res)=>{
-            this.updateBalanceBusy=false;
-            if(err) {
-                this.contract_balance="? eth";
-                this.contract_balance_wei="";
-            }
-            else {
-                this.contract_balance_wei=res.toNumber() + " wei";
-                this.contract_balance=web3.fromWei(res.toNumber()) + " eth";
+        web3.eth.getBalance(this.contract_address, (err, res) => {
+            this.updateBalanceBusy = false;
+            if (err) {
+                this.contract_balance = '? eth';
+                this.contract_balance_wei = '';
+            } else {
+                this.contract_balance_wei = res.toNumber() + ' wei';
+                this.contract_balance = web3.fromWei(res.toNumber()) + ' eth';
                 this.setState();
             }
         });
     };
 
     getHeight = () => {
-        const a=document.getElementById(this.id);
-        const b=document.getElementById(this.id+"_header");
-        if(!a) return 99;
-        return (a.offsetHeight - b.offsetHeight);
+        const a = document.getElementById(this.id);
+        const b = document.getElementById(this.id + '_header');
+        if (!a) return 99;
+        return a.offsetHeight - b.offsetHeight;
     };
 
-    updateAccount=()=>{
-        if(window.web3) {
+    updateAccount = () => {
+        if (window.web3) {
             const currentAccount = window.web3.eth.accounts[0];
-            if(this.lastAccountRead !== currentAccount) {
-                this.lastAccountRead=currentAccount;
-                this.lastContent=null;  // To force a render.
+            if (this.lastAccountRead !== currentAccount) {
+                this.lastAccountRead = currentAccount;
+                this.lastContent = null; // To force a render.
                 this.render2();
             }
         }
     };
 
     componentDidMount() {
-        if(window.web3) {
-            this.lastAccountRead=window.web3.eth.accounts[0];
+        if (window.web3) {
+            this.lastAccountRead = window.web3.eth.accounts[0];
         }
 
-        this.accountTimer=setInterval(this.updateAccount, 3000);
-        this.timer=setInterval(this.updateBalance, 3000);
+        this.accountTimer = setInterval(this.updateAccount, 3000);
+        this.timer = setInterval(this.updateBalance, 3000);
         this.provider._attachListener();
         // We need to do a first redraw to get the height right, since toolbar didn't exist in the first sweep.
         this.redraw();
@@ -561,21 +650,27 @@ export default class ContractInteraction extends Component {
         clearInterval(this.accountTimer);
     }
 
-
-    _firstRender=(ref)=>{
-        this.iframeDiv=ref;
+    _firstRender = ref => {
+        this.iframeDiv = ref;
         this.render2();
     };
 
     render() {
-        const toolbar=this.renderToolbar();
+        const toolbar = this.renderToolbar();
         const maxHeight = {
-            height: this.getHeight() + "px"
+            height: this.getHeight() + 'px',
         };
-        return (<div id={this.id} key={this.id} class={style.appview}>
-            {toolbar}
-            <div class="full" style={maxHeight} id={this.id+"_iframe"} key={this.id+"_iframe"} ref={this._firstRender}>
+        return (
+            <div id={this.id} key={this.id} class={style.appview}>
+                {toolbar}
+                <div
+                    class="full"
+                    style={maxHeight}
+                    id={this.id + '_iframe'}
+                    key={this.id + '_iframe'}
+                    ref={this._firstRender}
+                />
             </div>
-        </div>);
+        );
     }
 }

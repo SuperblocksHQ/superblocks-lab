@@ -19,20 +19,31 @@ import PropTypes from 'prop-types';
 import style from './style';
 
 export default class Welcome extends Component {
-
-    onCreateNewProjectClick = (e) => {
+    onCreateNewProjectClick = e => {
         console.log(this.props);
         this.props.router.control.newDapp(e);
-    }
+    };
 
     render() {
         return (
             <div class={style.container}>
                 <div class={style.content}>
-                    <img src={'/static/img/img-welcome.svg'}/>;
-                    <h3>Looks like you don’t have any project created just yet</h3>
-                    <p><a href="#" onClick={this.onCreateNewProjectClick}>Create a new project</a> from any of our existing templates to get started</p>
-                    <button class="btn2 mt-4" onClick={this.onCreateNewProjectClick}>Create New Project</button>
+                    <img src={'/static/img/img-welcome.svg'} />;
+                    <h3>
+                        Looks like you don’t have any project created just yet
+                    </h3>
+                    <p>
+                        <a href="#" onClick={this.onCreateNewProjectClick}>
+                            Create a new project
+                        </a>{' '}
+                        from any of our existing templates to get started
+                    </p>
+                    <button
+                        class="btn2 mt-4"
+                        onClick={this.onCreateNewProjectClick}
+                    >
+                        Create New Project
+                    </button>
                 </div>
             </div>
         );
@@ -40,5 +51,5 @@ export default class Welcome extends Component {
 }
 
 Welcome.propTypes = {
-    router: PropTypes.object.isRequired
-}
+    router: PropTypes.object.isRequired,
+};

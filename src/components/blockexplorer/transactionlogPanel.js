@@ -22,10 +22,10 @@ export default class TransactionLogPanel extends Component {
     constructor(props) {
         super(props);
 
-        setInterval(() => this.setState(),1000);
+        setInterval(() => this.setState(), 1000);
     }
 
-    _getRender = (txlog) => {
+    _getRender = txlog => {
         if (this.renderTransactions) {
             return this.renderTransactions;
         }
@@ -37,7 +37,7 @@ export default class TransactionLogPanel extends Component {
 
     _getTxLog = () => {
         if (!this.props.router.control) return;
-        const project=this.props.router.control.getActiveProject();
+        const project = this.props.router.control.getActiveProject();
         if (!project) return;
         return project.getTxLog();
     };
@@ -45,15 +45,17 @@ export default class TransactionLogPanel extends Component {
     render() {
         const txlog = this._getTxLog();
         if (!txlog) return;
-        const env = this.props.router.control.getActiveProject().getEnvironment();
+        const env = this.props.router.control
+            .getActiveProject()
+            .getEnvironment();
         const network = env;
 
         const renderTransactions = this._getRender(txlog);
-        const transactions=renderTransactions.renderTransactionsFloat(network, 5, 0);
-        return (
-            <div class={style.transactionlogPanel}>
-                {transactions}
-            </div>
+        const transactions = renderTransactions.renderTransactionsFloat(
+            network,
+            5,
+            0
         );
+        return <div class={style.transactionlogPanel}>{transactions}</div>;
     }
 }

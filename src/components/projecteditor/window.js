@@ -38,7 +38,7 @@ export class WindowComponent extends Component {
     }
 
     componentDidMount() {
-        this.props.obj.component=this;
+        this.props.obj.component = this;
     }
 
     redraw = () => {
@@ -46,24 +46,28 @@ export class WindowComponent extends Component {
     };
 
     render() {
-        const sub=this.props.obj.renderSub();
+        const sub = this.props.obj.renderSub();
         return (
             <div key="window" class="full">
-                <button class={classnames([style.close_btn, "btnNoBg"])} onClick={this.props.obj.close} title="Close">
+                <button
+                    class={classnames([style.close_btn, 'btnNoBg'])}
+                    onClick={this.props.obj.close}
+                    title="Close"
+                >
                     <IconClose />
                 </button>
                 {sub}
             </div>
         );
-    };
+    }
 }
 
 export class Window {
     constructor(props) {
-        this.props=props;
-        this.subId="winitem_"+this.props.item.getId();
+        this.props = props;
+        this.subId = 'winitem_' + this.props.item.getId();
         this.component;
-        this.childComponent;  // Optionally registered by the sub component.
+        this.childComponent; // Optionally registered by the sub component.
     }
 
     getItemId = () => {
@@ -71,110 +75,193 @@ export class Window {
     };
 
     focus = (rePerform, cb) => {
-        if(cb) {
-            this.callback=cb;
+        if (cb) {
+            this.callback = cb;
         }
-        if(this.childComponent && this.childComponent.focus) this.childComponent.focus(rePerform);
+        if (this.childComponent && this.childComponent.focus)
+            this.childComponent.focus(rePerform);
     };
 
     _clickedUpon = () => {
-        if(this.props.parent.activeWindowId!=this.props.item.getId()) {
+        if (this.props.parent.activeWindowId != this.props.item.getId()) {
             this.props.parent.focusWindow(this.props.item.getId());
             this.props.parent.props.parent.redraw();
         }
     };
 
     renderSub = () => {
-        if(this.props.item.props.type=="file") {
+        if (this.props.item.props.type == 'file') {
             return (
-                <div class="full" onClick={(e)=>{this._clickedUpon()}}>
-                    <Editor id={this.subId} key={this.subId} router={this.props.router} item={this.props.item} parent={this} />
-                </div>
-            );
-        }
-        else if(this.props.item.props.type=="contract" && this.props.item.props.type2=="configure") {
-            return (
-                <ContractEditor id={this.subId} key={this.subId} item={this.props.item} parent={this} router={this.props.router} />
-            );
-        }
-        else if(this.props.item.props.type=="project") {
-            return (
-                <AppEditor id={this.subId} key={this.subId} item={this.props.item} parent={this} router={this.props.router} />
-            );
-        }
-        else if(this.props.item.props.type=="contract" && this.props.item.props.type2=="compile") {
-            return (
-                <div class="full" onClick={(e)=>{this._clickedUpon()}}>
-                    <Compiler type="contract_compile"
+                <div
+                    class="full"
+                    onClick={e => {
+                        this._clickedUpon();
+                    }}
+                >
+                    <Editor
                         id={this.subId}
                         key={this.subId}
-                        functions={this.props.functions}
+                        router={this.props.router}
                         item={this.props.item}
                         parent={this}
-                        router={this.props.router} />
+                    />
                 </div>
             );
-        }
-        else if(this.props.item.props.type=="contract" && this.props.item.props.type2=="deploy") {
+        } else if (
+            this.props.item.props.type == 'contract' &&
+            this.props.item.props.type2 == 'configure'
+        ) {
             return (
-                <div class="full" onClick={(e)=>{this._clickedUpon()}}>
-                    <Deployer type="contract_deploy"
-                        id={this.subId}
-                        key={this.subId}
-                        item={this.props.item}
-                        functions={this.props.functions}
-                        parent={this}
-                        router={this.props.router} />
-                </div>
-            );
-        }
-        else if(this.props.item.props.type=="account") {
-            return (
-                <AccountEditor id={this.subId} key={this.subId} item={this.props.item} parent={this} router={this.props.router} functions={this.props.functions} />
-            );
-        }
-        else if(this.props.item.props.type=="tutorials" && this.props.item.props.type2=="manual") {
-            return (
-                <TutorialsManual id={this.subId} parent={this} router={this.props.router} functions={this.props.functions} />
-            );
-        }
-        else if(this.props.item.props.type=="tutorials" && this.props.item.props.type2=="online") {
-            return (
-                <TutorialsOnline id={this.subId} parent={this} router={this.props.router} functions={this.props.functions} />
-            );
-        }
-        else if(this.props.item.props.type=="app" && this.props.item.props.type2=="view") {
-            return (
-                <AppView id={this.subId} parent={this} item={this.props.item} router={this.props.router} functions={this.props.functions} />
-            );
-        }
-        else if(this.props.item.props.type=="contract" && this.props.item.props.type2=="interact") {
-            return (
-                <ContractInteraction id={this.subId} parent={this} item={this.props.item} router={this.props.router} functions={this.props.functions} />
-            );
-        }
-        else if(this.props.item.props.type=="transaction_log") {
-            return (
-                <TransactionLog id={this.subId} parent={this} name={this.props.item.props._name} project={this.props.item.props._project} router={this.props.router} functions={this.props.functions} />
-            );
-        }
-        else if(this.props.item.props.type=="info" && this.props.item.props.type2=="welcome") {
-            return (
-                <Welcome
+                <ContractEditor
+                    id={this.subId}
+                    key={this.subId}
+                    item={this.props.item}
+                    parent={this}
                     router={this.props.router}
                 />
             );
+        } else if (this.props.item.props.type == 'project') {
+            return (
+                <AppEditor
+                    id={this.subId}
+                    key={this.subId}
+                    item={this.props.item}
+                    parent={this}
+                    router={this.props.router}
+                />
+            );
+        } else if (
+            this.props.item.props.type == 'contract' &&
+            this.props.item.props.type2 == 'compile'
+        ) {
+            return (
+                <div
+                    class="full"
+                    onClick={e => {
+                        this._clickedUpon();
+                    }}
+                >
+                    <Compiler
+                        type="contract_compile"
+                        id={this.subId}
+                        key={this.subId}
+                        functions={this.props.functions}
+                        item={this.props.item}
+                        parent={this}
+                        router={this.props.router}
+                    />
+                </div>
+            );
+        } else if (
+            this.props.item.props.type == 'contract' &&
+            this.props.item.props.type2 == 'deploy'
+        ) {
+            return (
+                <div
+                    class="full"
+                    onClick={e => {
+                        this._clickedUpon();
+                    }}
+                >
+                    <Deployer
+                        type="contract_deploy"
+                        id={this.subId}
+                        key={this.subId}
+                        item={this.props.item}
+                        functions={this.props.functions}
+                        parent={this}
+                        router={this.props.router}
+                    />
+                </div>
+            );
+        } else if (this.props.item.props.type == 'account') {
+            return (
+                <AccountEditor
+                    id={this.subId}
+                    key={this.subId}
+                    item={this.props.item}
+                    parent={this}
+                    router={this.props.router}
+                    functions={this.props.functions}
+                />
+            );
+        } else if (
+            this.props.item.props.type == 'tutorials' &&
+            this.props.item.props.type2 == 'manual'
+        ) {
+            return (
+                <TutorialsManual
+                    id={this.subId}
+                    parent={this}
+                    router={this.props.router}
+                    functions={this.props.functions}
+                />
+            );
+        } else if (
+            this.props.item.props.type == 'tutorials' &&
+            this.props.item.props.type2 == 'online'
+        ) {
+            return (
+                <TutorialsOnline
+                    id={this.subId}
+                    parent={this}
+                    router={this.props.router}
+                    functions={this.props.functions}
+                />
+            );
+        } else if (
+            this.props.item.props.type == 'app' &&
+            this.props.item.props.type2 == 'view'
+        ) {
+            return (
+                <AppView
+                    id={this.subId}
+                    parent={this}
+                    item={this.props.item}
+                    router={this.props.router}
+                    functions={this.props.functions}
+                />
+            );
+        } else if (
+            this.props.item.props.type == 'contract' &&
+            this.props.item.props.type2 == 'interact'
+        ) {
+            return (
+                <ContractInteraction
+                    id={this.subId}
+                    parent={this}
+                    item={this.props.item}
+                    router={this.props.router}
+                    functions={this.props.functions}
+                />
+            );
+        } else if (this.props.item.props.type == 'transaction_log') {
+            return (
+                <TransactionLog
+                    id={this.subId}
+                    parent={this}
+                    name={this.props.item.props._name}
+                    project={this.props.item.props._project}
+                    router={this.props.router}
+                    functions={this.props.functions}
+                />
+            );
+        } else if (
+            this.props.item.props.type == 'info' &&
+            this.props.item.props.type2 == 'welcome'
+        ) {
+            return <Welcome router={this.props.router} />;
         }
     };
 
-    close = (e) => {
-        if(e) e.preventDefault();
+    close = e => {
+        if (e) e.preventDefault();
         this.props.parent.closeWindow(this.getItemId());
     };
 
     canClose = (cb, silent) => {
-        if(this.childComponent && this.childComponent.canClose) {
-            this.childComponent.canClose((status)=>{
+        if (this.childComponent && this.childComponent.canClose) {
+            this.childComponent.canClose(status => {
                 cb(status);
             }, silent);
             return;
@@ -183,17 +270,19 @@ export class Window {
     };
 
     getTitle = () => {
-        if (this.props.item.props.state.title) return this.props.item.props.state.title;
-        if(this.childComponent && this.childComponent.getTitle) return this.childComponent.getTitle();
-        if(this.props.item.props.type=="file") return this.props.item.props.title;
-        if(this.props.item.props.type=="contract") {
-            switch(this.props.item.props.type2) {
-                case "configure":
-                case "interact":
-                case "compile":
-                case "deploy":
+        if (this.props.item.props.state.title)
+            return this.props.item.props.state.title;
+        if (this.childComponent && this.childComponent.getTitle)
+            return this.childComponent.getTitle();
+        if (this.props.item.props.type == 'file')
+            return this.props.item.props.title;
+        if (this.props.item.props.type == 'contract') {
+            switch (this.props.item.props.type2) {
+                case 'configure':
+                case 'interact':
+                case 'compile':
+                case 'deploy':
                     return this.props.item.props._contract;
-
             }
         }
         return this.props.item.props.title;
@@ -203,8 +292,8 @@ export class Window {
         return this.props.item.getIcon();
     };
 
-    redraw = (props) => {
-        if(this.component) this.component.redraw();
-        if(this.childComponent) this.childComponent.redraw(props);
+    redraw = props => {
+        if (this.component) this.component.redraw();
+        if (this.childComponent) this.childComponent.redraw(props);
     };
 }

@@ -21,30 +21,33 @@ import style from '../style';
 import { IconClose } from '../../icons';
 
 export default class ProjectDetails extends Component {
-
     constructor(props) {
         super(props);
 
         this.state = {
-            projectName: this.props.projectName ? this.props.projectName : "",
-            projectTitle: this.props.projectTitle ? this.props.projectTitle : "",
-            isValid: false
-        }
+            projectName: this.props.projectName ? this.props.projectName : '',
+            projectTitle: this.props.projectTitle
+                ? this.props.projectTitle
+                : '',
+            isValid: false,
+        };
     }
 
-    validateInputs () {
+    validateInputs() {
         let { projectName, projectTitle } = this.state;
         var validInputs = false;
-        if (projectName == "") {
-            alert("Please give the project a name.");
+        if (projectName == '') {
+            alert('Please give the project a name.');
         } else if (!projectName.match(/^([a-zA-Z0-9-]+)$/)) {
             alert('Illegal projectname. Only A-Za-z0-9 and dash (-) allowed.');
-        } else if (projectTitle == "") {
-            alert("Please give the project a snappy title.");
+        } else if (projectTitle == '') {
+            alert('Please give the project a snappy title.');
         } else if (projectTitle.match(/([\"\'\\]+)/)) {
             alert('Illegal title. No special characters allowed.');
         } else if (projectName.length > 20 || projectTitle.length > 20) {
-            alert('Sorry, the project name or title is way to long! (Max 20 chars).');
+            alert(
+                'Sorry, the project name or title is way to long! (Max 20 chars).'
+            );
         } else {
             validInputs = true;
         }
@@ -57,11 +60,17 @@ export default class ProjectDetails extends Component {
 
         if (dappfileJSONObj) {
             // We assume its validity is checked already.
-            this.setState({ projectTitle: updatupdatedappfileJSONObj.dappfile.project.info.title});
+            this.setState({
+                projectTitle:
+                    updatupdatedappfileJSONObj.dappfile.project.info.title,
+            });
         }
 
         if (this.validateInputs()) {
-            this.props.onProjectDetailsDone({ name: this.state.projectName, title: this.state.projectTitle });
+            this.props.onProjectDetailsDone({
+                name: this.state.projectName,
+                title: this.state.projectTitle,
+            });
         }
     };
 
@@ -75,23 +84,26 @@ export default class ProjectDetails extends Component {
 
     handleNameChange = changeEvent => {
         this.setState({
-            projectName: changeEvent.target.value
+            projectName: changeEvent.target.value,
         });
-    }
+    };
 
     handleTitleChange = changeEvent => {
         this.setState({
-            projectTitle: changeEvent.target.value
+            projectTitle: changeEvent.target.value,
         });
     };
 
     render() {
         return (
-            <div className={classNames([style.newDapp, "modal"])}>
+            <div className={classNames([style.newDapp, 'modal'])}>
                 <div class={style.step1}>
                     <div class={style.header}>
                         <div class={style.title}>Create a new project</div>
-                        <button class={classNames([style.closeIcon, "btnNoBg"])} onClick={this.onCloseClickHandle}>
+                        <button
+                            class={classNames([style.closeIcon, 'btnNoBg'])}
+                            onClick={this.onCloseClickHandle}
+                        >
                             <IconClose />
                         </button>
                     </div>
@@ -106,24 +118,35 @@ export default class ProjectDetails extends Component {
                                         maxLength="20"
                                         value={this.state.projectName}
                                         onChange={this.handleNameChange}
-                                        placeholder="Enter project name"/>
+                                        placeholder="Enter project name"
+                                    />
                                 </div>
                                 <div class="superInputDark my-4">
-                                    <label for="html">DApp (HTML) Title: </label>
+                                    <label for="html">
+                                        DApp (HTML) Title:{' '}
+                                    </label>
                                     <input
                                         id="html"
                                         type="text"
                                         maxLength="20"
                                         value={this.state.projectTitle}
                                         onChange={this.handleTitleChange}
-                                        placeholder="Project HTML page title"/>
+                                        placeholder="Project HTML page title"
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class={style.footer}>
-                        <button onClick={this.onBackClickHandle} class="btn2 noBg mr-2">Back</button>
-                        <button onClick={this.onNextClickHandle} class="btn2">Create Project</button>
+                        <button
+                            onClick={this.onBackClickHandle}
+                            class="btn2 noBg mr-2"
+                        >
+                            Back
+                        </button>
+                        <button onClick={this.onNextClickHandle} class="btn2">
+                            Create Project
+                        </button>
                     </div>
                 </div>
             </div>
@@ -134,5 +157,5 @@ export default class ProjectDetails extends Component {
 ProjectDetails.propTypes = {
     onProjectDetailsDone: Proptypes.func.isRequired,
     onCloseClick: Proptypes.func.isRequired,
-    onBackClick: Proptypes.func.isRequired
-}
+    onBackClick: Proptypes.func.isRequired,
+};

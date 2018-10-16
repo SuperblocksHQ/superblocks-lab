@@ -18,7 +18,7 @@ import FileItem from './fileItem';
 
 export default class ContractItem extends FileItem {
     constructor(props, router) {
-        props.type2 = props.type2 || "contract";
+        props.type2 = props.type2 || 'contract';
         super(props, router);
     }
 
@@ -29,7 +29,7 @@ export default class ContractItem extends FileItem {
      */
     notifyDeleted = () => {
         this.getProject().deleteContract(this.getSource());
-    }
+    };
 
     /**
      * Notifies us the contract file has been renamed.
@@ -38,7 +38,7 @@ export default class ContractItem extends FileItem {
      */
     notifyMoved = (oldPath, cb) => {
         this.getProject().setContractSource(oldPath, this.getFullPath(), cb);
-    }
+    };
 
     /**
      * Return the source path for the contract file.
@@ -57,7 +57,7 @@ export default class ContractItem extends FileItem {
     /**
      * Set the arguments for the contract.
      */
-    setArgs = (args) => {
+    setArgs = args => {
         this.props.state.args = args;
     };
 

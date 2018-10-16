@@ -18,7 +18,7 @@ import Item from './item';
 
 export default class EnvironmentsItem extends Item {
     constructor(props, router) {
-        props.type = props.type || "environments";
+        props.type = props.type || 'environments';
         super(props, router);
     }
 
@@ -34,7 +34,7 @@ export default class EnvironmentsItem extends Item {
      * Save which environment is chosen.
      * @param account: The environment name
      */
-    setChosen = (environment) => {
+    setChosen = environment => {
         this.props.state.chosen = environment;
     };
 }
