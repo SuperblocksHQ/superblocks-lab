@@ -15,6 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { h, Component } from 'preact';
+import style from '../../style';
 
 export class ShowActions extends Component {
     state = {
@@ -33,6 +34,7 @@ export class ShowActions extends Component {
         const { actionContainer, isReadOnly, alwaysVisible } = this.props;
         let content;
 
+        // Always visible content for Root Folder
         if(!alwaysVisible && !isReadOnly && this.state.showActions) {
             content = actionContainer;
         } else if(alwaysVisible && !isReadOnly) {
@@ -43,9 +45,9 @@ export class ShowActions extends Component {
         }
 
         return(
-            <div onMouseEnter={this.showActions} onMouseLeave={this.hideActions} style={{width: "100%"}}>
-                { this.props.children }
+            <div class={style.header} onMouseEnter={this.showActions} onMouseLeave={this.hideActions}>
                 { content }
+                { this.props.children }
             </div>
 
         );

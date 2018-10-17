@@ -26,7 +26,6 @@ import { DropdownContainer } from '../../../../dropdown';
 import { FadeInComponent } from './fadeInComponent';
 import { ShowActions } from './showActions';
 
-
 export class DirectoryEntry extends Component {
     render() {
         const {
@@ -37,7 +36,8 @@ export class DirectoryEntry extends Component {
             clickRenameFile,
             clickDeleteFile,
             contextMenu,
-            fullPath
+            fullPath,
+            icons
         } = this.props;
 
         const alwaysVisible = fullPath === "/";
@@ -99,14 +99,14 @@ export class DirectoryEntry extends Component {
                                 </div>
                             </FadeInComponent>  
                         }
-                    >
-                        <div class={style.title} title={title}>
-                            <a href="#">{title}</a>
-                        </div>
+                    >   
+                            {icons}
+                            <div class={style.title} title={title}>
+                                <a href="#">{title}</a>
+                            </div>
                     </ShowActions>
                 </div>
             </DropdownContainer>
-
         );
     }
 }

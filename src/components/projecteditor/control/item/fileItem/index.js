@@ -38,6 +38,8 @@ import style from '../../style';
 import { DropdownContainer } from '../../../../dropdown';
 import { DirectoryEntry } from './directoryEntry';
 import { FileEntry } from './fileEntry';
+import classnames from 'classnames';
+
 
 export default class FileItem extends Item {
     constructor(props, router) {
@@ -181,23 +183,6 @@ export default class FileItem extends Item {
     setReadOnly = (flag) => {
         this.props.state.isReadOnly = flag;
     };
-/*
-    state = {
-        showActions: false
-    };
-
-    showActions = () => {
-        this.setState({
-            showActions: true
-        })
-    };
-
-    hideActions = () => {
-        this.setState({
-            showActions: false
-        })
-    };
-*/
 
     /**
      * Move/Rename this file in storage.
@@ -405,6 +390,7 @@ export default class FileItem extends Item {
                    isReadOnly={this.isReadOnly()}
                    clickRenameFile={this._clickRenameFile}
                    clickDeleteFile={this._clickDeleteFile}
+                   icons={this._renderIcons(level, index)}
                />
             );
         } else if (this.getType() == "folder") {
@@ -418,25 +404,50 @@ export default class FileItem extends Item {
                     clickNewFolder={this._clickNewFolder}
                     clickRenameFile={this._clickRenameFile}
                     clickDeleteFile={this._clickDeleteFile}
+                    icons={this._renderIcons(level, index)}
                 />
             );
         }
     };
 
+    _render2 = (level, index, renderedChildren) => {
+        var output;
+        if (this.props.render) {
+            output = this.props.render(level, index, this);
+        }
+        else {
+            output = this._defaultRender(level, index, this);
+        }
+
+        const childrenPkg = this._packageChildren(level, index, renderedChildren);
+        const classes = this._getClasses(level, index);
+        return (
+            <div className={classnames(classes)} onClick={this.props.onClick ? (e) => this.props.onClick(e, this) : null}>
+                {output}
+                {childrenPkg}
+            </div>
+        );
+    };
+
     // Just gonna put this here for now
     _renderApplicationSectionTitle = (level, index, item) => {
+        const icons = item._renderIcons(level, index);
+
         return (
-            <div class={style.projectContractsTitleContainer} onClick={item._angleClicked}>
-                <div>
-                    { item.getTitle() }
-                </div>
-                <div class={style.buttons}>
-                    <button class="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
-                        <IconShowPreview />
-                    </button>
-                    <button class="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
-                        <IconMosaic />
-                    </button>
+            <div class={style.projectContractsTitleContainer} onClick={item._angleClicked}> 
+                <div class={style.header}>
+                    <div class={style.title}>
+                        { icons }
+                        { item.getTitle() }
+                    </div>
+                    <div class={style.buttons}>
+                        <button class="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
+                            <IconShowPreview />
+                        </button>
+                        <button class="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
+                            <IconMosaic />
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -449,7 +460,7 @@ export default class FileItem extends Item {
         const view = item.getProject().getHiddenItem("app_preview");
 
         if(this.router.panes) this.router.panes.openItem(view);
-    };
+    }; 
 
     _openAppComposite = (e,item) => {
         e.stopPropagation();

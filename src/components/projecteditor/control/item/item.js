@@ -229,8 +229,8 @@ export default class Item {
         var isToggable = this.props.state.toggable && (this.getChildren().length>0 || this.props.lazy);
         if (isToggable) {
             caret = (
-                <Caret
-                    expanded={this.props.state.open}
+                <Caret 
+                    expanded={this.props.state.open} 
                     onClick={(e)=>this._angleClicked(e)} />
             );
         }

@@ -32,7 +32,8 @@ export class FileEntry extends Component {
             isReadOnly,
             clickRenameFile,
             clickDeleteFile,
-            contextMenu
+            contextMenu,
+            icons
         } = this.props;
 
         const contextMenuFile = (
@@ -53,18 +54,10 @@ export class FileEntry extends Component {
         );
 
         return (
-            <DropdownContainer
-                dropdownContent={contextMenuFile}
-                useRightClick={true}
-                onContextMenu={e => e.preventDefault()}
-            >
-
-                <div
-                    class={style.projectContractsTitleContainer}
-                    onClick={openItem}
-                >
-                    <ShowActions
-                        isReadOnly={isReadOnly}
+            <DropdownContainer dropdownContent={contextMenuFile} useRightClick={true} onContextMenu={e => e.preventDefault()}>
+                <div class={style.projectContractsTitleContainer} onClick={openItem}>
+                    <ShowActions 
+                        isReadOnly={isReadOnly} 
                         actionContainer={
                             <FadeInComponent>
                                 <div class={style.buttons} onClick={e => e.stopPropagation()}>
@@ -78,13 +71,12 @@ export class FileEntry extends Component {
                             </FadeInComponent>
                         }
                     >
-                        <div>
+                            {icons}
                             <div class={style.title}>
                                 <a title={title} href="#">
                                     {title}
                                 </a>
                             </div>
-                        </div>
                     </ShowActions>
                 </div>
             </DropdownContainer>
