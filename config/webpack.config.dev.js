@@ -292,6 +292,8 @@ module.exports = {
             use: getStyleLoaders(
                 {
                     importLoaders: 2,
+                    localIdentName: '[local]__[hash:base64:5]',
+                    modules: true,
                 },
                 'less-loader'
             ),
