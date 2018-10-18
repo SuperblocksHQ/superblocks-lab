@@ -13,6 +13,7 @@ const getClientEnvironment = require('./env');
 const paths = require('./paths');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -197,7 +198,7 @@ module.exports = {
             loader: require.resolve('url-loader'),
             options: {
               limit: 10000,
-              name: 'static/media/[name].[hash:8].[ext]',
+              name: 'static/assets/[name].[hash:8].[ext]',
             },
           },
           // Process application JS with Babel.
@@ -358,6 +359,11 @@ module.exports = {
       fileName: 'asset-manifest.json',
       publicPath: publicPath,
     }),
+    new CopyWebpackPlugin([{ context: `src/assets`, from: `**/*` }]),
+    new CopyWebpackPlugin([ { from: 'node_modules/monaco-editor/min/vs', to: 'vs', } ]),
+    new CopyWebpackPlugin([ { context: `src/components/solc/dist`, from: '**/*', to: 'solc', } ]),
+    new CopyWebpackPlugin([ { context: `src/components/evm/dist`, from: '**/*', to: 'evm', } ]),
+    new CopyWebpackPlugin([ { context: `src/components/superprovider/dist`, from: 'web3provider.js', to: 'static/js', } ])
   ],
 
   // Some libraries import Node modules but don't use them in the browser.
