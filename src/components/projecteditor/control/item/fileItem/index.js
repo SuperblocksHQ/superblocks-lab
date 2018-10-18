@@ -51,7 +51,7 @@ export default class FileItem extends Item {
         props.state.readonly = props.state.readonly===undefined ? true : props.state.readonly;
         super(props, router);
         if (props.type == "folder") {
-            props.state.children = (props.state.children === undefined ? this._renderChildren : props.state.children);
+            props.state.children = (props.state.children === undefined ? this._createChildren : props.state.children);
         }
         props.state.isSaved = true;
         props.state.contents = "";
@@ -212,7 +212,6 @@ export default class FileItem extends Item {
             });
         }
         return new Promise( (resolve, reject) => {
-
             this._loadFileTree().then( () => {
                 const project = this.getProject();
                 const oldPath = this.getFullPath();
@@ -239,49 +238,43 @@ export default class FileItem extends Item {
                             }
                         }
 
-                        // Update the dappfile
-                        if (this.notifyMoved) {
-                            var promise = this.notifyMoved(oldPath);
-                        }
-                        else {
-                            var promise = Promise.resolve();
-                        }
+                        // We want to get the new parent item to attach this item to.
+                        // But we must be careful not to have it create missing contracts in the dappfile in this stage.
+                        const project = this.getProject();
+                        const newPathArray = newPath.split('/');
+                        project.getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
+                            // Set new parent
+                            this.props.state.__parent = newParent;
 
-                        promise
-                            .then( () => {
-                                const project = this.getProject();
-                                const newPathArray = newPath.split('/');
-                                project.getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
-                                    // Set new parent
-                                    this.props.state.__parent = newParent;
-
+                            // Now we need to notify this file and all below if this is a folder that they have been moved.
+                            // Contract files need to adjust their settings in the dappfile, which they will do when notified.
+                            // It is important this is done before we recache the children below.
+                            if (this.notifyMoved) {
+                                var promise = this.notifyMoved(oldPath);
+                            }
+                            else {
+                                var promise = Promise.resolve();
+                            }
+                            promise
+                                .then( () => {
                                     // Recache the children
                                     newParent.getChildren(true, () => {
                                         const children2 = newParent.getChildren();
                                         this._copyState(children2, [this]);
                                         resolve();
                                     });
-                                }).catch( () => {
-                                    alert("Error: Unexpected error when moving file.");
-                                    location.reload();
-                                    return;
                                 });
 
-                            });
+                        }).catch( () => {
+                            alert("Error: Unexpected error when moving file.");
+                            location.reload();
+                            return;
+                        });
                     }
                 });
             });
         });
     };
-
-    /**
-     * Delete the file in storage.
-     *
-     */
-    //del = (cb) => {
-        //const project = this.getProject();
-        //project.deleteFile(this.getFullPath(), newname, cb);
-    //};
 
     /**
      * Close the open file.
@@ -586,7 +579,7 @@ export default class FileItem extends Item {
         });
     };
 
-    _renderChildren = (cb) => {
+    _createChildren = (cb) => {
         if (this.getType() == 'folder') {
             const project = this.getProject();
             project.listFiles(this.getFullPath(), (status, list) => {
@@ -648,7 +641,6 @@ export default class FileItem extends Item {
                                     fileItem.props.state._tag = 0;
                                     fileItem.props.state.project = this.getProject();
                                     fileItem.props.state.toggable = true;
-
                                 }
 
                                 // Set child items of the contract.
