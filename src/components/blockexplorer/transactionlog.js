@@ -29,10 +29,10 @@ export default class TransactionLog extends Component {
     componentDidMount() {
         const txlog = props.project.props.state.txlog;
         this.renderTransactions = new RenderTransactions(txlog, false, () => {
-            this.setState();
+            this.forceUpdate();
         });
 
-        setInterval(() => this.setState(), 1000);
+        setInterval(() => this.forceUpdate(), 1000);
     }
 
 

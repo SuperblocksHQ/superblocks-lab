@@ -72,7 +72,7 @@ export default class ContractInteraction extends Component {
     redraw = props => {
         this._getEnv();
         if ((props || {}).all) this.lastContent = null; // To force a render.
-        this.setState();
+        this.forceUpdate();
         this.render2();
     };
 
@@ -99,7 +99,7 @@ export default class ContractInteraction extends Component {
         this.iframeDiv.appendChild(iframe);
         this.iframe = iframe;
         this.provider.initIframe(iframe);
-        this.setState(); // To update data outside of iframe.
+        this.forceUpdate(); // To update data outside of iframe.
     };
 
     _makeFileName = (path, tag, suffix) => {
@@ -605,7 +605,7 @@ export default class ContractInteraction extends Component {
             this.updateBalanceBusy = false;
             this.contract_balance = '? eth';
             this.contract_balance_wei = '';
-            this.setState();
+            this.forceUpdate();
             return;
         }
         web3.eth.getBalance(this.contract_address, (err, res) => {
@@ -616,7 +616,7 @@ export default class ContractInteraction extends Component {
             } else {
                 this.contract_balance_wei = res.toNumber() + ' wei';
                 this.contract_balance = web3.fromWei(res.toNumber()) + ' eth';
-                this.setState();
+                this.forceUpdate();
             }
         });
     };

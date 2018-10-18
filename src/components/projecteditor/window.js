@@ -42,7 +42,7 @@ export class WindowComponent extends Component {
     }
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     render() {

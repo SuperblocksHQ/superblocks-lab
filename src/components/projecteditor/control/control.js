@@ -69,7 +69,7 @@ export default class Control extends Component {
      *
      */
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     /**

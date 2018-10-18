@@ -207,7 +207,6 @@ export default class App extends Component {
             if (walletSeeded) {
                 console.log('Superblocks Lab ' + appVersion + ' Ready.');
                 console.log('Hola');
-                console.log(this.functions.modal);
 
                 this.functions.modal.close();
 

@@ -406,7 +406,7 @@ export default class Compiler extends Component {
     }
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     renderToolbar = () => {

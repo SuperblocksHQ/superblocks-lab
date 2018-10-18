@@ -42,7 +42,7 @@ export default class AppEditor extends Component {
     }
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     focus = rePerform => {};

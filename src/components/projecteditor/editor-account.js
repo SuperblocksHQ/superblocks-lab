@@ -28,7 +28,7 @@ export default class AccountEditor extends Component {
     }
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     canClose = (cb, silent) => {

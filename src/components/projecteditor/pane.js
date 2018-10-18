@@ -30,7 +30,7 @@ export class PaneComponent extends Component {
     }
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     render() {

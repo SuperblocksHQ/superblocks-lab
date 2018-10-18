@@ -174,7 +174,7 @@ export default class Editor extends Component {
     };
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
         this.updateLayout();
     };
 

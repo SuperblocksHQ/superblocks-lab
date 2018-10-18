@@ -157,7 +157,7 @@ export default class ContractEditor extends Component {
     };
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     focus = rePerform => {};

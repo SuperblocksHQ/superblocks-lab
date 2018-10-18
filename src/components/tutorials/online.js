@@ -24,7 +24,7 @@ export default class TutorialsOnline extends Component {
     }
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     render() {

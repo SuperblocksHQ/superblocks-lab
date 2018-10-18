@@ -1145,7 +1145,7 @@ if(typeof(Contracts)==="undefined") var Contracts={};
     }
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     renderToolbar = () => {

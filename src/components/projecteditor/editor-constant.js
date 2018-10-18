@@ -38,7 +38,7 @@ export default class AccountConstant extends Component {
     }
 
     redraw = () => {
-        this.setState();
+        this.forceUpdate();
     };
 
     save = e => {
@@ -73,7 +73,7 @@ export default class AccountConstant extends Component {
         var value = e.target.value;
         if (value == '(default)') value = undefined;
         this.constant.set(key, value, key != 'name' ? this.form.env : null);
-        this.setState();
+        this.forceUpdate();
     };
 
     renderToolbar = () => {
@@ -94,7 +94,7 @@ export default class AccountConstant extends Component {
     onEnvChange = e => {
         e.preventDefault();
         this.form.env = e.target.value;
-        this.setState();
+        this.forceUpdate();
     };
 
     render() {

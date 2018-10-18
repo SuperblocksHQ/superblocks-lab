@@ -68,7 +68,7 @@ export default class AppView extends Component {
     redraw = props => {
         this._getEnv();
         if ((props || {}).all) this.lastContent = null; // To force a render.
-        this.setState();
+        this.forceUpdate();
         this.render2();
     };
 
@@ -95,7 +95,7 @@ export default class AppView extends Component {
         this.iframeDiv.appendChild(iframe);
         this.iframe = iframe;
         this.provider.initIframe(iframe);
-        this.setState(); // To update data outside of iframe.
+        this.forceUpdate(); // To update data outside of iframe.
     };
 
     _makeFileName = (path, network, suffix) => {

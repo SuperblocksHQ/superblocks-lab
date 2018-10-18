@@ -396,7 +396,7 @@ class AccountSelector extends Component {
             const a = (this.state.balances[network] =
                 this.state.balances[network] || {});
             a[address] = res;
-            this.setState();
+            this.forceUpdate();
             this.updateBalanceBusy = false;
         });
     };

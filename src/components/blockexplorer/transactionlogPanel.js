@@ -21,7 +21,7 @@ import RenderTransactions from './rendertransactions';
 export default class TransactionLogPanel extends Component {
 
     componentDidMount() {
-        setInterval(() => this.setState(), 1000);
+        setInterval(() => this.forceUpdate(), 1000);
     }
 
     _getRender = txlog => {
@@ -29,7 +29,7 @@ export default class TransactionLogPanel extends Component {
             return this.renderTransactions;
         }
         this.renderTransactions = new RenderTransactions(txlog, true, () => {
-            this.setState();
+            this.forceUpdate();
         });
         return this.renderTransactions;
     };

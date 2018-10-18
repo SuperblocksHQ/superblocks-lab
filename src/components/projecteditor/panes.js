@@ -116,7 +116,7 @@ export default class Panes extends Component {
             const pane = this.getActivePane();
             if (pane) panes.push(pane);
         }
-        this.setState();
+        this.forceUpdate();
         setTimeout(() => {
             for (var index = 0; index < panes.length; index++)
                 panes[index].redraw(props);
@@ -146,7 +146,7 @@ export default class Panes extends Component {
             );
             this.focusWindow(pane.id, winId, false, cb);
         }
-        this.setState();
+        this.forceUpdate();
         return true;
     };
 
@@ -167,7 +167,7 @@ export default class Panes extends Component {
     tabClicked = (e, id) => {
         e.preventDefault();
         this.activePaneId = id;
-        this.setState();
+        this.forceUpdate();
     };
 
     tabClickedClose = (e, paneId) => {
@@ -218,7 +218,7 @@ export default class Panes extends Component {
                     } else {
                         this.activePaneId = null;
                     }
-                    this.setState();
+                    this.forceUpdate();
                 }
                 if (cb) cb(status);
             },
@@ -277,14 +277,13 @@ export default class Panes extends Component {
                                     </div>
                                 </div>
                                 <div className={style.close}>
-                                    <a
-                                        href="#"
-                                        onClick={e =>
+                                    <button className="btnNoBg"
+                                        onClick={ e =>
                                             this.tabClickedClose(e, pane.id)
                                         }
                                     >
                                         <IconClose />
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </DropdownContainer>

@@ -250,7 +250,7 @@ class ProjectDialog extends Component {
         e.stopPropagation();
 
         this.props.router.control.deleteProject(project, () => {
-            this.setState();
+            this.forceUpdate();
         });
     };
 
