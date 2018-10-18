@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import Item from './item';
+import { h, Component } from 'preact';
+import Item from '../item';
 import {
     IconTrash,
     IconFile,
@@ -32,9 +33,13 @@ import {
     IconShowPreview,
     IconMosaic,
     IconEdit,
-} from '../../../icons';
-import style from '../style';
-import { DropdownContainer } from '../../../dropdown';
+} from '../../../../icons';
+import style from '../../style';
+import { DropdownContainer } from '../../../../dropdown';
+import { DirectoryEntry } from './directoryEntry';
+import { FileEntry } from './fileEntry';
+import classnames from 'classnames';
+
 
 export default class FileItem extends Item {
     constructor(props, router) {
@@ -466,119 +471,71 @@ export default class FileItem extends Item {
 
     _renderFileTitle = (level, index) => {
         if (this.getType() == "file") {
-            const contextMenu=(
-                <div class={style.contextMenu}>
-                    <div onClick={this._clickRenameFile}>
-                        <div class={style.icon}>
-                            <IconEdit />
-                        </div>
-                        Rename
-                    </div>
-                    <div onClick={this._clickDeleteFile}>
-                        <div class={style.icon}>
-                            <IconTrash />
-                        </div>
-                        Delete
-                    </div>
-                </div>
-            );
             return (
-                <DropdownContainer dropdownContent={contextMenu} useRightClick={true} onContextMenu={(e) => e.preventDefault()}>
-                    <div class={style.projectContractsTitleContainer} onClick={this._openItem}>
-                            <div>
-                                <div class={style.title}>
-                                    <a title={this.getTitle()} href="#">
-                                        {this.getTitle()}
-                                    </a>
-                                </div>
-                                { !this.isReadOnly() &&
-                                    <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
-                                        <a href="#" title="Rename file" onClick={this._clickRenameFile}>
-                                            <IconEdit />
-                                        </a>
-                                        <a href="#" title="Delete file" onClick={this._clickDeleteFile}>
-                                            <IconTrash />
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                    </div>
-                </DropdownContainer>
+                <FileEntry
+                   openItem={this._openItem}
+                   title={this.getTitle()}
+                   isReadOnly={this.isReadOnly()}
+                   clickRenameFile={this._clickRenameFile}
+                   clickDeleteFile={this._clickDeleteFile}
+                   icons={this._renderIcons(level, index)}
+               />
             );
         } else if (this.getType() == "folder") {
-            const contextMenu=(
-                <div class={style.contextMenu}>
-                    <div onClick={this._clickNewFile}>
-                        <div class={style.icon} >
-                            <IconAddFile />
-                        </div>
-                        Create File
-                    </div>
-                    <div onClick={this._clickNewFolder}>
-                        <div class={style.icon} >
-                            <IconAddFolder />
-                        </div>
-                        Create Folder
-                    </div>
-                    <div onClick={this._clickRenameFile}>
-                        <div class={style.icon}>
-                            <IconEdit />
-                        </div>
-                        Rename
-                    </div>
-                    <div onClick={this._clickDeleteFile}>
-                        <div class={style.icon}>
-                            <IconTrash />
-                        </div>
-                        Delete
-                    </div>
-                </div>
-            );
             return (
-                <DropdownContainer dropdownContent={contextMenu} useRightClick={true}>
-                    <div class={style.projectContractsTitleContainer} onClick={this._angleClicked} onContextMenu={(e) => e.preventDefault()}>
-                        <div class={style.title} title={this.getTitle()}>
-                            <a href="#">{this.getTitle()}</a>
-                        </div>
-                        <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
-                            <a href="#" title="New File" onClick={this._clickNewFile}>
-                                <IconAddFile />
-                            </a>
-                            <a href="#" title="New Folder" onClick={this._clickNewFolder}>
-                                <IconAddFolder />
-                            </a>
-                            {
-                                this.getFullPath() != "/" &&
-                                    <div style="display: inline;">
-                                        <a href="#" title="Rename directory" onClick={this._clickRenameFile}>
-                                            <IconEdit />
-                                        </a>
-                                        <a href="#" title="Delete directory" onClick={this._clickDeleteFile}>
-                                            <IconTrash />
-                                        </a>
-                                    </div>
-                            }
-                        </div>
-                    </div>
-                </DropdownContainer>
+                <DirectoryEntry
+                    angleClicked={this._angleClicked}
+                    title={this.getTitle()}
+                    isReadOnly={this.isReadOnly()}
+                    fullPath={this.getFullPath()}
+                    clickNewFile={this._clickNewFile}
+                    clickNewFolder={this._clickNewFolder}
+                    clickRenameFile={this._clickRenameFile}
+                    clickDeleteFile={this._clickDeleteFile}
+                    icons={this._renderIcons(level, index)}
+                />
             );
         }
     };
 
+    _render2 = (level, index, renderedChildren) => {
+        var output;
+        if (this.props.render) {
+            output = this.props.render(level, index, this);
+        }
+        else {
+            output = this._defaultRender(level, index, this);
+        }
+
+        const childrenPkg = this._packageChildren(level, index, renderedChildren);
+        const classes = this._getClasses(level, index);
+        return (
+            <div className={classnames(classes)} onClick={this.props.onClick ? (e) => this.props.onClick(e, this) : null}>
+                {output}
+                {childrenPkg}
+            </div>
+        );
+    };
+
     // Just gonna put this here for now
     _renderApplicationSectionTitle = (level, index, item) => {
+        const icons = item._renderIcons(level, index);
+
         return (
-            <div class={style.projectContractsTitleContainer} onClick={item._angleClicked}>
-                <div>
-                    { item.getTitle() }
-                </div>
-                <div class={style.buttons}>
-                    <button class="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
-                        <IconShowPreview />
-                    </button>
-                    <button class="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
-                        <IconMosaic />
-                    </button>
+            <div class={style.projectContractsTitleContainer} onClick={item._angleClicked}> 
+                <div class={style.header}>
+                    <div class={style.title}>
+                        { icons }
+                        { item.getTitle() }
+                    </div>
+                    <div class={style.buttons}>
+                        <button class="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
+                            <IconShowPreview />
+                        </button>
+                        <button class="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
+                            <IconMosaic />
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -591,7 +548,7 @@ export default class FileItem extends Item {
         const view = item.getProject().getHiddenItem("app_preview");
 
         if(this.router.panes) this.router.panes.openItem(view);
-    };
+    }; 
 
     _openAppComposite = (e,item) => {
         e.stopPropagation();
@@ -771,3 +728,10 @@ export default class FileItem extends Item {
         }
     };
 }
+
+
+
+
+
+
+
