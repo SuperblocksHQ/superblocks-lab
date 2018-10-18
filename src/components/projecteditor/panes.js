@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import style from './style';
+import style from './style.less';
 import { Pane, PaneComponent } from './pane';
 import { IconClose } from '../icons';
 import { DropdownContainer } from '../dropdown';

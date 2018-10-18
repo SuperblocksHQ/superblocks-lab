@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import styleNormal from './style-normal';
-import styleSmall from './style-small';
+import styleNormal from './style-normal.less';
+import styleSmall from './style-small.less';
 import classnames from 'classnames';
 import Web3 from 'web3';
 

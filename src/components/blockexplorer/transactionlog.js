@@ -16,7 +16,7 @@
 
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import style from './style';
+import style from './style.less';
 import classNames from 'classnames';
 import RenderTransactions from './rendertransactions';
 

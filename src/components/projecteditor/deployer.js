@@ -17,8 +17,8 @@
 import React, { Component } from 'react';
 import sha256 from 'crypto-js/sha256';
 import classnames from 'classnames';
-import style from './style-console';
-import { iconRun, IconRun } from '../icons';
+import style from './style-console.less';
+import { IconRun } from '../icons';
 import Web3 from 'web3';
 import Tx from '../../ethereumjs-tx-1.3.3.min.js';
 import Modal from '../modal';

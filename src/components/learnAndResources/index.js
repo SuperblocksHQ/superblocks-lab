@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import style from './style';
+import style from './style.less';
 import Caret from '../caret';
 import {
     IconGuide,

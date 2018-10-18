@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import style from './style-editor-contract';
+import style from './style-editor-contract.less';
 import { IconTrash, IconAdd } from '../icons';
 
 class ConstructorArgument extends Component {

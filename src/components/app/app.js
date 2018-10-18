@@ -25,6 +25,11 @@ import Solc from '../solc';
 import EVM from '../evm';
 
 export default class App extends Component {
+
+    state = {
+        modals: []
+    }
+
     constructor(props) {
         super(props);
         this.idCounter = 0;
@@ -100,9 +105,9 @@ export default class App extends Component {
             functions: this.functions,
             length: 30,
         });
+
         // The development wallets seed is well known and the first few addresses are seeded
         // with ether in the genesis block.
-        this.setState({ modals: [] });
         console.log(
             'Known development Ethereum wallet seed is: ' + this.knownWalletSeed
         );

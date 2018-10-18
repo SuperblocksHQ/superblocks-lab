@@ -16,7 +16,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import style from './style';
+import style from './style.less';
 
 export default class Welcome extends Component {
     onCreateNewProjectClick = e => {

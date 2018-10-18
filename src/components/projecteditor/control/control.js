@@ -15,41 +15,17 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
-
-import style from './style';
+import style from './style.less';
 import Item from './item/item';
 import ProjectItem from './item/projectItem';
 import Backend from './backend';
-import Dappfile from './dappfile';
 import NewDapp from '../../newdapp';
-import Modal from '../../modal';
 import NetworkAccountSelector from '../../networkAccountSelector';
-import ItemContract from './itemContract';
 import LearnAndResources from '../../learnAndResources';
-import Caret from '../../caret';
 
 import {
-    IconTrash,
-    IconGem,
-    IconFile,
-    IconFolder,
-    IconFolderOpen,
     IconCube,
-    IconConfigure,
-    IconCompile,
-    IconDeploy,
-    IconClone,
-    IconInteract,
-    IconContract,
-    IconAddFile,
-    IconHtml,
-    IconJS,
-    IconCss,
-    IconMd,
-    IconShowPreview,
-    IconMosaic,
 } from '../../icons';
 
 export default class Control extends Component {
@@ -73,9 +49,8 @@ export default class Control extends Component {
                 },
             },
         });
-        this.setState({
-            menu: menu,
-        });
+
+        this.state = { menu: menu }
         props.router.register('control', this);
     }
 

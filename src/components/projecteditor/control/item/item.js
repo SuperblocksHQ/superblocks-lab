@@ -32,7 +32,7 @@ import {
 } from '../../../icons';
 import Caret from '../../../caret';
 
-import style from '../style';
+import style from '../style.less';
 import classnames from 'classnames';
 
 export default class Item {

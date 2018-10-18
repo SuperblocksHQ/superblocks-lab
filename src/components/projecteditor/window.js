@@ -16,7 +16,7 @@
 
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import style from './style';
+import style from './style.less';
 import Editor from './editor.js';
 import ContractEditor from './editor-contract.js';
 import AppEditor from './editor-app.js';

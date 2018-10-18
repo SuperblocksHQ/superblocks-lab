@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { render } from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 export default class Solc {
     constructor(props) {
@@ -40,7 +41,7 @@ export default class Solc {
             cb();
         };
 
-        render((
+        ReactDOM.render((
             <div style="display:none;" id={this.id}>
                 <iframe ref={setRef} src="/solc/index-v0.4.25.html" frameborder="0"></iframe>
             </div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DropdownContainer } from '../dropdown';
-import style from './style';
+import style from './style.less';
 import {
     IconDeployGreen,
     IconDropdown,
@@ -80,9 +80,9 @@ class NetworkSelector extends Component {
             network = project.getEnvironment();
         }
 
-        this.setState({
+        this.state = {
             network: network,
-        });
+        }
     }
 
     onNetworkSelectedHandle = network => {
@@ -438,10 +438,10 @@ class AccountSelector extends Component {
 
     render() {
         const project = this.props.router.control.getActiveProject();
-        if (!project) return;
+        if (!project) return (<div/>);
         const account = project.getAccount();
         const { accountType, isLocked, network, address } = this.accountType();
-        if (!network) return;
+        if (!network) return (<div/>);
         const accountBalance = this.accountBalance();
         var accountIcon;
 

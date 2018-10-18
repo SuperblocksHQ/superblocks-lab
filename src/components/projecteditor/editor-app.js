@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import style from './style-editor-contract';
+import style from './style-editor-contract.less';
 import Backend from './control/backend';
 
 export default class AppEditor extends Component {

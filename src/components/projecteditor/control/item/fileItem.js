@@ -35,7 +35,7 @@ import {
     IconMosaic,
     IconEdit,
 } from '../../../icons';
-import style from '../style';
+import style from '../style.less';
 import { DropdownContainer } from '../../../dropdown';
 
 // import { DropTarget, DragSource } from 'react-dnd';

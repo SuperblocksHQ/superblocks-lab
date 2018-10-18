@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import style from './style';
+import style from './style.less';
 
 export default class TutorialsOnline extends Component {
     constructor(props) {

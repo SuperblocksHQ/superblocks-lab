@@ -16,7 +16,7 @@
 
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import style from './style';
+import style from './style.less';
 import Control from './control';
 import Panes from './panes';
 import TopBar from '../topbar';
@@ -141,7 +141,7 @@ export default class ProjectEditor extends Component {
                     functions={this.props.functions}
                     onProjectSelected={this.onProjectSelectedHandle}
                 />
-                <div style="display: flex; height: 100%">
+                <div style={{display: "flex", height: "100%"}}>
                     <div
                         key="main_control"
                         id="main_control"
@@ -158,7 +158,7 @@ export default class ProjectEditor extends Component {
                         class="resizer vertical"
                         onMouseDown={this.onMouseDown}
                     />
-                    <div style="position: relative; width: 100%">
+                    <div style={{ position: "relative", width: "100%" }}>
                         <div
                             key="main_panes"
                             id="main_panes"

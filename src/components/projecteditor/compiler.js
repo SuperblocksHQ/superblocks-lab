@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import sha256 from 'crypto-js/sha256';
 import classnames from 'classnames';
-import style from './style-console';
+import style from './style-console.less';
 import { IconRun } from '../icons';
 
 export default class Compiler extends Component {

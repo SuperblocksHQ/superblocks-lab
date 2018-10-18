@@ -313,6 +313,21 @@ module.exports = {
             test: lessRegex,
             use: getStyleLoaders({ importLoaders: 2 }, 'less-loader'),
           },
+        //   { // LESS
+        //     enforce: 'pre',
+        //     test: /\.less$/,
+        //     use: [
+        //         {
+        //             loader: 'proxy-loader',
+        //             options: {
+        //                 loader: 'less-loader',
+        //                 options: {
+        //                     sourceMap: true,
+        //                 }
+        //             }
+        //         }
+        //     ]
+        // },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.

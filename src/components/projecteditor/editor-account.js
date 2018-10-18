@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import Web3 from 'web3';
-import style from './style-editor-account';
+import style from './style-editor-account.less';
 
 export default class AccountEditor extends Component {
     constructor(props) {

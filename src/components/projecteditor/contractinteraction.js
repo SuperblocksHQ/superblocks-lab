@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import style from './style-appview';
+import style from './style-appview.less';
 import { IconRun } from '../icons';
 
 var Generator = require('../contractinteraction');

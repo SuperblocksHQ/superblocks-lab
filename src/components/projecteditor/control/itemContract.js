@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import style from './style';
+import style from './style.less';
 
 import { IconUp, IconDown, IconTrash } from '../../icons';
 

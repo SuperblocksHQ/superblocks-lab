@@ -1,5 +1,6 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import style from './style';
+import style from './style.less';
 import { IconAngleRight, IconAngleDown } from '../icons';
 
 const Caret = ({ onClick, expanded = false } = props) => (

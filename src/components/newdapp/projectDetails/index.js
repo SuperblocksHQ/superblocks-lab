@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import classNames from 'classnames';
-import style from '../style';
+import style from '../style.less';
 import { IconClose } from '../../icons';
 
 export default class ProjectDetails extends Component {

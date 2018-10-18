@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import style from './style';
+import style from './style.less';
 import { IconGithub, IconTwitter, IconTelegram } from '../icons';
 
 export default class ContactContainer extends Component {
@@ -23,7 +23,7 @@ export default class ContactContainer extends Component {
         let { appVersion } = this.props;
         return (
             <div class={style.container}>
-                <div style="display: inline-block">
+                <div style={{display: "inline-block"}}>
                     <a
                         href="https://twitter.com/getsuperblocks"
                         target="_blank"

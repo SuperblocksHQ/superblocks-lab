@@ -16,7 +16,7 @@
 
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import style from './style';
+import style from './style.less';
 import { Window, WindowComponent } from './window';
 
 export class PaneComponent extends Component {
