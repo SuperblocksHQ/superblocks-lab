@@ -23,15 +23,22 @@ import SuperProvider from '../superprovider';
 import Web3 from 'web3';
 
 export default class ContractInteraction extends Component {
+
+    state = {
+        account: null
+    }
+
     constructor(props) {
         super(props);
         this.id = props.id + '_contractinteraction';
         this.props.parent.childComponent = this;
         this.provider = new SuperProvider({ that: this });
-        this.setState({ account: null });
         this.contract_address = '';
         this.contract_balance = '? eth';
         this.contract_balance_wei = '';
+    }
+
+    componentDidMount() {
         this._getEnv();
     }
 

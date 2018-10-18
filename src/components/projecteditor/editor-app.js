@@ -19,24 +19,27 @@ import style from './style-editor-contract.less';
 import Backend from './control/backend';
 
 export default class AppEditor extends Component {
+
+    state = {
+        form: null,
+        isDirty: false
+    }
+
     constructor(props) {
         super(props);
         this.backend = new Backend();
         this.id = props.id + '_editor';
         this.props.parent.childComponent = this;
+    }
 
+    componentDidMount() {
         this.setState({
             form: {
                 title: this.props.item.getProject().getTitle(),
                 name: this.props.item.getProject().getName(),
-            },
-            isDirty: false,
+            }
         });
     }
-
-    componentWillReceiveProps(props) {}
-
-    componentDidMount() {}
 
     redraw = () => {
         this.setState();

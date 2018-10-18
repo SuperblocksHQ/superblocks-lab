@@ -256,7 +256,7 @@ export default class Panes extends Component {
             cls[tab] = true;
             cls[selected] = isSelected;
             return (
-                <div>
+                <div key={index}>
                     <a
                         href="#"
                         className={classnames(cls)}

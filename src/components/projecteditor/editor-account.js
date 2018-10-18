@@ -27,12 +27,6 @@ export default class AccountEditor extends Component {
         this.setEnv('browser');
     }
 
-    componentWillReceiveProps(props) {}
-
-    componentDidMount() {
-        this.redraw();
-    }
-
     redraw = () => {
         this.setState();
     };

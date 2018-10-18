@@ -221,13 +221,8 @@ AccountDropdown.propTypes = {
 };
 
 class AccountSelector extends Component {
-    constructor(props) {
-        super(props);
-        const project = this.props.router.control.getActiveProject();
-
-        this.setState({
-            balances: {},
-        });
+    state = {
+        balances: {}
     }
 
     componentDidMount() {

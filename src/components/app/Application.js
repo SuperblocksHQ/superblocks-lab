@@ -27,7 +27,8 @@ import EVM from '../evm';
 export default class App extends Component {
 
     state = {
-        modals: []
+        modals: [],
+        isReady: false
     }
 
     constructor(props) {
@@ -111,9 +112,11 @@ export default class App extends Component {
         console.log(
             'Known development Ethereum wallet seed is: ' + this.knownWalletSeed
         );
+    }
 
+    componentDidMount() {
         this._convertProjects(status => {
-            this.isReady = true;
+            this.setState({ isReady: true })
             this._init();
         });
     }
@@ -186,6 +189,9 @@ export default class App extends Component {
         });
         this.functions.compiler = new Solc({ id: this.generateId() });
         this.functions.EVM = new EVM({ id: this.generateId() });
+
+        // TODO - Need to init the compiler and EVM
+
         this.functions.wallet.openWallet(
             'development',
             this.knownWalletSeed,
@@ -193,13 +199,16 @@ export default class App extends Component {
                 walletSeeded = true;
             }
         );
+
+        // this.functions.EVM.isReady() &&
+        // this.functions.compiler.isReady() &&
+
         const fn = () => {
-            if (
-                this.functions.EVM.isReady() &&
-                this.functions.compiler.isReady() &&
-                walletSeeded
-            ) {
+            if (walletSeeded) {
                 console.log('Superblocks Lab ' + appVersion + ' Ready.');
+                console.log('Hola');
+                console.log(this.functions.modal);
+
                 this.functions.modal.close();
 
                 if (showSplash) {
@@ -281,14 +290,14 @@ export default class App extends Component {
 
     showModal = modal => {
         this.state.modals.push(modal);
-        this.setState();
+        this.forceUpdate();
     };
 
     closeModal = index => {
         if (index == null) index = this.state.modals.length - 1;
         var modal = this.state.modals[index];
         this.state.modals.splice(index, 1);
-        this.setState();
+        this.forceUpdate();
     };
 
     getModal = () => {
@@ -319,7 +328,7 @@ export default class App extends Component {
         var modal = this.state.modals[index];
         if (modal.cancel && modal.cancel(modal) === false) return;
         this.state.modals.splice(index, 1);
-        this.setState();
+        this.forceUpdate();
     };
 
     modalOutside = e => {
@@ -333,12 +342,13 @@ export default class App extends Component {
     };
 
     render() {
+        const { isReady } = this.state;
         const modalContent = this.getModal();
         return (
             <div id="app" className={this.getClassNames()}>
                 <div id="app_content">
                     <div className="maincontent">
-                        {this.isReady && (
+                        {isReady && (
                             <ProjectEditor
                                 key="projedit"
                                 router={this.router}

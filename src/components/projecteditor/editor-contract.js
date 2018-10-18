@@ -129,17 +129,22 @@ ConstructorArgument.propTypes = {
 };
 
 export default class ContractEditor extends Component {
+
+    state = {
+        isDirty: false
+    }
+
     constructor(props) {
         super(props);
         this.id = props.id + '_editor';
         this.props.parent.childComponent = this;
-        this.setState({
-            isDirty: false,
-        });
-        this._updateProps();
     }
 
     componentWillReceiveProps(props) {
+        this._updateProps();
+    }
+
+    componentDidMount() {
         this._updateProps();
     }
 

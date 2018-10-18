@@ -22,11 +22,21 @@ import Web3 from 'web3';
 import Modal from '../modal';
 
 export default class AppView extends Component {
+
+    state = {
+        account: null,
+        network: null,
+        env: null
+    }
+
     constructor(props) {
         super(props);
         this.id = props.id + '_appview';
         this.props.parent.childComponent = this;
         this.provider = new SuperProvider({ that: this });
+    }
+
+    componentDidMount() {
         this._getEnv();
     }
 

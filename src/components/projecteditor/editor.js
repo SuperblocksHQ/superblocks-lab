@@ -50,8 +50,6 @@ export default class Editor extends Component {
         }
     }
 
-    componentWillReceiveProps() {}
-
     componentDidMount() {
         this.loadContents();
         this.redraw();

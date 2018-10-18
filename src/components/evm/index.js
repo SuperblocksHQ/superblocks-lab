@@ -25,7 +25,9 @@ export default class EVM {
         this.ref = null;
         this._counter = 0;
         this._cbMap = {};
+    }
 
+    init() {
         var setRef = ref => {
             this.ref = ref;
             var cb;
