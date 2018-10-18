@@ -28,10 +28,7 @@ const env = getClientEnvironment(publicUrl);
 // style files regexes
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
-const sassRegex = /\.(scss|sass)$/;
 const lessRegex = /\.less$/;
-const lessModuleRegex = /\.module\.less$/;
-const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 // common function to get style loaders
 const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -314,7 +311,6 @@ module.exports = {
           // extensions .module.less
           {
             test: lessRegex,
-            exclude: lessModuleRegex,
             use: getStyleLoaders({ importLoaders: 2 }, 'less-loader'),
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
