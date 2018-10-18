@@ -15,16 +15,18 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import classnames from 'classnames';
 import style from './style.less';
-import classNames from 'classnames';
 import RenderTransactions from './rendertransactions';
 
 export default class TransactionLog extends Component {
+
     constructor(props) {
         super(props);
-        this.id = props.id + '_transaction_log';
 
+        this.id = props.id + '_transaction_log';
+    }
+
+    componentDidMount() {
         const txlog = props.project.props.state.txlog;
         this.renderTransactions = new RenderTransactions(txlog, false, () => {
             this.setState();
@@ -32,6 +34,7 @@ export default class TransactionLog extends Component {
 
         setInterval(() => this.setState(), 1000);
     }
+
 
     render() {
         const env = this.props.project.props.state.data.env;
