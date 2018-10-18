@@ -287,7 +287,7 @@ export default class AppView extends Component {
                     </p>
                     <div style="margin-top: 54px;">
                         <a
-                            class="btn2"
+                            className="btn2"
                             onClick={this.props.functions.modal.cancel}
                         >
                             Thanks, but I already knew that
@@ -344,13 +344,13 @@ export default class AppView extends Component {
                 </p>
                 <div style="margin-top: 49px;">
                     <a
-                        class="btn2"
+                        className="btn2"
                         style="margin-right: 30px;"
                         onClick={this.props.functions.modal.cancel}
                     >
                         Cancel
                     </a>
-                    <a class="btn2 filled" onClick={fn}>
+                    <a className="btn2 filled" onClick={fn}>
                         Download
                     </a>
                 </div>
@@ -636,8 +636,8 @@ export default class AppView extends Component {
             }
         }
         return (
-            <div class={style.toolbar} id={this.id + '_header'}>
-                <div class={style.buttons}>
+            <div className={style.toolbar} id={this.id + '_header'}>
+                <div className={style.buttons}>
                     <a href="#" title="Refresh" onClick={this.run}>
                         <IconRun />
                     </a>
@@ -645,7 +645,7 @@ export default class AppView extends Component {
                         Download DApp
                     </a>
                 </div>
-                <div class={style.accounts}>
+                <div className={style.accounts}>
                     <span>
                         <input
                             checked={this.state.disableAccounts == 'on'}
@@ -695,10 +695,10 @@ export default class AppView extends Component {
             height: this.getHeight() + 'px',
         };
         return (
-            <div id={this.id} key={this.id} class={style.appview}>
+            <div id={this.id} key={this.id} className={style.appview}>
                 {toolbar}
                 <div
-                    class="full"
+                    className="full"
                     style={maxHeight}
                     id={this.id + '_iframe'}
                     key={this.id + '_iframe'}

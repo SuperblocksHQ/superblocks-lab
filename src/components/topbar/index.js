@@ -17,8 +17,8 @@ import {
 } from '../icons';
 
 const HelpDropdownAction = () => (
-    <div class={style.action}>
-        <button class={classNames([style.container, 'btnNoBg'])}>
+    <div className={style.action}>
+        <button className={classNames([style.container, 'btnNoBg'])}>
             <IconHelp />
             <span>Help</span>
         </button>
@@ -26,8 +26,8 @@ const HelpDropdownAction = () => (
 );
 
 const HelpDropdownDialog = () => (
-    <div class={style.helpMenu}>
-        <div class={style.title}>General</div>
+    <div className={style.helpMenu}>
+        <div className={style.title}>General</div>
         <ul>
             <li>
                 <a
@@ -39,7 +39,7 @@ const HelpDropdownDialog = () => (
                 </a>
             </li>
             <li>
-                <div class={style.container}>
+                <div className={style.container}>
                     <a
                         href="https://t.me/GetSuperblocks"
                         target="_blank"
@@ -47,7 +47,7 @@ const HelpDropdownDialog = () => (
                     >
                         Join our Community!
                     </a>
-                    <span class={style.telegramIcon}>
+                    <span className={style.telegramIcon}>
                         <IconTelegram color="#0088cc" />
                     </span>
                 </div>
@@ -57,11 +57,11 @@ const HelpDropdownDialog = () => (
 );
 
 const ProjectSelector = ({ title } = props) => (
-    <div class={style.action}>
-        <button class="btnNoBg">
-            <IconProjectSelector class={style.icon} />
-            <span class={style.projectText}>{title}</span>
-            <IconDropdown class={classNames([style.dropDown, 'dropDown'])} />
+    <div className={style.action}>
+        <button className="btnNoBg">
+            <IconProjectSelector className={style.icon} />
+            <span className={style.projectText}>{title}</span>
+            <IconDropdown className={classNames([style.dropDown, 'dropDown'])} />
         </button>
     </div>
 );
@@ -266,36 +266,36 @@ class ProjectDialog extends Component {
                     const isActive = openProject === project;
                     return (
                         <li
-                            class={style.projSwitcherItem}
+                            className={style.projSwitcherItem}
                             onClick={e => {
                                 this.openProject(e, project);
                             }}
                         >
                             <div
-                                class={classNames([
+                                className={classNames([
                                     style.projSwitcherRow,
                                     style.container,
                                 ])}
                             >
                                 {isActive ? (
-                                    <div class={style.active}>
+                                    <div className={style.active}>
                                         <IconCheck />
                                     </div>
                                 ) : null}
-                                <div class={style.container}>
-                                    <div class={style.overflowText}>
+                                <div className={style.container}>
+                                    <div className={style.overflowText}>
                                         {project.getName()} - &nbsp;
                                         {project.getTitle()}
                                     </div>
                                 </div>
                                 <div
-                                    class={classNames([
+                                    className={classNames([
                                         style.projSwitcherRowActions,
                                         style.container,
                                     ])}
                                 >
                                     <button
-                                        class="btnNoBg"
+                                        className="btnNoBg"
                                         onClick={e => {
                                             this.openProjectConfig(e, project);
                                         }}
@@ -303,7 +303,7 @@ class ProjectDialog extends Component {
                                         <IconConfigure />
                                     </button>
                                     <button
-                                        class="btnNoBg"
+                                        className="btnNoBg"
                                         onClick={e => {
                                             this.downloadProject(e, project);
                                         }}
@@ -311,7 +311,7 @@ class ProjectDialog extends Component {
                                         <IconDownload />
                                     </button>
                                     <button
-                                        class="btnNoBg"
+                                        className="btnNoBg"
                                         onClick={e => {
                                             this.deleteProject(e, project);
                                         }}
@@ -331,28 +331,28 @@ class ProjectDialog extends Component {
     render() {
         const projectItems = this.getProjectItems();
         return (
-            <div class={classNames([style.projectMenu, 'modal'])}>
-                <div class={style.tabs}>
-                    <div class={classNames([style.tabList, style.container])}>
-                        <button class={style.tab}>Personal</button>
+            <div className={classNames([style.projectMenu, 'modal'])}>
+                <div className={style.tabs}>
+                    <div className={classNames([style.tabList, style.container])}>
+                        <button className={style.tab}>Personal</button>
                     </div>
-                    <div class={classNames([style.paneList, style.container])}>
-                        <div class={style.pane}>
-                            <ul class={style.projectSwitcherList}>
+                    <div className={classNames([style.paneList, style.container])}>
+                        <div className={style.pane}>
+                            <ul className={style.projectSwitcherList}>
                                 {projectItems}
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class={style.actions}>
+                <div className={style.actions}>
                     <button
-                        class="btnNoBg"
+                        className="btnNoBg"
                         onClick={this.props.router.control.newDapp}
                     >
                         Create New
                     </button>
-                    <div class={style.separator} />
-                    <button class="btnNoBg" onClick={this.importProject}>
+                    <div className={style.separator} />
+                    <button className="btnNoBg" onClick={this.importProject}>
                         Import
                     </button>
                 </div>
@@ -379,14 +379,14 @@ export default class TopBar extends Component {
         }
 
         return (
-            <div class={style.topbar}>
+            <div className={style.topbar}>
                 <img
-                    class={style.logo}
+                    className={style.logo}
                     src="/static/img/img-lab-logo.svg"
                     alt="Superblocks Lab logo"
                 />
                 <DropdownContainer
-                    class={style.projectButton}
+                    className={style.projectButton}
                     dropdownContent={
                         <ProjectDialog
                             functions={this.props.functions}
@@ -399,7 +399,7 @@ export default class TopBar extends Component {
                 </DropdownContainer>
 
                 <DropdownContainer
-                    class={style.actionsRight}
+                    className={style.actionsRight}
                     dropdownContent={<HelpDropdownDialog />}
                 >
                     <HelpDropdownAction />

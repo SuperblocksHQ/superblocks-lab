@@ -87,13 +87,13 @@ export default class AppEditor extends Component {
 
     render() {
         return (
-            <div id={this.id} class={style.main}>
-                <div class="scrollable-y" id={this.id + '_scrollable'}>
-                    <div class={style.inner}>
-                        <h1 class={style.title}>Edit DApp Configuration</h1>
-                        <div class={style.form}>
+            <div id={this.id} className={style.main}>
+                <div className="scrollable-y" id={this.id + '_scrollable'}>
+                    <div className={style.inner}>
+                        <h1 className={style.title}>Edit DApp Configuration</h1>
+                        <div className={style.form}>
                             <form action="">
-                                <div class={style.field}>
+                                <div className={style.field}>
                                     <p>Name:</p>
                                     <input
                                         maxLength="30"
@@ -107,7 +107,7 @@ export default class AppEditor extends Component {
                                         }}
                                     />
                                 </div>
-                                <div class={style.field}>
+                                <div className={style.field}>
                                     <p>Title:</p>
                                     <input
                                         maxLength="100"
@@ -123,7 +123,7 @@ export default class AppEditor extends Component {
                                 </div>
                                 <button
                                     href="#"
-                                    class="btn2"
+                                    className="btn2"
                                     disabled={!this.state.isDirty}
                                     onClick={this.save}
                                 >

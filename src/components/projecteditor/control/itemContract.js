@@ -29,18 +29,18 @@ export default class ItemContract extends Component {
         var contractIndex = item.props._index;
         return (
             <div
-                class={style.projectContractsTitleContainer}
+                className={style.projectContractsTitleContainer}
                 onClick={e => this.props.openItem(e, item)}
                 onMouseEnter={this.showActions}
                 onMouseLeave={this.hideActions}
             >
-                <div class={style.title}>{item.getTitle()}</div>
+                <div className={style.title}>{item.getTitle()}</div>
                 {this.state.showActions ? (
-                    <div class={style.buttons}>
-                        <div class={style.buttonsMoveContracts}>
+                    <div className={style.buttons}>
+                        <div className={style.buttonsMoveContracts}>
                             {(contractIndex > 0 && (
                                 <button
-                                    class="btnNoBg"
+                                    className="btnNoBg"
                                     title="Move up"
                                     onClick={e => {
                                         this.props.clickUpContract(
@@ -54,7 +54,7 @@ export default class ItemContract extends Component {
                                 </button>
                             )) || (
                                 <button
-                                    class="btnNoBg"
+                                    className="btnNoBg"
                                     style="opacity:0.3; display:inline;"
                                 >
                                     <IconUp />
@@ -63,7 +63,7 @@ export default class ItemContract extends Component {
 
                             {(contractIndex < item.props._nrContracts - 1 && (
                                 <button
-                                    class="btnNoBg"
+                                    className="btnNoBg"
                                     title="Move down"
                                     onClick={e => {
                                         this.props.clickDownContract(
@@ -77,7 +77,7 @@ export default class ItemContract extends Component {
                                 </button>
                             )) || (
                                 <button
-                                    class="btnNoBg"
+                                    className="btnNoBg"
                                     style="opacity:0.3; display:inline;"
                                 >
                                     <IconDown />
@@ -85,7 +85,7 @@ export default class ItemContract extends Component {
                             )}
                         </div>
                         <button
-                            class="btnNoBg"
+                            className="btnNoBg"
                             title="Delete contract"
                             onClick={e => {
                                 this.props.clickDeleteContract(

@@ -172,7 +172,7 @@ export default class App extends Component {
             title: 'Loading Superblocks Lab',
             body:
                 'Initializing Wallet, Solidity compiler and Ethereum Virtual Machine...',
-            style: { 'text-align': 'center' },
+            style: { textAlign: 'center' },
         };
         var walletSeeded = false;
         const modal = <Modal data={modalData} />;
@@ -216,21 +216,21 @@ export default class App extends Component {
         let { showSplashNoMore } = this.props;
 
         const body = (
-            <div class="splash">
-                <p class="splash_text">
+            <div className="splash">
+                <p className="splash_text">
                     Let's watch a short video to help you get started.
                 </p>
-                <p class="splash_video">
+                <p className="splash_video">
                     <iframe
                         width="560"
                         height="315"
                         src="https://www.youtube-nocookie.com/embed/KSF24hkf0-o?rel=0"
-                        frameborder="0"
+                        frameBorder="0"
                         allow="autoplay; encrypted-media"
-                        allowfullscreen
+                        allowFullscreen
                     />
                 </p>
-                <p class="splash_cancel">
+                <p className="splash_cancel">
                     <a
                         href="#"
                         onClick={() => {
@@ -294,13 +294,14 @@ export default class App extends Component {
     getModal = () => {
         return this.state.modals.map((elm, index) => {
             const stl = { position: 'absolute' };
-            stl['z-index'] = index;
+            stl['zIndex'] = index;
             if (index < this.state.modals.length - 1) stl['opacity'] = '0.33';
             return (
                 <div
+                    key={index}
                     id={'app_modal_' + index}
                     style={stl}
-                    class="full"
+                    className="full"
                     onClick={this.modalOutside}
                 >
                     {elm.render()}
@@ -336,7 +337,7 @@ export default class App extends Component {
         return (
             <div id="app" className={this.getClassNames()}>
                 <div id="app_content">
-                    <div class="maincontent">
+                    <div className="maincontent">
                         {this.isReady && (
                             <ProjectEditor
                                 key="projedit"

@@ -78,7 +78,7 @@ export default class AccountConstant extends Component {
 
     renderToolbar = () => {
         return (
-            <div class={style.toolbar} id={this.id + '_header'}>
+            <div className={style.toolbar} id={this.id + '_header'}>
                 <div />
             </div>
         );
@@ -118,19 +118,19 @@ export default class AccountConstant extends Component {
             height: this.getHeight() + 'px',
         };
         return (
-            <div id={this.id} class={style.main}>
+            <div id={this.id} className={style.main}>
                 {toolbar}
                 <div
-                    class="scrollable-y"
+                    className="scrollable-y"
                     style={maxHeight}
                     id={this.id + '_scrollable'}
                 >
-                    <h1 class={style.title}>
+                    <h1 className={style.title}>
                         Edit Constant {this.props.constant}
                     </h1>
-                    <div class={style.form}>
+                    <div className={style.form}>
                         <form action="">
-                            <div class={style.field}>
+                            <div className={style.field}>
                                 <p>Environment:</p>
                                 <select
                                     key="envs"
@@ -147,7 +147,7 @@ export default class AccountConstant extends Component {
                                     })}
                                 </select>
                             </div>
-                            <div class={style.field}>
+                            <div className={style.field}>
                                 <p>Name:</p>
                                 <input
                                     type="text"
@@ -160,7 +160,7 @@ export default class AccountConstant extends Component {
                                     }}
                                 />
                             </div>
-                            <div class={style.field}>
+                            <div className={style.field}>
                                 <p>
                                     Value:
                                     <input
@@ -200,7 +200,7 @@ export default class AccountConstant extends Component {
                                 </p>
                             </div>
                             <div>
-                                <a href="#" class="btn2" onClick={this.save}>
+                                <a href="#" className="btn2" onClick={this.save}>
                                     Save
                                 </a>
                             </div>

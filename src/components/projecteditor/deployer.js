@@ -1152,10 +1152,10 @@ if(typeof(Contracts)==="undefined") var Contracts={};
         const cls = {};
         cls[style.running] = this.isRunning;
         return (
-            <div class={style.toolbar} id={this.id + '_header'}>
-                <div class={style.buttons}>
+            <div className={style.toolbar} id={this.id + '_header'}>
+                <div className={style.buttons}>
                     <a
-                        class={classnames(cls)}
+                        className={classnames(cls)}
                         href="#"
                         title="Redeploy"
                         onClick={this.run}
@@ -1163,8 +1163,8 @@ if(typeof(Contracts)==="undefined") var Contracts={};
                         <IconRun />
                     </a>
                 </div>
-                <div class={style.status}>{this.state.status}</div>
-                <div class={style.info}>
+                <div className={style.status}>{this.state.status}</div>
+                <div className={style.info}>
                     <span>
                         Deploy {this.props.item.getParent().getSource()}
                     </span>
@@ -1183,7 +1183,7 @@ if(typeof(Contracts)==="undefined") var Contracts={};
     getWait = () => {
         if (this.consoleRows.length == 0) {
             return (
-                <div class={style.loading}>
+                <div className={style.loading}>
                     <span>Loading...</span>
                 </div>
             );
@@ -1194,15 +1194,15 @@ if(typeof(Contracts)==="undefined") var Contracts={};
         const waiting = this.getWait();
         const scrollId = 'scrollBottom_' + this.props.id;
         return (
-            <div class={style.console}>
-                <div class={style.terminal} id={scrollId}>
+            <div className={style.console}>
+                <div className={style.terminal} id={scrollId}>
                     {waiting}
                     {this.consoleRows.map((row, index) => {
                         return row.msg.split('\n').map(i => {
                             var cl = style.std1;
                             if (row.channel == 2) cl = style.std2;
                             else if (row.channel == 3) cl = style.std3;
-                            return <div class={cl}>{i}</div>;
+                            return <div className={cl}>{i}</div>;
                         });
                     })}
                 </div>
@@ -1218,11 +1218,11 @@ if(typeof(Contracts)==="undefined") var Contracts={};
             height: height + 'px',
         };
         return (
-            <div class="full" id={this.id}>
+            <div className="full" id={this.id}>
                 {toolbar}
                 <div
                     id={this.id + '_scrollable'}
-                    class="scrollable-y"
+                    className="scrollable-y"
                     style={maxHeight}
                 >
                     {contents}

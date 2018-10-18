@@ -41,9 +41,9 @@ export default class EVM {
 
         ReactDOM.render(
             <div style={{display: 'none'}} id={this.id}>
-                <iframe ref={setRef} src="/evm/index-v6.html" frameborder="0" />
+                <iframe ref={setRef} src="/evm/index-v6.html" frameBorder="0" />
             </div>,
-            document.body
+            document.getElementById('evm')
         );
 
         // This is temmporarily that we share an object with the iframe.

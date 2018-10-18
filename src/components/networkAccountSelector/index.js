@@ -54,8 +54,8 @@ class NetworkDropdown extends Component {
             );
         });
         return (
-            <div class={style.networks}>
-                <div class={style.title}>Select a Network</div>
+            <div className={style.networks}>
+                <div className={style.title}>Select a Network</div>
                 {renderedNetworks}
             </div>
         );
@@ -111,11 +111,11 @@ class NetworkSelector extends Component {
                     />
                 }
             >
-                <div class={classnames([style.selector])}>
-                    <div class={style.capitalize} title={endpoint}>
+                <div className={classnames([style.selector])}>
+                    <div className={style.capitalize} title={endpoint}>
                         {this.state.network}
                     </div>
-                    <div class={style.dropdownIcon}>
+                    <div className={style.dropdownIcon}>
                         <IconDropdown />
                     </div>
                 </div>
@@ -154,7 +154,7 @@ class AccountDropdown extends Component {
             if (index !== 0) {
                 deleteButton = (
                     <button
-                        class="btnNoBg"
+                        className="btnNoBg"
                         onClick={e => {
                             this.props.onAccountDelete(e, index);
                         }}
@@ -164,7 +164,7 @@ class AccountDropdown extends Component {
                 );
             } else {
                 deleteButton = (
-                    <button class="btnNoBg">
+                    <button className="btnNoBg">
                         <i>&nbsp;&nbsp;&nbsp;&nbsp;</i>
                     </button>
                 );
@@ -182,7 +182,7 @@ class AccountDropdown extends Component {
                         <div>{account.getName()}</div>
                         <div style="margin-left: auto;">
                             <button
-                                class="btnNoBg"
+                                className="btnNoBg"
                                 onClick={e => {
                                     this.props.onAccountEdit(e, index);
                                 }}
@@ -196,12 +196,12 @@ class AccountDropdown extends Component {
             );
         });
         return (
-            <div class={classnames([style.accounts])}>
-                <div class={style.title}>Select an Account</div>
+            <div className={classnames([style.accounts])}>
+                <div className={style.title}>Select an Account</div>
                 {renderedAccounts}
-                <div class={style.newAccount}>
+                <div className={style.newAccount}>
                     <button
-                        class="btnNoBg"
+                        className="btnNoBg"
                         onClick={this.props.onNewAccountClicked}
                     >
                         + New Account
@@ -480,14 +480,14 @@ class AccountSelector extends Component {
                     />
                 }
             >
-                <div class={classnames([style.selector, style.account])}>
+                <div className={classnames([style.selector, style.account])}>
                     {accountIcon}
-                    <div title={address} class={style.nameContainer}>
+                    <div title={address} className={style.nameContainer}>
                         {account}
                         <br />
                         <span style="font-size: 0.5em;">{accountBalance}</span>
                     </div>
-                    <div class={style.dropdownIcon}>
+                    <div className={style.dropdownIcon}>
                         <IconDropdown height="8" width="10" />
                     </div>
                 </div>
@@ -500,10 +500,10 @@ export default class NetworkAcccountSelector extends Component {
     render() {
         let { ...props } = this.props;
         return (
-            <div class={style.container}>
+            <div className={style.container}>
                 <IconDeployGreen />
                 <NetworkSelector {...props} />
-                <div class={style.separator} />
+                <div className={style.separator} />
                 <AccountSelector {...props} />
             </div>
         );

@@ -49,9 +49,9 @@ export default class TransactionLog extends Component {
         }
 
         return (
-            <div id={this.id} class={style.main}>
-                <div class="scrollable-y" id={this.id + '_scrollable'}>
-                    <div class={style.inner}>
+            <div id={this.id} className={style.main}>
+                <div className="scrollable-y" id={this.id + '_scrollable'}>
+                    <div className={style.inner}>
                         {noTransactionsMessage}
                         {transactions}
                     </div>

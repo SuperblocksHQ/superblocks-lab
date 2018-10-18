@@ -29,10 +29,10 @@ export default class TutorialsManual extends Component {
 
     render() {
         return (
-            <div id={this.id} class={style.main}>
-                <div class="scrollable-y" id={this.id + '_scrollable'}>
-                    <h1 class={style.title}>Reference manual</h1>
-                    <div class={style.body}>
+            <div id={this.id} className={style.main}>
+                <div className="scrollable-y" id={this.id + '_scrollable'}>
+                    <h1 className={style.title}>Reference manual</h1>
+                    <div className={style.body}>
                         <p>
                             Superblocks Lab is a toolchain for coding, building,
                             testing and deploying smart contracts and

@@ -4,7 +4,7 @@ import style from './style.less';
 import { IconAngleRight, IconAngleDown } from '../icons';
 
 const Caret = ({ onClick, expanded = false } = props) => (
-    <div class={style.caret} onClick={onClick}>
+    <div className={style.caret} onClick={onClick}>
         {expanded ? (
             <IconAngleDown height="5" width="8" />
         ) : (

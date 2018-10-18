@@ -123,7 +123,7 @@ export const IconDownload = ({ ...props }) => (
 );
 export const IconUpload = () => <FaIcon icon={iconUpload} />;
 export const IconDropdown = ({ ...props }) => (
-    <span class="dropDown" {...props} />
+    <span className="dropDown" {...props} />
 );
 export const IconClose = ({ ...props }) => (
     <FaIcon icon={iconClose} {...props} />

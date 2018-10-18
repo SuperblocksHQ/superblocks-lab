@@ -242,7 +242,7 @@ export default class Panes extends Component {
         const selected = style.selected;
         const html = this.panes.map((pane, index) => {
             const contextMenu = (
-                <div class={style.contextMenu}>
+                <div className={style.contextMenu}>
                     <a href="#" onClick={this.closeAllPanes}>
                         Close all
                     </a>
@@ -268,15 +268,15 @@ export default class Panes extends Component {
                             useRightClick={true}
                         >
                             <div>
-                                <div class={style.title}>
-                                    <div class={style.icon}>
+                                <div className={style.title}>
+                                    <div className={style.icon}>
                                         {pane.getIcon()}
                                     </div>
-                                    <div class={style.title2}>
+                                    <div className={style.title2}>
                                         {pane.getTitle()}
                                     </div>
                                 </div>
-                                <div class={style.close}>
+                                <div className={style.close}>
                                     <a
                                         href="#"
                                         onClick={e =>
@@ -350,12 +350,12 @@ export default class Panes extends Component {
             <div
                 key="panes"
                 id="panes"
-                class="full"
+                className="full"
                 style={{
                     width: isActionPanelShowing ? 'calc(100% - 450px)' : '100%',
                 }}
             >
-                <div key="header" id="panes_header" class={style.header}>
+                <div key="header" id="panes_header" className={style.header}>
                     {header}
                 </div>
                 <div key="panes2" className={style.panes}>

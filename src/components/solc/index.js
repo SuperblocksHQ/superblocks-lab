@@ -42,10 +42,10 @@ export default class Solc {
         };
 
         ReactDOM.render((
-            <div style="display:none;" id={this.id}>
-                <iframe ref={setRef} src="/solc/index-v0.4.25.html" frameborder="0"></iframe>
+            <div style={{display: 'none'}} id={this.id}>
+                <iframe ref={setRef} src="/solc/index-v0.4.25.html" frameBorder="0"></iframe>
             </div>
-        ), document.body);
+        ), document.getElementById('solc'));
 
         setInterval(this._processQueue, 100);
     }

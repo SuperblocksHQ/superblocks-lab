@@ -22,13 +22,13 @@ export default class ContactContainer extends Component {
     render() {
         let { appVersion } = this.props;
         return (
-            <div class={style.container}>
+            <div className={style.container}>
                 <div style={{display: "inline-block"}}>
                     <a
                         href="https://twitter.com/getsuperblocks"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class={style.contactIcon}
+                        className={style.contactIcon}
                     >
                         <IconTwitter />
                     </a>
@@ -36,7 +36,7 @@ export default class ContactContainer extends Component {
                         href="https://github.com/SuperblocksHQ/superblocks-lab"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class={style.contactIcon}
+                        className={style.contactIcon}
                     >
                         <IconGithub />
                     </a>
@@ -44,12 +44,12 @@ export default class ContactContainer extends Component {
                         href="https://t.me/GetSuperblocks"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class={style.contactIcon}
+                        className={style.contactIcon}
                     >
                         <IconTelegram />
                     </a>
                 </div>
-                <div class={style.version}>{appVersion}</div>
+                <div className={style.version}>{appVersion}</div>
             </div>
         );
     }

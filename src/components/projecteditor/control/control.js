@@ -465,12 +465,12 @@ export default class Control extends Component {
     //_renderContractsSectionTitle = (level, index, item) => {
     //var projectItem = item.props.state.project;
     //return (
-    //<div class={classnames([style.projectContractsTitleContainer])} onClick={(e)=>this._angleClicked(e, item)}>
+    //<div className={classnames([style.projectContractsTitleContainer])} onClick={(e)=>this._angleClicked(e, item)}>
     //<div>
     //<div>{item.getTitle()}</div>
     //</div>
-    //<div class={style.buttons}>
-    //<button class="btnNoBg" title="New contract" onClick={(e)=>{this._clickNewContract(e, projectItem);}}>
+    //<div className={style.buttons}>
+    //<button className="btnNoBg" title="New contract" onClick={(e)=>{this._clickNewContract(e, projectItem);}}>
     //<IconAddFile />
     //</button>
     //</div>
@@ -480,7 +480,7 @@ export default class Control extends Component {
 
     //_renderLearnSectionTitle = (level, index, item) => {
     //return (
-    //<div class={classnames([style.projectContractsTitleContainer, 'mt-4'])} onClick={ (e)=>this._angleClicked(e, item) }>
+    //<div className={classnames([style.projectContractsTitleContainer, 'mt-4'])} onClick={ (e)=>this._angleClicked(e, item) }>
     //<div>
     //{ item.getTitle() }
     //</div>
@@ -645,10 +645,10 @@ export default class Control extends Component {
         const item = this.state.menu.render();
         //item.key="controltree";
         return (
-            <div class="full">
-                <div class={style.treemenu}>
+            <div className="full">
+                <div className={style.treemenu}>
                     {item}
-                    <LearnAndResources class="mt-3" />
+                    <LearnAndResources className="mt-3" />
                 </div>
             </div>
         );

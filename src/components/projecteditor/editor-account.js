@@ -298,7 +298,7 @@ export default class AccountEditor extends Component {
             // Static address
             return (
                 <div>
-                    <div class="superInputDarkInline">
+                    <div className="superInputDarkInline">
                         <label for="address">Address</label>
                         <input
                             type="text"
@@ -313,7 +313,7 @@ export default class AccountEditor extends Component {
                         />
 
                         <button
-                            class="btn2"
+                            className="btn2"
                             disabled={!this.state.accountAddressDirty}
                             onClick={this._staticAddressSave}
                         >
@@ -364,7 +364,7 @@ export default class AccountEditor extends Component {
                                 the address and the balance.
                             </p>
                             <button
-                                class="btn2"
+                                className="btn2"
                                 onClick={e => {
                                     e.preventDefault();
                                     this.unlockWallet(this.form.walletName);
@@ -382,7 +382,7 @@ export default class AccountEditor extends Component {
                     ) {
                         unlockDifferentAccountButton = (
                             <button
-                                class="btn2"
+                                className="btn2"
                                 onClick={e => {
                                     e.preventDefault();
                                     this.unlockWallet(this.form.walletName);
@@ -414,14 +414,14 @@ export default class AccountEditor extends Component {
     render() {
         const accountContent = this._renderAccountContent();
         return (
-            <div id={this.id} class={style.main}>
-                <div class="scrollable-y" id={this.id + '_scrollable'}>
-                    <div class={style.inner}>
-                        <h1 class={style.title}>Edit Account</h1>
-                        <div class={style.form}>
+            <div id={this.id} className={style.main}>
+                <div className="scrollable-y" id={this.id + '_scrollable'}>
+                    <div className={style.inner}>
+                        <h1 className={style.title}>Edit Account</h1>
+                        <div className={style.form}>
                             <form action="">
-                                <div class={style.field}>
-                                    <div class="superInputDarkInline">
+                                <div className={style.field}>
+                                    <div className="superInputDarkInline">
                                         <label for="name">Name</label>
                                         <input
                                             type="text"
@@ -436,7 +436,7 @@ export default class AccountEditor extends Component {
                                         />
 
                                         <button
-                                            class="btn2"
+                                            className="btn2"
                                             disabled={
                                                 !this.state.accountNameDirty
                                             }
@@ -445,15 +445,15 @@ export default class AccountEditor extends Component {
                                             Save name
                                         </button>
                                     </div>
-                                    <div class={style.networkContainer}>
-                                        <div class={style.networkHeader}>
-                                            <div class={style.titleContainer}>
-                                                <h3 class={style.title}>
+                                    <div className={style.networkContainer}>
+                                        <div className={style.networkHeader}>
+                                            <div className={style.titleContainer}>
+                                                <h3 className={style.title}>
                                                     Configure the account for
                                                     each network
                                                 </h3>
                                             </div>
-                                            <div class={style.subtitle}>
+                                            <div className={style.subtitle}>
                                                 Each account must be configured
                                                 for each of the networks
                                                 available.
@@ -470,8 +470,8 @@ export default class AccountEditor extends Component {
                                                 this.
                                             </div>
                                         </div>
-                                        <div class={style.networkSelector}>
-                                            <div class={style.networks}>
+                                        <div className={style.networkSelector}>
+                                            <div className={style.networks}>
                                                 <ul>
                                                     {this.environments().map(
                                                         env => {
@@ -491,7 +491,7 @@ export default class AccountEditor extends Component {
                                                                     )}
                                                                 >
                                                                     <div
-                                                                        class={
+                                                                        className={
                                                                             style.networkName
                                                                         }
                                                                         onClick={e => {
@@ -509,7 +509,7 @@ export default class AccountEditor extends Component {
                                                     )}
                                                 </ul>
                                             </div>
-                                            <div class={style.networkInfo}>
+                                            <div className={style.networkInfo}>
                                                 {accountContent}
                                             </div>
                                         </div>

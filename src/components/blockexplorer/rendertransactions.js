@@ -20,7 +20,7 @@ export default class RenderTransactions {
                 return this._renderTransaction(transaction, network);
             });
 
-        return <div class={this.style.inner}>{transactions}</div>;
+        return <div className={this.style.inner}>{transactions}</div>;
     };
 
     renderTransactionsFloat = (network, maxCount, maxAge) => {
@@ -45,14 +45,14 @@ export default class RenderTransactions {
                 return this._renderTransaction(transaction, network, classes);
             });
 
-        return <div class={this.style.inner}>{transactions}</div>;
+        return <div className={this.style.inner}>{transactions}</div>;
     };
 
     _renderTransaction = (tx, network, classes) => {
         if (!tx.obj) {
             // Waiting for tx to be propagated around network.
             return (
-                <div class={this.style.txbox}>Waiting for tx to propagate</div>
+                <div className={this.style.txbox}>Waiting for tx to propagate</div>
             );
         } else {
             if (tx.contract) {
@@ -69,7 +69,7 @@ export default class RenderTransactions {
         if (!tx.receipt) {
             return (
                 <div
-                    class={classNames([this.style.status, this.style.pending])}
+                    className={classNames([this.style.status, this.style.pending])}
                 >
                     Success
                 </div>
@@ -78,7 +78,7 @@ export default class RenderTransactions {
             if (parseInt(tx.receipt.status) == 1) {
                 return (
                     <div
-                        class={classNames([
+                        className={classNames([
                             this.style.status,
                             this.style.success,
                         ])}
@@ -87,7 +87,7 @@ export default class RenderTransactions {
             } else {
                 return (
                     <div
-                        class={classNames([
+                        className={classNames([
                             this.style.status,
                             this.style.failure,
                         ])}
@@ -102,13 +102,13 @@ export default class RenderTransactions {
         const accounts = this.txlog.accounts(network);
         if (contracts[address]) {
             return (
-                <span title={address} class={this.style.contractAddress}>
+                <span title={address} className={this.style.contractAddress}>
                     this.contracts[address]
                 </span>
             );
         } else if (accounts[address]) {
             return (
-                <span title={address} class={this.style.accountAddress}>
+                <span title={address} className={this.style.accountAddress}>
                     this.accounts[address]
                 </span>
             );
@@ -118,7 +118,7 @@ export default class RenderTransactions {
 
     _renderAddress = (address, network) => {
         const mappedAddress = this._mapAddress(address, network);
-        return <div class={this.style.address}>{mappedAddress}</div>;
+        return <div className={this.style.address}>{mappedAddress}</div>;
     };
 
     _formatAge = ts => {
@@ -192,15 +192,15 @@ export default class RenderTransactions {
     _renderHeader = (tx, type) => {
         if (type == 'deployment') {
             return (
-                <div class={this.style.header}>
-                    <div class={this.style.title}>Deploy {tx.contract}</div>
+                <div className={this.style.header}>
+                    <div className={this.style.title}>Deploy {tx.contract}</div>
                     {this._renderStatus(tx)}
                 </div>
             );
         } else {
             return (
-                <div class={this.style.header}>
-                    <div class={this.style.title}>Transaction</div>
+                <div className={this.style.header}>
+                    <div className={this.style.title}>Transaction</div>
                     {this._renderStatus(tx)}
                 </div>
             );
@@ -210,12 +210,12 @@ export default class RenderTransactions {
     _renderLeft = (tx, type, network) => {
         if (type == 'deployment') {
             return (
-                <div class={this.style.left}>
-                    <div class={this.style.row}>
+                <div className={this.style.left}>
+                    <div className={this.style.row}>
                         <b>Creator:</b>{' '}
                         {this._renderAddress(tx.obj.from, network)}
                     </div>
-                    <div class={this.style.row}>
+                    <div className={this.style.row}>
                         <b>Contract address:</b>{' '}
                         {this._renderAddress(
                             (tx.receipt || {}).contractAddress
@@ -230,14 +230,14 @@ export default class RenderTransactions {
                     : tx.obj.value;
             const valueFormatted = this.web3.fromWei(value);
             return (
-                <div class={this.style.left}>
-                    <div class={this.style.row}>
+                <div className={this.style.left}>
+                    <div className={this.style.row}>
                         <b>From:</b> {this._renderAddress(tx.obj.from)}
                     </div>
-                    <div class={this.style.row}>
+                    <div className={this.style.row}>
                         <b>To:</b> {this._renderAddress(tx.obj.to)}
                     </div>
-                    <div class={this.style.row}>
+                    <div className={this.style.row}>
                         <b>Value:</b>{' '}
                         <span title="{value} wei">{valueFormatted} ether</span>
                     </div>
@@ -253,9 +253,9 @@ export default class RenderTransactions {
     _renderBottomContentLeft = (tx, type) => {
         if (type == 'deployment') {
             return (
-                <div class={this.style.left}>
-                    <div class={this.style.row}>
-                        <div class={this.style.deployArgs}>
+                <div className={this.style.left}>
+                    <div className={this.style.row}>
+                        <div className={this.style.deployArgs}>
                             {this._renderDeployArguments(tx)}
                         </div>
                     </div>
@@ -263,9 +263,9 @@ export default class RenderTransactions {
             );
         } else {
             return (
-                <div class={this.style.left}>
-                    <div class={this.style.row}>
-                        <div class={this.style.deployArgs}>
+                <div className={this.style.left}>
+                    <div className={this.style.row}>
+                        <div className={this.style.deployArgs}>
                             {this._renderTransactionData(tx)}
                         </div>
                     </div>
@@ -288,24 +288,24 @@ export default class RenderTransactions {
         return (
             <div className={classnames(classes)}>
                 {this._renderHeader(tx, type)}
-                <div class={this.style.infoContainer}>
+                <div className={this.style.infoContainer}>
                     {this._renderLeft(tx, type, network)}
-                    <div class={this.style.right}>
-                        <div class={this.style.row}>{this._renderAge(tx)}</div>
-                        <div class={this.style.row}>
+                    <div className={this.style.right}>
+                        <div className={this.style.row}>{this._renderAge(tx)}</div>
+                        <div className={this.style.row}>
                             {this._renderOrigin(tx)}
                         </div>
-                        <div class={this.style.row}>
+                        <div className={this.style.row}>
                             {this._renderBlockNr(tx)}
                         </div>
-                        <div class={this.style.row}>
+                        <div className={this.style.row}>
                             <b>Gas used:</b> {gasUsed}
                         </div>
                     </div>
-                    <div class={this.style.bottom}>
-                        <div class={this.style.bottomButton}>
+                    <div className={this.style.bottom}>
+                        <div className={this.style.bottomButton}>
                             <button
-                                class="btnNoBg"
+                                className="btnNoBg"
                                 onClick={e => {
                                     this._toggleBottom(tx);
                                     e.preventDefault();
@@ -319,17 +319,17 @@ export default class RenderTransactions {
                             </button>
                         </div>
                         {this.bottomVisible[tx.hash] && (
-                            <div class={this.style.bottomContent}>
+                            <div className={this.style.bottomContent}>
                                 {this._renderBottomContentLeft(tx, type)}
-                                <div class={this.style.right}>
-                                    <div class={this.style.row}>
+                                <div className={this.style.right}>
+                                    <div className={this.style.row}>
                                         <b>Gas Limit:</b> {tx.obj.gas}
                                     </div>
-                                    <div class={this.style.row}>
+                                    <div className={this.style.row}>
                                         <b>Gas Price:</b> {gasPriceFormatted}{' '}
                                         GWei
                                     </div>
-                                    <div class={this.style.row}>
+                                    <div className={this.style.row}>
                                         <b>Gas cost:</b> {gasCostFormatted}{' '}
                                         Ether
                                     </div>

@@ -26,8 +26,8 @@ export default class Welcome extends Component {
 
     render() {
         return (
-            <div class={style.container}>
-                <div class={style.content}>
+            <div className={style.container}>
+                <div className={style.content}>
                     <img src={'/static/img/img-welcome.svg'} />;
                     <h3>
                         Looks like you don’t have any project created just yet
@@ -39,7 +39,7 @@ export default class Welcome extends Component {
                         from any of our existing templates to get started
                     </p>
                     <button
-                        class="btn2 mt-4"
+                        className="btn2 mt-4"
                         onClick={this.onCreateNewProjectClick}
                     >
                         Create New Project

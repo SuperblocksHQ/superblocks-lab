@@ -29,8 +29,8 @@ export default class TutorialsOnline extends Component {
 
     render() {
         return (
-            <div id={this.id} class={style.main}>
-                <div class="scrollable-y" id={this.id + '_scrollable'}>
+            <div id={this.id} className={style.main}>
+                <div className="scrollable-y" id={this.id + '_scrollable'}>
                     <iframe src="https://superblocks.com/studio/tutorials/" />
                 </div>
             </div>

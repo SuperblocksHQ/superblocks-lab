@@ -19,9 +19,8 @@ import style from './style.less';
 import RenderTransactions from './rendertransactions';
 
 export default class TransactionLogPanel extends Component {
-    constructor(props) {
-        super(props);
 
+    componentDidMount() {
         setInterval(() => this.setState(), 1000);
     }
 
@@ -56,6 +55,6 @@ export default class TransactionLogPanel extends Component {
             5,
             0
         );
-        return <div class={style.transactionlogPanel}>{transactions}</div>;
+        return <div className={style.transactionlogPanel}>{transactions}</div>;
     }
 }

@@ -81,7 +81,7 @@ class ConstructorArgument extends Component {
         } else {
             value = (
                 <div
-                    class={classNames(['superInputDark', style.valueContainer])}
+                    className={classNames(['superInputDark', style.valueContainer])}
                 >
                     <input
                         value={argument[type]}
@@ -108,7 +108,7 @@ class ConstructorArgument extends Component {
                 {select}
                 {value}
                 <button
-                    class={classNames(['btnNoBg', style.iconTrash])}
+                    className={classNames(['btnNoBg', style.iconTrash])}
                     onClick={e => onRemoveArgumentClicked(e, index)}
                 >
                     <IconTrash />
@@ -263,7 +263,7 @@ export default class ContractEditor extends Component {
         return (
             <div>
                 {this.state.args.map((arg, index) => (
-                    <div class={style.argumentContainer}>
+                    <div className={style.argumentContainer}>
                         <ConstructorArgument
                             index={index}
                             argument={arg}
@@ -314,17 +314,17 @@ export default class ContractEditor extends Component {
         }
         const args = this.renderArgs();
         return (
-            <div id={this.id} class={style.main}>
-                <div class="scrollable-y" id={this.id + '_scrollable'}>
-                    <div class={style.inner}>
-                        <h1 class={style.title}>
+            <div id={this.id} className={style.main}>
+                <div className="scrollable-y" id={this.id + '_scrollable'}>
+                    <div className={style.inner}>
+                        <h1 className={style.title}>
                             Edit Contract{' '}
                             {this.props.item.getParent().getSource()}
                         </h1>
-                        <div class={style.form}>
+                        <div className={style.form}>
                             <form action="">
-                                <div class={style.field}>
-                                    <div class="superInputDark">
+                                <div className={style.field}>
+                                    <div className="superInputDark">
                                         <label for="name">Name</label>
                                         <input
                                             id="name"
@@ -339,7 +339,7 @@ export default class ContractEditor extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div class={style.constructorContainer}>
+                                <div className={style.constructorContainer}>
                                     <h3>Constructor arguments</h3>
                                     <p>
                                         When deploying your contract, you need
@@ -359,19 +359,19 @@ export default class ContractEditor extends Component {
                                         arguments must match the number of
                                         arguments on the contract constructor.
                                     </p>
-                                    <div class={style.argumentsContainer}>
+                                    <div className={style.argumentsContainer}>
                                         <p>
                                             <b>No. args: </b>
                                             {this.state.args.length}
                                         </p>
-                                        <div class={style.arguments}>
+                                        <div className={style.arguments}>
                                             <div>
                                                 <b>{this.state.name} (</b>
                                                 {this.state.args.length
                                                     ? args
                                                     : null}
                                                 <button
-                                                    class={classNames([
+                                                    className={classNames([
                                                         'btnNoBg',
                                                         style.iconAdd,
                                                     ])}
@@ -387,7 +387,7 @@ export default class ContractEditor extends Component {
                                 <div>
                                     <button
                                         href="#"
-                                        class="btn2"
+                                        className="btn2"
                                         disabled={!this.state.isDirty}
                                         onClick={this.save}
                                     >

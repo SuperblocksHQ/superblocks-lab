@@ -97,20 +97,20 @@ export default class ProjectDetails extends Component {
     render() {
         return (
             <div className={classNames([style.newDapp, 'modal'])}>
-                <div class={style.step1}>
-                    <div class={style.header}>
-                        <div class={style.title}>Create a new project</div>
+                <div className={style.step1}>
+                    <div className={style.header}>
+                        <div className={style.title}>Create a new project</div>
                         <button
-                            class={classNames([style.closeIcon, 'btnNoBg'])}
+                            className={classNames([style.closeIcon, 'btnNoBg'])}
                             onClick={this.onCloseClickHandle}
                         >
                             <IconClose />
                         </button>
                     </div>
-                    <div class={style.area}>
-                        <div class={style.form}>
-                            <div class={style.info}>
-                                <div class="superInputDark">
+                    <div className={style.area}>
+                        <div className={style.form}>
+                            <div className={style.info}>
+                                <div className="superInputDark">
                                     <label for="project">Project name</label>
                                     <input
                                         id="project"
@@ -121,7 +121,7 @@ export default class ProjectDetails extends Component {
                                         placeholder="Enter project name"
                                     />
                                 </div>
-                                <div class="superInputDark my-4">
+                                <div className="superInputDark my-4">
                                     <label for="html">
                                         DApp (HTML) Title:{' '}
                                     </label>
@@ -137,14 +137,14 @@ export default class ProjectDetails extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class={style.footer}>
+                    <div className={style.footer}>
                         <button
                             onClick={this.onBackClickHandle}
-                            class="btn2 noBg mr-2"
+                            className="btn2 noBg mr-2"
                         >
                             Back
                         </button>
-                        <button onClick={this.onNextClickHandle} class="btn2">
+                        <button onClick={this.onNextClickHandle} className="btn2">
                             Create Project
                         </button>
                     </div>

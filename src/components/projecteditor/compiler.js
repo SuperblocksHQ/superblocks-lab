@@ -413,10 +413,10 @@ export default class Compiler extends Component {
         const cls = {};
         cls[style.running] = this.isRunning;
         return (
-            <div class={style.toolbar} id={this.id + '_header'}>
-                <div class={style.buttons}>
+            <div className={style.toolbar} id={this.id + '_header'}>
+                <div className={style.buttons}>
                     <a
-                        class={classnames(cls)}
+                        className={classnames(cls)}
                         href="#"
                         title="Recompile"
                         onClick={this.run}
@@ -424,8 +424,8 @@ export default class Compiler extends Component {
                         <IconRun />
                     </a>
                 </div>
-                <div class={style.status}>{this.state.status}</div>
-                <div class={style.info}>
+                <div className={style.status}>{this.state.status}</div>
+                <div className={style.info}>
                     <span>
                         Compile {this.props.item.getParent().getSource()}
                     </span>
@@ -444,7 +444,7 @@ export default class Compiler extends Component {
     getWait = () => {
         if (this.consoleRows.length == 0) {
             return (
-                <div class={style.loading}>
+                <div className={style.loading}>
                     <span>Loading...</span>
                 </div>
             );
@@ -455,15 +455,15 @@ export default class Compiler extends Component {
         const waiting = this.getWait();
         const scrollId = 'scrollBottom_' + this.props.id;
         return (
-            <div class={style.console}>
-                <div class={style.terminal} id={scrollId}>
+            <div className={style.console}>
+                <div className={style.terminal} id={scrollId}>
                     {waiting}
                     {this.consoleRows.map((row, index) => {
                         return row.msg.split('\n').map(i => {
                             var cl = style.std1;
                             if (row.channel == 2) cl = style.std2;
                             else if (row.channel == 3) cl = style.std3;
-                            return <div class={cl}>{i}</div>;
+                            return <div className={cl}>{i}</div>;
                         });
                     })}
                 </div>
@@ -479,11 +479,11 @@ export default class Compiler extends Component {
             height: height + 'px',
         };
         return (
-            <div class="full" id={this.id}>
+            <div className="full" id={this.id}>
                 {toolbar}
                 <div
                     id={this.id + '_scrollable'}
-                    class="scrollable-y"
+                    className="scrollable-y"
                     style={maxHeight}
                 >
                     {contents}

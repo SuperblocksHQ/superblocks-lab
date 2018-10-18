@@ -135,7 +135,7 @@ export default class ProjectEditor extends Component {
         }
         const { controlPanelWidth, showTransactions } = this.state;
         return (
-            <div class={style.projecteditor} id="main_container">
+            <div className={style.projecteditor} id="main_container">
                 <TopBar
                     router={this.props.router}
                     functions={this.props.functions}
@@ -145,7 +145,7 @@ export default class ProjectEditor extends Component {
                     <div
                         key="main_control"
                         id="main_control"
-                        class={style.control}
+                        className={style.control}
                         style={{ width: controlPanelWidth }}
                     >
                         <Control
@@ -155,14 +155,14 @@ export default class ProjectEditor extends Component {
                         <ContactContainer />
                     </div>
                     <span
-                        class="resizer vertical"
+                        className="resizer vertical"
                         onMouseDown={this.onMouseDown}
                     />
                     <div style={{ position: "relative", width: "100%" }}>
                         <div
                             key="main_panes"
                             id="main_panes"
-                            class={style.panescontainer}
+                            className={style.panescontainer}
                         >
                             <Panes
                                 router={this.props.router}
@@ -170,13 +170,13 @@ export default class ProjectEditor extends Component {
                                 isActionPanelShowing={showTransactions}
                             />
                             {showTransactions ? (
-                                <div class={style.actionContainer}>
-                                    <div class={style.header}>
-                                        <span class={style.title}>
+                                <div className={style.actionContainer}>
+                                    <div className={style.header}>
+                                        <span className={style.title}>
                                             Transactions History
                                         </span>
                                         <button
-                                            class={classNames([
+                                            className={classNames([
                                                 style.icon,
                                                 'btnNoBg',
                                             ])}
@@ -194,31 +194,31 @@ export default class ProjectEditor extends Component {
                                 </div>
                             ) : null}
                         </div>
-                        <div class={style.actionPanel}>
-                            <div class={style.actions}>
+                        <div className={style.actionPanel}>
+                            <div className={style.actions}>
                                 <button
-                                    class={classNames([
+                                    className={classNames([
                                         style.action,
                                         'btnNoBg',
                                     ])}
                                     onClick={this.onShowHideTransactionsClicked}
                                 >
                                     <IconTransactions />
-                                    <span class={style.verticalText}>
+                                    <span className={style.verticalText}>
                                         Transactions
                                     </span>
                                 </button>
                             </div>
                         </div>
-                        <div class="bottom-status-bar">
-                            <span class="left">
-                                <span class="note">Note</span>
-                                <span class="note-text">
+                        <div className="bottom-status-bar">
+                            <span className="left">
+                                <span className="note">Note</span>
+                                <span className="note-text">
                                     All files are stored in the browser only,
                                     download to backup
                                 </span>
                             </span>
-                            <span class="right">{endpoint}</span>
+                            <span className="right">{endpoint}</span>
                         </div>
                     </div>
                 </div>

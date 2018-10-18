@@ -418,27 +418,27 @@ export default class FileItem extends Item {
             );
         } else if (this.getType() == 'folder') {
             const contextMenu = (
-                <div class={style.contextMenu}>
+                <div className={style.contextMenu}>
                     <div onClick={this._clickNewFile}>
-                        <div class={style.icon}>
+                        <div className={style.icon}>
                             <IconAddFile />
                         </div>
                         Create File
                     </div>
                     <div onClick={this._clickNewFolder}>
-                        <div class={style.icon}>
+                        <div className={style.icon}>
                             <IconAddFolder />
                         </div>
                         Create Folder
                     </div>
                     <div onClick={this._clickRenameFile}>
-                        <div class={style.icon}>
+                        <div className={style.icon}>
                             <IconEdit />
                         </div>
                         Rename
                     </div>
                     <div onClick={this._clickDeleteFile}>
-                        <div class={style.icon}>
+                        <div className={style.icon}>
                             <IconTrash />
                         </div>
                         Delete
@@ -451,15 +451,15 @@ export default class FileItem extends Item {
                     useRightClick={true}
                 >
                     <div
-                        class={style.projectContractsTitleContainer}
+                        className={style.projectContractsTitleContainer}
                         onClick={this._angleClicked}
                         onContextMenu={e => e.preventDefault()}
                     >
-                        <div class={style.title} title={this.getTitle()}>
+                        <div className={style.title} title={this.getTitle()}>
                             <a href="#">{this.getTitle()}</a>
                         </div>
                         <div
-                            class={style.buttons}
+                            className={style.buttons}
                             onClick={e => e.stopPropagation()}
                         >
                             <a
@@ -505,13 +505,13 @@ export default class FileItem extends Item {
     _renderApplicationSectionTitle = (level, index, item) => {
         return (
             <div
-                class={style.projectContractsTitleContainer}
+                className={style.projectContractsTitleContainer}
                 onClick={item._angleClicked}
             >
                 <div>{item.getTitle()}</div>
-                <div class={style.buttons}>
+                <div className={style.buttons}>
                     <button
-                        class="btnNoBg"
+                        className="btnNoBg"
                         onClick={e => {
                             item._openAppPreview(e, item);
                         }}
@@ -520,7 +520,7 @@ export default class FileItem extends Item {
                         <IconShowPreview />
                     </button>
                     <button
-                        class="btnNoBg"
+                        className="btnNoBg"
                         onClick={e => {
                             item._openAppComposite(e, item);
                         }}
@@ -776,15 +776,15 @@ class FileEntry extends Component {
         } = this.props;
 
         const contextMenu = (
-            <div class={style.contextMenu}>
+            <div className={style.contextMenu}>
                 <div onClick={clickRenameFile}>
-                    <div class={style.icon}>
+                    <div className={style.icon}>
                         <IconEdit />
                     </div>
                     Rename
                 </div>
                 <div onClick={clickDeleteFile}>
-                    <div class={style.icon}>
+                    <div className={style.icon}>
                         <IconTrash />
                     </div>
                     Delete
@@ -799,18 +799,18 @@ class FileEntry extends Component {
                 onContextMenu={e => e.preventDefault()}
             >
                 <div
-                    class={style.projectContractsTitleContainer}
+                    className={style.projectContractsTitleContainer}
                     onClick={openItem}
                 >
                     <div>
-                        <div class={style.title}>
+                        <div className={style.title}>
                             <a title={title} href="#">
                                 {title}
                             </a>
                         </div>
                         {!isReadOnly && (
                             <div
-                                class={style.buttons}
+                                className={style.buttons}
                                 onClick={e => e.stopPropagation()}
                             >
                                 <a

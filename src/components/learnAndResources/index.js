@@ -12,12 +12,12 @@ import {
 const LinkItem = ({ icon, title, link }) => (
     <a
         href={link}
-        class={classNames([style.link, style.item])}
+        className={classNames([style.link, style.item])}
         target="_blank"
         rel="noopener noreferrer"
     >
-        <div class={style.icon}>{icon}</div>
-        <div class={style.title}>{title}</div>
+        <div className={style.icon}>{icon}</div>
+        <div className={style.title}>{title}</div>
     </a>
 );
 
@@ -39,13 +39,13 @@ export default class LearnAndResources extends Component {
             <div {...props}>
                 <div
                     onClick={this.toogle}
-                    class={classNames([style.header, style.item])}
+                    className={classNames([style.header, style.item])}
                 >
                     <Caret expanded={expanded} />
                     Learning And Resources
                 </div>
                 {expanded ? (
-                    <div class={style.listContainer}>
+                    <div className={style.listContainer}>
                         <ul>
                             <li>
                                 <LinkItem

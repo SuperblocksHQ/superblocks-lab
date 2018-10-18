@@ -192,10 +192,10 @@ export default class Editor extends Component {
         const stl = {};
         if (!this.props.item.isSaved()) stl['color'] = '#ee1010';
         return (
-            <div class={style.toolbar} id={this.id + '_header'}>
-                <div class={style.buttons}>
+            <div className={style.toolbar} id={this.id + '_header'}>
+                <div className={style.buttons}>
                     <button
-                        class="btnNoBg"
+                        className="btnNoBg"
                         title="Save"
                         style={stl}
                         onClick={this.save}
@@ -204,7 +204,7 @@ export default class Editor extends Component {
                     </button>
                     {this.props.item.getType2() == 'contract' && (
                         <button
-                            class="btnNoBg"
+                            className="btnNoBg"
                             title="Compile"
                             onClick={this.compile}
                         >
@@ -213,7 +213,7 @@ export default class Editor extends Component {
                     )}
                     {this.props.item.getType2() == 'contract' && (
                         <button
-                            class="btnNoBg"
+                            className="btnNoBg"
                             title="Deploy"
                             onClick={this.deploy}
                         >
@@ -222,7 +222,7 @@ export default class Editor extends Component {
                     )}
                     {this.props.item.getType2() == 'contract' && (
                         <button
-                            class="btnNoBg"
+                            className="btnNoBg"
                             title="Configure"
                             onClick={this.configure}
                         >
@@ -231,7 +231,7 @@ export default class Editor extends Component {
                     )}
                     {this.props.item.getType2() == 'contract' && (
                         <button
-                            class="btnNoBg"
+                            className="btnNoBg"
                             title="Interact"
                             onClick={this.interact}
                         >
@@ -239,7 +239,7 @@ export default class Editor extends Component {
                         </button>
                     )}
                 </div>
-                <div class={style.info}>
+                <div className={style.info}>
                     <span>{this.props.item.getFullPath()}</span>
                 </div>
             </div>
@@ -275,7 +275,7 @@ export default class Editor extends Component {
             setTimeout(this.updateLayout, 1);
         }
         return (
-            <div class="full" id={this.id}>
+            <div className="full" id={this.id}>
                 {toolbar}
                 <MonacoEditor
                     key={this.id}

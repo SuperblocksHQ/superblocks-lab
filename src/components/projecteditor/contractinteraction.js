@@ -565,13 +565,13 @@ export default class ContractInteraction extends Component {
 
     renderToolbar = () => {
         return (
-            <div class={style.toolbar} id={this.id + '_header'}>
-                <div class={style.buttons}>
+            <div className={style.toolbar} id={this.id + '_header'}>
+                <div className={style.buttons}>
                     <a href="#" title="Refresh" onClick={this.run}>
                         <IconRun />
                     </a>
                 </div>
-                <div class={style.info}>
+                <div className={style.info}>
                     <span>
                         Contract address: {this.contract_address}
                         &nbsp;
@@ -661,10 +661,10 @@ export default class ContractInteraction extends Component {
             height: this.getHeight() + 'px',
         };
         return (
-            <div id={this.id} key={this.id} class={style.appview}>
+            <div id={this.id} key={this.id} className={style.appview}>
                 {toolbar}
                 <div
-                    class="full"
+                    className="full"
                     style={maxHeight}
                     id={this.id + '_iframe'}
                     key={this.id + '_iframe'}

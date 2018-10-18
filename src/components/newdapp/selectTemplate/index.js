@@ -14,7 +14,7 @@ TemplateCategory.propTypes = {
 }
 
 const GridLayout = ({ templates, onTemplateSelected, templateSelectedId, categorySelectedId } = props) => (
-    <div class={style.gridLayout}>
+    <div className={style.gridLayout}>
         <div id="mainContent" className="container" style={{display: 'grid', gridTemplateColumns: 'repeat(2, 0fr)', gridGap: '10px', gridAutoRows: 'minMax(100px, auto)'}}>
         { templates
             .filter((template) => template.categories.indexOf(categorySelectedId) > -1)
@@ -39,11 +39,11 @@ GridLayout.propTypes = {
 }
 
 const TemplateLayout = ({ image, name, description, selected, onTemplateSelected } = props) => (
-    <div onClick={onTemplateSelected} class={classNames([style.templateLayout], { [style.selected]: selected }, style.alignContentCenter)}>
+    <div onClick={onTemplateSelected} className={classNames([style.templateLayout], { [style.selected]: selected }, style.alignContentCenter)}>
         <img src={image} width="300"/>
         <div style={{height: '90px'}}>
-        <div class={style.title}>{name}</div>
-        <div class={style.description}>{description}</div>
+        <div className={style.title}>{name}</div>
+        <div className={style.description}>{description}</div>
         </div>
     </div>
 );
@@ -93,20 +93,20 @@ export default class SelectTemplate extends Component {
 
         return(
             <div className={classNames([style.newDapp, "modal"])}>
-                <div class={style.step2}>
-                    <div class={style.header}>
-                        <div class={style.title}>Select Template</div>
-                        <button class={classNames([style.closeIcon, "btnNoBg"])} onClick={this.onCloseClickHandle}>
+                <div className={style.step2}>
+                    <div className={style.header}>
+                        <div className={style.title}>Select Template</div>
+                        <button className={classNames([style.closeIcon, "btnNoBg"])} onClick={this.onCloseClickHandle}>
                             <IconClose />
                         </button>
                     </div>
-                    <div class={classNames([style.area, style.container])}>
-                        <div class={style.categoriesArea}>
-                            <div class={style.categoriesTitle}>Categories</div>
+                    <div className={classNames([style.area, style.container])}>
+                        <div className={style.categoriesArea}>
+                            <div className={style.categoriesTitle}>Categories</div>
                                 <ul>
                                     {
                                         categories.map(category =>
-                                            <li class={categorySelectedId == category.id ? style.selected : null}>
+                                            <li className={categorySelectedId == category.id ? style.selected : null}>
                                                 <TemplateCategory
                                                     title={category.name}
                                                     onCategorySelected={() => this.onCategorySelected(category.id)}/>
@@ -115,7 +115,7 @@ export default class SelectTemplate extends Component {
                                     }
                                 </ul>
                             </div>
-                        <div class={style.templateListArea}>
+                        <div className={style.templateListArea}>
                             <GridLayout
                                 templates={templates}
                                 onTemplateSelected={this.onTemplateSelected}
@@ -123,9 +123,9 @@ export default class SelectTemplate extends Component {
                                 categorySelectedId={categorySelectedId}/>
                         </div>
                     </div>
-                    <div class={style.footer}>
-                        <button onClick={this.onCancelClickHandle} class="btn2 noBg mr-2">Cancel</button>
-                        <button onClick={this.onCreateProjectHandle} disabled={!templateSelected} class="btn2">Select Template</button>
+                    <div className={style.footer}>
+                        <button onClick={this.onCancelClickHandle} className="btn2 noBg mr-2">Cancel</button>
+                        <button onClick={this.onCreateProjectHandle} disabled={!templateSelected} className="btn2">Select Template</button>
                     </div>
                 </div>
             </div>

@@ -227,7 +227,7 @@ export default class Item {
                 />
             );
         } else {
-            caret = <div class={style.nocaret} />;
+            caret = <div className={style.nocaret} />;
         }
 
         var iconOpen;
@@ -250,7 +250,7 @@ export default class Item {
 
         var icon;
         if (iconOpen == null) {
-            icon = <div class={style.noicon} />;
+            icon = <div className={style.noicon} />;
         } else {
             var iconIcon = iconCollapsed;
             if (this.props.state.open) {
@@ -259,7 +259,7 @@ export default class Item {
             if (isToggable) {
                 icon = (
                     <div
-                        class={style.icon}
+                        className={style.icon}
                         onClick={e => this._angleClicked(e)}
                     >
                         {iconIcon}
@@ -269,7 +269,7 @@ export default class Item {
                 if (this.props.onClick) {
                     icon = (
                         <div
-                            class={style.icon}
+                            className={style.icon}
                             onClick={e => {
                                 this.props.onClick(e, this);
                             }}
@@ -278,13 +278,13 @@ export default class Item {
                         </div>
                     );
                 } else {
-                    icon = <div class={style.icon}>{iconIcon}</div>;
+                    icon = <div className={style.icon}>{iconIcon}</div>;
                 }
             }
         }
 
         return (
-            <div class={style.icons}>
+            <div className={style.icons}>
                 {caret}
                 {icon}
             </div>
@@ -322,7 +322,7 @@ export default class Item {
      */
     _defaultRender = (level, index) => {
         return (
-            <div title={this.props.state.title} class={style.title}>
+            <div title={this.props.state.title} className={style.title}>
                 {this.getTitle()}
             </div>
         );
@@ -350,7 +350,7 @@ export default class Item {
                     this.props.onClick ? e => this.props.onClick(e, this) : null
                 }
             >
-                <div class={style.header}>
+                <div className={style.header}>
                     {icons}
                     {output}
                 </div>

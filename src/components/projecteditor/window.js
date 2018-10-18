@@ -48,9 +48,9 @@ export class WindowComponent extends Component {
     render() {
         const sub = this.props.obj.renderSub();
         return (
-            <div key="window" class="full">
+            <div key="window" className="full">
                 <button
-                    class={classnames([style.close_btn, 'btnNoBg'])}
+                    className={classnames([style.close_btn, 'btnNoBg'])}
                     onClick={this.props.obj.close}
                     title="Close"
                 >
@@ -93,7 +93,7 @@ export class Window {
         if (this.props.item.props.type == 'file') {
             return (
                 <div
-                    class="full"
+                    className="full"
                     onClick={e => {
                         this._clickedUpon();
                     }}
@@ -136,7 +136,7 @@ export class Window {
         ) {
             return (
                 <div
-                    class="full"
+                    className="full"
                     onClick={e => {
                         this._clickedUpon();
                     }}
@@ -158,7 +158,7 @@ export class Window {
         ) {
             return (
                 <div
-                    class="full"
+                    className="full"
                     onClick={e => {
                         this._clickedUpon();
                     }}

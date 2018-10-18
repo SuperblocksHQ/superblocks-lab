@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { render } from 'react';
 import React from 'react'
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -37,6 +36,6 @@ ReactDOM.render((
             <App />
         </PersistGate>
     </Provider>
-), document.body);
+), document.getElementById('root'));
 
 

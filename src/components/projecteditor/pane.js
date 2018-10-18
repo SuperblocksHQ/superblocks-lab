@@ -36,7 +36,7 @@ export class PaneComponent extends Component {
     render() {
         const windows = this.obj.renderWindows();
         return (
-            <div key="windows" class="full">
+            <div key="windows" className="full">
                 {windows}
             </div>
         );
@@ -211,7 +211,7 @@ export class Pane {
                 </div>
             );
         });
-        return <div class="full">{html}</div>;
+        return <div className="full">{html}</div>;
     };
 
     _tripleLayout = () => {
@@ -228,7 +228,7 @@ export class Pane {
         const key2 = 'win_' + wins[1].getItemId();
         const key3 = 'win_' + wins[2].getItemId();
         const html = (
-            <div class="full">
+            <div className="full">
                 <div style="height:50%;" key={key1} className={classnames(cls)}>
                     <WindowComponent obj={wins[0]} />
                 </div>
@@ -266,7 +266,7 @@ export class Pane {
         const key3 = 'win_' + wins[2].getItemId();
         const key4 = 'win_' + wins[3].getItemId();
         const html = (
-            <div class="full">
+            <div className="full">
                 <div
                     style="height:50%;width:50%;"
                     key={key1}

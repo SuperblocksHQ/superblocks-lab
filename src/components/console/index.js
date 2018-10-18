@@ -146,10 +146,10 @@ export default class DevkitConsole extends Component {
 
     getWait() {
         if (this.state.running && this.state.consoleRows.length == 0) {
-            return <div class={style.waiting}>Loading...</div>;
+            return <div className={style.waiting}>Loading...</div>;
         } else if (!this.state.running && this.state.consoleRows.length == 0) {
             return (
-                <div class={style.ready}>
+                <div className={style.ready}>
                     <p>Click Run to start</p>
                 </div>
             );
@@ -159,7 +159,7 @@ export default class DevkitConsole extends Component {
     render() {
         const waiting = this.getWait();
         var commands = this.props.console.command.map((item, index) => {
-            return <div class={style.command}>{item}</div>;
+            return <div className={style.command}>{item}</div>;
         });
         if (this.props.console.command0) {
             commands += '<div>' + this.props.console.command0 + '</div>';
@@ -167,29 +167,29 @@ export default class DevkitConsole extends Component {
         const status = 'Exit code: 0 (success)';
         const scrollId = 'scrollBottom_' + this.props.id;
         return (
-            <div class={style.console}>
-                <div class={style.title}>{this.props.console.title}</div>
-                <div class={style.heading}>
-                    <div class={style.commands}>{commands}</div>
-                    <div class={style.run}>
+            <div className={style.console}>
+                <div className={style.title}>{this.props.console.title}</div>
+                <div className={style.heading}>
+                    <div className={style.commands}>{commands}</div>
+                    <div className={style.run}>
                         <a
                             disabled={this.state.running}
                             onClick={this.run}
                             href="#"
-                            class="btn2"
+                            className="btn2"
                         >
                             {(this.state.running && 'Running') || 'Run'}
                         </a>
                     </div>
                 </div>
-                <div class={style.status} />
-                <div class={style.terminal} id={scrollId}>
+                <div className={style.status} />
+                <div className={style.terminal} id={scrollId}>
                     {waiting}
                     {this.state.consoleRows.map((row, index) => {
                         return row.msg.split('\n').map(i => {
                             var cl = style.std1;
                             if (row.channel == 2) cl = style.std2;
-                            return <div class={cl}>{i}</div>;
+                            return <div className={cl}>{i}</div>;
                         });
                     })}
                 </div>

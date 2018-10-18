@@ -32,8 +32,8 @@ export default class Modal extends Component {
         }
         return (
             <div className={classnames(cls)} style={style_explicit}>
-                <h2 class={style.title}>{this.props.data.title}</h2>
-                <div class={style.body}>{this.props.data.body}</div>
+                <h2 className={style.title}>{this.props.data.title}</h2>
+                <div className={style.body}>{this.props.data.body}</div>
             </div>
         );
     }
