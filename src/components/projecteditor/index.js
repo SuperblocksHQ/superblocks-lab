@@ -16,6 +16,7 @@
 
 import { Component } from 'preact';
 import classNames from 'classnames';
+import SplitPane from 'react-split-pane';
 import style from './style';
 import Control from './control';
 import Panes from './panes';
@@ -23,13 +24,14 @@ import TopBar from '../topbar';
 import ContactContainer from '../contactContainer';
 import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
 import { IconTransactions, IconClose } from '../icons';
-
+import './style.less';
 export default class ProjectEditor extends Component {
 
     state = {
         controlPanelWidth: 280,
         draggin: false,
         showTransactions: false,
+        openPanel: false
     }
 
     constructor(props) {
@@ -120,6 +122,7 @@ export default class ProjectEditor extends Component {
     }
 
     render() {
+        console.log('this.state.openPanel::', this.state.openPanel)
         var endpoint="";
         var project;
         if (this.props.router && this.props.router.control) {
@@ -164,8 +167,16 @@ export default class ProjectEditor extends Component {
                                 </button>
                             </div>
                         </div>
+                        {/*{*/}
+                            // this.state.openPanel &&
+                                    <SplitPane className="Resizer" split="horizontal" minSize={50} defaultSize={100}>
+                                        <div className={style.horizontal}>hello</div>
+                                        <div className={style.horizontal}>vhdshasj</div>
+                                    </SplitPane>
+                        {/*}*/}
                         <div class="bottom-status-bar">
                             <span class="left">
+                                <spane style={{marginRight: '20px'}} onClick={()=>this.setState({openPanel:true})}>Test</spane>
                                 <span class="note">Note</span>
                                 <span class="note-text">All files are stored in the browser only, download to backup</span>
                             </span>
@@ -177,3 +188,4 @@ export default class ProjectEditor extends Component {
         );
     }
 }
+
