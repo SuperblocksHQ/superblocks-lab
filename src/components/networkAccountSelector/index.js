@@ -107,7 +107,6 @@ class NetworkSelector extends Component {
                         router={this.props.router}
                         networkSelected={this.state.network}
                         onNetworkSelected={this.onNetworkSelectedHandle}
-                        handleClickOutside={this.closeNetworkMenu}
                     />
                 }
             >
@@ -213,7 +212,6 @@ class AccountDropdown extends Component {
 }
 
 AccountDropdown.propTypes = {
-    handleClickOutside: PropTypes.func.isRequired,
     onAccountChosen: PropTypes.func.isRequired,
     onAccountEdit: PropTypes.func.isRequired,
     onAccountDelete: PropTypes.func.isRequired,

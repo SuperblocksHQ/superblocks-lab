@@ -330,7 +330,7 @@ export default class ContractEditor extends Component {
                             <form action="">
                                 <div className={style.field}>
                                     <div className="superInputDark">
-                                        <label for="name">Name</label>
+                                        <label htmlFor="name">Name</label>
                                         <input
                                             id="name"
                                             type="text"

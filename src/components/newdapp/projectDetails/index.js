@@ -111,7 +111,7 @@ export default class ProjectDetails extends Component {
                         <div className={style.form}>
                             <div className={style.info}>
                                 <div className="superInputDark">
-                                    <label for="project">Project name</label>
+                                    <label htmlFor="project">Project name</label>
                                     <input
                                         id="project"
                                         type="text"
@@ -122,7 +122,7 @@ export default class ProjectDetails extends Component {
                                     />
                                 </div>
                                 <div className="superInputDark my-4">
-                                    <label for="html">
+                                    <label htmlFor="html">
                                         DApp (HTML) Title:{' '}
                                     </label>
                                     <input

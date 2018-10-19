@@ -44,8 +44,12 @@ export default class Item {
         if (props.state.toggable == null)
             props.state.toggable =
                 props.state.children != null && props.state.children.length > 0;
-        if (props.state.toggable && props.state.open == null)
+        if (props.state.toggable && props.state.open == null) {
             props.state.open = true;
+        } else {
+            props.state.open = false;
+        }
+
         this.props = props;
         this.router = router;
         this.functions = functions;
@@ -343,8 +347,10 @@ export default class Item {
             renderedChildren
         );
         const classes = this._getClasses(level, index);
+        const key = (level + index).toString();
         return (
             <div
+                key={key}
                 className={classnames(classes)}
                 onClick={
                     this.props.onClick ? e => this.props.onClick(e, this) : null
