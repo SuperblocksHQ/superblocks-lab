@@ -23,7 +23,7 @@
 // renaming an item such as it's `key` value is changed. then `reKey` the item and manipulate the dappfile config,
 // the reloading and recreation of items will then merge gracefully.
 
-import React from 'react';
+import React, { Component } from 'react';
 import {
     IconFile,
     IconFolder,
@@ -318,7 +318,6 @@ export default class Item {
     _packageChildren = (level, index, renderedChildren) => {
         if (renderedChildren.length == 0) return;
         const cls = {};
-        cls[style.children] = true;
         if (this.props.state.open == false) cls[style.collapsed] = true;
         return <div className={classnames(cls)}>{renderedChildren}</div>;
     };

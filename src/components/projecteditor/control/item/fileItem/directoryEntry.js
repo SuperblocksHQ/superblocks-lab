@@ -86,7 +86,7 @@ export class DirectoryEntry extends Component {
                                     </a>
                                     {
                                         fullPath != "/" &&
-                                            <div style="display: inline;">
+                                            <div style={{display: "inline"}}>
                                                 <a href="#" title="Rename directory" onClick={clickRenameFile}>
                                                     <IconEdit />
                                                 </a>
