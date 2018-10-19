@@ -195,7 +195,8 @@ export default class ProjectItem extends Item {
                 .then(item => {
                     cb(0);
                 })
-                .catch(() => {
+                .catch((e) => {
+                    console.log(e);
                     alert('Error: Could not load dappfile.json.');
                 });
         };

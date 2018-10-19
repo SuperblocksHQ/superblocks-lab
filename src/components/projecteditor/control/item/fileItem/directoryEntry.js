@@ -35,7 +35,6 @@ export class DirectoryEntry extends Component {
             clickNewFolder,
             clickRenameFile,
             clickDeleteFile,
-            contextMenu,
             fullPath,
             icons
         } = this.props;
@@ -43,27 +42,27 @@ export class DirectoryEntry extends Component {
         const alwaysVisible = fullPath === "/";
 
         const contextMenuDirectory=(
-            <div class={style.contextMenu}>
+            <div className={style.contextMenu}>
                 <div onClick={clickNewFile}>
-                    <div class={style.icon} >
+                    <div className={style.icon} >
                         <IconAddFile />
                     </div>
                     Create File
                 </div>
                 <div onClick={clickNewFolder}>
-                    <div class={style.icon} >
+                    <div className={style.icon} >
                         <IconAddFolder />
                     </div>
                     Create Folder
                 </div>
                 <div onClick={clickRenameFile}>
-                    <div class={style.icon}>
+                    <div className={style.icon}>
                         <IconEdit />
                     </div>
                     Rename
                 </div>
                 <div onClick={clickDeleteFile}>
-                    <div class={style.icon}>
+                    <div className={style.icon}>
                         <IconTrash />
                     </div>
                     Delete
@@ -73,12 +72,12 @@ export class DirectoryEntry extends Component {
 
         return (
             <DropdownContainer dropdownContent={contextMenuDirectory} useRightClick={true}>
-                <div class={style.projectContractsTitleContainer} onClick={angleClicked} onContextMenu={(e) => e.preventDefault()}>
+                <div className={style.projectContractsTitleContainer} onClick={angleClicked} onContextMenu={(e) => e.preventDefault()}>
                     <ShowActions
                         alwaysVisible={alwaysVisible}
                         actionContainer={
                             <FadeInComponent>
-                                <div class={style.buttons} onClick={(e) => e.stopPropagation()}>
+                                <div className={style.buttons} onClick={(e) => e.stopPropagation()}>
                                     <a href="#" title="New File" onClick={clickNewFile}>
                                         <IconAddFile />
                                     </a>
@@ -101,7 +100,7 @@ export class DirectoryEntry extends Component {
                         }
                     >
                             {icons}
-                            <div class={style.title} title={title}>
+                            <div className={style.title} title={title}>
                                 <a href="#">{title}</a>
                             </div>
                     </ShowActions>

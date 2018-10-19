@@ -440,8 +440,12 @@ export default class FileItem extends Item {
 
         const childrenPkg = this._packageChildren(level, index, renderedChildren);
         const classes = this._getClasses(level, index);
+        const key = (level + index).toString();
         return (
-            <div className={classnames(classes)} onClick={this.props.onClick ? (e) => this.props.onClick(e, this) : null}>
+            <div
+                key={key}
+                className={classnames(classes)}
+                onClick={this.props.onClick ? (e) => this.props.onClick(e, this) : null}>
                 {output}
                 {childrenPkg}
             </div>
@@ -453,13 +457,13 @@ export default class FileItem extends Item {
         const icons = item._renderIcons(level, index);
 
         return (
-            <div class={style.projectContractsTitleContainer} onClick={item._angleClicked}>
-                <div class={style.header}>
-                    <div class={style.title}>
+            <div className={style.projectContractsTitleContainer} onClick={item._angleClicked}>
+                <div className={style.header}>
+                    <div className={style.title}>
                         { icons }
                         { item.getTitle() }
                     </div>
-                    <div class={style.buttons}>
+                    <div className={style.buttons}>
                         <button class="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
                             <IconShowPreview />
                         </button>

@@ -29,6 +29,7 @@ import {
 } from '../../icons';
 
 export default class Control extends Component {
+
     constructor(props) {
         super(props);
         this.backend = new Backend();
@@ -50,7 +51,11 @@ export default class Control extends Component {
             },
         });
 
-        this.state = { menu: menu }
+        this.state = {
+            activeProject: null,
+            menu: menu
+        }
+
         props.router.register('control', this);
     }
 

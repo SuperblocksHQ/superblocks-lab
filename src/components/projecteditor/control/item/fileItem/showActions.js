@@ -45,7 +45,7 @@ export class ShowActions extends Component {
         }
 
         return(
-            <div class={style.header} onMouseEnter={this.showActions} onMouseLeave={this.hideActions}>
+            <div className={style.header} onMouseEnter={this.showActions} onMouseLeave={this.hideActions}>
                 { content }
                 { this.props.children }
             </div>

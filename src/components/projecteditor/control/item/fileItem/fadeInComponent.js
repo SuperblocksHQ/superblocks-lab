@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 
 export class FadeInComponent extends Component {
     state = {
@@ -27,7 +27,7 @@ export class FadeInComponent extends Component {
                 this.setState({ animate: true });
             });
         });
-    } 
+    }
 
     render() {
         return(

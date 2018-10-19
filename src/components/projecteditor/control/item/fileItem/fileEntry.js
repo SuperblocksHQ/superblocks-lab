@@ -37,15 +37,15 @@ export class FileEntry extends Component {
         } = this.props;
 
         const contextMenuFile = (
-            <div class={style.contextMenu}>
+            <div className={style.contextMenu}>
                 <div onClick={clickRenameFile}>
-                    <div class={style.icon}>
+                    <div className={style.icon}>
                         <IconEdit />
                     </div>
                     Rename
                 </div>
                 <div onClick={clickDeleteFile}>
-                    <div class={style.icon}>
+                    <div className={style.icon}>
                         <IconTrash />
                     </div>
                     Delete
@@ -55,12 +55,12 @@ export class FileEntry extends Component {
 
         return (
             <DropdownContainer dropdownContent={contextMenuFile} useRightClick={true} onContextMenu={e => e.preventDefault()}>
-                <div class={style.projectContractsTitleContainer} onClick={openItem}>
+                <div className={style.projectContractsTitleContainer} onClick={openItem}>
                     <ShowActions
                         isReadOnly={isReadOnly}
                         actionContainer={
                             <FadeInComponent>
-                                <div class={style.buttons} onClick={e => e.stopPropagation()}>
+                                <div className={style.buttons} onClick={e => e.stopPropagation()}>
                                     <a href="#" title="Rename file" onClick={clickRenameFile}>
                                         <IconEdit />
                                     </a>
@@ -72,7 +72,7 @@ export class FileEntry extends Component {
                         }
                     >
                             {icons}
-                            <div class={style.title}>
+                            <div className={style.title}>
                                 <a title={title} href="#">
                                     {title}
                                 </a>
