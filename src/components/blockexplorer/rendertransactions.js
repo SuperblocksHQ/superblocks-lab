@@ -1,3 +1,4 @@
+import React from 'react';
 import classNames from 'classnames';
 import styleNormal from './style-normal.less';
 import styleSmall from './style-small.less';
