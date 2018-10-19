@@ -490,6 +490,7 @@ export default class AccountEditor extends Component {
                                                             }
                                                             return (
                                                                 <li
+                                                                    key={env.getName()}
                                                                     className={classnames(
                                                                         [cls]
                                                                     )}
