@@ -464,10 +464,10 @@ export default class FileItem extends Item {
                         { item.getTitle() }
                     </div>
                     <div className={style.buttons}>
-                        <button class="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
+                        <button className="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
                             <IconShowPreview />
                         </button>
-                        <button class="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
+                        <button className="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
                             <IconMosaic />
                         </button>
                     </div>

@@ -170,7 +170,7 @@ class AccountDropdown extends Component {
             }
 
             return (
-                <div>
+                <div key={index}>
                     <div
                         className={classnames(cls)}
                         onClick={e => {
@@ -179,7 +179,7 @@ class AccountDropdown extends Component {
                         }}
                     >
                         <div>{account.getName()}</div>
-                        <div style={{marginLeft: auto}}>
+                        <div style={{marginLeft: 'auto'}}>
                             <button
                                 className="btnNoBg"
                                 onClick={e => {

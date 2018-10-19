@@ -20,6 +20,13 @@ import Web3 from 'web3';
 import style from './style-editor-account.less';
 
 export default class AccountEditor extends Component {
+
+    state = {
+        accountBalanceDirty: false,
+        accountAddressDirty: false,
+        accountNameDirty: false
+    }
+
     constructor(props) {
         super(props);
         this.id = props.id + '_editor';
