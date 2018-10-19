@@ -180,7 +180,7 @@ class AccountDropdown extends Component {
                         }}
                     >
                         <div>{account.getName()}</div>
-                        <div style="margin-left: auto;">
+                        <div style={{marginLeft: auto}}>
                             <button
                                 className="btnNoBg"
                                 onClick={e => {
@@ -480,7 +480,7 @@ class AccountSelector extends Component {
                     <div title={address} className={style.nameContainer}>
                         {account}
                         <br />
-                        <span style="font-size: 0.5em;">{accountBalance}</span>
+                        <span style={{fontSize: '0.5em'}}>{accountBalance}</span>
                     </div>
                     <div className={style.dropdownIcon}>
                         <IconDropdown height="8" width="10" />

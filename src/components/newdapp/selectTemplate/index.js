@@ -20,6 +20,7 @@ const GridLayout = ({ templates, onTemplateSelected, templateSelectedId, categor
             .filter((template) => template.categories.indexOf(categorySelectedId) > -1)
             .map((template) => (
                 <TemplateLayout
+                    key={template.id}
                     image={template.image}
                     name={template.name}
                     description={template.description}
@@ -33,7 +34,7 @@ const GridLayout = ({ templates, onTemplateSelected, templateSelectedId, categor
 
 GridLayout.propTypes = {
     templates: Proptypes.array.isRequired,
-    onCategorySelected: Proptypes.func.isRequired,
+    onTemplateSelected: Proptypes.func.isRequired,
     templateSelectedId: Proptypes.number,
     categorySelectedId: Proptypes.number,
 }
@@ -106,7 +107,9 @@ export default class SelectTemplate extends Component {
                                 <ul>
                                     {
                                         categories.map(category =>
-                                            <li className={categorySelectedId == category.id ? style.selected : null}>
+                                            <li
+                                                key={category.id}
+                                                className={categorySelectedId == category.id ? style.selected : null}>
                                                 <TemplateCategory
                                                     title={category.name}
                                                     onCategorySelected={() => this.onCategorySelected(category.id)}/>
