@@ -21,6 +21,7 @@ import style from './style';
 import { Pane, PaneComponent } from './pane';
 import { IconClose } from '../icons';
 import { DropdownContainer } from '../dropdown';
+import SplitterLayout from "react-splitter-layout";
 
 export default class Panes extends Component {
 
@@ -295,17 +296,40 @@ export default class Panes extends Component {
         const header=this.renderHeader();
         const panes=this.renderPanes();
 
-        const { isActionPanelShowing } = this.props;
+        const { isActionPanelShowing, testPanel } = this.props;
 
         return (
            <div key="panes" id="panes" class="full" style={{ width: isActionPanelShowing ? 'calc(100% - 450px)' : '100%'}}>
                <div key="header" id="panes_header" class={style.header}>
                    {header}
                </div>
-               <div key="panes2" className={style.panes}>
-                   {panes}
-               </div>
+               { this.props.testPanel &&
+                   <SplitterLayout vertical={true}>
+                       <div key="panes2" className={style.panes}>
+                           {panes}
+                       </div>
+                       <div style={{backgroundColor: 'black', height:'100%'}}>
+                           <div style={{height: '50px', width: '100%', backgroundColor: '#252525' }}></div>
+                           <SplitterLayout vertical={false}>
+                               <div style={{backgroundColor: 'black', height:'100%'}}>
+                                   Test file</div>
+                               <div>
+                                   <div style={{height:'50px',backgroundColor: '#252533', width:'100%' }}>
+
+                               </div></div>
+                           </SplitterLayout>
+                       </div>
+                   </SplitterLayout>
+               }
+               {
+                   !this.props.testPanel &&
+                   <div key="panes2" className={style.panes}>
+                       {panes}
+                   </div>
+               }
            </div>
+
+
         );
     }
 }

@@ -24,7 +24,7 @@ import TopBar from '../topbar';
 import ContactContainer from '../contactContainer';
 import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
 import { IconTransactions, IconClose } from '../icons';
-import './style.less';
+import SplitterLayout from 'react-splitter-layout';
 export default class ProjectEditor extends Component {
 
     state = {
@@ -122,7 +122,6 @@ export default class ProjectEditor extends Component {
     }
 
     render() {
-        console.log('this.state.openPanel::', this.state.openPanel)
         var endpoint="";
         var project;
         if (this.props.router && this.props.router.control) {
@@ -132,7 +131,7 @@ export default class ProjectEditor extends Component {
                 endpoint = (this.props.functions.networks.endpoints[network] || {}).endpoint;
             }
         }
-        const { controlPanelWidth, showTransactions } = this.state;
+        const { controlPanelWidth, showTransactions, openPanel } = this.state;
         return (
             <div class={style.projecteditor} id="main_container">
                 <TopBar router={this.props.router} functions={this.props.functions} onProjectSelected={this.onProjectSelectedHandle} />
@@ -144,7 +143,8 @@ export default class ProjectEditor extends Component {
                     <span class="resizer vertical" onMouseDown={this.onMouseDown}></span>
                     <div style="position: relative; width: 100%">
                         <div key="main_panes" id="main_panes" class={style.panescontainer} >
-                            <Panes router={this.props.router} functions={this.props.functions} isActionPanelShowing={showTransactions} />
+                            <Panes testPanel={openPanel} router={this.props.router} functions={this.props.functions} isActionPanelShowing={showTransactions} />
+
                             {
                                 showTransactions ?
                                     <div class={style.actionContainer} >
@@ -167,16 +167,11 @@ export default class ProjectEditor extends Component {
                                 </button>
                             </div>
                         </div>
-                        {/*{*/}
-                            // this.state.openPanel &&
-                                    <SplitPane className="Resizer" split="horizontal" minSize={50} defaultSize={100}>
-                                        <div className={style.horizontal}>hello</div>
-                                        <div className={style.horizontal}>vhdshasj</div>
-                                    </SplitPane>
-                        {/*}*/}
+                        <div>
+                        </div>
                         <div class="bottom-status-bar">
                             <span class="left">
-                                <spane style={{marginRight: '20px'}} onClick={()=>this.setState({openPanel:true})}>Test</spane>
+                                <spane style={{marginRight: '20px'}} onClick={()=>this.setState({openPanel: !openPanel})}>Tests</spane>
                                 <span class="note">Note</span>
                                 <span class="note-text">All files are stored in the browser only, download to backup</span>
                             </span>
