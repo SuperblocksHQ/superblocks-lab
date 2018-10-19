@@ -21,6 +21,7 @@ import style from './style-editor-contract.less';
 import { IconTrash, IconAdd } from '../icons';
 
 class ConstructorArgument extends Component {
+
     getSelect = (active, options, onChange) => {
         return (
             <select onChange={onChange}>
@@ -131,7 +132,9 @@ ConstructorArgument.propTypes = {
 export default class ContractEditor extends Component {
 
     state = {
-        isDirty: false
+        args: [],
+        name: "",
+        isDirty: false,
     }
 
     constructor(props) {
@@ -149,18 +152,18 @@ export default class ContractEditor extends Component {
     }
 
     _updateProps = () => {
+        // Only update internal props if we are clean.
         if (!this.state.isDirty) {
-            // Only update internal props if we are clean.
-            this.state.name = this.props.item.getParent().getName() || ''; // Get the name of the ContractItem.
-            this.state.args = this.props.item.getParent().getArgs() || []; // Get the args of the ContractItem.
+            this.setState({
+                name: this.props.item.getParent().getName() || '', // Get the name of the ContractItem.
+                args: this.props.item.getParent().getArgs() || [] // Get the args of the ContractItem.
+            });
         }
     };
 
     redraw = () => {
         this.forceUpdate();
     };
-
-    focus = rePerform => {};
 
     canClose = (cb, silent) => {
         if (this.state.isDirty && !silent) {
@@ -241,8 +244,8 @@ export default class ContractEditor extends Component {
     onChange = (e, key) => {
         const value = e.target.value;
         if (key == 'name') {
-            this.state.name = value;
             this.setState({
+                name: value,
                 isDirty: true,
             });
         }
@@ -267,22 +270,24 @@ export default class ContractEditor extends Component {
     renderArgs = () => {
         return (
             <div>
-                {this.state.args.map((arg, index) => (
-                    <div className={style.argumentContainer}>
-                        <ConstructorArgument
-                            index={index}
-                            argument={arg}
-                            accounts={this.getAccounts()}
-                            otherContracts={this.getOtherContracts()}
-                            onOptionSelected={this.redraw}
-                            onRemoveArgumentClicked={this.removeArgument}
-                            setDirty={() => {
-                                this.setState({ isDirty: true });
-                            }}
-                        />{' '}
-                        , <br />
-                    </div>
-                ))}
+                {
+                    this.state.args.map((arg, index) => (
+                        <div className={style.argumentContainer}>
+                            <ConstructorArgument
+                                index={index}
+                                argument={arg}
+                                accounts={this.getAccounts()}
+                                otherContracts={this.getOtherContracts()}
+                                onOptionSelected={this.redraw}
+                                onRemoveArgumentClicked={this.removeArgument}
+                                setDirty={() => {
+                                    this.setState({ isDirty: true });
+                                }}
+                            />{' '}
+                            , <br />
+                        </div>
+                    ))
+                }
             </div>
         );
     };
@@ -301,15 +306,17 @@ export default class ContractEditor extends Component {
 
     addArgument = e => {
         e.preventDefault();
-        this.state.args.push({ value: '' });
-        this.redraw();
+        this.setState(prevState => ({
+            args: [...prevState.args, { value: '' }]
+        }));
     };
 
     removeArgument = (e, index) => {
         e.preventDefault();
         if (index > -1) {
-            this.state.args.splice(index, 1);
-            this.redraw();
+            this.setState(prevState => ({
+                args: prevState.args.filter((_, i) => i !== index)
+            }));
         }
     };
 
