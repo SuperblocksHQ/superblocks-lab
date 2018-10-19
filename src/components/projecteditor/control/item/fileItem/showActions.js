@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { h, Component } from 'preact';
-import style from '../../style';
+import React, { Component } from 'react';
+import style from '../../style.less';
 
 export class ShowActions extends Component {
     state = {

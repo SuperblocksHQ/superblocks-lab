@@ -19,7 +19,7 @@ import {
     IconTrash,
     IconEdit
 } from '../../../../icons';
-import style from '../../style';
+import style from '../../style.less';
 import { DropdownContainer } from '../../../../dropdown';
 import { FadeInComponent } from './fadeInComponent';
 import { ShowActions } from './showActions';
@@ -56,8 +56,8 @@ export class FileEntry extends Component {
         return (
             <DropdownContainer dropdownContent={contextMenuFile} useRightClick={true} onContextMenu={e => e.preventDefault()}>
                 <div class={style.projectContractsTitleContainer} onClick={openItem}>
-                    <ShowActions 
-                        isReadOnly={isReadOnly} 
+                    <ShowActions
+                        isReadOnly={isReadOnly}
                         actionContainer={
                             <FadeInComponent>
                                 <div class={style.buttons} onClick={e => e.stopPropagation()}>
@@ -67,7 +67,7 @@ export class FileEntry extends Component {
                                     <a href="#" title="Delete file" onClick={clickDeleteFile} >
                                         <IconTrash />
                                     </a>
-                                </div>  
+                                </div>
                             </FadeInComponent>
                         }
                     >

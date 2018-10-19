@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import {
     IconTrash,
     IconEdit,
     IconAddFile,
     IconAddFolder
 } from '../../../../icons';
-import style from '../../style';
+import style from '../../style.less';
 import { DropdownContainer } from '../../../../dropdown';
 import { FadeInComponent } from './fadeInComponent';
 import { ShowActions } from './showActions';
@@ -97,9 +97,9 @@ export class DirectoryEntry extends Component {
                                             </div>
                                     }
                                 </div>
-                            </FadeInComponent>  
+                            </FadeInComponent>
                         }
-                    >   
+                    >
                             {icons}
                             <div class={style.title} title={title}>
                                 <a href="#">{title}</a>

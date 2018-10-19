@@ -15,7 +15,8 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react';
-import Item from './item';
+import classnames from 'classnames';
+import Item from '../item';
 import {
     IconFile,
     IconConfigure,
@@ -30,10 +31,9 @@ import {
     IconShowPreview,
     IconMosaic,
 } from '../../../../icons';
-import style from '../../style';
+import style from '../../style.less';
 import { DirectoryEntry } from './directoryEntry';
 import { FileEntry } from './fileEntry';
-import classnames from 'classnames';
 
 export default class FileItem extends Item {
     constructor(props, router) {
