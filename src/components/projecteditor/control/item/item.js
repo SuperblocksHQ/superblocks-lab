@@ -231,7 +231,9 @@ export default class Item {
                 />
             );
         } else {
-            caret = <div className={style.nocaret} />;
+            caret = (
+                <div className={style.nocaret} />
+            );
         }
 
         var iconOpen;
