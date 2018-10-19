@@ -30,6 +30,7 @@ const env = getClientEnvironment(publicUrl);
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const lessRegex = /\.less$/;
+const lessGlobalRegex = /index\.less$/;
 
 // common function to get style loaders
 const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -289,15 +290,36 @@ module.exports = {
           // extensions .module.less
           {
             test: lessRegex,
+            exclude: lessGlobalRegex,
             use: getStyleLoaders(
                 {
                     importLoaders: 2,
-                    localIdentName: '[local]__[hash:base64:5]',
                     modules: true,
+                    getLocalIdent: getCSSModuleLocalIdent,
                 },
                 'less-loader'
             ),
           },
+          {
+            test: lessGlobalRegex,
+            use: getStyleLoaders(
+                {
+                    importLoaders: 2,
+                },
+                'less-loader'
+            ),
+          },
+        //   {
+        //     test: lessModuleRegex,
+        //     use: getStyleLoaders(
+        //       {
+        //         importLoaders: 2,
+        //         modules: true,
+        //         getLocalIdent: getCSSModuleLocalIdent,
+        //       },
+        //       'less-loader'
+        //     ),
+        //   },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.
