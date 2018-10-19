@@ -17,7 +17,7 @@ import {
 
 class NetworkDropdown extends Component {
     render() {
-        var networks, chosenNetwork;
+        var networks;
         const project = this.props.router.control.getActiveProject();
         if (!project) {
             // Setup default network just for show.
@@ -28,9 +28,7 @@ class NetworkDropdown extends Component {
                     },
                 },
             ];
-            chosenNetwork = 'browser';
         } else {
-            chosenNetwork = project.getEnvironment();
             const environmentsItem = project.getHiddenItem('environments');
             networks = environmentsItem.getChildren();
         }
@@ -43,6 +41,7 @@ class NetworkDropdown extends Component {
                 cls[style.networkLinkChosen] = true;
             return (
                 <div
+                    key={network.getName()}
                     onClick={e => {
                         e.preventDefault();
                         this.props.onNetworkSelected(network.getName());

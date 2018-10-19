@@ -31,6 +31,9 @@ export default class AccountEditor extends Component {
         super(props);
         this.id = props.id + '_editor';
         this.props.parent.childComponent = this;
+    }
+
+    componentWillMount() {
         this.setEnv('browser');
     }
 

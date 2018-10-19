@@ -32,7 +32,7 @@ export default class AppEditor extends Component {
         this.props.parent.childComponent = this;
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.setState({
             form: {
                 title: this.props.item.getProject().getTitle(),
@@ -44,8 +44,6 @@ export default class AppEditor extends Component {
     redraw = () => {
         this.forceUpdate();
     };
-
-    focus = rePerform => {};
 
     canClose = (cb, silent) => {
         if (this.state.isDirty && !silent) {
@@ -89,6 +87,7 @@ export default class AppEditor extends Component {
     };
 
     render() {
+        const { form } = this.state;
         return (
             <div id={this.id} className={style.main}>
                 <div className="scrollable-y" id={this.id + '_scrollable'}>
@@ -101,7 +100,7 @@ export default class AppEditor extends Component {
                                     <input
                                         maxLength="30"
                                         type="text"
-                                        value={this.state.form.name}
+                                        value={form.name}
                                         onKeyUp={e => {
                                             this.onChange(e, 'name');
                                         }}
@@ -115,7 +114,7 @@ export default class AppEditor extends Component {
                                     <input
                                         maxLength="100"
                                         type="text"
-                                        value={this.state.form.title}
+                                        value={form.title}
                                         onKeyUp={e => {
                                             this.onChange(e, 'title');
                                         }}
