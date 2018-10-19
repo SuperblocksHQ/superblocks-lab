@@ -206,8 +206,6 @@ export default class App extends Component {
         const fn = () => {
             if (walletSeeded) {
                 console.log('Superblocks Lab ' + appVersion + ' Ready.');
-                console.log('Hola');
-                console.log(this.functions.modal);
 
                 this.functions.modal.close();
 
