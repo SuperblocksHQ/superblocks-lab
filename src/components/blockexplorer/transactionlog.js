@@ -32,9 +32,12 @@ export default class TransactionLog extends Component {
             this.forceUpdate();
         });
 
-        setInterval(() => this.forceUpdate(), 1000);
+        this.timer = setInterval(() => this.forceUpdate(), 1000);
     }
 
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
 
     render() {
         const env = this.props.project.props.state.data.env;

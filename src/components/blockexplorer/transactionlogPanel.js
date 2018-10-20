@@ -21,7 +21,11 @@ import RenderTransactions from './rendertransactions';
 export default class TransactionLogPanel extends Component {
 
     componentDidMount() {
-        setInterval(() => this.forceUpdate(), 1000);
+        this.timer = setInterval(() => this.forceUpdate(), 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer);
     }
 
     _getRender = txlog => {

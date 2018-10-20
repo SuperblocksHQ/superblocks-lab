@@ -382,7 +382,7 @@ class AccountSelector extends Component {
         if (this.updateBalanceBusy) return;
         this.updateBalanceBusy = true;
 
-        const { accountType, isLocked, network, address } = this.accountType();
+        const { network, address } = this.accountType();
 
         if (!address || address.length < 5) {
             // a 0x00 address...
