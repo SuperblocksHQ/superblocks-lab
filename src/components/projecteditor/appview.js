@@ -203,7 +203,6 @@ export default class AppView extends Component {
                                         deploysrc,
                                         endpoint,
                                     ]);
-                                    console.log(contracts2);
                                 }
 
                                 const files = [];

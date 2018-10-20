@@ -19,6 +19,16 @@ import classnames from 'classnames';
 import style from './style.less';
 import { Window, WindowComponent } from './window';
 
+const paneDimensions = {
+    default: {
+        height: '50%',
+        width: '50%'
+    },
+    onlyHeight: {
+        height: '50%',
+    }
+}
+
 export class PaneComponent extends Component {
     constructor(props) {
         super(props);
@@ -229,18 +239,18 @@ export class Pane {
         const key3 = 'win_' + wins[2].getItemId();
         const html = (
             <div className="full">
-                <div style="height:50%;" key={key1} className={classnames(cls)}>
+                <div style={paneDimensions.onlyHeight} key={key1} className={classnames(cls)}>
                     <WindowComponent obj={wins[0]} />
                 </div>
                 <div
-                    style="height:50%;width:50%;"
+                    style={paneDimensions.default}
                     key={key2}
                     className={classnames(cls)}
                 >
                     <WindowComponent obj={wins[1]} />
                 </div>
                 <div
-                    style="height:50%;width:50%;"
+                    style={paneDimensions.default}
                     key={key3}
                     className={classnames(cls)}
                 >
@@ -268,28 +278,28 @@ export class Pane {
         const html = (
             <div className="full">
                 <div
-                    style="height:50%;width:50%;"
+                    style={paneDimensions.default}
                     key={key1}
                     className={classnames(cls)}
                 >
                     <WindowComponent obj={wins[0]} />
                 </div>
                 <div
-                    style="height:50%;width:50%;"
+                    style={paneDimensions.default}
                     key={key2}
                     className={classnames(cls)}
                 >
                     <WindowComponent obj={wins[1]} />
                 </div>
                 <div
-                    style="height:50%;width:50%;"
+                    style={paneDimensions.default}
                     key={key3}
                     className={classnames(cls)}
                 >
                     <WindowComponent obj={wins[2]} />
                 </div>
                 <div
-                    style="height:50%;width:50%;"
+                    style={paneDimensions.default}
                     key={key4}
                     className={classnames(cls)}
                 >

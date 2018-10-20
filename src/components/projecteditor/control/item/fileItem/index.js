@@ -522,6 +522,7 @@ export default class FileItem extends Item {
                 }
             })
             .catch(e => {
+                console.log(e);
                 const path = item.getFullPath();
                 alert('Could not find ' + path + '/app.{html,css,js} files.');
             });

@@ -24,6 +24,11 @@ import Tx from '../../ethereumjs-tx-1.3.3.min.js';
 import Modal from '../modal';
 
 export default class Deployer extends Component {
+
+    state = {
+        status: ""
+    }
+
     constructor(props) {
         super(props);
         this.id = props.id + '_deployer';

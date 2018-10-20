@@ -234,7 +234,7 @@ export default class App extends Component {
                         src="https://www.youtube-nocookie.com/embed/KSF24hkf0-o?rel=0"
                         frameBorder="0"
                         allow="autoplay; encrypted-media"
-                        allowFullscreen
+                        allowFullScreen
                     />
                 </p>
                 <p className="splash_cancel">

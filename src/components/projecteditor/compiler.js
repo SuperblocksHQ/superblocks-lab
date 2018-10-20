@@ -21,17 +21,22 @@ import style from './style-console.less';
 import { IconRun } from '../icons';
 
 export default class Compiler extends Component {
+
+    state = {
+        status: ""
+    }
+
     constructor(props) {
         super(props);
         this.id = props.id + '_compiler';
         this.props.parent.childComponent = this;
         this.consoleRows = [];
-        this.run();
+
     }
 
-    componentWillUnmount = () => {};
-
-    componentWillReceiveProps(props) {}
+    componentDidMount() {
+        this.run();
+    }
 
     focus = rePerform => {
         if (rePerform) {
