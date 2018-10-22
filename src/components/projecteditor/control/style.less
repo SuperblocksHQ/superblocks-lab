@@ -45,11 +45,6 @@ select {
 }
 
 .item {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
     .icons {
         .caret {
@@ -60,8 +55,6 @@ select {
         }
         .nocaret {
             float: left;
-            // width: 25px;
-            // height: 10px;
             overflow: hidden;
         }
         .icon {
@@ -105,6 +98,7 @@ select {
     .collapsed {
         overflow: hidden;
         transition: ease-out;
+        height: 0;
     }
     .level0 {
         display: block;

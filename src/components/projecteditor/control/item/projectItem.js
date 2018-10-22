@@ -38,6 +38,8 @@ export default class ProjectItem extends Item {
         props.classes = props.classes || ['project'];
         super(props, router, functions);
         this.props.state.project = this;
+        this.props.state.toggable = false;
+        this.props.state.open = true;
         this.backend = new Backend();
         this.props.state.txLog = new TransactionLogData({
             functions: functions,

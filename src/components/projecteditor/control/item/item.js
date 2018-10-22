@@ -41,13 +41,11 @@ export default class Item {
     constructor(props, router, functions) {
         if (props.state == null) props.state = {};
         if (props.state.id == null) props.state.id = this.generateId();
-        if (props.state.toggable == null)
-            props.state.toggable =
-                props.state.children != null && props.state.children.length > 0;
+        if (props.state.toggable == null) {
+            props.state.toggable = props.state.children != null && props.state.children.length > 0;
+        }
         if (props.state.toggable && props.state.open == null) {
             props.state.open = true;
-        } else {
-            props.state.open = false;
         }
 
         this.props = props;
@@ -208,6 +206,10 @@ export default class Item {
         e.preventDefault();
         e.stopPropagation();
         this.props.state.open = !this.props.state.open;
+
+        console.log("Open: " + this.props.state.open);
+        console.log("Lazy: " + this.props.lazy);
+
         if (this.props.state.open && this.props.lazy) {
             this.getChildren(true, () => {
                 // Since we get child list async, we need to redraw when we got it.

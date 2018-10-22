@@ -429,6 +429,7 @@ export default class FileItem extends Item {
         }
     };
 
+    /** Override **/
     _render2 = (level, index, renderedChildren) => {
         var output;
         if (this.props.render) {
