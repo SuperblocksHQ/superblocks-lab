@@ -91,12 +91,8 @@ export default class Dappfile {
         this.root.project.info = this.root.project.info || {};
     }
 
-    //getObj = () => {
-    //return this.root;
-    //};
-
     dump = () => {
-        return JSON.stringify(this.root);
+        return JSON.stringify(this.root, null, 4);
     };
 
     getTitle = () => {

@@ -49,11 +49,8 @@ export default class FileItem extends Item {
         props.state.readonly =
             props.state.readonly === undefined ? true : props.state.readonly;
         super(props, router);
-        if (props.type == 'folder') {
-            props.state.children =
-                props.state.children === undefined
-                    ? this._renderChildren
-                    : props.state.children;
+        if (props.type == "folder") {
+            props.state.children = (props.state.children === undefined ? this._createChildren : props.state.children);
         }
         props.state.isSaved = true;
         props.state.contents = '';
@@ -152,11 +149,7 @@ export default class FileItem extends Item {
      *
      */
     save = () => {
-        return new Promise((resolve, reject) => {
-            if (this.isDeleted()) {
-                reject();
-                return;
-            }
+        return new Promise( (resolve, reject) => {
             const project = this.getProject();
             project.saveFile(this.getFullPath(), this.getContents(), ret => {
                 if (ret.status != 0) {
@@ -192,6 +185,26 @@ export default class FileItem extends Item {
         this.props.state.isReadOnly = flag;
     };
 
+    _loadFileTree = (item) => {
+        return new Promise( (resolve, reject) => {
+            item = item || this;
+            if (item.getType() == 'folder') {
+                const children = item.getChildren(true, () => {
+                    const children = item.getChildren().slice(0);
+                    const promises = children.map( (child) => {
+                        return child._loadFileTree();
+                    });
+                    Promise.all(promises).then( () => {
+                        resolve();
+                    });
+                });
+            }
+            else {
+                resolve();
+            }
+        });
+    };
+
     /**
      * Move/Rename this file in storage.
      *
@@ -203,71 +216,69 @@ export default class FileItem extends Item {
                 reject();
             });
         }
-        return new Promise((resolve, reject) => {
-            const project = this.getProject();
-            const oldPath = this.getFullPath();
-            project.moveFile(oldPath, newFullPath, status => {
-                if (status != 0) {
-                    reject(status);
-                } else {
-                    // Update this item with new filename.
-                    // Move item and change parent.
-                    const a = newFullPath.match('^(.*)/([^/]+)$');
-                    const newPath = a[1];
-                    const filename = a[2];
-                    this.reKey(filename, newFullPath);
-                    this.props.state.file = filename;
-                    this.props.state.title = filename;
-
-                    // Disconnect item from cached children list in parent.
-                    const children = this.props.state.__parent.getChildren(); // This will already be loaded and cached, otherwise we wouldn't be here.
-                    for (let index = 0; index < children.length; index++) {
-                        if (
-                            children[index].props.state.key ==
-                            this.props.state.key
-                        ) {
-                            children.splice(index);
-                            break;
-                        }
+        return new Promise( (resolve, reject) => {
+            this._loadFileTree().then( () => {
+                const project = this.getProject();
+                const oldPath = this.getFullPath();
+                project.moveFile(oldPath, newFullPath, (status) => {
+                    if (status != 0 ) {
+                        reject(status);
                     }
+                    else {
+                        // Update this item with new filename.
+                        // Move item and change parent.
+                        const a = newFullPath.match("^(.*)/([^/]+)$");
+                        const newPath = a[1];
+                        const filename = a[2];
+                        this.reKey(filename, newFullPath);
+                        this.props.state.file = filename;
+                        this.props.state.title = filename;
 
-                    const project = this.getProject();
-                    const newPathArray = newPath.split('/');
-                    project
-                        .getItemByPath(newPathArray, this.getProject())
-                        .then(newParent => {
+                        // Disconnect item from cached children list in parent.
+                        const children = this.props.state.__parent.getChildren();  // This will already be loaded and cached, otherwise we couldn't be here.
+                        for(let index=0; index < children.length; index++) {
+                            if (children[index].props.state.key == this.props.state.key) {
+                                children.splice(index);
+                                break;
+                            }
+                        }
+
+                        // We want to get the new parent item to attach this item to.
+                        // But we must be careful not to have it create missing contracts in the dappfile in this stage.
+                        const project = this.getProject();
+                        const newPathArray = newPath.split('/');
+                        project.getItemByPath(newPathArray, this.getProject()).then( (newParent) => {
                             // Set new parent
                             this.props.state.__parent = newParent;
 
-                            // Update the dappfile
+                            // Now we need to notify this file and all below if this is a folder that they have been moved.
+                            // Contract files need to adjust their settings in the dappfile, which they will do when notified.
+                            // It is important this is done before we recache the children below.
                             if (this.notifyMoved) {
-                                this.notifyMoved(oldPath, () => {});
+                                var promise = this.notifyMoved(oldPath);
                             }
+                            else {
+                                var promise = Promise.resolve();
+                            }
+                            promise
+                                .then( () => {
+                                    // Recache the children
+                                    newParent.getChildren(true, () => {
+                                        const children2 = newParent.getChildren();
+                                        this._copyState(children2, [this]);
+                                        resolve();
+                                    });
+                                });
 
-                            // Recache the children
-                            newParent.getChildren(true, () => {
-                                const children2 = newParent.getChildren();
-                                this._copyState(children2, [this]);
-                                resolve();
-                            });
-                        })
-                        .catch(() => {
-                            alert('Error: Unexpected error when moving file.');
+                        }).catch( () => {
+                            alert("Error: Unexpected error when moving file.");
                             location.reload();
                             return;
                         });
-                }
+                    }
+                });
             });
         });
-    };
-
-    /**
-     * Delete the file in storage.
-     *
-     */
-    del = cb => {
-        const project = this.getProject();
-        project.deleteFile(this.getFullPath(), newname, cb);
     };
 
     /**
@@ -283,12 +294,54 @@ export default class FileItem extends Item {
         this.setContents(this.props.state.savedContents);
     };
 
-    setDeleted = () => {
-        this.props.state.isDeleted = true;
+    /**
+     * Default implementation for when a file has been deleted.
+     * If this is a directory then it will notify all files/directories below.
+     *
+     */
+    notifyDeleted = () => {
+        return new Promise( (resolve, reject) => {
+            if (this.getType() == "folder") {
+                // NOTE: This relies on that all children already have been loaded and cached, the old list, before deleting, that is.
+                // Since the fresh list obviously will not have the items in it which we want to notify.
+                const promises = this.getChildren().map( (child) => {
+                    if (child.notifyDeleted) {
+                        return child.notifyDeleted();
+                    }
+                    else {
+                        if(this.router.panes) this.router.panes.closeItem(child, null, true);
+                    }
+                });
+                Promise.all(promises).then( resolve );
+            }
+            else {
+                if(this.router.panes) this.router.panes.closeItem(this, null, true);
+                resolve();
+            }
+        });
     };
 
-    isDeleted = () => {
-        return this.props.state.isDeleted;
+    /**
+     * Default implementation for when a file has been moved.
+     * If this is a directory then it will notify all files/directories below.
+     *
+     */
+    notifyMoved = (oldPath) => {
+        return new Promise( (resolve, reject) => {
+            if (this.getType() == "folder") {
+                // NOTE: This relies on that all children already have been loaded and cached, the old list, before moving, that is.
+                // Since the fresh list obviously will not have the items in it which we want to notify.
+                const promises = this.getChildren().map( (child) => {
+                    if (child.notifyMoved) {
+                        return child.notifyMoved(oldPath + "/" + child.getFile());
+                    }
+                });
+                Promise.all(promises).then( resolve );
+            }
+            else {
+                resolve();
+            }
+        });
     };
 
     _clickNewFile = e => {
@@ -348,19 +401,39 @@ export default class FileItem extends Item {
         if (!confirm('Are you sure to delete ' + this.getFullPath() + '?')) {
             return false;
         }
-        const project = this.getProject();
-        project.deleteFile(this.getFullPath(), status => {
-            if (status == 0) {
-                this.setDeleted();
-                if (this.notifyDeleted) this.notifyDeleted();
-                if (this.router.panes)
-                    this.router.panes.closeItem(this, null, true);
-                this.props.state.__parent.getChildren(true, () => {
-                    this.redrawMain(true);
+
+        this.delete();
+    };
+
+    delete = () => {
+        return new Promise( (resolve, reject) => {
+            // We need to load the file tree below this item (if any) to be able to notify those items about the delete.
+            this._loadFileTree().then( () => {
+                const project = this.getProject();
+                project.deleteFile(this.getFullPath(), (status) => {
+                    if (status == 0) {
+                        if (this.notifyDeleted) {
+                            var promise = this.notifyDeleted();
+                        }
+                        else {
+                            var promise = Promise.resolve();
+                            if(this.router.panes) this.router.panes.closeItem(this, null, true);
+                        }
+
+                        promise
+                            .then( () => {
+                                this.props.state.__parent.getChildren(true, () => {
+                                    this.redrawMain(true);
+                                    resolve();
+                                });
+                            });
+                    }
+                    else {
+                        alert("Could not delete file/folder.", status);
+                        reject();
+                    }
                 });
-            } else {
-                alert('Could not delete file/folder.', status);
-            }
+            });
         });
     };
 
@@ -529,7 +602,7 @@ export default class FileItem extends Item {
             });
     };
 
-    _renderChildren = cb => {
+    _createChildren = (cb) => {
         if (this.getType() == 'folder') {
             const project = this.getProject();
             project.listFiles(this.getFullPath(), (status, list) => {
@@ -538,10 +611,7 @@ export default class FileItem extends Item {
                     list.map(file => {
                         if (file.type == 'd') {
                             var render;
-                            if (
-                                this.getFullPath() == '/' &&
-                                file.name == 'app'
-                            ) {
+                            if (this.getFullPath() == "/" && file.name == "app") {
                                 render = this._renderApplicationSectionTitle;
                             }
                             children.push(
