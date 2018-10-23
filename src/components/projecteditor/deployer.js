@@ -26,22 +26,22 @@ import Modal from '../modal';
 export default class Deployer extends Component {
 
     state = {
-        status: ""
+        status: "",
+        isRunning: false,
+        consoleRows: []
     }
 
     constructor(props) {
         super(props);
         this.id = props.id + '_deployer';
         this.props.parent.childComponent = this;
-        this.consoleRows = [];
         this.recompile = this.props.recompile || false;
         this.redeploy = this.props.redeploy || false;
-        this.run();
     }
 
-    componentWillUnmount = () => {};
-
-    componentWillReceiveProps(props) {}
+    componentDidMount() {
+        this.run();
+    }
 
     canClose = cb => {
         cb(0);
@@ -49,7 +49,7 @@ export default class Deployer extends Component {
 
     focus = rePerform => {
         if (rePerform) {
-            if (!this.isRunning) {
+            if (!this.state.isRunning) {
                 this.run();
             }
         }
@@ -118,24 +118,24 @@ export default class Deployer extends Component {
     };
 
     _stderr = msg => {
-        this.consoleRows.push({ msg: msg, channel: 2 });
-        this.redraw();
+        this._updateConsole({ msg: msg, channel: 2 });
     };
 
     _stdwarn = msg => {
-        this.consoleRows.push({ msg: msg, channel: 3 });
-        this.redraw();
+        this._updateConsole({ msg: msg, channel: 3 });
     };
 
     _stdout = msg => {
-        this.consoleRows.push({ msg: msg, channel: 1 });
-        this.redraw();
+        this._updateConsole({ msg: msg, channel: 1 });
     };
 
     _stop = msg => {
-        this.isRunning = false;
-        if (msg != null) this.setState({ status: msg });
-        this.redraw();
+        if (msg != null) {
+            this.setState({
+                status: msg,
+                isRunning: false
+            });
+        }
     };
 
     run = e => {
@@ -145,10 +145,11 @@ export default class Deployer extends Component {
             e.stopPropagation(); // Don't auto focus on the window.
             redeploy = true;
         }
-        if (this.isRunning) return;
-        this.isRunning = true;
-        this.consoleRows.length = 0;
-        this.redraw();
+        if (this.state.isRunning) return;
+        this.setState({
+            isRunning: true,
+            consoleRows: []
+        });
 
         const project = this.props.item.getProject();
         const env = project.getEnvironment();
@@ -1145,8 +1146,10 @@ if(typeof(Contracts)==="undefined") var Contracts={};
         fn(list);
     };
 
-    componentDidMount() {
-        this.redraw();
+    _updateConsole(row) {
+        this.setState(prevState => ({
+            consoleRows: [...prevState.consoleRows, row]
+          }))
     }
 
     redraw = () => {
@@ -1155,7 +1158,7 @@ if(typeof(Contracts)==="undefined") var Contracts={};
 
     renderToolbar = () => {
         const cls = {};
-        cls[style.running] = this.isRunning;
+        cls[style.running] = this.state.isRunning;
         return (
             <div className={style.toolbar} id={this.id + '_header'}>
                 <div className={style.buttons}>
@@ -1186,7 +1189,7 @@ if(typeof(Contracts)==="undefined") var Contracts={};
     };
 
     getWait = () => {
-        if (this.consoleRows.length == 0) {
+        if (this.state.consoleRows.length == 0) {
             return (
                 <div className={style.loading}>
                     <span>Loading...</span>
@@ -1202,7 +1205,7 @@ if(typeof(Contracts)==="undefined") var Contracts={};
             <div className={style.console}>
                 <div className={style.terminal} id={scrollId}>
                     {waiting}
-                    {this.consoleRows.map((row, index) => {
+                    {this.state.consoleRows.map((row, index) => {
                         return row.msg.split('\n').map(i => {
                             var cl = style.std1;
                             if (row.channel == 2) cl = style.std2;
