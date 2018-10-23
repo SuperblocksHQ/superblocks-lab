@@ -287,7 +287,7 @@ export default class RenderTransactions {
         const gasCostFormatted = this.web3.fromWei(gasCost, 'ether');
         classes[this.style.txbox] = true;
         return (
-            <div className={classnames(classes)}>
+            <div key={tx} className={classnames(classes)}>
                 {this._renderHeader(tx, type)}
                 <div className={this.style.infoContainer}>
                     {this._renderLeft(tx, type, network)}

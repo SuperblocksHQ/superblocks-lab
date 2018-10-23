@@ -542,12 +542,8 @@ export default class FileItem extends Item {
                                 this.getFullPath() == '/' &&
                                 file.name == 'app'
                             ) {
-                                console.log(this.getFullPath(), file.name);
                                 render = this._renderApplicationSectionTitle;
                             }
-                            //if (this.props.filter) {
-                            //render = this.
-                            //}
                             children.push(
                                 new FileItem(
                                     {

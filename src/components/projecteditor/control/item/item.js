@@ -207,9 +207,6 @@ export default class Item {
         e.stopPropagation();
         this.props.state.open = !this.props.state.open;
 
-        console.log("Open: " + this.props.state.open);
-        console.log("Lazy: " + this.props.lazy);
-
         if (this.props.state.open && this.props.lazy) {
             this.getChildren(true, () => {
                 // Since we get child list async, we need to redraw when we got it.

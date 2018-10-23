@@ -190,7 +190,9 @@ export default class App extends Component {
         this.functions.compiler = new Solc({ id: this.generateId() });
         this.functions.EVM = new EVM({ id: this.generateId() });
 
-        // TODO - Need to init the compiler and EVM
+        // Need to init the compiler and EVM
+        this.functions.compiler.init();
+        this.functions.EVM.init();
 
         this.functions.wallet.openWallet(
             'development',
@@ -204,7 +206,9 @@ export default class App extends Component {
         // this.functions.compiler.isReady() &&
 
         const fn = () => {
-            if (walletSeeded) {
+            if (this.functions.compiler.isReady()
+                && this.functions.EVM.isReady()
+                && walletSeeded) {
                 console.log('Superblocks Lab ' + appVersion + ' Ready.');
 
                 this.functions.modal.close();

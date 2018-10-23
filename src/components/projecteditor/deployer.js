@@ -1207,7 +1207,7 @@ if(typeof(Contracts)==="undefined") var Contracts={};
                             var cl = style.std1;
                             if (row.channel == 2) cl = style.std2;
                             else if (row.channel == 3) cl = style.std3;
-                            return <div className={cl}>{i}</div>;
+                            return <div key={row} className={cl}>{i}</div>;
                         });
                     })}
                 </div>

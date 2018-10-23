@@ -3477,7 +3477,7 @@ AsyncEventEmitter.prototype._beforeOrAfter = function(event, target, listener, b
   }
 
   index = listeners.length;
-  
+
   for(i = listeners.length; i--;) {
     if(listeners[i] === target) {
       index = i + add;
@@ -24585,7 +24585,7 @@ Ethash.prototype.verifyPOW = function (block, cb) {
         var memoized = _restParam(function memoized(args) {
             var callback = args.pop();
             var key = hasher.apply(null, args);
-            if (has.call(memo, key)) {   
+            if (has.call(memo, key)) {
                 async.setImmediate(function () {
                     callback.apply(null, memo[key]);
                 });
@@ -25472,7 +25472,7 @@ const MR = require('miller-rabin')
 const BN = ethUtil.BN
 
 exports.params = {
-  DATASET_BYTES_INIT: 1073741824, //2^30  
+  DATASET_BYTES_INIT: 1073741824, //2^30
   DATASET_BYTES_GROWTH: 8388608, //2 ^ 23
   CACHE_BYTES_INIT: 16777216,    // 2**24          # bytes in dataset at genesis
   CACHE_BYTES_GROWTH: 131072,    // 2**17  cache growth per epoch
@@ -25507,15 +25507,15 @@ exports.getFullSize = function(epoc){
 }
 
 exports.getEpoc = function(blockNumber){
-  return Math.floor(blockNumber / exports.params.EPOCH_LENGTH) 
+  return Math.floor(blockNumber / exports.params.EPOCH_LENGTH)
 }
 
 /**
- * Generates a seed give the end epoc and optional the begining epoc and the 
+ * Generates a seed give the end epoc and optional the begining epoc and the
  * begining epoc seed
  * @method getSeed
  * @param end Number
- * @param begin Number 
+ * @param begin Number
  * @param seed Buffer
  */
 exports.getSeed = function(seed, begin, end){
@@ -25532,7 +25532,7 @@ var fnv = exports.fnv = function(x, y){
 exports.fnvBuffer = function(a, b){
   var r = new Buffer(a.length)
   for(var i = 0; i < a.length ; i = i + 4){
-      r.writeUInt32LE(fnv(a.readUInt32LE(i), b.readUInt32LE(i)), i) 
+      r.writeUInt32LE(fnv(a.readUInt32LE(i), b.readUInt32LE(i)), i)
   }
   return r
 }
@@ -43559,7 +43559,7 @@ function fixDoubleBlack(stack) {
         } else {
           //console.log("case 2: black sibling, black parent", p.right.value)
           p.right = repaint(RED, s)
-          continue  
+          continue
         }
       } else {
         //console.log("case 3: red sibling")
@@ -43648,7 +43648,7 @@ function fixDoubleBlack(stack) {
         } else {
           //console.log("case 2: black sibling, black parent")
           p.left = repaint(RED, s)
-          continue  
+          continue
         }
       } else {
         //console.log("case 3: red sibling")
@@ -44279,9 +44279,9 @@ RIPEMD160.prototype._update = function update(msg, start) {
 
 RIPEMD160.prototype._digest = function digest(enc) {
   if (enc === 'hex')
-    return utils.toHex32(this.'little');
+    return utils.toHex32('little');
   else
-    return utils.split32(this.'little');
+    return utils.split32('little');
 };
 
 function f(j, x, y, z) {
@@ -44435,9 +44435,9 @@ SHA1.prototype._update = function _update(msg, start) {
 
 SHA1.prototype._digest = function digest(enc) {
   if (enc === 'hex')
-    return utils.toHex32(this.'big');
+    return utils.toHex32('big');
   else
-    return utils.split32(this.'big');
+    return utils.split32('big');
 };
 
 },{"../common":170,"../utils":180,"./common":179}],175:[function(require,module,exports){
@@ -44574,9 +44574,9 @@ SHA256.prototype._update = function _update(msg, start) {
 
 SHA256.prototype._digest = function digest(enc) {
   if (enc === 'hex')
-    return utils.toHex32(this.'big');
+    return utils.toHex32('big');
   else
-    return utils.split32(this.'big');
+    return utils.split32('big');
 };
 
 },{"../common":170,"../utils":180,"./common":179,"minimalistic-assert":275}],177:[function(require,module,exports){
@@ -44815,21 +44815,21 @@ SHA512.prototype._update = function _update(msg, start) {
     al = sum64_lo(T1_hi, T1_lo, T2_hi, T2_lo);
   }
 
-  sum64(this.0, ah, al);
-  sum64(this.2, bh, bl);
-  sum64(this.4, ch, cl);
-  sum64(this.6, dh, dl);
-  sum64(this.8, eh, el);
-  sum64(this.10, fh, fl);
-  sum64(this.12, gh, gl);
-  sum64(this.14, hh, hl);
+  sum64(0, ah, al);
+  sum64(2, bh, bl);
+  sum64(4, ch, cl);
+  sum64(6, dh, dl);
+  sum64(8, eh, el);
+  sum64(10, fh, fl);
+  sum64(12, gh, gl);
+  sum64(14, hh, hl);
 };
 
 SHA512.prototype._digest = function digest(enc) {
   if (enc === 'hex')
-    return utils.toHex32(this.'big');
+    return utils.toHex32('big');
   else
-    return utils.split32(this.'big');
+    return utils.split32('big');
 };
 
 function ch64_hi(xh, xl, yh, yl, zh) {
@@ -45724,8 +45724,8 @@ module.exports = Array.isArray || function (arr) {
   var PADDING = [6, 1536, 393216, 100663296];
   var SHIFT = [0, 8, 16, 24];
   var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
-            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 
-            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 
+            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0,
+            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771,
             2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
             2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
 
@@ -45771,9 +45771,9 @@ module.exports = Array.isArray || function (arr) {
     }
 
     var block, code, end = false, index = 0, start = 0, length = message.length,
-        n, i, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
-        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
-        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
+        n, i, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
+        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17,
+        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33,
         b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
     var blockCount = (1600 - bits * 2) / 32;
     var byteCount = blockCount * 4;
@@ -46108,7 +46108,7 @@ module.exports = Array.isArray || function (arr) {
     }
     return hex;
   };
-  
+
   if(!root.JS_SHA3_TEST && NODE_JS) {
     module.exports = {
       sha3_512: sha3_512,
@@ -46683,7 +46683,7 @@ Codec.prototype.createStreamDecoder = function(opts){
   } else if (opts.keys) {
     return function(key) {
       return self.decodeKey(key, opts);
-    }; 
+    };
   } else if (opts.values) {
     return function(_, value){
       return self.decodeValue(value, opts);
@@ -46730,7 +46730,7 @@ exports.binary = {
   encode: function(data){
     return isBinary(data)
       ? data
-      : new Buffer(data);      
+      : new Buffer(data);
   },
   decode: identity,
   buffer: true,
@@ -49015,7 +49015,7 @@ WriteStream.prototype._flush = function (f) {
     , buffer = self._buffer
 
   if (self._destroyed || !buffer) return
- 
+
   if (!self._db.isOpen()) {
     return self._db.on('ready', function () { self._flush(f) })
   }
@@ -55732,7 +55732,7 @@ module.exports = function privateDecrypt(private_key, enc, reverse) {
   } else {
     padding = 4;
   }
-  
+
   var key = parseKeys(private_key);
   var k = key.modulus.byteLength();
   if (enc.length > k || new bn(enc).cmp(key.modulus) >= 0) {
@@ -61249,13 +61249,13 @@ Script.prototype.runInContext = function (context) {
     if (!(context instanceof Context)) {
         throw new TypeError("needs a 'context' argument.");
     }
-    
+
     var iframe = document.createElement('iframe');
     if (!iframe.style) iframe.style = {};
     iframe.style.display = 'none';
-    
+
     document.body.appendChild(iframe);
-    
+
     var win = iframe.contentWindow;
     var wEval = win.eval, wExecScript = win.execScript;
 
@@ -61264,7 +61264,7 @@ Script.prototype.runInContext = function (context) {
         wExecScript.call(win, 'null');
         wEval = win.eval;
     }
-    
+
     forEach(Object_keys(context), function (key) {
         win[key] = context[key];
     });
@@ -61273,11 +61273,11 @@ Script.prototype.runInContext = function (context) {
             win[key] = context[key];
         }
     });
-    
+
     var winKeys = Object_keys(win);
 
     var res = wEval.call(win, this.code);
-    
+
     forEach(Object_keys(win), function (key) {
         // Avoid copying circular objects like `top` and `window` by only
         // updating existing context properties or new properties in the `win`
@@ -61292,9 +61292,9 @@ Script.prototype.runInContext = function (context) {
             defineProp(context, key, win[key]);
         }
     });
-    
+
     document.body.removeChild(iframe);
-    
+
     return res;
 };
 
@@ -62114,7 +62114,7 @@ function init(callback, debug=true) {
             return true;
         };
         block.uncleHeaders.forEach(function (uncle) {
-            uncle.isHomestead = function () { return true; 
+            uncle.isHomestead = function () { return true;
             };
         });
     });
