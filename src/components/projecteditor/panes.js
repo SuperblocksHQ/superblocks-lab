@@ -243,12 +243,12 @@ export default class Panes extends Component {
         const html = this.panes.map((pane, index) => {
             const contextMenu = (
                 <div className={style.contextMenu}>
-                    <a href="#" onClick={this.closeAllPanes}>
+                    <div className={style.item} onClick={this.closeAllPanes}>
                         Close all
-                    </a>
-                    <a href="#" onClick={this.closeAllOtherPanes}>
+                    </div>
+                    <div className={style.item} onClick={this.closeAllOtherPanes}>
                         Close all other
-                    </a>
+                    </div>
                 </div>
             );
             var isSelected = pane.id == this.activePaneId;
@@ -267,7 +267,7 @@ export default class Panes extends Component {
                             dropdownContent={contextMenu}
                             useRightClick={true}
                         >
-                            <div>
+                            <div className={style.tabContainer}>
                                 <div className={style.title}>
                                     <div className={style.icon}>
                                         {pane.getIcon()}
