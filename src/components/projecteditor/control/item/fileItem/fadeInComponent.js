@@ -17,16 +17,22 @@
 import React, { Component } from 'react';
 
 export class FadeInComponent extends Component {
+
     state = {
         animate: false
     }
 
     componentDidMount() {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
+        this.frameAnimationRequest = requestAnimationFrame(() => {
+            this.frameAnimationRequest2 = requestAnimationFrame(() => {
                 this.setState({ animate: true });
             });
         });
+    }
+
+    componentWillUnmount() {
+        cancelAnimationFrame(this.frameAnimationRequest);
+        cancelAnimationFrame(this.frameAnimationRequest2);
     }
 
     render() {
