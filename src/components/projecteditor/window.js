@@ -294,6 +294,6 @@ export class Window {
 
     redraw = props => {
         if (this.component) this.component.redraw();
-        if (this.childComponent) this.childComponent.redraw(props);
+        if (this.childComponent && this.childComponent.redraw) this.childComponent.redraw(props);
     };
 }

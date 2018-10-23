@@ -23,15 +23,15 @@ import { IconRun } from '../icons';
 export default class Compiler extends Component {
 
     state = {
-        status: ""
+        status: "",
+        consoleRows: [],
+        isRunning: false
     }
 
     constructor(props) {
         super(props);
         this.id = props.id + '_compiler';
         this.props.parent.childComponent = this;
-        this.consoleRows = [];
-
     }
 
     componentDidMount() {
@@ -40,7 +40,7 @@ export default class Compiler extends Component {
 
     focus = rePerform => {
         if (rePerform) {
-            if (!this.isRunning) {
+            if (!this.state.isRunning) {
                 this.run();
             }
         }
@@ -68,11 +68,12 @@ export default class Compiler extends Component {
             e.preventDefault();
             e.stopPropagation(); // Don't auto focus on the window.
         }
-        if (this.isRunning) return;
-        this.isRunning = true;
-        this.redraw();
+        if (this.state.isRunning) return;
 
-        //const contracts=this.dappfile.contracts();
+        this.setState({
+            isRunning: true
+        });
+
         const contracts = this.props.item
             .getProject()
             .getHiddenItem('contracts')
@@ -96,17 +97,17 @@ export default class Compiler extends Component {
                         'Could not load contract source code. Is there any contract not saved?'
                     );
                     this.setState({
+                        isRunning: false,
                         status:
                             'Your code could not find the true meaning of life and dissolved into pixels... To become a higher being.',
                     });
-                    this.isRunning = false;
                     return;
                 }
-                this.consoleRows.length = 0;
+                this.state.consoleRows.length = 0;
                 // This timeout can be removed.
                 setTimeout(() => {
                     var contractbody;
-                    this.consoleRows.push({
+                    this._updateConsole({
                         channel: 1,
                         msg:
                             'Using Solidity compiler version ' +
@@ -182,7 +183,7 @@ export default class Compiler extends Component {
                                 [
                                     'Sorry! We hit a compiler internal error. Please report the problem and in the meanwhile try using a different browser.',
                                 ].map(row => {
-                                    this.consoleRows.push({
+                                    this._updateConsole({
                                         channel: 3,
                                         msg: row.formattedMessage,
                                     });
@@ -192,12 +193,12 @@ export default class Compiler extends Component {
                             } else {
                                 (data.errors || []).map(row => {
                                     if (row.severity === 'warning') {
-                                        this.consoleRows.push({
+                                        this._updateConsole({
                                             channel: 3,
                                             msg: row.formattedMessage,
                                         });
                                     } else {
-                                        this.consoleRows.push({
+                                        this._updateConsole({
                                             channel: 2,
                                             msg: row.formattedMessage,
                                         });
@@ -237,7 +238,7 @@ export default class Compiler extends Component {
                                         ).length > 0
                                     ) {
                                         contractObj = null;
-                                        this.consoleRows.push({
+                                        this._updateConsole({
                                             channel: 2,
                                             msg:
                                                 '[ERROR] The contract ' +
@@ -309,27 +310,21 @@ export default class Compiler extends Component {
                                                                     .bytecode
                                                                     .object,
                                                             () => {
-                                                                const hash = sha256(
-                                                                    contractbody
-                                                                ).toString();
-                                                                cb(
-                                                                    hashsrc,
+                                                                const hash = sha256(contractbody).toString();
+                                                                cb (hashsrc,
                                                                     hash,
                                                                     () => {
                                                                         // This is the success exit point.
                                                                         this.props.router.control.redrawMain(
                                                                             true
                                                                         );
-                                                                        this.consoleRows.push(
-                                                                            {
+                                                                        this._updateConsole({
                                                                                 channel: 1,
                                                                                 msg:
                                                                                     'Success in compilation',
                                                                             }
                                                                         );
-                                                                        this.callback(
-                                                                            0
-                                                                        );
+                                                                        this.callback(0);
                                                                     }
                                                                 );
                                                             }
@@ -340,7 +335,7 @@ export default class Compiler extends Component {
                                         );
                                     } else {
                                         if (data.contracts) {
-                                            this.consoleRows.push({
+                                            this._updateConsole({
                                                 channel: 2,
                                                 msg:
                                                     '[ERROR] The contract ' +
@@ -348,7 +343,7 @@ export default class Compiler extends Component {
                                                     ' could not be compiled. The contract is not found in the compiled output. Make sure the contract is configured correctly so that the name matches the (main) contract in the source file.',
                                             });
                                         } else {
-                                            this.consoleRows.push({
+                                            this._updateConsole({
                                                 channel: 2,
                                                 msg:
                                                     '[ERROR] The contract ' +
@@ -360,8 +355,9 @@ export default class Compiler extends Component {
                                     }
                                 }
                             }
-                            this.isRunning = false;
-                            this.redraw();
+                            this.setState({
+                                isRunning: false
+                            })
                         }
                     );
                 }, 1);
@@ -406,13 +402,11 @@ export default class Compiler extends Component {
         });
     };
 
-    componentDidMount() {
-        this.redraw();
+    _updateConsole(row) {
+        this.setState(prevState => ({
+            consoleRows: [...prevState.consoleRows, row]
+          }))
     }
-
-    redraw = () => {
-        this.forceUpdate();
-    };
 
     renderToolbar = () => {
         const cls = {};
@@ -447,7 +441,7 @@ export default class Compiler extends Component {
     };
 
     getWait = () => {
-        if (this.consoleRows.length == 0) {
+        if (this.state.consoleRows.length == 0) {
             return (
                 <div className={style.loading}>
                     <span>Loading...</span>
@@ -463,7 +457,7 @@ export default class Compiler extends Component {
             <div className={style.console}>
                 <div className={style.terminal} id={scrollId}>
                     {waiting}
-                    {this.consoleRows.map((row, index) => {
+                    {this.state.consoleRows.map((row, index) => {
                         return row.msg.split('\n').map(i => {
                             var cl = style.std1;
                             if (row.channel == 2) cl = style.std2;
