@@ -23,6 +23,8 @@ export class FadeInComponent extends Component {
     }
 
     componentDidMount() {
+        // Check out https://stanko.github.io/react-rerender-in-component-did-mount/ for more
+        // info about this trick
         this.frameAnimationRequest = requestAnimationFrame(() => {
             this.frameAnimationRequest2 = requestAnimationFrame(() => {
                 this.setState({ animate: true });
