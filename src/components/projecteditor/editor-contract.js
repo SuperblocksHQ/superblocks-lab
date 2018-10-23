@@ -16,6 +16,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import shortId from 'shortid';
 import classNames from 'classnames';
 import style from './style-editor-contract.less';
 import { IconTrash, IconAdd } from '../icons';
@@ -24,10 +25,10 @@ class ConstructorArgument extends Component {
 
     getSelect = (active, options, onChange) => {
         return (
-            <select onChange={onChange}>
+            <select value={active} onChange={onChange}>
                 {options.map(option => {
                     return (
-                        <option selected={active == option} value={option}>
+                        <option key={option} value={option}>
                             {option}
                         </option>
                     );
@@ -271,26 +272,27 @@ export default class ContractEditor extends Component {
         return (
             <div>
                 {
-                    this.state.args.map((arg, index) => (
-                        <div className={style.argumentContainer}>
-                            <ConstructorArgument
-                                index={index}
-                                argument={arg}
-                                accounts={this.getAccounts()}
-                                otherContracts={this.getOtherContracts()}
-                                onOptionSelected={this.redraw}
-                                onRemoveArgumentClicked={this.removeArgument}
-                                setDirty={() => {
-                                    this.setState({ isDirty: true });
-                                }}
-                            />{' '}
-                            , <br />
-                        </div>
-                    ))
+                    this.state.args.map((arg, index) => {
+                        return (
+                            <div key={arg.id} className={style.argumentContainer}>
+                                <ConstructorArgument
+                                    index={index}
+                                    argument={arg}
+                                    accounts={this.getAccounts()}
+                                    otherContracts={this.getOtherContracts()}
+                                    onOptionSelected={this.redraw}
+                                    onRemoveArgumentClicked={this.removeArgument}
+                                    setDirty={() => {
+                                        this.setState({ isDirty: true });
+                                    }}
+                                />{' '}
+                                , <br />
+                            </div>
+                        )})
                 }
             </div>
-        );
-    };
+        )
+    }
 
     getAccounts = () => {
         const ret = [];
@@ -307,7 +309,7 @@ export default class ContractEditor extends Component {
     addArgument = e => {
         e.preventDefault();
         this.setState(prevState => ({
-            args: [...prevState.args, { value: '' }]
+            args: [...prevState.args, { id: shortId.generate(), value: '' }]
         }));
     };
 
