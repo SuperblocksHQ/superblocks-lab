@@ -16,7 +16,7 @@
 import React, { Component } from 'react';
 
 import FaIcon from '@fortawesome/react-fontawesome';
-import iconRun from '@fortawesome/fontawesome-free-solid/faBolt';
+import iconRun from '@fortawesome/fontawesome-free-solid/faSync';
 import iconSave from '@fortawesome/fontawesome-free-regular/faSave';
 import iconCompile from '@fortawesome/fontawesome-free-solid/faPuzzlePiece';
 import iconConfigure from '@fortawesome/fontawesome-free-solid/faCog';
