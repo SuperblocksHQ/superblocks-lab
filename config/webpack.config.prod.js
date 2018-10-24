@@ -48,6 +48,7 @@ if (env.stringified['process.env'].NODE_ENV !== '"production"') {
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const lessRegex = /\.less$/;
+const lessGlobalRegex = /index\.less$/;
 
 // common function to get style loaders
 const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -359,13 +360,28 @@ module.exports = {
               getLocalIdent: getCSSModuleLocalIdent,
             }),
           },
-          // Opt-in support for SASS. The logic here is somewhat similar
-          // as in the CSS routine, except that "sass-loader" runs first
-          // to compile SASS files into CSS.
-          // By default we support SASS Modules with the
-          // extensions .module.scss or .module.sass
+          // Opt-in support for LESS. The logic here is somewhat similar
+          // as in the CSS routine, except that "sass-less" runs first
+          // to compile LESS files into CSS.
           {
             test: lessRegex,
+            use: getStyleLoaders(
+                {
+                    importLoaders: 2,
+                    modules: true,
+                    getLocalIdent: getCSSModuleLocalIdent,
+                    sourceMap: shouldUseSourceMap,
+                },
+                'less-loader'
+            ),
+            // Don't consider CSS imports dead code even if the
+            // containing package claims to have no side effects.
+            // Remove this when webpack adds a warning or an error for this.
+            // See https://github.com/webpack/webpack/issues/6571
+            sideEffects: true,
+          },
+          {
+            test: lessGlobalRegex,
             use: getStyleLoaders(
                 {
                     importLoaders: 2,
