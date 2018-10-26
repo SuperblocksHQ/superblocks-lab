@@ -26,7 +26,7 @@ import WalletsItem from './walletsItem';
 import WalletItem from './walletItem';
 import EnvironmentsItem from './environmentsItem';
 import EnvironmentItem from './environmentItem';
-import { IconShowPreview, IconMosaic } from '../../../icons';
+import { IconShowPreview } from '../../../icons';
 
 import Backend from '../backend';
 import TransactionLogData from '../../../blockexplorer/transactionlogdata';

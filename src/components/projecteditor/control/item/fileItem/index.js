@@ -34,6 +34,7 @@ import {
 import style from '../../style.less';
 import { DirectoryEntry } from './directoryEntry';
 import { FileEntry } from './fileEntry';
+import Tooltip from '../../../../tooltip';
 
 export default class FileItem extends Item {
     constructor(props, router) {
@@ -539,10 +540,14 @@ export default class FileItem extends Item {
                     </div>
                     <div className={style.buttons}>
                         <button className="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
-                            <IconShowPreview />
+                            <Tooltip title="Show Preview">
+                                <IconShowPreview />
+                            </Tooltip>
                         </button>
                         <button className="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
-                            <IconMosaic />
+                            <Tooltip title="Show Mosaic">
+                                <IconMosaic />
+                            </Tooltip>
                         </button>
                     </div>
                 </div>

@@ -27,7 +27,6 @@ import Tooltip from '../tooltip';
 export default class Deployer extends Component {
 
     state = {
-        status: "",
         isRunning: false,
         consoleRows: []
     }
@@ -107,11 +106,7 @@ export default class Deployer extends Component {
     };
 
     callback = status => {
-        var msg = 'Chilling down after task well done';
-        if (status != 0) {
-            msg = 'Failed in deploying your contract';
-        }
-        this._stop(msg);
+        this._stop();
         const callback = this.props.parent.callback;
         delete this.props.parent.callback;
         this.props.router.control.redrawMain(true);
@@ -130,13 +125,10 @@ export default class Deployer extends Component {
         this._updateConsole({ msg: msg, channel: 1 });
     };
 
-    _stop = msg => {
-        if (msg != null) {
-            this.setState({
-                status: msg,
-                isRunning: false
-            });
-        }
+    _stop = () => {
+        this.setState({
+            isRunning: false
+        });
     };
 
     run = e => {
@@ -1158,23 +1150,20 @@ if(typeof(Contracts)==="undefined") var Contracts={};
     };
 
     renderToolbar = () => {
-        const cls = {};
-        cls[style.running] = this.state.isRunning;
+        const { isRunning } = this.state;
         return (
             <div className={style.toolbar} id={this.id + '_header'}>
                 <div className={style.buttons}>
-                    <a
-                        className={classnames(cls)}
-                        href="#"
+                    <button
+                        className={classnames(['btnNoBg'], {[style.running] : isRunning})}
                         title="Redeploy"
                         onClick={this.run}
                     >
                         <Tooltip title="Redeploy">
                             <IconRun />
                         </Tooltip>
-                    </a>
+                    </button>
                 </div>
-                <div className={style.status}>{this.state.status}</div>
                 <div className={style.info}>
                     <span>
                         Deploy {this.props.item.getParent().getSource()}

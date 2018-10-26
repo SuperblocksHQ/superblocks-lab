@@ -19,6 +19,7 @@ import sha256 from 'crypto-js/sha256';
 import classnames from 'classnames';
 import style from './style-console.less';
 import { IconRun } from '../icons';
+import Tooltip from '../tooltip';
 
 export default class Compiler extends Component {
 
@@ -97,9 +98,7 @@ export default class Compiler extends Component {
                         'Could not load contract source code. Is there any contract not saved?'
                     );
                     this.setState({
-                        isRunning: false,
-                        status:
-                            'Your code could not find the true meaning of life and dissolved into pixels... To become a higher being.',
+                        isRunning: false
                     });
                     return;
                 }
@@ -208,17 +207,13 @@ export default class Compiler extends Component {
                                     !data.contracts ||
                                     Object.keys(data.contracts).length == 0
                                 ) {
-                                    this.setState({
-                                        status:
-                                            'Ate bad code and died, compilation aborted.',
+                                    this._updateConsole({
+                                        channel: 3,
+                                        msg: 'Ate bad code and died, compilation aborted.',
                                     });
                                     // Clear ABI and BIN
                                     delFiles();
                                 } else {
-                                    this.setState({
-                                        status:
-                                            'Successfully digested the source code.',
-                                    });
                                     var contractObj;
                                     const filename = srcfilename.match(
                                         '.*/(.*)$'
@@ -409,21 +404,19 @@ export default class Compiler extends Component {
     }
 
     renderToolbar = () => {
-        const cls = {};
-        cls[style.running] = this.isRunning;
+        const { isRunning } = this.state;
         return (
             <div className={style.toolbar} id={this.id + '_header'}>
                 <div className={style.buttons}>
-                    <a
-                        className={classnames(cls)}
-                        href="#"
+                    <button
+                        className={classnames(['btnNoBg'], {[style.running] : isRunning})}
                         title="Recompile"
                         onClick={this.run}
                     >
                         <Tooltip title="Recompile">
                             <IconRun />
                         </Tooltip>
-                    </a>
+                    </button>
                 </div>
                 <div className={style.status}>{this.state.status}</div>
                 <div className={style.info}>

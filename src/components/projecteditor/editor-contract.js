@@ -185,7 +185,7 @@ export default class ContractEditor extends Component {
             return;
         }
 
-        if (!this.state.name.match(/^([a-zA-Z0-9-_]+)$/) || this.contract.obj.name.length > 255) {
+        if (!this.state.name.match(/^([a-zA-Z0-9-_]+)$/) || this.state.name.length > 255) {
             alert('Illegal contract name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 255 characters.');
             return;
         }

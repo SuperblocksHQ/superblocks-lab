@@ -25,6 +25,7 @@ import style from '../../style.less';
 import { DropdownContainer } from '../../../../dropdown';
 import { FadeInComponent } from './fadeInComponent';
 import { ShowActions } from './showActions';
+import Tooltip from '../../../../tooltip';
 
 export class DirectoryEntry extends Component {
     render() {
@@ -79,19 +80,27 @@ export class DirectoryEntry extends Component {
                             <FadeInComponent>
                                 <div className={style.buttons} onClick={(e) => e.stopPropagation()}>
                                     <a href="#" title="New File" onClick={clickNewFile}>
-                                        <IconAddFile />
+                                        <Tooltip title="New File">
+                                            <IconAddFile />
+                                        </Tooltip>
                                     </a>
                                     <a href="#" title="New Folder" onClick={clickNewFolder}>
-                                        <IconAddFolder />
+                                        <Tooltip title="New Folder">
+                                            <IconAddFolder />
+                                        </Tooltip>
                                     </a>
                                     {
                                         fullPath != "/" &&
                                             <div style={{display: "inline"}}>
-                                                <a href="#" title="Rename directory" onClick={clickRenameFile}>
-                                                    <IconEdit />
+                                                <a href="#" title="Rename" onClick={clickRenameFile}>
+                                                    <Tooltip title="Rename">
+                                                        <IconEdit />
+                                                    </Tooltip>
                                                 </a>
-                                                <a href="#" title="Delete directory" onClick={clickDeleteFile}>
-                                                    <IconTrash />
+                                                <a href="#" title="Delete" onClick={clickDeleteFile}>
+                                                    <Tooltip title="Delete">
+                                                        <IconTrash />
+                                                    </Tooltip>
                                                 </a>
                                             </div>
                                     }

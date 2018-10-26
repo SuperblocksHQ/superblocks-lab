@@ -15,27 +15,6 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import FileItem from './fileItem';
-import {
-    IconTrash,
-    IconGem,
-    IconFile,
-    IconFolder,
-    IconFolderOpen,
-    IconCube,
-    IconConfigure,
-    IconCompile,
-    IconDeploy,
-    IconClone,
-    IconInteract,
-    IconContract,
-    IconAddFile,
-    IconHtml,
-    IconJS,
-    IconCss,
-    IconMd,
-    IconShowPreview,
-    IconMosaic,
-} from '../../../icons';
 import Dappfile from '../dappfile';
 
 export default class DappfileItem extends FileItem {

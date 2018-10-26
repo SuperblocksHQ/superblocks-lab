@@ -29,13 +29,21 @@
         padding: 12px 14px 12px 14px;
         .buttons {
             float: left;
-            >a {
-                margin-right: 10px;
+            display: flex;
+            align-content: center;
+            align-items: center;
+            >button {
                 color: #fff;
                 opacity: 0.6;
                 &:hover {
                     opacity: 1.0;
                 }
+            }
+            .separator {
+                border-left: 1px solid #979797;
+                height: 12px;
+                margin-left: 10px;
+                margin-right: 10px;
             }
         }
         .info {
