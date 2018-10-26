@@ -19,10 +19,55 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import style from './style';
 import { Pane, PaneComponent } from './pane';
-import { IconClose } from '../icons';
+import { IconClose, IconTest, IconPlay, IconStop, IconRun, IconCheck } from '../icons';
 import { DropdownContainer } from '../dropdown';
 import SplitterLayout from "react-splitter-layout";
 
+const ConsoleTopBar =(props)=>(
+        <div className={style.consoleTopBar}>
+            <span className={style.testBar}>
+                <IconTest className={style.icon}  />
+            <span className={style.testText}>Tests</span>
+            </span>
+            <div className={style.buttons}>
+                    <IconClose className={style.closeIcon} onClick={props.closeTestPanel} />
+            </div>
+        </div>
+);
+const TestControls =()=>{
+    return(
+        <div className={style.testControls}>
+            <span className={style.icons}>
+                <div className={style.buttons}>
+                    <a href="#" title="Run">
+                        <IconPlay className={style.iconPlay} />
+                    </a>
+                </div>
+        <div className={style.buttons}>
+            <a href="#" title="Refresh">
+                <IconRun  />
+            </a>
+        </div>
+       <div className={style.buttons}>
+             <a href="#" title="Stop">
+                  <IconStop />
+             </a>
+        </div>
+            </span>
+        </div>)
+};
+const TestFilesHeader =()=>{
+    return(<div className={style.testFile }>
+        <span className={style.bartext}>Done 7 of 7 tests</span>
+    </div>)
+};
+const TestFileTree=()=>{
+    return(
+<div>
+    <IconCheck/>
+</div>
+    )
+}
 export default class Panes extends Component {
 
     constructor(props) {
@@ -303,20 +348,29 @@ export default class Panes extends Component {
                <div key="header" id="panes_header" class={style.header}>
                    {header}
                </div>
+               {/*remove this condition and add proper state management for handling closing the pane.*/}
                { this.props.testPanel &&
-                   <SplitterLayout vertical={true}>
+                   <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} vertical={true} style={{overflow:'hidden'}}>
                        <div key="panes2" className={style.panes}>
                            {panes}
                        </div>
-                       <div style={{backgroundColor: 'black', height:'100%'}}>
-                           <div style={{height: '50px', width: '100%', backgroundColor: '#252525' }}></div>
-                           <SplitterLayout vertical={false}>
-                               <div style={{backgroundColor: 'black', height:'100%'}}>
-                                   Test file</div>
-                               <div>
-                                   <div style={{height:'50px',backgroundColor: '#252533', width:'100%' }}>
-
-                               </div></div>
+                       <div>
+                           <ConsoleTopBar closeTestPanel={this.props.closeTestPanel}/>
+                           <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} primaryMinSize="100px" vertical={false} >
+                               <div className={style.leftPane}>
+                                   <TestFilesHeader />
+                                   <TestControls />
+                                   <TestFileTree />
+                               </div>
+                               <div className={style.rightPane}>
+                                   <div className={style.rightStatusBar}>
+                                       <span className={style.statusBar}>Test Summary</span>
+                                       <span style={{ color:'#7ed321' }} className={style.statusBar}>6 Passed</span>
+                                       <span style={{ color:'#d0021b' }} className={style.statusBar}>1 Failed</span>
+                                       <span className={style.statusBar}>7 Total</span>
+                               </div>
+                                   <div className={style.consoleText}>NOTE - Console output from this specific test</div>
+                               </div>
                            </SplitterLayout>
                        </div>
                    </SplitterLayout>

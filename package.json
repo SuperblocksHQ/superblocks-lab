@@ -55,6 +55,7 @@
     "react-monaco-editor": "^0.13.0",
     "react-onclickoutside": "^6.7.1",
     "react-redux": "^5.0.7",
+    "react-split": "^2.0.1",
     "react-split-pane": "0.1.84",
     "react-splitter-layout": "^3.0.1",
     "redux": "^4.0.0",

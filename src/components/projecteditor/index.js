@@ -23,7 +23,7 @@ import Panes from './panes';
 import TopBar from '../topbar';
 import ContactContainer from '../contactContainer';
 import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
-import { IconTransactions, IconClose } from '../icons';
+import { IconTransactions, IconClose, IconTest } from '../icons';
 import SplitterLayout from 'react-splitter-layout';
 export default class ProjectEditor extends Component {
 
@@ -31,7 +31,7 @@ export default class ProjectEditor extends Component {
         controlPanelWidth: 280,
         draggin: false,
         showTransactions: false,
-        openPanel: false
+        openPanel: true
     }
 
     constructor(props) {
@@ -120,6 +120,10 @@ export default class ProjectEditor extends Component {
             showTransactions: false
         });
     }
+    handleClosePanel=()=>{
+        this.setState({openPanel: false})
+
+    }
 
     render() {
         var endpoint="";
@@ -143,7 +147,7 @@ export default class ProjectEditor extends Component {
                     <span class="resizer vertical" onMouseDown={this.onMouseDown}></span>
                     <div style="position: relative; width: 100%">
                         <div key="main_panes" id="main_panes" class={style.panescontainer} >
-                            <Panes testPanel={openPanel} router={this.props.router} functions={this.props.functions} isActionPanelShowing={showTransactions} />
+                            <Panes closeTestPanel={this.handleClosePanel} testPanel={openPanel} router={this.props.router} functions={this.props.functions} isActionPanelShowing={showTransactions} />
 
                             {
                                 showTransactions ?
@@ -170,12 +174,20 @@ export default class ProjectEditor extends Component {
                         <div>
                         </div>
                         <div class="bottom-status-bar">
-                            <span class="left">
-                                <spane style={{marginRight: '20px'}} onClick={()=>this.setState({openPanel: !openPanel})}>Tests</spane>
+                            <div className={style.testPanel}>
+                                <div className={style.actions}>
+                                    <button className={classNames([style.action, "btnNoBg"])}
+                                            onClick={()=>this.setState({openPanel: !openPanel})}>
+                                        <IconTest className={style.testTube} />
+                                        <span>Tests</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <span class="right">
                                 <span class="note">Note</span>
                                 <span class="note-text">All files are stored in the browser only, download to backup</span>
+                                <span>{endpoint}</span>
                             </span>
-                            <span class="right">{endpoint}</span>
                         </div>
                 </div>
                 </div>

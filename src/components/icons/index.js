@@ -45,7 +45,7 @@ import iconLockOpen from '@fortawesome/fontawesome-free-solid/faLockOpen';
 import iconPencil from '@fortawesome/fontawesome-free-solid/faPencilAlt';
 import iconDownload from '@fortawesome/fontawesome-free-regular/faArrowAltCircleDown';
 import iconMosaic from '@fortawesome/fontawesome-free-solid/faThLarge';
-
+import iconPlay from '@fortawesome/fontawesome-free-solid/faPlay'
 class IconImg extends Component {
     render () {
         let { width, height, ...props } = this.props;
@@ -63,7 +63,7 @@ class IconImg extends Component {
 
 export const IconDeployGreen = ({...props}) => <IconImg src={'/static/img/icon-deploy-green.svg'} {...props} />;
 export const IconAddContract = ({...props}) => <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16"><polygon points="12,3 8,3 8,4 11,4 11,7 14,7 14,14 6,14 6,8 5,8 5,15 15,15 15,6"/><path d="M7 3.018h-2v-2.018h-1.981v2.018h-2.019v1.982h2.019v2h1.981v-2h2v-1.982z" {...props}/></svg>;
-export const IconRun = () => <FaIcon icon={iconRun} />;
+export const IconRun = ({props}) => <FaIcon icon={iconRun} {...props} />;
 export const IconSave = () => <FaIcon icon={iconSave} />;
 export const IconCompile = () => <FaIcon icon={iconCompile} />;
 export const IconDeploy = ({...props}) => <IconImg src={'/static/img/icon-deploy.svg'} {...props} />;
@@ -111,7 +111,10 @@ export const IconJS = ({...props}) => <IconImg src={'/static/img/icon-js.svg'} {
 export const IconCss = ({...props}) => <IconImg src={'/static/img/icon-css.svg'} {...props} />;
 export const IconMd = ({...props}) => <IconImg src={'/static/img/icon-md.svg'} {...props} />;
 export const IconShowPreview = ({...props}) => <svg fill="currentColor" preserveAspectRatio="xMidYMid meet" height="16px" width="16px" viewBox="0 0 200 200" style="vertical-align: middle;"><path d="M27,33 L173,33 C178.522847,33 183,37.4771525 183,43 L183,157 C183,162.522847 178.522847,167 173,167 L27,167 C21.4771525,167 17,162.522847 17,157 L17,43 C17,37.4771525 21.4771525,33 27,33 Z M29,64 L29,156 L171,156 L171,64 L29,64 Z M84.260356,82.6998802 L119.974518,107.161635 C121.797124,108.409995 122.262642,110.899505 121.014282,112.722111 C120.734924,113.129973 120.38238,113.482517 119.974518,113.761875 L84.260356,138.223629 C82.4377502,139.471989 79.9482404,139.006471 78.6998802,137.183866 C78.2439706,136.518238 78,135.730302 78,134.92351 L78,86 C78,83.790861 79.790861,82 82,82 C82.8067925,82 83.594728,82.2439706 84.260356,82.6998802 Z" id="Combined-Shape" fill="inherit" {...props}></path></svg>
-
+// Test Console
+export const IconTest =({...props})=> <IconImg src={'/static/img/test-tube.svg'} {...props} />;
+export const IconPlay =({...props})=><IconImg  src={'/static/img/icon-play.svg'} {...props} />;
+export const IconStop =({...props})=><IconImg  src={'/static/img/icon-stop.svg'} {...props} />;
 
 // Learn and Resouces
 export const IconGuide = ({...props}) => <IconImg src={'/static/img/icon-guide.svg'} {...props} />;

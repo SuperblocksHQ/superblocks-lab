@@ -186,8 +186,8 @@ a:active,a:focus {
 
 .bottom-status-bar {
     position: absolute;
-    height: 27px;
-	background-color: #141618;
+    height: 45px;
+	background-color: #1C2022;
     box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.0);
     z-index: 1;
     overflow: hidden;
@@ -227,6 +227,7 @@ a:active,a:focus {
     }
     .note-text {
         margin-left: 10px;
+        margin-right: 40px;
     }
 }
 
@@ -427,4 +428,12 @@ a:active,a:focus {
             color: #444;
         }
     }
+}
+.dragBar.splitter-layout > .layout-splitter {
+    background: #252525;
+    border-right: solid 1px black;
+}
+.dragBar.splitter-layout.splitter-layout-vertical > .layout-splitter { background: #141618; height: 5px; }
+.dragBar.splitter-layout .layout-pane {
+    overflow: hidden;
 }
