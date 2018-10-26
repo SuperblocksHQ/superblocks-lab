@@ -12,8 +12,8 @@ import {
     IconHelp,
     IconProjectSelector,
     IconDropdown,
-    IconTelegram,
-    IconCheck,
+    IconDiscord,
+    IconCheck
 } from '../icons';
 
 const HelpDropdownAction = () => (
@@ -40,15 +40,9 @@ const HelpDropdownDialog = () => (
             </li>
             <li>
                 <div className={style.container}>
-                    <a
-                        href="https://t.me/GetSuperblocks"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Join our Community!
-                    </a>
-                    <span className={style.telegramIcon}>
-                        <IconTelegram color="#0088cc" />
+                    <a href="https://discord.gg/6Cgg2Dw" target="_blank" rel="noopener noreferrer" title="Superblocks' community">Join our Community!</a>
+                    <span className={style.communityIcon}>
+                        <IconDiscord color="#7289DA"/>
                     </span>
                 </div>
             </li>

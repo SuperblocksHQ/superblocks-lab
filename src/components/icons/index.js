@@ -30,6 +30,7 @@ import iconCube from '@fortawesome/fontawesome-free-solid/faCube';
 import iconPlus from '@fortawesome/fontawesome-free-solid/faPlusSquare';
 import iconUp from '@fortawesome/fontawesome-free-solid/faArrowUp';
 import iconDown from '@fortawesome/fontawesome-free-solid/faArrowDown';
+import iconRight from '@fortawesome/fontawesome-free-solid/faLongArrowAltRight';
 import iconClone from '@fortawesome/fontawesome-free-solid/faClone';
 import iconUpload from '@fortawesome/fontawesome-free-solid/faUpload';
 import iconExchangeAlt from '@fortawesome/fontawesome-free-solid/faExchangeAlt';
@@ -38,7 +39,7 @@ import iconClose from '@fortawesome/fontawesome-free-solid/faTimes';
 import iconQuestionCircle from '@fortawesome/fontawesome-free-regular/faQuestionCircle';
 import iconTwitter from '@fortawesome/fontawesome-free-brands/faTwitter';
 import iconGithub from '@fortawesome/fontawesome-free-brands/faGithub';
-import iconTelegram from '@fortawesome/fontawesome-free-brands/faTelegram';
+import iconDiscord from '@fortawesome/fontawesome-free-brands/faDiscord';
 import iconLock from '@fortawesome/fontawesome-free-solid/faLock';
 import iconLockOpen from '@fortawesome/fontawesome-free-solid/faLockOpen';
 import iconPencil from '@fortawesome/fontawesome-free-solid/faPencilAlt';
@@ -89,6 +90,7 @@ export const IconCube = () => <FaIcon icon={iconCube} />;
 export const IconPlus = () => <FaIcon icon={iconPlus} />;
 export const IconUp = () => <FaIcon icon={iconUp} />;
 export const IconDown = () => <FaIcon icon={iconDown} />;
+export const IconRight = () => <FaIcon icon={iconRight} />;
 export const IconClone = () => <FaIcon icon={iconClone} />;
 export const IconDownload = ({ ...props }) => (
     <FaIcon icon={iconDownload} {...props} />
@@ -163,12 +165,7 @@ export const IconWhatsNew = ({ ...props }) => (
 );
 
 // External services
-export const IconTwitter = ({ ...props }) => (
-    <FaIcon icon={iconTwitter} {...props} />
-);
-export const IconGithub = ({ ...props }) => (
-    <FaIcon icon={iconGithub} {...props} />
-);
-export const IconTelegram = ({ ...props }) => (
-    <FaIcon icon={iconTelegram} {...props} />
-);
+export const IconTwitter = ({...props}) => <FaIcon icon={iconTwitter} {...props} />;
+export const IconGithub = ({...props}) => <FaIcon icon={iconGithub} {...props} />;
+export const IconDiscord = ({...props}) => <FaIcon icon={iconDiscord} {...props}/>;
+

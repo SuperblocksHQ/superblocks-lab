@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "jest",
+    "test": "mocha ./test/*.js && jest",
     "test:watch": "npm test -- --watch",
     "format": "prettier --trailing-comma es5 --single-quote --write 'src/*/*.js' 'src/*/!(node_modules)/**/*.js' '!src/components/solc/**/*.js' '!src/components/evm/**/*.js' webpack.config.js",
     "lint": "npm run format && eslint --fix --config .eslintrc src"
@@ -54,6 +54,7 @@
     "jest-resolve": "23.6.0",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "0.4.3",
+    "mocha": "^5.2.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.1.0",
     "postcss-flexbugs-fixes": "4.1.0",
