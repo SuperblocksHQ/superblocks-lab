@@ -175,7 +175,7 @@ export default class Backend {
                     continue;
                 }
                 var a = name.match(
-                    '^[.](.+).sol.([^.]+)([.]?.*).(deploy|address|tx)$'
+                    '^[.](.+)[.][SsOoLl][.]([^.]+)([.]?.*).(deploy|address|tx)$'
                 );
                 if (a) {
                     const contractName = a[1];
@@ -191,7 +191,7 @@ export default class Backend {
                     break;
                 }
                 var a = name.match(
-                    '^[.](.+).sol.([^.]+)([.]?.*).(abi|meta|bin|hash)$'
+                    '^[.](.+)[.][SsOoLl][.]([^.]+)([.]?.*).(abi|meta|bin|hash)$'
                 );
                 if (a) {
                     const contractName = a[1];
@@ -228,7 +228,7 @@ export default class Backend {
                 if (file['type'] != 'f') {
                     continue;
                 }
-                var a = name.match('^[.]([^.]+).([^.]+)[.](js)$');
+                var a = name.match('^[.](.+)[.]([^.]+)[.](js)$');
                 if (a) {
                     const contractName = a[1];
                     const networkName = a[2];

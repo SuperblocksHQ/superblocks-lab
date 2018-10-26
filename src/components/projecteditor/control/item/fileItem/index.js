@@ -61,7 +61,7 @@ export default class FileItem extends Item {
         if (props.type == 'file') {
             var icon = <IconFile />;
             var type2 = 'file';
-            var a = (props.state.file || '').match('.*[.](.+)$');
+            var a = (props.state.file || '').match('.*[.]([^.]+)$');
             if (a) {
                 const suffix = a[1].toLowerCase();
                 switch (suffix) {
@@ -451,10 +451,10 @@ export default class FileItem extends Item {
             //return false;
             //}
             const suffix1 =
-                (this.getFullPath().match('^(.*)/[^/]+[.](.+)$') || [])[2] ||
+                (this.getFullPath().match('^.*/[^/]+[.](.+)$') || [])[1] ||
                 '';
             const suffix2 =
-                (newFile.match('^(.*)/[^/]+[.](.+)$') || [])[2] || '';
+                (newFile.match('^.*/[^/]+[.](.+)$') || [])[1] || '';
             if (
                 suffix1.toLowerCase() == 'sol' &&
                 suffix1.toLowerCase() != suffix2.toLowerCase()

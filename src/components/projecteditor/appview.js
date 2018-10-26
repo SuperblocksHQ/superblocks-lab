@@ -103,7 +103,7 @@ export default class AppView extends Component {
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir = a[1];
         const filename = a[2];
-        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const a2 = filename.match(/^(.+)[.][Ss][Oo][Ll]$/);
         const contractName = a2[1];
         return (
             '/build' +
@@ -166,6 +166,7 @@ export default class AppView extends Component {
 
                                 const env = this.state.env;
 
+                                const jsfiles=[];
                                 const contracts2 = [];
                                 const tag = env;
                                 var endpoint;
@@ -179,9 +180,10 @@ export default class AppView extends Component {
                                         .getHiddenItem('contracts')
                                         .getByName(contracts[index]);
                                     const src = contract.getSource();
-                                    const network = this.state.network;
-
+                                    const project = this.props.item.getProject();
                                     const env = project.getEnvironment();
+                                    const network = env;
+
                                     const endpoint = (
                                         this.props.functions.networks.endpoints[
                                             network
@@ -206,23 +208,10 @@ export default class AppView extends Component {
                                     ]);
                                 }
 
-                                const files = [];
-                                for (
-                                    var index = 0;
-                                    index < contracts.length;
-                                    index++
-                                ) {
-                                    files.push(
-                                        '/build/contracts/' +
-                                            contracts[index] +
-                                            '/' +
-                                            contracts[index] +
-                                            '.' +
-                                            env +
-                                            '.js'
-                                    );
-                                }
-                                this._loadFiles(files, (status, bodies) => {
+                                const jssrc=this._makeFileName(src, network, "js");
+                                jsfiles.push(jssrc);
+
+                                this._loadFiles(jsfiles, (status, bodies) => {
                                     if (status != 0) {
                                         this.writeContent(
                                             1,
@@ -634,10 +623,15 @@ export default class AppView extends Component {
     };
 
     renderToolbar = () => {
-        const accounts = this.getAccounts();
         var accountsNotice = '';
+        const project = this.props.item.getProject();
+        const env = project.getEnvironment();
+        const network = env;
+        const accounts = this.getAccounts();
+
+
         if (this.state.disableAccounts == 'on') {
-            if (this.state.network == 'browser') {
+            if (network == 'browser') {
                 accountsNotice =
                     'Warning: the dapp cannot communicate to the Browser blockchain when accounts are disabled.';
             } else {

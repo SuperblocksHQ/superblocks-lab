@@ -57,7 +57,7 @@ export default class Compiler extends Component {
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir = a[1];
         const filename = a[2];
-        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const a2 = filename.match(/^(.+)[.][Ss][Oo][Ll]$/);
         const contractName = a2[1];
         return (
             '/build' + dir + contractName + '/' + contractName + '.' + suffix

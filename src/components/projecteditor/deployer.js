@@ -59,7 +59,7 @@ export default class Deployer extends Component {
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir = a[1];
         const filename = a[2];
-        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const a2 = filename.match(/^(.+)[.][Ss][Oo][Ll]$/);
         const contractName = a2[1];
         if (tag) {
             return (
@@ -159,6 +159,9 @@ export default class Deployer extends Component {
             this.callback(1);
             return;
         }
+
+        const contractFilename = this.props.item.getParent().getFile().match("^(.*)+[.][Ss][Oo][Ll]")[1];
+
         const obj = {
             web3: this._getWeb3(endpoint),
             endpoint: endpoint,
@@ -180,9 +183,9 @@ export default class Deployer extends Component {
             deploysrc: this._makeFileName(src, this.network, 'deploy'),
             contractsjssrc:
                 '/build/contracts/' +
-                this.props.item.getParent().getName() +
+                contractFilename +
                 '/' +
-                this.props.item.getParent().getName() +
+                contractFilename +
                 '.' +
                 this.network +
                 '.js',

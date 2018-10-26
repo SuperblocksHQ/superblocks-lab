@@ -59,8 +59,6 @@ export default class ContractItem extends FileItem {
     };
 
     _moveContractBuildFiles = (oldSource, newSource, cb) => {
-        // TODO bug: this doesn't update open items correctly.
-        //
         const oldBuildDir = this._calculateBuildDir(oldSource);
         const newBuildDir = this._calculateBuildDir(newSource);
 
@@ -89,14 +87,14 @@ export default class ContractItem extends FileItem {
             return new Promise( (resolve) => {
                 const mvs = [];
                 children.map( (file) => {
-                    var a = file.getFile().match("^(.+)[.]([^.]+)[.](deploy|address|tx)$");
+                    var a = file.getFile().match("^(.+)[.](.+)[.](deploy|address|tx|js)$");
                     if (a) {
                         const oldFile = oldBuildDir.concat("/", file.getFile());
                         const newFile = newBuildDir.concat("/", newContractName, ".", a[2], ".", a[3]);
                         mvs.push([oldFile, newFile]);
                     }
                     else {
-                        var a = file.getFile().match("^(.+).(abi|meta|bin|hash)$");
+                        var a = file.getFile().match("^(.+)[.](abi|meta|bin|hash)$");
                         if (a) {
                             const oldFile = oldBuildDir.concat("/", file.getFile());
                             const newFile = newBuildDir.concat("/", newContractName, ".", a[2]);
@@ -107,7 +105,9 @@ export default class ContractItem extends FileItem {
                 const fn = () => {
                     const obj = mvs.pop();
                     if (obj) {
-                        this.getProject().moveFile(obj[0], obj[1], fn);
+                        this.getProject().getItemByPath(obj[0].split('/'), this.getProject()).then( (fileItem) => {
+                            fileItem.mv(obj[1]).then(fn);
+                        });
                     }
                     else {
                         resolve();
@@ -157,7 +157,7 @@ export default class ContractItem extends FileItem {
         const a = contractSource.match(/^(.*\/)([^/]+)$/);
         const dir=a[1];
         const filename=a[2];
-        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const a2 = filename.match(/^(.+)[.][Ss][Oo][Ll]$/);
         const contractName = a2[1];
         const path = "/build" + dir + contractName;
         return path;

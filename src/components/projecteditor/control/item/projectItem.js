@@ -345,7 +345,7 @@ export default class ProjectItem extends Item {
             const contracts = this._getDappfile().contracts();
             for (let index = 0; index < contracts.length; index++) {
                 var contract = contracts[index];
-                const file = contract.source.match('^(.*)/([^/]+)$')[2];
+                const file = contract.source.match('^.*/([^/]+)$')[1];
                 var childItem = new ContractItem(
                     {
                         state: {

@@ -106,7 +106,7 @@ export default class ContractInteraction extends Component {
         const a = path.match(/^(.*\/)([^/]+)$/);
         const dir = a[1];
         const filename = a[2];
-        const a2 = filename.match(/^([^.]+)\.sol$/);
+        const a2 = filename.match(/^(.+)[.][Ss][Oo][Ll]$/);
         const contractName = a2[1];
         if (tag) {
             return (
@@ -128,9 +128,7 @@ export default class ContractInteraction extends Component {
 
     render2 = () => {
         const project = this.props.item.getProject();
-        //const env=this.state.network;
         const env = project.getEnvironment();
-        //const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
         const contract = this.props.item.getParent();
 
         if (!contract) return; // This gets called twice, with the previous contract name, after renaming a contract.
@@ -145,7 +143,7 @@ export default class ContractInteraction extends Component {
         const addresssrc = this._makeFileName(src, network, 'address');
         const txsrc = this._makeFileName(src, network, 'tx');
         const deploysrc = this._makeFileName(src, network, 'deploy');
-        const contracts = [contract.getName()];
+        const jssrc = this._makeFileName(src, network, "js");
         project.loadFile(
             addresssrc,
             body => {
@@ -177,7 +175,7 @@ export default class ContractInteraction extends Component {
                                 abi = JSON.parse(body.contents);
                             }
                             this._loadJsFiles(
-                                contracts,
+                                jssrc,
                                 env,
                                 (status, jsbodies) => {
                                     if (status != 0) {
@@ -350,14 +348,9 @@ export default class ContractInteraction extends Component {
         });
     };
 
-    _loadJsFiles = (contracts, network, cb) => {
-        const files = [];
+    _loadJsFiles = (jssrc, network, cb) => {
+        const files = [jssrc];
         const bodies = [];
-        for (var index = 0; index < contracts.length; index++) {
-            files.push(
-                '/build/app/' + contracts[index] + '.' + network + '.js'
-            );
-        }
         var fn;
         fn = (files, bodies, cb2) => {
             if (files.length == 0) {

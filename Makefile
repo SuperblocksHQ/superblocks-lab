@@ -33,6 +33,7 @@ build_external_dist:
 	mkdir -p ./src/components/superprovider/dist
 	sed 's#ORIGIN#"$(ORIGIN_DIST)"#g' ./src/components/superprovider/web3provider.js | ./node_modules/babel-cli/bin/babel.js --presets env >./src/components/superprovider/dist/web3provider.js
 dist: build
+	@echo "You did bump the version (./bump_version.sh) prio, right?"
 	rm -rf dist
 	mkdir dist
 	cp -r ./build/static ./dist
@@ -46,7 +47,6 @@ dist: build
 	cp -r ./build/evm ./dist
 	rm ./dist/sw.js
 	@echo "Done."
-	@echo "You did bump the version (./bump_version.sh) prio, right?"
 clean:
 	rm -rf build
 	rm -rf dist
