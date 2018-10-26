@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DropdownContainer } from '../dropdown';
+import Tooltip from '../tooltip';
 import style from './style.less';
 import {
     IconDeployGreen,
@@ -157,7 +158,9 @@ class AccountDropdown extends Component {
                             this.props.onAccountDelete(e, index);
                         }}
                     >
-                        <IconTrash />
+                        <Tooltip title="Delete">
+                            <IconTrash />
+                        </Tooltip>
                     </button>
                 );
             } else {
@@ -185,7 +188,9 @@ class AccountDropdown extends Component {
                                     this.props.onAccountEdit(e, index);
                                 }}
                             >
-                                <IconEdit />
+                                <Tooltip title="Edit Account">
+                                    <IconEdit />
+                                </Tooltip>
                             </button>
                             {deleteButton}
                         </div>

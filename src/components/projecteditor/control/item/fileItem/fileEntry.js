@@ -21,6 +21,7 @@ import {
 } from '../../../../icons';
 import style from '../../style.less';
 import { DropdownContainer } from '../../../../dropdown';
+import Tooltip from '../../../../tooltip';
 import { FadeInComponent } from './fadeInComponent';
 import { ShowActions } from './showActions';
 
@@ -61,10 +62,14 @@ export class FileEntry extends Component {
                             <FadeInComponent>
                                 <div className={style.buttons} onClick={e => e.stopPropagation()}>
                                     <a href="#" title="Rename file" onClick={clickRenameFile}>
-                                        <IconEdit />
+                                        <Tooltip title="Rename">
+                                            <IconEdit />
+                                        </Tooltip>
                                     </a>
                                     <a href="#" title="Delete file" onClick={clickDeleteFile} >
-                                        <IconTrash />
+                                        <Tooltip title="Delete">
+                                            <IconTrash />
+                                        </Tooltip>
                                     </a>
                                 </div>
                             </FadeInComponent>

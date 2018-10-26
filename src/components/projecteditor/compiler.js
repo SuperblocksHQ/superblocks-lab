@@ -420,7 +420,9 @@ export default class Compiler extends Component {
                         title="Recompile"
                         onClick={this.run}
                     >
-                        <IconRun />
+                        <Tooltip title="Recompile">
+                            <IconRun />
+                        </Tooltip>
                     </a>
                 </div>
                 <div className={style.status}>{this.state.status}</div>

@@ -17,6 +17,7 @@
 import React, { Component } from 'react';
 import style from './style-appview.less';
 import { IconRun } from '../icons';
+import Tooltip from '../tooltip';
 import SuperProvider from '../superprovider';
 import Web3 from 'web3';
 import Modal from '../modal';
@@ -648,7 +649,9 @@ export default class AppView extends Component {
             <div className={style.toolbar} id={this.id + '_header'}>
                 <div className={style.buttons}>
                     <a href="#" title="Refresh" onClick={this.run}>
-                        <IconRun />
+                        <Tooltip title="Refresh">
+                            <IconRun />
+                        </Tooltip>
                     </a>
                     <a href="#" title="Download DApp" onClick={this.download}>
                         Download DApp

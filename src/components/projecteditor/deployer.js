@@ -22,6 +22,7 @@ import { IconRun } from '../icons';
 import Web3 from 'web3';
 import Tx from '../../ethereumjs-tx-1.3.3.min.js';
 import Modal from '../modal';
+import Tooltip from '../tooltip';
 
 export default class Deployer extends Component {
 
@@ -1168,7 +1169,9 @@ if(typeof(Contracts)==="undefined") var Contracts={};
                         title="Redeploy"
                         onClick={this.run}
                     >
-                        <IconRun />
+                        <Tooltip title="Redeploy">
+                            <IconRun />
+                        </Tooltip>
                     </a>
                 </div>
                 <div className={style.status}>{this.state.status}</div>

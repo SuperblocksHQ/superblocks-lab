@@ -5,6 +5,7 @@ import style from './style.less';
 import { DropdownContainer } from '../dropdown';
 import Backend from '../projecteditor/control/backend';
 import Modal from '../modal';
+import Tooltip from '../tooltip';
 import {
     IconDownload,
     IconTrash,
@@ -295,7 +296,9 @@ class ProjectDialog extends Component {
                                             this.openProjectConfig(e, project);
                                         }}
                                     >
-                                        <IconConfigure />
+                                        <Tooltip title="Configure Project">
+                                            <IconConfigure />
+                                        </Tooltip>
                                     </button>
                                     <button
                                         className="btnNoBg"
@@ -303,7 +306,9 @@ class ProjectDialog extends Component {
                                             this.downloadProject(e, project);
                                         }}
                                     >
-                                        <IconDownload />
+                                        <Tooltip title="Download">
+                                            <IconDownload />
+                                        </Tooltip>
                                     </button>
                                     <button
                                         className="btnNoBg"
@@ -311,7 +316,9 @@ class ProjectDialog extends Component {
                                             this.deleteProject(e, project);
                                         }}
                                     >
-                                        <IconTrash />
+                                        <Tooltip title="Delete">
+                                            <IconTrash />
+                                        </Tooltip>
                                     </button>
                                 </div>
                             </div>
