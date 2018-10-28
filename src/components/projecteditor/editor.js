@@ -24,6 +24,7 @@ import {
     IconConfigure,
     IconInteract,
 } from '../icons';
+import Tooltip from '../tooltip';
 
 export default class Editor extends Component {
     constructor(props) {
@@ -198,7 +199,9 @@ export default class Editor extends Component {
                         style={stl}
                         onClick={this.save}
                     >
-                        <IconSave />
+                        <Tooltip title="Save">
+                            <IconSave />
+                        </Tooltip>
                     </button>
                     {this.props.item.getType2() == 'contract' && (
                         <button
@@ -206,7 +209,9 @@ export default class Editor extends Component {
                             title="Compile"
                             onClick={this.compile}
                         >
-                            <IconCompile />
+                            <Tooltip title="Compile">
+                                <IconCompile />
+                            </Tooltip>
                         </button>
                     )}
                     {this.props.item.getType2() == 'contract' && (
@@ -215,7 +220,9 @@ export default class Editor extends Component {
                             title="Deploy"
                             onClick={this.deploy}
                         >
-                            <IconDeploy style={{ verticalAlign: 'middle' }} />
+                            <Tooltip title="Deploy">
+                                <IconDeploy style={{ verticalAlign: 'middle' }} />
+                            </Tooltip>
                         </button>
                     )}
                     {this.props.item.getType2() == 'contract' && (
@@ -224,7 +231,9 @@ export default class Editor extends Component {
                             title="Configure"
                             onClick={this.configure}
                         >
-                            <IconConfigure />
+                            <Tooltip title="Configure">
+                                <IconConfigure />
+                            </Tooltip>
                         </button>
                     )}
                     {this.props.item.getType2() == 'contract' && (
@@ -233,7 +242,9 @@ export default class Editor extends Component {
                             title="Interact"
                             onClick={this.interact}
                         >
-                            <IconInteract style={{ verticalAlign: 'middle' }} />
+                            <Tooltip title="Interact">
+                                <IconInteract style={{ verticalAlign: 'middle' }} />
+                            </Tooltip>
                         </button>
                     )}
                 </div>
