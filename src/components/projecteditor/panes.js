@@ -23,6 +23,10 @@ import { IconClose, IconTest, IconPlay, IconStop, IconRun, IconCheck } from '../
 import { DropdownContainer } from '../dropdown';
 import SplitterLayout from "react-splitter-layout";
 
+// TODO: FIXME: consider relocating to more appropriate place;
+//              consider it to be a state, props, control, ... ?
+import { testRunnerBridge } from "../testing/bridge";
+
 const ConsoleTopBar =(props)=>(
         <div className={style.consoleTopBar}>
             <span className={style.testBar}>
@@ -34,22 +38,44 @@ const ConsoleTopBar =(props)=>(
             </div>
         </div>
 );
-const TestControls =()=>{
+const TestControls =(props)=>{
     return(
         <div className={style.testControls}>
             <span className={style.icons}>
                 <div className={style.buttons}>
-                    <a href="#" title="Run">
+                    <a href="#" title="Run" onClick={
+                        () => {
+                            {
+                                testRunnerBridge.runAll(props.evmProvider);
+                            }
+                        }
+                    }>
                         <IconPlay className={style.iconPlay} />
                     </a>
                 </div>
         <div className={style.buttons}>
-            <a href="#" title="Refresh">
+            <a href="#" title="Refresh" onClick={
+                () => {
+                    {
+                        // TODO: FIXME: selection by index position
+                        const index = 0;
+                        testRunnerBridge.runSingle(props.evmProvider, index);
+                    }
+                }
+            }>
                 <IconRun  />
             </a>
         </div>
        <div className={style.buttons}>
-             <a href="#" title="Stop">
+             <a href="#" title="Stop" onClick={
+                () => {
+                    {
+                        // TODO: FIXME: being used as a way to debug data
+                        // TODO: FIXME: remove debugging code
+                        console.warn(testRunnerBridge.readData());
+                    }
+                }
+             }>
                   <IconStop />
              </a>
         </div>
@@ -359,7 +385,7 @@ export default class Panes extends Component {
                            <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} primaryMinSize="100px" vertical={false} >
                                <div className={style.leftPane}>
                                    <TestFilesHeader />
-                                   <TestControls />
+                                   <TestControls evmProvider={this.props.functions.EVM.getProvider()}/>
                                    <TestFileTree />
                                </div>
                                <div className={style.rightPane}>
