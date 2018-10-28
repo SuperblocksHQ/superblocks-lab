@@ -23,11 +23,6 @@ import SuperProvider from '../superprovider';
 import Web3 from 'web3';
 
 export default class ContractInteraction extends Component {
-
-    state = {
-        account: null
-    }
-
     constructor(props) {
         super(props);
         this.id = props.id + '_contractinteraction';
@@ -38,9 +33,7 @@ export default class ContractInteraction extends Component {
         this.contract_balance_wei = '';
     }
 
-    componentDidMount() {
-        this._getEnv();
-    }
+    componentDidMount() {}
 
     notifyTx = (hash, endpoint) => {
         var network;
@@ -59,18 +52,7 @@ export default class ContractInteraction extends Component {
             });
     };
 
-    _getEnv = () => {
-        // Update the chosen network and account
-        //const accountName = this.props.project.props.state.data.account;
-        const project = this.props.item.getProject();
-        const accountName = project.getAccount();
-        //const env=this.props.project.props.state.data.env;
-        const env = project.getEnvironment();
-        this.setState({ account: accountName, network: env });
-    };
-
     redraw = props => {
-        this._getEnv();
         if ((props || {}).all) this.lastContent = null; // To force a render.
         this.forceUpdate();
         this.render2();
@@ -143,7 +125,7 @@ export default class ContractInteraction extends Component {
         const addresssrc = this._makeFileName(src, network, 'address');
         const txsrc = this._makeFileName(src, network, 'tx');
         const deploysrc = this._makeFileName(src, network, 'deploy');
-        const jssrc = this._makeFileName(src, network, "js");
+        const jssrc = this._makeFileName(src, network, 'js');
         project.loadFile(
             addresssrc,
             body => {
@@ -210,7 +192,9 @@ export default class ContractInteraction extends Component {
     };
 
     _getAccount = () => {
-        return this.state.account;
+        const project = this.props.item.getProject();
+        const accountName = project.getAccount();
+        return accountName;
     };
 
     _getAccountAddress = () => {
@@ -588,8 +572,8 @@ export default class ContractInteraction extends Component {
     updateBalance = () => {
         if (this.updateBalanceBusy) return;
         this.updateBalanceBusy = true;
-        const env = this.state.network;
-        const network = this.state.network;
+        const env = this.props.item.getProject().getEnvironment();
+        const network = env;
         const endpoint = (
             this.props.functions.networks.endpoints[network] || {}
         ).endpoint;
