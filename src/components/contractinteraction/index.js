@@ -41,7 +41,7 @@ var render_item = function(item, item_index, handler, prefix) {
 </div>
 `;
     var html =
-        `<div className="` +
+        `<div class="` +
         classes +
         `">
 ` +
@@ -61,15 +61,15 @@ var render_item = function(item, item_index, handler, prefix) {
 
     if (!item.constant || item.payable) {
         input_value += `
-<div className="inputs">
+<div class="inputs">
     `;
         if (!item.constant) {
             var id = prefix + item.name + '_gas';
             input_value +=
                 `
-    <div className="arguments">
-        <div className="btn2">Gas</div>
-        <div className="argument">
+    <div class="arguments">
+        <div class="btn2">Gas</div>
+        <div class="argument">
             <span>Limit</span>
             <input type="text" placeholder="300000" name="` +
                 id +
@@ -81,7 +81,7 @@ var render_item = function(item, item_index, handler, prefix) {
             var id = prefix + item.name + '_gasPrice';
             input_value +=
                 `
-        <div className="argument">
+        <div class="argument">
             <span>Price</span>
             <input type="text" name="` +
                 id +
@@ -99,9 +99,9 @@ var render_item = function(item, item_index, handler, prefix) {
             var id = prefix + item.name + '_payable';
             input_value +=
                 `
-    <div className="arguments">
-        <div className="btn2">Value</div>
-        <div className="argument">
+    <div class="arguments">
+        <div class="btn2">Value</div>
+        <div class="argument">
             <span>Value</span>
             <input type="text" name="` +
                 id +
@@ -120,15 +120,15 @@ var render_item = function(item, item_index, handler, prefix) {
     var fnArguments = '';
     if (item.inputs.length > 0) {
         fnArguments += `
-<div className="arguments">
-    <div className="btn2">Arguments</div>
+<div class="arguments">
+    <div class="btn2">Arguments</div>
 `;
         for (var index = 0; index < item.inputs.length; index++) {
             var input = item.inputs[index];
             var id = prefix + item.name + '__' + input.name;
             fnArguments +=
                 `
-    <div className="argument">
+    <div class="argument">
         <span>` +
                 input.name +
                 `</span>
@@ -148,12 +148,12 @@ var render_item = function(item, item_index, handler, prefix) {
     }
 
     var returns = `
-<div className="returns">
-    <div className="btn2">Returns:</div>
+<div class="returns">
+    <div class="btn2">Returns:</div>
 `;
     if (item.outputs.length > 0 && !item.constant) {
         returns += `
-<div className="argument">
+<div class="argument">
     <span>Warning</span>
     <span style="width: unset;">Non constant function can't return values in transaction.</span>
 </div>
@@ -163,7 +163,7 @@ var render_item = function(item, item_index, handler, prefix) {
         // Show tx hash
         returns +=
             `
-<div className="argument">
+<div class="argument">
     <span>Transaction hash</span>
     <span style="width: unset;" id="` +
             prefix +
@@ -178,7 +178,7 @@ var render_item = function(item, item_index, handler, prefix) {
             var id = prefix + item.name + '_output_' + index;
             returns +=
                 `
-    <div className="argument">
+    <div class="argument">
         <span>` +
                 output.type +
                 `</span>
@@ -203,8 +203,8 @@ var render_item = function(item, item_index, handler, prefix) {
     ` +
         input_value +
         `
-    <div className="function">
-        <button className="functionName" type="submit">` +
+    <div class="function">
+        <button class="functionName" type="submit">` +
         functionName +
         `</button>
     </div>
@@ -220,21 +220,21 @@ var render_item = function(item, item_index, handler, prefix) {
 
 var render = function(abi, contract) {
     var intro = `
-<div className="item">
+<div class="item">
     <h1>Interact directly with the deployed contract</h1>
     <h3>All public contract functions are represented as colored buttons below, click them to call the function.</h3>
     <h3>Legend of colors:</h3>
-    <div className="constant function" style="margin-bottom:10px;">
-        <span className="functionName nohover" style="text-align: center;font-weight:unset;padding: 3px 16px;width: unset; display: inline;" type="submit">Constant</span>
+    <div class="constant function" style="margin-bottom:10px;">
+        <span class="functionName nohover" style="text-align: center;font-weight:unset;padding: 3px 16px;width: unset; display: inline;" type="submit">Constant</span>
         <span>This is a constant function which runs outside of a transaction and can return one or many values. Running it does not consume any gas nor can it mutate the state of the contract.</span>
     </div>
-    <div className="regular function" style="margin-bottom:10px;">
-        <span className="functionName nohover" style="text-align: center;font-weight:unset;padding: 3px 16px;width: unset; display: inline;" type="submit">Transaction</span>
+    <div class="regular function" style="margin-bottom:10px;">
+        <span class="functionName nohover" style="text-align: center;font-weight:unset;padding: 3px 16px;width: unset; display: inline;" type="submit">Transaction</span>
         <span>This is a function which always runs inside a transaction. It consumes gas and doesn't allow any ether to be sent with it.</span>
         <span>A transaction always returns a transaction hash. In order to retrieve the transaction status it is necessary to read the transaction receipt.</span>
     </div>
-    <div className="payable function" style="margin-bottom:10px;">
-        <span className="functionName nohover" style=";text-align: center;font-weight:unset;padding: 3px 16px;width: unset; display: inline;" type="submit">Payable</span>
+    <div class="payable function" style="margin-bottom:10px;">
+        <span class="functionName nohover" style=";text-align: center;font-weight:unset;padding: 3px 16px;width: unset; display: inline;" type="submit">Payable</span>
         <span>This is a payable function which always runs inside a transaction. It consumes gas and allows ether to be sent along with it.</span>
         <span>A transaction always returns a transaction hash. In order to retrieve the transaction status it is necessary to read the transaction receipt.</span>
     </div>
@@ -254,7 +254,7 @@ var render = function(abi, contract) {
     }
     if (html_snippets.length == 1) {
         var nofuncs = `
-<div className="item">
+<div class="item">
     <h1>This contract has no public functions to interact with</h1>
 </div>
 `;
