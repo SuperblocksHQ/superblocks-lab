@@ -102,20 +102,25 @@
                 position: fixed;
                 margin-left: 40px;
                 margin-top: 15px;
-                background-color: #2D2D2D;
+                background-color: #000000;
                 z-index: 1;
-                border: solid 1px #333;
+                min-width: 180px;
+                padding: 4px 0;
+                z-index: 5;
+                border-radius: 4px;
                 .item {
-                    display: block;
-                    color: #A5A5A5;
-                    padding: 10px;
+                    display: flex;
+                    align-items: center;
+                    color: #c7c7c7;
                     border-left: 2px solid;
                     border-color: transparent;
                     margin: 0;
+                    padding: 6px 8px;
+                    padding-left: 20px;
                     &:hover {
                         background-color: rgba(128, 46, 255, 0.10);
                         cursor: pointer;
-                        color: #fff;
+                        color: #ffffff;
                         border-color: #7237CF;
                     }
                 }

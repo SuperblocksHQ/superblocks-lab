@@ -43,7 +43,7 @@ export default class EVM {
 
         ReactDOM.render(
             <div style={{display: 'none'}} id={this.id}>
-                <iframe ref={setRef} src="/evm/index-v6.html" frameBorder="0" />
+                <iframe ref={setRef} src="/evm/index-v7.html" frameBorder="0" />
             </div>,
             document.getElementById('evm')
         );

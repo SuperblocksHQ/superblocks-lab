@@ -202,9 +202,6 @@ export default class App extends Component {
             }
         );
 
-        // this.functions.EVM.isReady() &&
-        // this.functions.compiler.isReady() &&
-
         const fn = () => {
             if (this.functions.compiler.isReady()
                 && this.functions.EVM.isReady()
