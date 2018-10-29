@@ -360,7 +360,7 @@ export default class ContractEditor extends Component {
                                         to provide the initial values for the
                                         contract's constructor arguments.
                                         <a
-                                            href="#"
+                                            href="https://help.superblocks.com/hc/en-us/articles/360008422373-Working-with-smart-contracts"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
