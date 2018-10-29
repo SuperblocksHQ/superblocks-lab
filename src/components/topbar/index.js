@@ -261,7 +261,7 @@ class ProjectDialog extends Component {
                     const isActive = openProject === project;
                     return (
                         <li
-                            key={project.getName()}
+                            key={project.getInode()}
                             className={style.projSwitcherItem}
                             onClick={e => {
                                 this.openProject(e, project);
