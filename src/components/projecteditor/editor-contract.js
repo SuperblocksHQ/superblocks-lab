@@ -315,7 +315,8 @@ export default class ContractEditor extends Component {
         e.preventDefault();
         if (index > -1) {
             this.setState(prevState => ({
-                args: prevState.args.filter((_, i) => i !== index)
+                args: prevState.args.filter((_, i) => i !== index),
+                isDirty: true
             }));
         }
     };
@@ -324,7 +325,8 @@ export default class ContractEditor extends Component {
         if (!this.props.item) {
             return <div>Could not find contrat in dappfile.json</div>;
         }
-        const args = this.renderArgs();
+        const constructorArgument = this.renderArgs();
+        const { name, args, isDirty } = this.state;
         return (
             <div id={this.id} className={style.main}>
                 <div className="scrollable-y" id={this.id + '_scrollable'}>
@@ -344,7 +346,7 @@ export default class ContractEditor extends Component {
                                             onKeyUp={e => {
                                                 this.onChange(e, 'name');
                                             }}
-                                            value={this.state.name}
+                                            value={name}
                                             onChange={e => {
                                                 this.onChange(e, 'name');
                                             }}
@@ -374,13 +376,13 @@ export default class ContractEditor extends Component {
                                     <div className={style.argumentsContainer}>
                                         <p>
                                             <b>No. args: </b>
-                                            {this.state.args.length}
+                                            {args.length}
                                         </p>
                                         <div className={style.arguments}>
                                             <div>
-                                                <b>{this.state.name} (</b>
-                                                {this.state.args.length
-                                                    ? args
+                                                <b>{name} (</b>
+                                                {args.length
+                                                    ? constructorArgument
                                                     : null}
                                                 <button
                                                     className={classNames([
@@ -400,7 +402,7 @@ export default class ContractEditor extends Component {
                                     <button
                                         href="#"
                                         className="btn2"
-                                        disabled={!this.state.isDirty}
+                                        disabled={!isDirty}
                                         onClick={this.save}
                                     >
                                         Save
