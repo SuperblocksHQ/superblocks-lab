@@ -43,13 +43,7 @@ const TestControls =(props)=>{
         <div className={style.testControls}>
             <span className={style.icons}>
                 <div className={style.buttons}>
-                    <a href="#" title="Run" onClick={
-                        () => {
-                            {
-                                testRunnerBridge.runAll(props.evmProvider);
-                            }
-                        }
-                    }>
+                    <a href="#" title="Run" onClick={props.onClickPlay}>
                         <IconPlay className={style.iconPlay} />
                     </a>
                 </div>
@@ -82,15 +76,16 @@ const TestControls =(props)=>{
             </span>
         </div>)
 };
-const TestFilesHeader =()=>{
+const TestFilesHeader =(props)=>{
+    const { total, totalDone } =props;
     return(<div className={style.testFile }>
-        <span className={style.bartext}>Done 7 of 7 tests</span>
+        <span className={style.bartext}>Done {totalDone} of {total} tests</span>
     </div>)
 };
-const TestFileTree=()=>{
+const TestFileTree=(props)=>{
     return(
-<div>
-    <IconCheck/>
+<div className={style.results}>
+    {props.result}
 </div>
     )
 }
@@ -368,7 +363,7 @@ export default class Panes extends Component {
         const panes=this.renderPanes();
 
         const { isActionPanelShowing, testPanel } = this.props;
-
+const text = 'text'
         return (
            <div key="panes" id="panes" class="full" style={{ width: isActionPanelShowing ? 'calc(100% - 450px)' : '100%'}}>
                <div key="header" id="panes_header" class={style.header}>
@@ -384,16 +379,16 @@ export default class Panes extends Component {
                            <ConsoleTopBar closeTestPanel={this.props.closeTestPanel}/>
                            <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} primaryMinSize="100px" vertical={false} >
                                <div className={style.leftPane}>
-                                   <TestFilesHeader />
-                                   <TestControls evmProvider={this.props.functions.EVM.getProvider()}/>
-                                   <TestFileTree />
+                                   <TestFilesHeader total={13} totalDone={6} />
+                                   <TestControls onClickPlay={()=>testRunnerBridge.runAll(this.props.functions.EVM.getProvider())} />
+                                   <TestFileTree result='result' />
                                </div>
                                <div className={style.rightPane}>
                                    <div className={style.rightStatusBar}>
                                        <span className={style.statusBar}>Test Summary</span>
-                                       <span style={{ color:'#7ed321' }} className={style.statusBar}>6 Passed</span>
-                                       <span style={{ color:'#d0021b' }} className={style.statusBar}>1 Failed</span>
-                                       <span className={style.statusBar}>7 Total</span>
+                                       <span style={{ color:'#7ed321' }} className={style.statusBar}>{this.props.testPassed} Passed</span>
+                                       <span style={{ color:'#d0021b' }} className={style.statusBar}>{this.props.testFailed} Failed</span>
+                                       <span className={style.statusBar}>{this.props.testTotal} Total</span>
                                </div>
                                    <div className={style.consoleText}>NOTE - Console output from this specific test</div>
                                </div>
