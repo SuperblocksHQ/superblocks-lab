@@ -365,6 +365,7 @@ module.exports = {
           // to compile LESS files into CSS.
           {
             test: lessRegex,
+            exclude: lessGlobalRegex,
             use: getStyleLoaders(
                 {
                     importLoaders: 2,
