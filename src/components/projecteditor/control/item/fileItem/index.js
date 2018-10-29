@@ -93,6 +93,21 @@ export default class FileItem extends Item {
     }
 
     /**
+     * Override
+     * Sort items in alphabetical order.
+     */
+    _sort = (items) => {
+        return items.sort( (itemA, itemB) => {
+            if (!itemA.getFile || !itemB.getFile) return 0;
+            const a = itemA.getFile();
+            const b = itemB.getFile();
+            const aLC = a.toLowerCase();
+            const bLC = b.toLowerCase();
+            return (aLC > bLC ? 1 : aLC < bLC ? -1: (a > b ? 1 : a < b ? -1 : 0));
+        });
+    }
+
+    /**
      * Return the file/dir name.
      */
     getFile = () => {

@@ -120,14 +120,19 @@ export default class Item {
     getChildren = (force, cb) => {
         if (this.props.state.children instanceof Function) {
             if (this.props.lazy && !force)
-                return this.props.state._children || [];
-            return this.props.state.children(cb) || [];
+                return this._sort(this.props.state._children || []);
+            return this._sort(this.props.state.children(cb) || []);
             // We need to return empty set first time since it is async.
             // The callback will trigger when children are ready and cached.
         }
         if (this.props.state.children == null) this.props.state.children = [];
         if (cb) cb();
-        return this.props.state.children;
+        return this._sort(this.props.state.children);
+    };
+
+    /** Override if needed */
+    _sort = (items) => {
+        return items;
     };
 
     getTitle = () => {
