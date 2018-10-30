@@ -161,6 +161,7 @@ export default class AppView extends Component {
                                 var endpoint;
                                 const project1 = this.props.item.getProject();
                                 const network = project.getEnvironment();
+                                const endpoint = (this.props.functions.networks.endpoints[network] || {}).endpoint;
 
                                 for (var index = 0; index < contracts.length; index++) {
                                     const contract = project1
@@ -168,10 +169,6 @@ export default class AppView extends Component {
                                         .getByName(contracts[index]);
 
                                     const src = contract.getSource();
-                                    const endpoint = (
-                                        this.props.functions.networks.endpoints[network] || {}
-                                    ).endpoint;
-
                                     const txsrc = this._makeFileName(src, network, 'tx');
                                     const deploysrc = this._makeFileName(src, network, 'deploy');
                                     contracts2.push([ txsrc, deploysrc, endpoint ]);
