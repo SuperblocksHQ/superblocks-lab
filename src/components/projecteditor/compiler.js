@@ -448,16 +448,17 @@ export default class Compiler extends Component {
     renderContents = () => {
         const waiting = this.getWait();
         const scrollId = 'scrollBottom_' + this.props.id;
+
         return (
             <div className={style.console}>
                 <div className={style.terminal} id={scrollId}>
-                    {waiting}
-                    {this.state.consoleRows.map((row, index) => {
-                        return row.msg.split('\n').map(i => {
+                    { waiting }
+                    { this.state.consoleRows.map((row, index) => {
+                        return row.msg.split('\n').map((line, lineIndex) => {
                             var cl = style.std1;
                             if (row.channel == 2) cl = style.std2;
                             else if (row.channel == 3) cl = style.std3;
-                            return <div key={row} className={cl}>{i}</div>;
+                            return <div key={index + lineIndex} className={cl}>{line}</div>;
                         });
                     })}
                 </div>
