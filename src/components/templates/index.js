@@ -18,6 +18,7 @@ const Empty = require("./empty.json");
 const HelloWorld = require("./hello.json");
 const NewsFeed = require("./newsfeed.json");
 const RaiseToSummon = require("./raisetosummon.json");
+const Voting = require("./voting.json");
 
 export default class Templates {
 
@@ -44,6 +45,7 @@ export default class Templates {
         Empty,
         HelloWorld,
         NewsFeed,
-        RaiseToSummon
+        RaiseToSummon,
+        Voting
     ]
 }

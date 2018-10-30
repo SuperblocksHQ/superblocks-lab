@@ -1,0 +1,168 @@
+{
+    "id": 4,
+    "name": "Voting System",
+    "description": "Simple voting system that you can tweak according to your needs",
+    "image": "/static/img/templates/img-voting-system.png",
+    "categories": [0, 2],
+    "files": {
+        "/": {
+            "type": "d",
+            "children": {
+                "app": {
+                    "type": "d",
+                    "children": {
+                        "app.html": {
+                            "type": "f",
+                            "contents": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <script type=\"text/javascript\" src=\"https://unpkg.com/jquery@3.3.1/dist/jquery.js\"></script>\n        <script type=\"text/javascript\" src=\"https://unpkg.com/web3@0.20.5/dist/web3.min.js\"></script>\n        <!-- The generated javascript and app.js will be substituted in below -->\n        <!-- JAVASCRIPT -->\n\n        <!-- The app.css contents will be substituted in below -->\n        <!-- STYLE -->\n    </head>\n    <body>\n        <div class=\"container\">\n            <h1>Voting system</h1>\n            <h2 class=\"error\">There was an error communicating with the contract.</h2>\n            <div id=\"candidates\">\n                <table>\n                    <tr><th>Candidate</th><th>Votes</th><th><button class='button-add-new'>Add new</button></th></tr>\n                </table>\n            </div>\n            <div id=\"status\"></div>\n        </div>\n    </body>\n</html>"
+                        },
+                        "app.css": {
+                            "type": "f",
+                            "contents": "body {\n    background-color: #725BA4;\n    color: #FCE8DF;\n    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;\n    text-align: center;\n    height: 100%;\n}\n\n.container {\n    margin-top: 150px;\n}\n\n.error {\n    display: none;\n}\n\ntable {\n    margin-left: auto;\n    margin-right: auto;\n    text-align: left;    \n}\n\nth, td {\n    padding: 8px;\n    border: 1px solid #ddd;\n}\n\nth {\n    font-weight: bold;\n    background: white;\n    color: #252525;\n}\n\n#add-new {\n    text-align: right;\n    text-decoration: none;\n    font-weight: bold;\n    margin-bottom: 15px;\n    width: 100%;\n    color: #8641f2;\n}\n\n#status {\n    margin-top: 15px;\n}\n\nth:first-of-type,\nth:nth-child(2) {\n    min-width: 200px;\n}\n\ntd:last-of-type {\n    padding: 0px;\n    border: 0px;\n}\n\nbutton.button-vote,\nbutton.button-add-new {\n    font-size: 1rem;\n    font-weight: bold;\n    line-height: 1.5;\n    border: 0;\n    background: white;\n    border-radius: 4px;\n    padding: .75em 1.5em;\n    color: #8641f2;\n    transition: .2s opacity;\n    width: 100%;\n}\n\nbutton.button-remove,\nbutton.button-edit {\n    float: right;\n    color: white;\n    background: none;\n    border: 0;\n    transition: .2s opacity;\n}\n\nbutton:hover {\n    opacity: .6;\n    cursor: pointer;\n}"
+                        },
+                        "app.js": {
+                            "type": "f",
+                            "contents": "// The object 'Contracts' will be injected here, which contains all data for all contracts, keyed on contract name:\n// Contracts['Vote'] = {\n//  abi: [],\n//  address: \"0x..\",\n//  endpoint: \"http://....\"\n// }\n\nfunction Vote(Contract) {\n    this.web3 = null;\n    this.instance = null;\n    this.Contract = Contract;\n}\n\nVote.prototype.initContract = function() {\n    // We create a new Web3 instance using either the Metamask provider\n    // or an independant provider created towards the endpoint configured for the contract.\n    this.web3 = new Web3(\n        (window.web3 && window.web3.currentProvider) ||\n        new Web3.providers.HttpProvider(this.Contract.endpoint));\n\n    // Create the contract interface using the ABI provided in the configuration.\n    var contract_interface = this.web3.eth.contract(this.Contract.abi);\n    \n\n    // Create the contract instance for the specific address provided in the configuration.\n    this.instance = contract_interface.at(this.Contract.address);\n};\n\n// Returns count of Candidates from contract\nVote.prototype.getCount = function(cb) {\n    this.instance.getCandidatesCount(function (error, result) {\n        cb(error, result);\n    });\n}\n\n// Returns Candidate by index from contract\nVote.prototype.getCandidate = function(index, cb) {\n    this.instance.getCandidate(index, function (error, result) {\n        cb(error, result);\n    });\n}\n\n// Checks if sender is owner of the contract\nVote.prototype.isOwnerOfContract = function(cb) {\n    this.instance.owner(function (error, result) {\n        // Compare user's address with owner of the Contract\n        result = result == window.web3.eth.accounts[0];\n        cb(error, result);\n    });\n}\n\n// Increases voteCount of Candidate found by index\nVote.prototype.addVote = function(index, cb) {\n    var that = this;\n\n    if(isNaN(index) || index < 0) {\n        alert(\"Could not find Candidate with this index... Try it again.\");\n        return;\n    }\n\n    if (typeof window.web3 !== 'undefined' && window.web3.currentProvider) {\n \n        // Gas and gasPrice should be remove for non browser networks\n        this.instance.voteFor(index, { from: window.web3.eth.accounts[0], gas: 50000, gasPrice: 100000, gasLimit: 100000 },\n            function(error, txHash) {\n                $(\"#status\").html('Voting in progress...');\n\n                if (error) {\n                    console.error(error);\n                    $(\"#status\").html(\"Vote canceled, try it again.\");\n                    return;\n                } else {\n                    that.waitForReceipt(txHash, function(receipt) {\n                        if(receipt.status) {\n                            var updatedVotes = parseInt($(\"#candidate-\"+index+\" .votes\").text(), 10) + 1;\n                            $(\"#candidate-\"+index+\" .votes\").html(updatedVotes);\n                            $(\"#status\").html(\"Vote successful\");\n                        }\n                        else {\n                            $(\"#status\").html(\"Vote not successful. Please try it again.\");\n                        }\n                    });\n                }\n            }\n        );\n    } else {\n        $(\"#status\").html(\"You must have Metamask installed...\");\n    }  \n}\n\n// Edit Candidate found by index\nVote.prototype.editCandidate = function(index, newName, cb) {\n    var that = this;\n\n    if(isNaN(index) || index < 0) {\n        alert(\"Could not find Candidate with this index... Try it again.\");\n        return;\n    }\n\n    if (typeof window.web3 !== 'undefined' && window.web3.currentProvider) {\n\n        this.instance.updateCandidate(index, newName, { from: window.web3.eth.accounts[0], gas: 100000, gasPrice: 100000, gasLimit: 100000 },\n            function(error, txHash) {\n                if(error) {\n                    console.error(error);\n                    $(\"#status\").html(\"Editing canceled, try it again.\");\n                    return;\n                } else {\n                    that.waitForReceipt(txHash, function(receipt) {\n                        if(receipt.status) {\n                            $(\"#status\").html(\"Candidate edited successfuly\");\n                            $(\"#candidate-\"+index+\" .name\").html(newName);\n                        }\n                        else {\n                            $(\"#status\").html(\"Editin didn't go well. Please try it again.\");\n                        }\n                    });\n                }\n            }\n        );\n    }\n}\n\n// Add new Candidate\nVote.prototype.addCandidate = function(newName, cb) {\n    var that = this;\n\n    if (typeof window.web3 !== 'undefined' && window.web3.currentProvider) {\n\n        this.instance.addCandidate(newName, { from: window.web3.eth.accounts[0], gas: 100000, gasPrice: 100000, gasLimit: 100000 },\n            function(error, txHash) {\n                if(error) {\n                    console.error(error);\n                    $(\"#status\").html(\"Transaction canceled, try it again.\");\n                    return;\n                } else {\n                    that.waitForReceipt(txHash, function(receipt) {\n                        if(receipt.status) {\n                            that.getCount(function (error, result) {\n                                if(error) {\n                                    console.log(error);\n                                    $(\".error\").show();\n                                    return;\n                                }\n\n                                var indexNew = result.toNumber() - 1;\n                                that.renderCandidate(indexNew);\n                                $(\"#status\").html(\"Candidate added successfuly\");\n\n                            });\n                        }\n                        else {\n                            $(\"#status\").html(\"Adding didn't go well. Please try it again.\");\n                        }\n                    });\n                }\n            }\n        );\n    }\n}\n\n// Remove Candidate found by index\nVote.prototype.removeCandidate = function(index, cb) {\n    var that = this;\n\n    if(isNaN(index) || index < 0) {\n        alert(\"Could not find Candidate with this index... Try it again.\");\n        return;\n    }\n\n    if (typeof window.web3 !== 'undefined' && window.web3.currentProvider) {\n \n        // Gas and gasPrice should be remove for non browser networks\n        this.instance.removeCandidate(index, { from: window.web3.eth.accounts[0], gas: 100000, gasPrice: 100000, gasLimit: 100000 },\n            function(error, txHash) {\n                $(\"#status\").html('Removing candidate...');\n\n                if (error) {\n                    console.error(error);\n                    $(\"#status\").html(\"Removing canceled, try it again.\");\n                    return;\n                } else {\n                    that.waitForReceipt(txHash, function(receipt) {\n                        if(receipt.status) {\n                            $('#candidate-'+index).remove();\n                            $(\"#status\").html(\"Removing successful\");\n                        }\n                        else {\n                            $(\"#status\").html(\"Removing didn't go well. Please try it again.\");\n                        }\n                    });\n                }\n            }\n        );\n    } else {\n        $(\"#status\").html(\"You must have Metamask installed and be owner of the contract.\");\n    }  \n}\n\n// Waits for receipt from transaction\nVote.prototype.waitForReceipt = function(hash, cb) {\n    var that = this;\n\n    // Checks for transaction receipt\n    this.web3.eth.getTransactionReceipt(hash, function(err, receipt) {\n        if (err) {\n            error(err);\n        }\n        if (receipt !== null) {\n            // Transaction went through\n            if (cb) {\n                cb(receipt);\n            }\n        } else {\n            // Try again in 2 second\n            window.setTimeout(function() {\n                that.waitForReceipt(hash, cb);\n            }, 2000);\n        }\n    });\n}\n\n// Renders single Candidate by index\nVote.prototype.renderCandidate = function(index) {\n    var that = this;\n\n    if (index < 0) {\n        console.log(\"No candidates found...\");\n        return;\n    }\n\n    var isOwner;\n    this.isOwnerOfContract(function (error, result) {\n        isOwner = result;\n    });\n\n    this.getCandidate(index, function (error, result) {\n        if (error) {\n            console.error(\"Could not load candidate:\", error);\n            $('#candidates table').append(\n                \"<tr><td>Could not load candidate.</td></tr>\"\n            );\n            return;\n        }\n        else {\n            var data = `<tr id='candidate-`+index+`'><td><span class=\"name\">` + result[0] + `</span>`;\n\n                if(isOwner) {\n                    data += `\n                            <button class=\"button-remove\" id='`+ index +`'>\n                                <svg width=\"14px\" aria-hidden=\"true\" data-prefix=\"far\" data-icon=\"trash-alt\" class=\"svg-inline--fa fa-trash-alt fa-w-14\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path fill=\"currentColor\" d=\"M192 188v216c0 6.627-5.373 12-12 12h-24c-6.627 0-12-5.373-12-12V188c0-6.627 5.373-12 12-12h24c6.627 0 12 5.373 12 12zm100-12h-24c-6.627 0-12 5.373-12 12v216c0 6.627 5.373 12 12 12h24c6.627 0 12-5.373 12-12V188c0-6.627-5.373-12-12-12zm132-96c13.255 0 24 10.745 24 24v12c0 6.627-5.373 12-12 12h-20v336c0 26.51-21.49 48-48 48H80c-26.51 0-48-21.49-48-48V128H12c-6.627 0-12-5.373-12-12v-12c0-13.255 10.745-24 24-24h74.411l34.018-56.696A48 48 0 0 1 173.589 0h100.823a48 48 0 0 1 41.16 23.304L349.589 80H424zm-269.611 0h139.223L276.16 50.913A6 6 0 0 0 271.015 48h-94.028a6 6 0 0 0-5.145 2.913L154.389 80zM368 128H80v330a6 6 0 0 0 6 6h276a6 6 0 0 0 6-6V128z\"></path></svg>\n                            </button>\n                            <button class=\"button-edit\" id='`+ index +`'>\n                                <svg width=\"14px\" aria-hidden=\"true\" data-prefix=\"fas\" data-icon=\"pencil-alt\" class=\"svg-inline--fa fa-pencil-alt fa-w-16\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z\"></path></svg>\n                            </button>\n                        `;\n                }\n                data += `</td>`;\n                data += `\n                    <td class=\"votes\">` + result[1] + `</td>\n                    <td><button class=\"button button-vote\" id='`+ index + `'>Vote</button></td>;\n                </tr>\n            `;\n       \n            $('#candidates table').append(data);\n        }\n    });\n}\n\n\n// Renders all Candidates from Contract into table\nVote.prototype.renderCandidates = function() {\n    var that = this;\n    \n    this.getCount(function (error, result) {\n        if(error) {\n            console.log(error);\n            $(\".error\").show();\n            return;\n        }\n\n        var candidatesCount = result.toNumber();\n\n        if(candidatesCount == 0) {\n            $(\"#status\").html(\n                \"<h3>No candidates found...</h3>\"\n            );\n        } else {\n            for(var i = 0; i < candidatesCount; i++) {\n                that.renderCandidate(i);\n            }\n        }\n    });\n}\n\n// Binds click event to all buttons\nVote.prototype.bindButtons = function() {\n    var that = this;\n\n    $(document).on(\"click\", \"button.button-vote\", function() {\n        var index = $(this).attr(\"id\");\n        that.addVote(index);\n    });\n\n    $(document).on(\"click\", \"button.button-remove\", function() {\n        var index = $(this).attr(\"id\");\n        that.removeCandidate(index);\n    });\n\n    $(document).on(\"click\", \"button.button-edit\", function() {\n        var index = $(this).attr(\"id\");\n        var newName = prompt(\"Enter new value\");\n        that.editCandidate(index, newName);\n    });\n\n    $(document).on(\"click\", \"button.button-add-new\", function() {\n        var newName = prompt(\"Enter name of the Candidate\");\n        that.addCandidate(newName);\n    });\n}\n\nVote.prototype.onReady = function() {\n    this.initContract();\n    this.renderCandidates();\n    this.bindButtons();\n};\n\nvar vote = new Vote(Contracts['Vote']);\n\n$(document).ready(function() {\n    vote.onReady();\n});"
+                        },
+                        "contracts": {
+                            "type": "d",
+                            "children": {}
+                        }
+                    }
+                },
+                "contracts": {
+                    "type": "d",
+                    "children": {
+                        "Vote.sol": {
+                            "type": "f",
+                            "contents": "pragma solidity ^0.4.25;\n\nimport \"./Ownable.sol\";\n\ncontract Vote is Ownable {\n\n    struct Candidate {\n        string name;\n        uint voteCount;\n    }\n\n    Candidate[] candidates;\n\n    // Add Candidate to an Array with specific name\n    // Only Owner of a Contract can do that\n    function addCandidate(string _name)\n        public\n        onlyOwner\n    {\n        candidates.push(Candidate(_name, 0));\n    }\n\n    // Increases voteCount for Candidate found by index\n    function voteFor(uint _index) \n        public\n    {\n        // Check if variable voteCount doesn't overflow\n        assert((candidates[_index].voteCount + 1) >= candidates[_index].voteCount);\n\n        // Increate voteCount for a Candidate\n        candidates[_index].voteCount++;\n    }\n\n    // Update Candidate's name\n    // Modifier to check if index is valid\n    function updateCandidate(uint _index, string _updatedName)\n        public\n        onlyOwner\n        candidateExists(_index)\n    {\n        candidates[_index].name = _updatedName;\n    }\n\n    // Remove Candidate from Array found by index\n    function removeCandidate(uint _index) \n        public\n        onlyOwner\n        candidateExists(_index) \n    {\n        // Move selected Candidate to last position so there is no gap\n        for (uint i = _index; i < candidates.length - 1; i++){\n            candidates[i] = candidates[i+1];\n        }\n        // Delete Candidate\n        delete candidates[candidates.length-1];\n        candidates.length--;\n    }\n\n    // Returns count of Candidates in an Array\n    function getCandidatesCount()\n        public\n        view\n        returns(uint)\n    {\n        return candidates.length;\n    }\n\n    // Returns Candidate found by index\n    function getCandidate(uint _index)\n        public\n        view\n        candidateExists(_index)\n        returns(string, uint)\n    {\n        // Return Candidate's name and voteCount\n        return (candidates[_index].name, candidates[_index].voteCount);\n    }   \n\n    // Checks if Candidate exists in Array\n    modifier candidateExists(uint _index) {\n        // Check if there are any Candidates in an Array\n        require(candidates.length > 0);\n        // Check if Candidate exists in an Array\n        require(candidates.length >= _index);\n        // Continue with called function\n        _;\n    }\n}"
+                        },
+                        "Ownable.sol": {
+                            "type": "f",
+                            "contents": "pragma solidity ^0.4.25;\n\ncontract Ownable {\n\n    address public owner;\n\n    constructor() \n        public\n    {\n        owner = msg.sender;\n    }\n\n    modifier onlyOwner() {\n        require(owner == msg.sender);\n        _;\n    }\n\n    function transferOwnership(address _newOwner) \n        public\n        onlyOwner\n    {\n        require(_newOwner != owner);\n        require(_newOwner != address(0));\n        owner = _newOwner;\n    }\n}\n"
+                        }
+                    }
+                },
+                "README.md": {
+                    "type": "f",
+                    "contents": "# Voting system project\n\nSimple DApp which you can modify to create your own Voting platform.\n\n# Where to go from here\n\nCheck out the tutorials to find our more how to build your dapp.\n"
+                }
+            }
+        }
+    },
+    "dappfile": {
+        "environments": [
+            {
+                "name": "browser"
+            },
+            {
+                "name": "custom"
+            },
+            {
+                "name": "rinkeby"
+            },
+            {
+                "name": "ropsten"
+            },
+            {
+                "name": "kovan"
+            },
+            {
+                "name": "infuranet"
+            },
+            {
+                "name": "mainnet"
+            }
+        ],
+        "constants": [],
+        "contracts": [
+            {
+                "source": "/contracts/Vote.sol",
+                "args": [],
+                "blockchain": "ethereum",
+                "name": "Vote",
+                "network": "browser"
+            },
+            {
+                "name": "Ownable",
+                "account": "Default",
+                "source": "/contracts/Ownable.sol",
+                "blockchain": "ethereum"
+            }
+        ],
+        "wallets": [
+            {
+                "desc": "This is a wallet for local development",
+                "name": "development",
+                "blockchain": "ethereum"
+            },
+            {
+                "desc": "A private wallet",
+                "name": "private",
+                "blockchain": "ethereum"
+            },
+            {
+                "desc": "External wallet integrating with Metamask and other compatible wallets",
+                "name": "external",
+                "blockchain": "ethereum",
+                "type": "external"
+            }
+        ],
+        "accounts": [
+            {
+                "name": "Default",
+                "blockchain": "ethereum",
+                "_environments": [
+                    {
+                        "name": "browser",
+                        "data": {
+                            "wallet": "development",
+                            "index": 0
+                        }
+                    },
+                    {
+                        "name": "custom",
+                        "data": {
+                            "wallet": "private",
+                            "index": 0
+                        }
+                    },
+                    {
+                        "name": "rinkeby",
+                        "data": {
+                            "wallet": "external",
+                            "index": 0
+                        }
+                    },
+                    {
+                        "name": "ropsten",
+                        "data": {
+                            "wallet": "external",
+                            "index": 0
+                        }
+                    },
+                    {
+                        "name": "kovan",
+                        "data": {
+                            "wallet": "external",
+                            "index": 0
+                        }
+                    },
+                    {
+                        "name": "infuranet",
+                        "data": {
+                            "wallet": "external",
+                            "index": 0
+                        }
+                    },
+                    {
+                        "name": "mainnet",
+                        "data": {
+                            "wallet": "external",
+                            "index": 0
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
