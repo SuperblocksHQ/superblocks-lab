@@ -323,7 +323,7 @@ export default class ContractEditor extends Component {
 
     render() {
         if (!this.props.item) {
-            return <div>Could not find contrat in dappfile.json</div>;
+            return <div>Could not find contract in dappfile.json</div>;
         }
         const constructorArgument = this.renderArgs();
         const { name, args, isDirty } = this.state;
