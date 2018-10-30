@@ -146,92 +146,50 @@ export default class AppView extends Component {
                                     return;
                                 }
                                 css = body.contents;
-                                //const contracts=[];
-                                //this.dappfile.contracts().map((item)=>{
-                                //contracts.push(item.name);
-                                //});
                                 const list = this.props.item
                                     .getProject()
                                     .getHiddenItem('contracts')
                                     .getChildren();
                                 const contracts = [];
-                                for (
-                                    var index = 0;
-                                    index < list.length;
-                                    index++
-                                ) {
+                                for (var index = 0; index < list.length; index++) {
                                     const contract = list[index];
                                     contracts.push(contract.getName());
                                 }
 
-                                const env = this.state.env;
-
                                 const jsfiles=[];
                                 const contracts2 = [];
-                                const tag = env;
                                 var endpoint;
-                                const project = this.props.item.getProject();
-                                for (
-                                    var index = 0;
-                                    index < contracts.length;
-                                    index++
-                                ) {
-                                    const contract = project
+                                const project1 = this.props.item.getProject();
+                                const network = project.getEnvironment();
+
+                                for (var index = 0; index < contracts.length; index++) {
+                                    const contract = project1
                                         .getHiddenItem('contracts')
                                         .getByName(contracts[index]);
+
                                     const src = contract.getSource();
-                                    const project = this.props.item.getProject();
-                                    const env = project.getEnvironment();
-                                    const network = env;
-
                                     const endpoint = (
-                                        this.props.functions.networks.endpoints[
-                                            network
-                                        ] || {}
+                                        this.props.functions.networks.endpoints[network] || {}
                                     ).endpoint;
-                                    //endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
-                                    //
-                                    const txsrc = this._makeFileName(
-                                        src,
-                                        network,
-                                        'tx'
-                                    );
-                                    const deploysrc = this._makeFileName(
-                                        src,
-                                        network,
-                                        'deploy'
-                                    );
-                                    contracts2.push([
-                                        txsrc,
-                                        deploysrc,
-                                        endpoint,
-                                    ]);
-                                }
 
-                                const jssrc=this._makeFileName(src, network, "js");
-                                jsfiles.push(jssrc);
+                                    const txsrc = this._makeFileName(src, network, 'tx');
+                                    const deploysrc = this._makeFileName(src, network, 'deploy');
+                                    contracts2.push([ txsrc, deploysrc, endpoint ]);
+                                    const jssrc = this._makeFileName(src, network, "js");
+                                    jsfiles.push(jssrc);
+                                }
 
                                 this._loadFiles(jsfiles, (status, bodies) => {
                                     if (status != 0) {
-                                        this.writeContent(
-                                            1,
-                                            'Missing contract javascript file, have you deployed all contracts?'
-                                        );
+                                        this.writeContent( 1, 'Missing contract javascript file, have you deployed all contracts?');
                                         return;
                                     }
                                     this._checkContracts(contracts2, status => {
                                         if (status != 0) {
-                                            this.writeContent(
-                                                1,
-                                                'Contract(s) does not exist. When running the in-browser blockchain contracts get wiped on every refresh.'
-                                            );
+                                            this.writeContent( 1, 'Contract(s) does not exist. When running the in-browser blockchain contracts get wiped on every refresh.');
                                             return;
                                         }
                                         contractjs = bodies.join('\n');
-                                        //html=this.props.project.constantsReplace(html);
-                                        //css=this.props.project.constantsReplace(css);
-                                        //js=this.props.project.constantsReplace(js);
-                                        //contractjs=this.props.project.constantsReplace(contractjs);
                                         var content = this.getInnerContent(
                                             html,
                                             css,
@@ -390,11 +348,6 @@ export default class AppView extends Component {
         const wallets = this.props.item.getProject().getHiddenItem('wallets');
         const wallet = wallets.getByName(walletName);
 
-        //const env=this.state.env;
-        //const account = this.dappfile.getItem("accounts", [{name: accountName}]);
-        //const accountIndex=account.get('index', env);
-        //const walletName=account.get('wallet', env);
-        //const wallet = this.dappfile.getItem("wallets", [{name: walletName}]);
         if (!wallet) {
             return [];
         }
