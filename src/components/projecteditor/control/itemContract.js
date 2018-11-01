@@ -55,7 +55,7 @@ export default class ItemContract extends Component {
                             )) || (
                                 <button
                                     className="btnNoBg"
-                                    style="opacity:0.3; display:inline;"
+                                    style={{opacity: 0.3, display: 'inline'}}
                                 >
                                     <IconUp />
                                 </button>
@@ -78,7 +78,7 @@ export default class ItemContract extends Component {
                             )) || (
                                 <button
                                     className="btnNoBg"
-                                    style="opacity:0.3; display:inline;"
+                                    style={{opacity: 0.3, display: 'inline'}}
                                 >
                                     <IconDown />
                                 </button>
