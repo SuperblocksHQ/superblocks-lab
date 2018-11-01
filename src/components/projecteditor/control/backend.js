@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+const JSZip = require("jszip");
+const FileSaver = require('file-saver');
+
 const DAPP_FORMAT_VERSION = 'dapps1.1.0';
 export default class Backend {
     constructor() {}
@@ -804,33 +807,65 @@ export default class Backend {
     //}
     //};
 
-    downloadProject = (project, keepState) => {
-        const exportName = 'superblocks_project_' + project.getName();
-        const workspace =
+    // TODO: NOT DONE YET
+    downloadProject = (item, keepState) => {
+        const exportName = 'superblocks_project_' + project.getName() + '.zip';
+
+        const zip = new JSZip();
+
+        console.log(project);
+        return;
+        const data =
             JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
-        // TODO: create zipfile of filesystem
-        // project.serialize()
-        const project2 = JSON.parse(JSON.stringify(project));
-        delete project2._filecache;
-        delete project2.inode;
-        project2.dappfile.project = {
-            info: { title: (project2.dappfile.project.info || {}).title },
-        };
-        project2.format = DAPP_FORMAT_VERSION;
+        if (!data.projects) data.projects = [];
 
-        if (!keepState) {
-            this._deleteBuildDir(project2.files);
+        var project = data.projects.filter(item => {
+            return item.inode == inode;
+        })[0];
+
+        if (!project) {
+            setTimeout(() => cb({ status: 3 }), 1);
+            return;
         }
 
-        var dataStr =
-            'data:text/json;charset=utf-8,' +
-            encodeURIComponent(JSON.stringify(project2));
-        var downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute('href', dataStr);
-        downloadAnchorNode.setAttribute('download', exportName + '.json');
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
+        if (!project.files)
+            project.files = { '/': { type: 'd', children: {} } };
+
+        const parts = path.split('/');
+        var node = project.files['/'];
+
+        const fn = (node) => {
+            return new Promise( (resolve) => {
+                if (node.children) {
+                    // TODO: this must be asynchrified so it pops of elemets of an array instead of itereting through using map, since it's going to be recursive calls.
+                    node.children.map( (child) => {
+                        if (child.type == 'f') {
+                            // File
+                            const filePath = "";  // TODO: Needs to be built up in the recursion..
+                            zip.file(filePath, child.contents);
+                        }
+                        else {
+                            // Directory
+                            fn(child).then( () => {
+                                // TODO:
+                            });
+                        }
+                    });
+                }
+                else {
+                    resolve();
+                }
+            });
+        };
+        fn(node).then( () => {
+            zip.generateAsync({type:"blob"})
+                .then( (blob) => {
+                    if (!keepState) {
+                        this._deleteBuildDir(project2.files);
+                    }
+                    FileSaver.saveAs(blob, exportName);
+            });
+        });
     };
 }
