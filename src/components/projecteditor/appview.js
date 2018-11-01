@@ -239,7 +239,7 @@ export default class AppView extends Component {
                         Lab, so downloading your DApp makes no sense until you
                         choose any other network than Browser.
                     </p>
-                    <div style="margin-top: 54px;">
+                    <div style={{marginTop: 54}}>
                         <a
                             className="btn2"
                             onClick={this.props.functions.modal.cancel}
@@ -296,10 +296,10 @@ export default class AppView extends Component {
                     After download you can upload the DApp HTML file to any
                     (decentralized) web host of choice.
                 </p>
-                <div style="margin-top: 49px;">
+                <div style={{marginTop: 49}}>
                     <a
                         className="btn2"
-                        style="margin-right: 30px;"
+                        style={{marginRight: 30}}
                         onClick={this.props.functions.modal.cancel}
                     >
                         Cancel
