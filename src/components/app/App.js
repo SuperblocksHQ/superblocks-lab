@@ -257,7 +257,7 @@ export default class App extends Component {
             body: body,
             style: {
                 width: '680px',
-                'xbackground-color': '#73618b',
+                xbackgroundColor: '#73618b',
                 xcolor: '#fef7ff',
             },
         };
