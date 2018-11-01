@@ -368,8 +368,8 @@ export default class FileItem extends Item {
             const file = prompt("Enter the new file's name");
 
             if (file) {
-                if (!file.match('(^[a-zA-Z0-9-_.]+[/]?)$')) {
-                    alert('Illegal filename.');
+                if (!file.match('(^[a-zA-Z0-9-_.]+[/]?)$') || file.length > 255) {
+                    alert('Illegal file name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 255 characters.');
                     return false;
                 }
                 project.newFile(this.getFullPath(), file, status => {
@@ -393,8 +393,8 @@ export default class FileItem extends Item {
             const file = prompt("Enter the new folder's name");
 
             if (file) {
-                if (!file.match('(^[a-zA-Z0-9-_.]+)$')) {
-                    alert('Illegal foldername.');
+                if (!file.match('(^[a-zA-Z0-9-_.]+)$') || file.length > 255) {
+                    alert('Illegal folder name. Only A-Za-z0-9, dash (-) and underscore (_) allowed. Max 255 characters.');
                     return false;
                 }
 
@@ -475,6 +475,10 @@ export default class FileItem extends Item {
                 suffix1.toLowerCase() != suffix2.toLowerCase()
             ) {
                 alert('A contract must have the .sol file ending.');
+                return;
+            }
+            if(newFile.length > 255) {
+                alert("Max 255 characters.");
                 return;
             }
             const newFullPath = newFile;
