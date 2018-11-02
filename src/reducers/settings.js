@@ -18,7 +18,7 @@ export default function settingsReducer(state = initialState, action) {
                 preferences: {
                     chain: {
                         gasLimit: action.data.chain.gasLimit ? action.data.chain.gasLimit : initialState.preferences.chain.gasLimit, // Make sure to fallback into the default when left empty
-                        gasPrice: action.data.chain.gasLimit ? action.data.chain.gasPrice : initialState.preferences.chain.gasPrice // Make sure to fallback into the default when left empty
+                        gasPrice: action.data.chain.gasPrice ? action.data.chain.gasPrice : initialState.preferences.chain.gasPrice // Make sure to fallback into the default when left empty
                     }
                 },
             };

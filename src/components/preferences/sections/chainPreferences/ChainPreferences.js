@@ -21,26 +21,27 @@ import style from './style';
 
 export default class ChainPreferences extends Component {
 
-    state = {
-        tempGasLimit: null,
-        tempGasPrice: null
+    componentDidMount() {
+        const { chainPreferences } = this.props;
+        this.gasLimit = chainPreferences.gasLimit;
+        this.gasPrice = chainPreferences.gasPrice;
     }
 
     onChange = (e, key) => {
         var value = e.target.value;
         if (key === "gasLimit") {
-            this.props.onPreferenceChange({
-                gasLimit: Number(value),
-            })
+            this.gasLimit = Number(value);
         } else if (key === "gasPrice") {
-            this.props.onPreferenceChange({
-                gasPrice: Number(value),
-            })
+            this.gasPrice = Number(value);
         }
+
+        this.props.onPreferenceChange({
+            gasLimit: this.gasLimit,
+            gasPrice: this.gasPrice
+        });
     }
 
     render() {
-        const { tempGasLimit, tempGasPrice } = this.state;
         const { chainPreferences } = this.props;
         return (
             <div>
@@ -54,7 +55,6 @@ export default class ChainPreferences extends Component {
                                     id="gasLimit"
                                     type="number"
                                     onKeyUp={(e)=>{this.onChange(e, 'gasLimit')}}
-                                    value={tempGasLimit}
                                     defaultValue={chainPreferences.gasLimit}
                                     onChange={(e)=>{this.onChange(e, 'gasLimit')}}
                                     />
@@ -66,7 +66,6 @@ export default class ChainPreferences extends Component {
                                     id="gasPrice"
                                     type="number"
                                     onKeyUp={(e)=>{this.onChange(e, 'gasPrice')}}
-                                    value={tempGasPrice}
                                     defaultValue={chainPreferences.gasPrice}
                                     onChange={(e)=>{this.onChange(e, 'gasPrice')}}
                                     />
