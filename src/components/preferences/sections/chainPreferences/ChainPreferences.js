@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import style from './style';
+import style from './style.less';
 
 export default class ChainPreferences extends Component {
 
@@ -46,11 +46,11 @@ export default class ChainPreferences extends Component {
         return (
             <div>
                 <h2>Chain Preferences</h2>
-                <div class={style.form}>
+                <div className={style.form}>
                     <form action="">
-                        <div class={style.field}>
-                            <div class={classNames(["superInputDark", style.inputContainer])}>
-                                <label for="name">Gas Limit</label>
+                        <div className={style.field}>
+                            <div className={classNames(["superInputDark", style.inputContainer])}>
+                                <label htmlFor="name">Gas Limit</label>
                                 <input
                                     id="gasLimit"
                                     type="number"
@@ -59,9 +59,9 @@ export default class ChainPreferences extends Component {
                                     onChange={(e)=>{this.onChange(e, 'gasLimit')}}
                                     />
                             </div>
-                            <div class={style.note}>Maximum amount of gas available to each block and transaction. <b>Leave blank for default.</b></div>
-                            <div class={classNames(["superInputDark", style.inputContainer])}>
-                                <label for="name">Gas Price</label>
+                            <div className={style.note}>Maximum amount of gas available to each block and transaction. <b>Leave blank for default.</b></div>
+                            <div className={classNames(["superInputDark", style.inputContainer])}>
+                                <label htmlFor="name">Gas Price</label>
                                 <input
                                     id="gasPrice"
                                     type="number"
@@ -70,7 +70,7 @@ export default class ChainPreferences extends Component {
                                     onChange={(e)=>{this.onChange(e, 'gasPrice')}}
                                     />
                             </div>
-                            <div class={style.note}>The price of each unit of gas, in WEI. <b>Leave blank for default.</b></div>
+                            <div className={style.note}>The price of each unit of gas, in WEI. <b>Leave blank for default.</b></div>
                         </div>
                     </form>
                 </div>

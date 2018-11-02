@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import style from './style';
+import style from './style.less';
 
 export default class BottomBar extends Component {
 
@@ -24,12 +24,12 @@ export default class BottomBar extends Component {
         const { chainPreferences, endpoint } = this.props;
 
         return (
-            <div class={style.bottomStatusBar}>
-                <span class={style.left}>
-                    <span class={style.note}>Note</span>
-                    <span class={style.noteText}>All files are stored in the browser only, download to backup</span>
+            <div className={style.bottomStatusBar}>
+                <span className={style.left}>
+                    <span className={style.note}>Note</span>
+                    <span className={style.noteText}>All files are stored in the browser only, download to backup</span>
                 </span>
-                <div class={style.right}>
+                <div className={style.right}>
                 <span>Gas Limit: {chainPreferences.gasLimit}</span>
                 <span>Gas Price: {chainPreferences.gasPrice} Wei</span>
                 <span>{endpoint}</span>

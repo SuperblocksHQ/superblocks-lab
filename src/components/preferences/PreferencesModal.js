@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import classNames from 'classnames';
-import style from './style';
+import style from './style.less';
 import ModalHeader from '../modal/modalHeader';
-import PreferenceCategory from './PreferenceCategory';
+import PreferenceCategory from './preferenceCategory';
 import ChainPreferences from './sections/chainPreferences';
 import {
     IconChain
@@ -67,18 +67,18 @@ export default class PreferencesModal extends Component {
         categories = [{ id: 0, name: "Chain", icon: <IconChain /> }]
         let { categorySelectedId } = this.state;
         return(
-            <div class={classNames([style.prefrerencesModal, "modal"])}>
-                <div class={style.container}>
+            <div className={classNames([style.prefrerencesModal, "modal"])}>
+                <div className={style.container}>
                     <ModalHeader
                         title="Preferences"
                         onCloseClick={this.onCloseClickHandle}
                     />
-                    <div class={classNames([style.area, style.container])}>
-                        <div class={style.categoriesArea}>
+                    <div className={classNames([style.area, style.container])}>
+                        <div className={style.categoriesArea}>
                             <ul>
                                 {
                                     categories.map(category =>
-                                        <li class={categorySelectedId == category.id ? style.selected : null}>
+                                        <li key={category.id} className={categorySelectedId == category.id ? style.selected : null}>
                                             <PreferenceCategory
                                                 icon={category.icon}
                                                 title={category.name}
@@ -88,14 +88,14 @@ export default class PreferencesModal extends Component {
                                 }
                             </ul>
                         </div>
-                        <div class={style.preferencesArea}>
+                        <div className={style.preferencesArea}>
                             <ChainPreferences
                                 onPreferenceChange={this.chainPreferenceChangeHandle}/>
                         </div>
                     </div>
-                    <div class={style.footer}>
-                        <button onClick={this.onCloseClickHandle} class="btn2 noBg mr-2">Cancel</button>
-                        <button onClick={this.onSavePreferences} class="btn2">Save</button>
+                    <div className={style.footer}>
+                        <button onClick={this.onCloseClickHandle} className="btn2 noBg mr-2">Cancel</button>
+                        <button onClick={this.onSavePreferences} className="btn2">Save</button>
                     </div>
                 </div>
             </div>

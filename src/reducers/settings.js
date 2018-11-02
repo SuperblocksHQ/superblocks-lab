@@ -11,8 +11,6 @@ export default function settingsReducer(state = initialState, action) {
             };
         }
         case 'SAVE_PREFERENCES': {
-            console.log(action.data);
-            console.log(action);
             return {
                 ...state,
                 preferences: {

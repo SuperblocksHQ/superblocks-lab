@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { connect } from 'react-redux';
-import PreferencesModal from './preferencesModal';
+import PreferencesModal from './PreferencesModal';
 import { savePreferences } from '../../actions/settings';
 
 const mapDispatchToProps = (dispatch) => {

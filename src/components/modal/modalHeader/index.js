@@ -14,15 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+import React from 'react';
 import Proptypes from 'prop-types';
-import style from './style';
+import style from './style.less';
 import classNames from 'classnames';
 import { IconClose } from '../../icons';
 
 const ModalHeader = ({ title, onCloseClick }) => (
-    <div class={style.header}>
-        <div class={style.title}>{title}</div>
-        <button class={classNames([style.closeIcon, "btnNoBg"])} onClick={onCloseClick}>
+    <div className={style.header}>
+        <div className={style.title}>{title}</div>
+        <button className={classNames([style.closeIcon, "btnNoBg"])} onClick={onCloseClick}>
             <IconClose />
         </button>
     </div>

@@ -19,8 +19,8 @@ import {
 } from '../icons';
 
 const PreferencesAction = () => (
-    <div class={style.action}>
-        <button class={classNames([style.container, "btnNoBg"])}>
+    <div className={style.action}>
+        <button className={classNames([style.container, "btnNoBg"])}>
             <IconConfigure />
             <span>Preferences</span>
         </button>
@@ -431,7 +431,7 @@ export default class TopBar extends Component {
                     <ProjectSelector title={title} />
                 </DropdownContainer>
 
-                <div class={style.actionsRight}>
+                <div className={style.actionsRight}>
                     <div onClick={this.showPreferencesModal}>
                         <PreferencesAction />
                     </div>
