@@ -20,6 +20,7 @@ import style from './style';
 import Control from './control';
 import Panes from './panes';
 import TopBar from '../topbar';
+import BottomBar from '../bottomBar';
 import ContactContainer from '../contactContainer';
 import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
 import { IconTransactions, IconClose } from '../icons';
@@ -164,17 +165,9 @@ export default class ProjectEditor extends Component {
                                 </button>
                             </div>
                         </div>
-                        <div class="bottom-status-bar">
-                            <span class="left">
-                                <span class="note">Note</span>
-                                <span class="note-text">All files are stored in the browser only, download to backup</span>
-                            </span>
-                            <div class="right">
-                                <span>Gas Limit: 1000</span>
-                                <span>Gas Price: 1000</span>
-                                <span>{endpoint}</span>
-                            </div>
-                        </div>
+                        <BottomBar
+                            endpoint={endpoint}
+                        />
                 </div>
                 </div>
             </div>
