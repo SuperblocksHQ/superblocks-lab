@@ -62,9 +62,13 @@ export default class AppEditor extends Component {
             alert('Please give the project a snappy title.');
             return false;
         }
-        if (!this.state.form.name.match(/^([a-zA-Z0-9-]+)$/)) {
+        if (this.state.form.title.length > 20) {
+            alert('Illegal title. Max 20 characters.');
+            return false;
+        }
+        if (!this.state.form.name.match(/^([a-zA-Z0-9-]+)$/) || this.state.form.name.length > 20) {
             alert(
-                'Illegal projectname. Only A-Za-z0-9 and dash (-) allowed. Max 30 characters.'
+                'Illegal projectname. Only A-Za-z0-9 and dash (-) allowed. Max 20 characters.'
             );
             return false;
         }
@@ -98,7 +102,7 @@ export default class AppEditor extends Component {
                                 <div className={style.field}>
                                     <p>Name:</p>
                                     <input
-                                        maxLength="30"
+                                        maxLength="20"
                                         type="text"
                                         value={form.name}
                                         onKeyUp={e => {
@@ -112,7 +116,7 @@ export default class AppEditor extends Component {
                                 <div className={style.field}>
                                     <p>Title:</p>
                                     <input
-                                        maxLength="100"
+                                        maxLength="20"
                                         type="text"
                                         value={form.title}
                                         onKeyUp={e => {
