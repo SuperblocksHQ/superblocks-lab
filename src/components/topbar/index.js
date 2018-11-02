@@ -16,6 +16,15 @@ import {
     IconCheck
 } from '../icons';
 
+const SettignsAction = () => (
+    <div class={style.action}>
+        <button class={classNames([style.container, "btnNoBg"])}>
+            <IconConfigure />
+            <span>Settings</span>
+        </button>
+    </div>
+);
+
 const HelpDropdownAction = () => (
     <div class={style.action}>
         <button class={classNames([style.container, "btnNoBg"])}>
@@ -312,11 +321,15 @@ export default class TopBar extends Component {
                     <ProjectSelector title={title}/>
                 </DropdownContainer>
 
-                <DropdownContainer
-                    class={style.actionsRight}
-                    dropdownContent={<HelpDropdownDialog />} >
-                        <HelpDropdownAction />
-                </DropdownContainer>
+                <div class={style.actionsRight}>
+                    <SettignsAction />
+
+                    <DropdownContainer
+                        class={style.actionHelp}
+                        dropdownContent={<HelpDropdownDialog />} >
+                            <HelpDropdownAction />
+                    </DropdownContainer>
+                </div>
             </div>
         );
     }
