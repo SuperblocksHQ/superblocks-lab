@@ -29,32 +29,38 @@ export default class ChainPreferences extends Component {
     render() {
         const { gasLimit, gasPrice } = this.props;
         return (
-            <div class={style.form}>
-                <form action="">
-                    <div class={style.field}>
-                        <div class="superInputDark">
-                            <label for="name">Gas Limit</label>
-                            <input
-                                id="gasLimit"
-                                type="text"
-                                onKeyUp={(e)=>{this.onChange(e, 'gasLimit')}}
-                                value={gasLimit}
-                                onChange={(e)=>{this.onChange(e, 'gasLimit')}}
-                                />
+            <div>
+                <h2>Chain Preferences</h2>
+                <div class={style.form}>
+                    <form action="">
+                        <div class={style.field}>
+                            <div class="superInputDark">
+                                <label for="name">Gas Limit</label>
+                                <input
+                                    id="gasLimit"
+                                    type="text"
+                                    onKeyUp={(e)=>{this.onChange(e, 'gasLimit')}}
+                                    value={gasLimit}
+                                    onChange={(e)=>{this.onChange(e, 'gasLimit')}}
+                                    />
+                            </div>
+                            <div class={style.note}>Maximum amount of gas available to each block and transaction. Leave blank for default.</div>
+                            <div class="superInputDark">
+                                <label for="name">Gas Price</label>
+                                <input
+                                    id="gasPrice"
+                                    type="text"
+                                    onKeyUp={(e)=>{this.onChange(e, 'gasPrice')}}
+                                    value={gasPrice}
+                                    onChange={(e)=>{this.onChange(e, 'gasPrice')}}
+                                    />
+                            </div>
+                            <div class={style.note}>Maximum amount of gas available to each block and transaction. Leave blank for default.</div>
                         </div>
-                        <div class="superInputDark">
-                            <label for="name">Gas Price</label>
-                            <input
-                                id="gasPrice"
-                                type="text"
-                                onKeyUp={(e)=>{this.onChange(e, 'gasPrice')}}
-                                value={gasPrice}
-                                onChange={(e)=>{this.onChange(e, 'gasPrice')}}
-                                />
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
+
         )
     }
 }

@@ -52,10 +52,10 @@ export default class SettingsModal extends Component {
         categories = [{ id: 0, name: "Chain", icon: <IconChain /> }]
         let { categorySelectedId } = this.state;
         return(
-            <div class={classNames([style.settingsModal, "modal"])}>
+            <div class={classNames([style.prefrerencesModal, "modal"])}>
                 <div class={style.container}>
                     <ModalHeader
-                        title="Settings"
+                        title="Preferences"
                         onCloseClick={this.onCloseClickHandle}
                     />
                     <div class={classNames([style.area, style.container])}>
