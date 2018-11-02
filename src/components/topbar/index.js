@@ -6,6 +6,7 @@ import { DropdownContainer } from '../dropdown';
 import Backend from '../projecteditor/control/backend';
 import Modal from '../modal';
 import Tooltip from '../tooltip';
+import PreferencessModal from '../preferences';
 import {
     IconDownload,
     IconTrash,
@@ -16,6 +17,15 @@ import {
     IconDiscord,
     IconCheck
 } from '../icons';
+
+const PreferencesAction = () => (
+    <div class={style.action}>
+        <button class={classNames([style.container, "btnNoBg"])}>
+            <IconConfigure />
+            <span>Preferences</span>
+        </button>
+    </div>
+);
 
 const HelpDropdownAction = () => (
     <div className={style.action}>
@@ -370,6 +380,27 @@ ProjectDialog.propTypes = {
 };
 
 export default class TopBar extends Component {
+
+    onSettingsModalClose = () => {
+        this.props.functions.modal.close();
+    }
+
+    showPreferencesModal = () => {
+        const modal = (
+            <PreferencessModal
+                onCloseClick={this.onSettingsModalClose}
+            />
+        );
+        this.props.functions.modal.show({
+            cancel: () => {
+                return false;
+            },
+            render: () => {
+                return modal;
+            }
+        });
+    }
+
     render() {
         var title = '';
 
@@ -400,12 +431,17 @@ export default class TopBar extends Component {
                     <ProjectSelector title={title} />
                 </DropdownContainer>
 
-                <DropdownContainer
-                    className={style.actionsRight}
-                    dropdownContent={<HelpDropdownDialog />}
-                >
-                    <HelpDropdownAction />
-                </DropdownContainer>
+                <div class={style.actionsRight}>
+                    <div onClick={this.showPreferencesModal}>
+                        <PreferencesAction />
+                    </div>
+
+                    <DropdownContainer
+                        className={style.actionHelp}
+                        dropdownContent={<HelpDropdownDialog />} >
+                            <HelpDropdownAction />
+                    </DropdownContainer>
+                </div>
             </div>
         );
     }

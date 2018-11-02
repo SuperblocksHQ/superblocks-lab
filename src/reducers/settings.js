@@ -10,6 +10,19 @@ export default function settingsReducer(state = initialState, action) {
                 showSplash: action.data,
             };
         }
+        case 'SAVE_PREFERENCES': {
+            console.log(action.data);
+            console.log(action);
+            return {
+                ...state,
+                preferences: {
+                    chain: {
+                        gasLimit: action.data.chain.gasLimit ? action.data.chain.gasLimit : initialState.preferences.chain.gasLimit, // Make sure to fallback into the default when left empty
+                        gasPrice: action.data.chain.gasPrice ? action.data.chain.gasPrice : initialState.preferences.chain.gasPrice // Make sure to fallback into the default when left empty
+                    }
+                },
+            };
+        }
         default:
             return state;
     }

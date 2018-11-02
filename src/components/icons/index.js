@@ -45,6 +45,7 @@ import iconLockOpen from '@fortawesome/fontawesome-free-solid/faLockOpen';
 import iconPencil from '@fortawesome/fontawesome-free-solid/faPencilAlt';
 import iconDownload from '@fortawesome/fontawesome-free-regular/faArrowAltCircleDown';
 import iconMosaic from '@fortawesome/fontawesome-free-solid/faThLarge';
+import iconChain from '@fortawesome/fontawesome-free-solid/faLink';
 
 class IconImg extends Component {
     render() {
@@ -169,3 +170,6 @@ export const IconTwitter = ({...props}) => <FaIcon icon={iconTwitter} {...props}
 export const IconGithub = ({...props}) => <FaIcon icon={iconGithub} {...props} />;
 export const IconDiscord = ({...props}) => <FaIcon icon={iconDiscord} {...props}/>;
 
+
+// Preferences
+export const IconChain = ({...props}) => <FaIcon icon={iconChain} {...props} />;
