@@ -28,7 +28,10 @@ import {
 export default class PreferencesModal extends Component {
 
     state = {
-        categorySelectedId: 0
+        categorySelectedId: 0,
+        tempPreferences: {
+            chainPreferences: {}
+        }
     }
 
     onCategorySelected(id) {
@@ -45,6 +48,19 @@ export default class PreferencesModal extends Component {
         if (this.state.positiveMatch) {
             this.props.onDeployConfirmed();
         }
+    }
+
+    chainPreferenceChangeHandle = ({ gasLimit, gasPrice }) => {
+        this.setState({
+            ...this.state,
+            tempPreferences: {
+                ...this.state.tempPreferences,
+                chainPreferences: {
+                    gasLimit: gasLimit ? gasLimit : this.state.tempPreferences.chainPreferences.gasLimit,
+                    gasPrice: gasPrice ? gasPrice : this.state.tempPreferences.chainPreferences.gasPrice
+                }
+            }
+        });
     }
 
     render() {
@@ -74,7 +90,8 @@ export default class PreferencesModal extends Component {
                             </ul>
                         </div>
                         <div class={style.preferencesArea}>
-                            <ChainPreferences />
+                            <ChainPreferences
+                                onPreferenceChange={this.chainPreferenceChangeHandle}/>
                         </div>
                     </div>
                     <div class={style.footer}>

@@ -26,8 +26,21 @@ export default class ChainPreferences extends Component {
         tempGasPrice: null
     }
 
+    onChange = (e, key) => {
+        var value = e.target.value;
+        if (key === "gasLimit") {
+            this.props.onPreferenceChange({
+                gasLimit: Number(value),
+            })
+        } else if (key === "gasPrice") {
+            this.props.onPreferenceChange({
+                gasPrice: Number(value),
+            })
+        }
+    }
+
     render() {
-        const { gasLimit, gasPrice } = this.state;
+        const { tempGasLimit, tempGasPrice } = this.state;
         return (
             <div>
                 <h2>Chain Preferences</h2>
@@ -40,7 +53,7 @@ export default class ChainPreferences extends Component {
                                     id="gasLimit"
                                     type="number"
                                     onKeyUp={(e)=>{this.onChange(e, 'gasLimit')}}
-                                    value={gasLimit}
+                                    value={tempGasLimit}
                                     onChange={(e)=>{this.onChange(e, 'gasLimit')}}
                                     />
                             </div>
@@ -51,7 +64,7 @@ export default class ChainPreferences extends Component {
                                     id="gasPrice"
                                     type="number"
                                     onKeyUp={(e)=>{this.onChange(e, 'gasPrice')}}
-                                    value={gasPrice}
+                                    value={tempGasPrice}
                                     onChange={(e)=>{this.onChange(e, 'gasPrice')}}
                                     />
                             </div>
@@ -63,6 +76,10 @@ export default class ChainPreferences extends Component {
 
         )
     }
+}
+
+ChainPreferences.propTypes = {
+    onPreferenceChange: PropTypes.func.isRequired
 }
 
 
