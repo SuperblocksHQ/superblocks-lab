@@ -462,7 +462,7 @@ export default class AccountEditor extends Component {
                                                 for each of the networks
                                                 available.
                                                 <a
-                                                    href="#"
+                                                    href="https://help.superblocks.com/"
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
