@@ -36,7 +36,7 @@
                 },
                 "README.md": {
                     "type": "f",
-                    "contents": "# Raise Funds to Summon Nick Johnson to your Hackathon\n\nThis is an example of a real world DApp which [The Decentralized Camp - Stockholm](https://meetup.com/decentralized-camp) used to Summon the very knowledgable and generous Nick Johnson to Stockholm for the annual hackathon.\n\n## HOW TO\n"
+                    "contents": "# Raise Funds to Summon Nick Johnson to your Hackathon\n\nThis is an example of a real world DApp which [The Decentralized Camp - Stockholm](https://meetup.com/decentralized-camp) used to Summon the very knowledgable and generous Nick Johnson to Stockholm for the annual hackathon.\n\n## HOW TO\n\nIn 'Configure' section of Contract you can configure constructor parameters by your needs. After deploying the Contract - receiver of the funds has to set minimum amount required."
                 }
             }
         }
