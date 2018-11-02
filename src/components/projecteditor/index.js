@@ -169,7 +169,11 @@ export default class ProjectEditor extends Component {
                                 <span class="note">Note</span>
                                 <span class="note-text">All files are stored in the browser only, download to backup</span>
                             </span>
-                            <span class="right">{endpoint}</span>
+                            <div class="right">
+                                <span>Gas Limit: 1000</span>
+                                <span>Gas Price: 1000</span>
+                                <span>{endpoint}</span>
+                            </div>
                         </div>
                 </div>
                 </div>
