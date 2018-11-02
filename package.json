@@ -9,14 +9,14 @@
     "test": "mocha ./test/*.js && jest",
     "test:watch": "npm test -- --watch",
     "format": "prettier --trailing-comma es5 --single-quote --write 'src/*/*.js' 'src/*/!(node_modules)/**/*.js' '!src/components/solc/**/*.js' '!src/components/evm/**/*.js' webpack.config.js",
-    "lint": "npm run format && eslint --fix --config .eslintrc src"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "lint-javascript": "exec eslint --config ./config/eslint/eslint.json --ext \".js\" ./src",
+    "lint": "yarn run lint-javascript"
   },
   "eslintIgnore": [
-    "build/*",
-    "src/*"
+    "ethereumjs-tx-*.js",
+    "src/components/evm/dist/*",
+    "src/components/solc/dist/*",
+    "src/components/superprovider/dist/*"
   ],
   "devDependencies": {
     "@babel/core": "7.1.0",
