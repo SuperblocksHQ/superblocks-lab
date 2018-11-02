@@ -307,7 +307,6 @@ export default class TopBar extends Component {
     }
 
     showPreferencesModal = () => {
-        console.log("hola");
         const modal = (
             <PreferencessModal
                 onCloseClick={this.onSettingsModalClose}

@@ -23,7 +23,6 @@ export default class BottomBar extends Component {
     render() {
         const { chainPreferences, endpoint } = this.props;
 
-        console.log(this.props);
         return (
             <div class={style.bottomStatusBar}>
                 <span class={style.left}>
@@ -32,7 +31,7 @@ export default class BottomBar extends Component {
                 </span>
                 <div class={style.right}>
                 <span>Gas Limit: {chainPreferences.gasLimit}</span>
-                <span>Gas Price: {chainPreferences.gasPrice}</span>
+                <span>Gas Price: {chainPreferences.gasPrice} Wei</span>
                 <span>{endpoint}</span>
                 </div>
             </div>

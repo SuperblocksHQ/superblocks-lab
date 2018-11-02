@@ -22,8 +22,8 @@ import style from './style';
 export default class ChainPreferences extends Component {
 
     state = {
-        gasLimit: 0,
-        gasPrice: 0
+        tempGasLimit: null,
+        tempGasPrice: null
     }
 
     render() {

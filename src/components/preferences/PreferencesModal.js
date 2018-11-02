@@ -19,13 +19,13 @@ import Proptypes from 'prop-types';
 import classNames from 'classnames';
 import style from './style';
 import ModalHeader from '../modal/modalHeader';
-import PreferenceCategory from './preferenceCategory';
+import PreferenceCategory from './PreferenceCategory';
 import ChainPreferences from './sections/chainPreferences';
 import {
     IconChain
 } from '../icons';
 
-export default class SettingsModal extends Component {
+export default class PreferencesModal extends Component {
 
     state = {
         categorySelectedId: 0
@@ -87,7 +87,6 @@ export default class SettingsModal extends Component {
     }
 }
 
-SettingsModal.proptypes = {
-    onTemplateSelected: Proptypes.func.isRequired,
+PreferencesModal.proptypes = {
     onCloseClick: Proptypes.func.isRequired
 }
