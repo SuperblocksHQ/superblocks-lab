@@ -115,6 +115,8 @@ export const IconShowPreview = ({...props}) => <svg fill="currentColor" preserve
 export const IconTest =({...props})=> <IconImg src={'/static/img/test-tube.svg'} {...props} />;
 export const IconPlay =({...props})=><IconImg  src={'/static/img/icon-play.svg'} {...props} />;
 export const IconStop =({...props})=><IconImg  src={'/static/img/icon-stop.svg'} {...props} />;
+export const IconTick =({...props})=><IconImg  src={'/static/img/tick.svg'} {...props} />;
+export const IconCross =({...props})=><IconImg  src={'/static/img/cross.svg'} {...props} />;
 
 // Learn and Resouces
 export const IconGuide = ({...props}) => <IconImg src={'/static/img/icon-guide.svg'} {...props} />;

@@ -4,9 +4,11 @@ import {
     IconAngleRight,
     IconAngleDown
 } from '../icons';
+import classNames from "classnames";
 
-const Caret = ({ onClick, expanded = false } = props) => (
-    <div class={style.caret} onClick={onClick}>
+const Caret = ({ onClick, expanded = false, styles } = props) => {
+    return(
+    <div className={classNames([style.caret, styles])} onClick={onClick}>
         { expanded ?
             <IconAngleDown height="5" width="8" />
             :
@@ -14,7 +16,7 @@ const Caret = ({ onClick, expanded = false } = props) => (
         }
 
     </div>
-)
+)}
 
 export default Caret;
 

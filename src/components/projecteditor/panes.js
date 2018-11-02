@@ -16,13 +16,14 @@
 
 import { h, Component } from 'preact';
 import classnames from 'classnames';
+import SplitterLayout from "react-splitter-layout";
 import PropTypes from 'prop-types';
 import style from './style';
 import { Pane, PaneComponent } from './pane';
 import { IconClose, IconTest, IconPlay, IconStop, IconRun, IconCheck } from '../icons';
 import { DropdownContainer } from '../dropdown';
-import SplitterLayout from "react-splitter-layout";
-
+import Caret from '../../../src/components/caret';
+import Test from './testResults';
 // TODO: FIXME: consider relocating to more appropriate place;
 //              consider it to be a state, props, control, ... ?
 import { testRunnerBridge } from "../testing/bridge";
@@ -33,8 +34,10 @@ const ConsoleTopBar =(props)=>(
                 <IconTest className={style.icon}  />
             <span className={style.testText}>Tests</span>
             </span>
-            <div className={style.buttons}>
+            <div className={style.closeIcon}>
+                <button className="btnNoBg">
                     <IconClose className={style.closeIcon} onClick={props.closeTestPanel} />
+                </button>
             </div>
         </div>
 );
@@ -43,12 +46,12 @@ const TestControls =(props)=>{
         <div className={style.testControls}>
             <span className={style.icons}>
                 <div className={style.buttons}>
-                    <a href="#" title="Run" onClick={props.onClickPlay}>
+                    <button className="btnNoBg" title="Run" onClick={props.onClickPlay}>
                         <IconPlay className={style.iconPlay} />
-                    </a>
+                    </button>
                 </div>
         <div className={style.buttons}>
-            <a href="#" title="Refresh" onClick={
+            <button className="btnNoBg" title="Refresh" onClick={
                 () => {
                     {
                         // TODO: FIXME: selection by index position
@@ -58,10 +61,10 @@ const TestControls =(props)=>{
                 }
             }>
                 <IconRun  />
-            </a>
+            </button>
         </div>
        <div className={style.buttons}>
-             <a href="#" title="Stop" onClick={
+             <button className="btnNoBg" title="Stop" onClick={
                 () => {
                     {
                         // TODO: FIXME: being used as a way to debug data
@@ -71,7 +74,7 @@ const TestControls =(props)=>{
                 }
              }>
                   <IconStop />
-             </a>
+             </button>
         </div>
             </span>
         </div>)
@@ -82,13 +85,7 @@ const TestFilesHeader =(props)=>{
         <span className={style.bartext}>Done {totalDone} of {total} tests</span>
     </div>)
 };
-const TestFileTree=(props)=>{
-    return(
-<div className={style.results}>
-    {props.result}
-</div>
-    )
-}
+
 export default class Panes extends Component {
 
     constructor(props) {
@@ -96,6 +93,9 @@ export default class Panes extends Component {
         this.panes=[];
         this.activePaneId=null;
         props.router.register("panes", this);
+        this.state={
+            open:true,
+        }
     }
 
     componentDidMount() {
@@ -357,13 +357,12 @@ export default class Panes extends Component {
         });
         return (<div>{html}</div>);
     };
-
     render() {
         const header=this.renderHeader();
         const panes=this.renderPanes();
 
         const { isActionPanelShowing, testPanel } = this.props;
-const text = 'text'
+
         return (
            <div key="panes" id="panes" class="full" style={{ width: isActionPanelShowing ? 'calc(100% - 450px)' : '100%'}}>
                <div key="header" id="panes_header" class={style.header}>
@@ -377,17 +376,17 @@ const text = 'text'
                        </div>
                        <div>
                            <ConsoleTopBar closeTestPanel={this.props.closeTestPanel}/>
-                           <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} primaryMinSize="100px" vertical={false} >
+                           <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize="100px" vertical={false} >
                                <div className={style.leftPane}>
                                    <TestFilesHeader total={13} totalDone={6} />
                                    <TestControls onClickPlay={()=>testRunnerBridge.runAll(this.props.functions.EVM.getProvider())} />
-                                   <TestFileTree result='result' />
+                                   <div id="test" style={{position:'absolute',left:20, top:40}} > <Test open={this.state.open} /></div>
                                </div>
                                <div className={style.rightPane}>
                                    <div className={style.rightStatusBar}>
                                        <span className={style.statusBar}>Test Summary</span>
-                                       <span style={{ color:'#7ed321' }} className={style.statusBar}>{this.props.testPassed} Passed</span>
-                                       <span style={{ color:'#d0021b' }} className={style.statusBar}>{this.props.testFailed} Failed</span>
+                                       <span style={{ color: '#7ed321' }} className={style.statusBar}>{this.props.testPassed} Passed</span>
+                                       <span style={{ color: '#d0021b' }} className={style.statusBar}>{this.props.testFailed} Failed</span>
                                        <span className={style.statusBar}>{this.props.testTotal} Total</span>
                                </div>
                                    <div className={style.consoleText}>NOTE - Console output from this specific test</div>

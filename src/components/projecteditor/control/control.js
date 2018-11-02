@@ -1438,6 +1438,7 @@ export default class Control extends Component {
     };
 
     render() {
+
         const item=this.renderItem(0, 0, this.state.menu);
         item.key="controltree";
         return (
