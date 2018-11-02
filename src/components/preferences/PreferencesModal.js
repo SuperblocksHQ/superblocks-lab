@@ -30,7 +30,7 @@ export default class PreferencesModal extends Component {
     state = {
         categorySelectedId: 0,
         tempPreferences: {
-            chainPreferences: {}
+            chain: {}
         }
     }
 
@@ -45,9 +45,8 @@ export default class PreferencesModal extends Component {
     }
 
     onSavePreferences = () => {
-        if (this.state.positiveMatch) {
-            this.props.onDeployConfirmed();
-        }
+        this.props.savePreferences(this.state.tempPreferences);
+        this.onCloseClickHandle();
     }
 
     chainPreferenceChangeHandle = ({ gasLimit, gasPrice }) => {
@@ -55,9 +54,9 @@ export default class PreferencesModal extends Component {
             ...this.state,
             tempPreferences: {
                 ...this.state.tempPreferences,
-                chainPreferences: {
-                    gasLimit: gasLimit ? gasLimit : this.state.tempPreferences.chainPreferences.gasLimit,
-                    gasPrice: gasPrice ? gasPrice : this.state.tempPreferences.chainPreferences.gasPrice
+                chain: {
+                    gasLimit: gasLimit ? gasLimit : this.state.tempPreferences.chain.gasLimit,
+                    gasPrice: gasPrice ? gasPrice : this.state.tempPreferences.chain.gasPrice
                 }
             }
         });
@@ -105,5 +104,6 @@ export default class PreferencesModal extends Component {
 }
 
 PreferencesModal.proptypes = {
-    onCloseClick: Proptypes.func.isRequired
+    onCloseClick: Proptypes.func.isRequired,
+    savePreferences: Proptypes.func.isRequired
 }

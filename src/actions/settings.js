@@ -9,9 +9,10 @@ export function showSplashNoMore() {
 }
 
 /**
- * Save all the user preferences changed throug the SettingsModal
+ * Save all the user preferences changed throug the PreferencesModal
  */
 export function savePreferences(newPreferences) {
+    console.log(newPreferences);
     return {
         type: 'SAVE_PREFERENCES',
         data: newPreferences
