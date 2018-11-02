@@ -7,3 +7,13 @@ export function showSplashNoMore() {
         data: false
     }
 }
+
+/**
+ * Save all the user preferences changed throug the SettingsModal
+ */
+export function savePreferences(newPreferences) {
+    return {
+        type: 'SAVE_PREFERENCES',
+        data: newPreferences
+    }
+}

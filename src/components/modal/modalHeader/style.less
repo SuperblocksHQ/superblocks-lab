@@ -14,20 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { connect } from 'react-redux';
-//import { getSelectedProjectName } from '../../selectors/project';
-import SettingsModal from './SettingsModal';
+@import '../../../style/index';
 
-// const mapStateToProps = state => ({
-//     selectedProjectName: getSelectedProjectName(state),
-//   });
-
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         validateProjectName: () => {
-//             dispatch(showSplashNoMore())
-//         }
-//     }
-// }
-
-export default connect(null, null)(SettingsModal);
+.header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 18px 32px;
+    display: flex;
+    border-bottom: 1px solid @modal-separator-color;
+    .title {
+        font-weight: 600;
+        text-align: left;
+        font-size: 1.3em;
+    }
+    .closeIcon {
+        margin-left: auto;
+        color: #c7c7c7;
+        &:hover {
+            color: #fff;
+        }
+    }
+}

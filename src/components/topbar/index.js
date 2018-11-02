@@ -5,6 +5,7 @@ import style from './style';
 import { DropdownContainer } from '../dropdown';
 import Backend from  '../projecteditor/control/backend';
 import Modal from '../modal';
+import PreferencessModal from '../preferences';
 import {
     IconDownload,
     IconTrash,
@@ -16,11 +17,11 @@ import {
     IconCheck
 } from '../icons';
 
-const SettignsAction = () => (
+const PreferencesAction = () => (
     <div class={style.action}>
         <button class={classNames([style.container, "btnNoBg"])}>
             <IconConfigure />
-            <span>Settings</span>
+            <span>Preferences</span>
         </button>
     </div>
 );
@@ -301,6 +302,27 @@ ProjectDialog.propTypes = {
 
 export default class TopBar extends Component {
 
+    onSettingsModalClose = () => {
+        this.props.functions.modal.close();
+    }
+
+    showPreferencesModal = () => {
+        console.log("hola");
+        const modal = (
+            <PreferencessModal
+                onCloseClick={this.onSettingsModalClose}
+            />
+        );
+        this.props.functions.modal.show({
+            cancel: () => {
+                return false;
+            },
+            render: () => {
+                return modal;
+            }
+        });
+    }
+
     render() {
         var title="";
 
@@ -322,7 +344,9 @@ export default class TopBar extends Component {
                 </DropdownContainer>
 
                 <div class={style.actionsRight}>
-                    <SettignsAction />
+                    <div onClick={this.showPreferencesModal}>
+                        <PreferencesAction />
+                    </div>
 
                     <DropdownContainer
                         class={style.actionHelp}

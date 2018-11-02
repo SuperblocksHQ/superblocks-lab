@@ -10,6 +10,14 @@ export default function settingsReducer(state = initialState, action) {
             showSplash: action.data,
             };
         }
+        case 'SAVE_PREFERENCES': {
+            console.log(action.data);
+            console.log(action);
+            return {
+            ...state,
+            preferences: action.data,
+            };
+        }
         default:
             return state;
     }
