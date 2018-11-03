@@ -48,7 +48,7 @@ export default class TextInput extends PureComponent {
                         {...props}
                         />
                 </div>
-                { error != null && <ErrorMessage error={error} />}
+                { error != null && <ErrorMessage error={error} className={style.errorMessage}/>}
             </div>
         );
     }

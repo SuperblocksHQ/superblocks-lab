@@ -16,33 +16,19 @@
 
 import React, { PureComponent } from 'react';
 
-// export type MessageError =
-//   | 'NOT_AUTHORIZED'
-//   | 'NET_ERROR'
-//   | 'UNKNOWN'
-//   | Max140CharsError
-//   | EmailError
-//   | PasswordError;
-
-// type ErrorMessageProps = {|
-//   ...TextProps,
-//   error: ?MessageError,
-//   originalErrorMessage?: string,
-// |};
-
 class ErrorMessage extends PureComponent {
   static errorToMessage(error) {
     switch (error) {
       case 'GAS_LIMIT':
         return (
           <div id="error.gasLimit">
-            {"The Gas Limit has to be > 0 and < 7900000"}
+            {"The Gas Limit has to between 0 and 7900000"}
           </div>
         );
       case 'GAS_PRICE':
         return (
           <div id="error.gasPrice">
-            {"The Gas Price has to be > 0 and < 90000000000"}
+            {"The Gas Price has to be between 0 and 90000000000"}
           </div>
         );
       default:
@@ -54,8 +40,6 @@ class ErrorMessage extends PureComponent {
 
   render() {
     const {
-      bold = true,
-      color = 'danger',
       error,
       originalErrorMessage,
       ...props
@@ -64,7 +48,7 @@ class ErrorMessage extends PureComponent {
     const message = ErrorMessage.errorToMessage(error);
     const dev = process.env.NODE_ENV !== 'production';
     return (
-      <div {...props}>
+      <div {...props} >
         {message}
         {dev && originalErrorMessage != null && `\n${originalErrorMessage}`}
       </div>
