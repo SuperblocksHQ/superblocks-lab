@@ -34,10 +34,15 @@ class ErrorMessage extends PureComponent {
   static errorToMessage(error) {
     switch (error) {
       case 'GAS_LIMIT':
-        const message = "The Gas Limit has to be > 0 and < 7900000";
         return (
           <div id="error.gasLimit">
-            {message}
+            {"The Gas Limit has to be > 0 and < 7900000"}
+          </div>
+        );
+      case 'GAS_PRICE':
+        return (
+          <div id="error.gasPrice">
+            {"The Gas Price has to be > 0 and < 90000000000"}
           </div>
         );
       default:

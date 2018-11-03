@@ -16,3 +16,6 @@
 
 export const validateGasLimit = (gasLimit) =>
     ((gasLimit < 0 || gasLimit > 7900000) ? 'GAS_LIMIT' : null);
+
+export const validateGasPrice = (gasPrice) =>
+    ((gasPrice < 0 || gasPrice > 90000000000) ? 'GAS_PRICE' : null);
