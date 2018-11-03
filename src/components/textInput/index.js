@@ -37,7 +37,7 @@ export default class TextInput extends PureComponent {
         return(
             <div>
                 <div className={classNames(["superInputDark", style.inputContainer])}>
-                    { label != null && <label htmlFor="name">Gas Limit</label> }
+                    { label != null && <label htmlFor="name">{label}</label> }
                     <input
                         id={id}
                         type={type}
