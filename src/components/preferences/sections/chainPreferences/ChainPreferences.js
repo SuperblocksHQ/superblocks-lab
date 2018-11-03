@@ -18,8 +18,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import style from './style.less';
+import * as validations from '../../../../validations';
+import TextInput from '../../../textInput';
 
 export default class ChainPreferences extends Component {
+
+    state = {
+        errors: null,
+        gasLimit: null,
+        gasPrice: null
+    }
 
     componentDidMount() {
         const { chainPreferences } = this.props;
@@ -35,30 +43,34 @@ export default class ChainPreferences extends Component {
             this.gasPrice = Number(value);
         }
 
-        this.props.onPreferenceChange({
-            gasLimit: this.gasLimit,
-            gasPrice: this.gasPrice
-        });
+        const errors = validations.validateGasLimit(this.gasLimit);
+        this.setState({ errors });
+
+        if (!errors) {
+            this.props.onPreferenceChange({
+                gasLimit: this.gasLimit,
+                gasPrice: this.gasPrice
+            });
+        }
     }
 
     render() {
         const { chainPreferences } = this.props;
+        const { errors } = this.state;
         return (
             <div>
                 <h2>Chain Preferences</h2>
                 <div className={style.form}>
                     <form action="">
                         <div className={style.field}>
-                            <div className={classNames(["superInputDark", style.inputContainer])}>
-                                <label htmlFor="name">Gas Limit</label>
-                                <input
-                                    id="gasLimit"
-                                    type="number"
-                                    onKeyUp={(e)=>{this.onChange(e, 'gasLimit')}}
-                                    defaultValue={chainPreferences.gasLimit}
-                                    onChange={(e)=>{this.onChange(e, 'gasLimit')}}
-                                    />
-                            </div>
+                            <TextInput
+                                id="gasLimit"
+                                type="number"
+                                label="Gas Limit"
+                                error={errors}
+                                onChangeText={(e)=>{this.onChange(e, 'gasLimit')}}
+                                defaultValue={chainPreferences.gasLimit}
+                            />
                             <div className={style.note}>Maximum amount of gas available to each block and transaction. <b>Leave blank for default.</b></div>
                             <div className={classNames(["superInputDark", style.inputContainer])}>
                                 <label htmlFor="name">Gas Price</label>
