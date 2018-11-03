@@ -285,7 +285,7 @@ export default class Compiler extends Component {
 
                                         cb(
                                             abisrc,
-                                            JSON.stringify(metadata.output.abi),
+                                            JSON.stringify(metadata.output.abi, null, 4),
                                             () => {
                                                 const meta = {
                                                     compile: {
@@ -296,7 +296,7 @@ export default class Compiler extends Component {
                                                 };
                                                 cb(
                                                     metasrc,
-                                                    JSON.stringify(meta),
+                                                    JSON.stringify(meta, null, 4),
                                                     () => {
                                                         cb(
                                                             binsrc,
