@@ -16,6 +16,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Units from 'ethereumjs-units';
 import style from './style.less';
 import * as validations from '../../../../validations';
 import TextInput from '../../../textInput';
@@ -25,39 +26,51 @@ export default class ChainPreferences extends Component {
     state = {
         errorGasLimit: null,
         errorGasPrice: null,
-        gasLimit: null,
-        gasPrice: null
-    }
-
-    componentDidMount() {
-        const { chainPreferences } = this.props;
-        this.gasLimit = chainPreferences.gasLimit;
-        this.gasPrice = chainPreferences.gasPrice;
+        tempGasLimit: this.props.chainPreferences.gasLimit,
+        tempGasPrice: this.props.chainPreferences.gasPrice
     }
 
     onChange = (e, key) => {
         var value = e.target.value;
         if (key === "gasLimit") {
-            this.gasLimit = Number(value);
+            this.setState({
+                tempGasLimit: Number(value)
+            });
         } else if (key === "gasPrice") {
-            this.gasPrice = Number(value);
+            this.setState({
+                tempGasPrice: Number(value)
+            });
         }
 
-        const errorGasLimit = validations.validateGasLimit(this.gasLimit);
-        const errorGasPrice = validations.validateGasPrice(this.gasPrice);
+        const errorGasLimit = validations.validateGasLimit(this.state.tempGasLimit);
+        const errorGasPrice = validations.validateGasPrice(this.state.tempGasPrice);
         this.setState({ errorGasLimit, errorGasPrice });
 
         if (!errorGasLimit && !errorGasPrice) {
             this.props.onPreferenceChange({
-                gasLimit: this.gasLimit,
-                gasPrice: this.gasPrice
+                gasLimit: this.state.tempGasLimit,
+                gasPrice: this.state.tempGasPrice
             });
         }
     }
 
     render() {
-        const { chainPreferences } = this.props;
-        const { errorGasLimit, errorGasPrice } = this.state;
+        const {
+            chainPreferences: { gasPrice },
+            chainPreferences: { gasLimit }
+        } = this.props;
+        const {
+            errorGasLimit,
+            errorGasPrice,
+            tempGasLimit,
+            tempGasPrice
+        } = this.state;
+
+        const gasLimitGwei = Units.convert(tempGasLimit, 'wei', 'gwei');
+        const gasPriceGwei = Units.convert(tempGasPrice, 'wei', 'gwei');
+
+        console.log(gasLimitGwei);
+        console.log(gasPriceGwei);
         return (
             <div>
                 <h2>Chain Preferences</h2>
@@ -70,7 +83,8 @@ export default class ChainPreferences extends Component {
                                 label="Gas Limit"
                                 error={errorGasLimit}
                                 onChangeText={(e)=>{this.onChange(e, 'gasLimit')}}
-                                defaultValue={chainPreferences.gasLimit}
+                                defaultValue={gasLimit}
+                                tip={gasLimitGwei + ' Gwei'}
                             />
                             <div className={style.note}>Maximum amount of gas available to each block and transaction. <b>Leave blank for default.</b></div>
                             <TextInput
@@ -79,7 +93,8 @@ export default class ChainPreferences extends Component {
                                 label="Gas Price"
                                 error={errorGasPrice}
                                 onChangeText={(e)=>{this.onChange(e, 'gasPrice')}}
-                                defaultValue={chainPreferences.gasPrice}
+                                defaultValue={gasPrice}
+                                tip={gasPriceGwei + ' Gwei'}
                             />
                             <div className={style.note}>The price of each unit of gas, in WEI. <b>Leave blank for default.</b></div>
                         </div>
