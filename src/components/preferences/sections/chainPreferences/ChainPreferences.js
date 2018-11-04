@@ -32,26 +32,30 @@ export default class ChainPreferences extends Component {
 
     onChange = (e, key) => {
         var value = e.target.value;
+        var gasLimitValue = this.state.tempGasLimit;
+        var gasPriceValue = this.state.tempGasPrice;
         if (key === "gasLimit") {
-            this.setState({
-                tempGasLimit: Number(value)
-            });
+            gasLimitValue = Number(value);
         } else if (key === "gasPrice") {
-            this.setState({
-                tempGasPrice: Number(value)
-            });
+            gasPriceValue = Number(value);
         }
 
-        const errorGasLimit = validations.validateGasLimit(this.state.tempGasLimit);
-        const errorGasPrice = validations.validateGasPrice(this.state.tempGasPrice);
+        const errorGasLimit = validations.validateGasLimit(gasLimitValue);
+        const errorGasPrice = validations.validateGasPrice(gasPriceValue);
         this.setState({ errorGasLimit, errorGasPrice });
 
         if (!errorGasLimit && !errorGasPrice) {
             this.props.onPreferenceChange({
-                gasLimit: this.state.tempGasLimit,
-                gasPrice: this.state.tempGasPrice
+                gasLimit: gasLimitValue,
+                gasPrice: gasPriceValue
             });
         }
+
+        // To make sure we update the input tip correctly
+        this.setState({
+            tempGasLimit: gasLimitValue,
+            tempGasPrice: gasPriceValue
+        });
     }
 
     render() {
@@ -69,8 +73,6 @@ export default class ChainPreferences extends Component {
         const gasLimitGwei = Units.convert(tempGasLimit, 'wei', 'gwei');
         const gasPriceGwei = Units.convert(tempGasPrice, 'wei', 'gwei');
 
-        console.log(gasLimitGwei);
-        console.log(gasPriceGwei);
         return (
             <div>
                 <h2>Chain Preferences</h2>
