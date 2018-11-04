@@ -136,8 +136,8 @@ export default class Deployer extends Component {
 
         var redeploy = this.redeploy;
         if (event) {
-            e.preventDefault();
-            e.stopPropagation(); // Don't auto focus on the window.
+            event.preventDefault();
+            event.stopPropagation(); // Don't auto focus on the window.
             redeploy = true;
         }
         if (this.state.isRunning) return;
