@@ -64,16 +64,22 @@ export default class Compiler extends Component {
         );
     };
 
-    run = e => {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation(); // Don't auto focus on the window.
-        }
+    async run() {
         if (this.state.isRunning) return;
 
         this.setState({
             isRunning: true
         });
+
+        this.state.consoleRows.length = 0;
+
+        this._updateConsole({
+            channel: 1,
+            msg: 'Initializing compiler',
+        });
+
+        // Make sure the compiler is ready before proceeding
+        await this.props.functions.compiler.isReady();
 
         const contracts = this.props.item
             .getProject()
@@ -102,7 +108,7 @@ export default class Compiler extends Component {
                     });
                     return;
                 }
-                this.state.consoleRows.length = 0;
+
                 // This timeout can be removed.
                 setTimeout(() => {
                     var contractbody;
@@ -411,7 +417,7 @@ export default class Compiler extends Component {
                     <button
                         className={classnames(['btnNoBg'], {[style.running] : isRunning})}
                         title="Recompile"
-                        onClick={this.run}
+                        onClick={() => this.run()}
                     >
                         <Tooltip title="Recompile">
                             <IconRun />

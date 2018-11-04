@@ -170,54 +170,24 @@ export default class App extends Component {
     };
 
     _init = () => {
-        let { showSplash, appVersion } = this.props;
-        const modalData = {
-            title: 'Loading Superblocks Lab',
-            body:
-                'Initializing Wallet, Solidity compiler and Ethereum Virtual Machine...',
-            style: { textAlign: 'center' },
-        };
-        var walletSeeded = false;
-        const modal = <Modal data={modalData} />;
-        this.functions.modal.show({
-            cancel: () => {
-                return false;
-            },
-            render: () => {
-                return modal;
-            },
-        });
+        let { showSplash } = this.props;
         this.functions.compiler = new Solc({ id: this.generateId() });
         this.functions.EVM = new EVM({ id: this.generateId() });
 
-        // Need to init the compiler and EVM
+        // Need to init the compiler and EVM. This proccess will be done in the
+        // background in order to allow the user start using the tool straight
+        // await
         this.functions.compiler.init();
         this.functions.EVM.init();
 
         this.functions.wallet.openWallet(
             'development',
-            this.knownWalletSeed,
-            () => {
-                walletSeeded = true;
-            }
+            this.knownWalletSeed
         );
 
-        const fn = () => {
-            if (this.functions.compiler.isReady()
-                && this.functions.EVM.isReady()
-                && walletSeeded) {
-                console.log('Superblocks Lab ' + appVersion + ' Ready.');
-
-                this.functions.modal.close();
-
-                if (showSplash) {
-                    this._showSplash();
-                }
-            } else {
-                setTimeout(fn, 500);
-            }
-        };
-        fn();
+        if (showSplash) {
+            this._showSplash();
+        }
     };
 
     _showSplash = () => {

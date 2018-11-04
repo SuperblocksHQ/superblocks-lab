@@ -34,7 +34,7 @@ export default class Solc {
             this.ref = ref;
             var cb;
             cb = () => {
-                if (this.isLoaded()) {
+                if (this._isLoaded()) {
                     this.ref.contentWindow.queueMessageReply = this._response;
                 } else {
                     setTimeout(cb, 100);
@@ -52,9 +52,30 @@ export default class Solc {
         setInterval(this._processQueue, 100);
     }
 
-    getVersion = () => {
+    getVersion() {
         return this._version;
-    };
+    }
+
+    queue(cmd, cb) {
+        const id = ++this._counter;
+        this._cbMap[id] = cb;
+        this._queue.push({ data:cmd, id:id });
+    }
+
+    /**
+    * Async method to check that the compiler has been initialized correctly and is ready
+    * to rock.
+    * @returns {Promise}
+    */
+    isReady = () => {
+        // TODO - Make sure in the future we have a fallback in case there was a problem init the
+        // compiler
+        return new Promise((resolve) => {
+            if (this._isReady()) {
+                resolve(true);
+            }
+        });
+    }
 
     _response = (msg) => {
         if (this._cbMap[msg.id]) {
@@ -62,21 +83,15 @@ export default class Solc {
             delete this._cbMap[msg.id];
             cb(msg.data);
         }
-    };
+    }
 
-    queue = (cmd, cb) => {
-        const id = ++this._counter;
-        this._cbMap[id] = cb;
-        this._queue.push({ data:cmd, id:id });
-    };
-
-    isLoaded = () => {
+    _isLoaded = () => {
         return this.ref && this.ref.contentWindow && this.ref.contentWindow.queueMessage;
-    };
+    }
 
-    isReady = () => {
-        return this.isLoaded() && this.ref.contentWindow.queueMessageReply;
-    };
+    _isReady = () => {
+        return this._isLoaded() && this.ref.contentWindow.queueMessageReply;
+    }
 
     _processQueue = () => {
         if (this._processBusy) {
@@ -85,10 +100,10 @@ export default class Solc {
 
         this._processBusy = true;
 
-        if (this.isReady() && this._queue.length > 0) {
+        if (this._isReady() && this._queue.length > 0) {
             this.ref.contentWindow.queueMessage(this._queue.pop());
         }
 
         this._processBusy = false;
-    };
+    }
 }
