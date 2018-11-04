@@ -47,7 +47,7 @@ export default class ChainPreferences extends Component {
         const errorGasPrice = validations.validateGasPrice(this.gasPrice);
         this.setState({ errorGasLimit, errorGasPrice });
 
-        if (!errorGasLimit && errorGasPrice) {
+        if (!errorGasLimit && !errorGasPrice) {
             this.props.onPreferenceChange({
                 gasLimit: this.gasLimit,
                 gasPrice: this.gasPrice
