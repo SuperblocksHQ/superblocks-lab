@@ -16,13 +16,15 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Units from 'ethereumjs-units';
 import style from './style.less';
 
 export default class BottomBar extends Component {
 
     render() {
         const { chainPreferences, endpoint } = this.props;
-
+        const gasLimit = Units.convert(chainPreferences.gasLimit, 'wei', 'gwei');
+        const gasPrice = Units.convert(chainPreferences.gasPrice, 'wei', 'gwei');
         return (
             <div className={style.bottomStatusBar}>
                 <span className={style.left}>
@@ -30,8 +32,8 @@ export default class BottomBar extends Component {
                     <span className={style.noteText}>All files are stored in the browser only, download to backup</span>
                 </span>
                 <div className={style.right}>
-                <span>Gas Limit: {chainPreferences.gasLimit}</span>
-                <span>Gas Price: {chainPreferences.gasPrice} Wei</span>
+                <span>Gas Limit: {gasLimit} Gwei</span>
+                <span>Gas Price: {gasPrice} Gwei</span>
                 <span>{endpoint}</span>
                 </div>
             </div>
