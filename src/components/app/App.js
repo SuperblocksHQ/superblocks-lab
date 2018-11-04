@@ -174,12 +174,11 @@ export default class App extends Component {
         this.functions.compiler = new Solc({ id: this.generateId() });
         this.functions.EVM = new EVM({ id: this.generateId() });
 
-        // Need to init the compiler and EVM. This proccess will be done in the
+        // Need to init the compiler, EVM and wallet. This proccess will be done in the
         // background in order to allow the user start using the tool straight
         // await
         this.functions.compiler.init();
         this.functions.EVM.init();
-
         this.functions.wallet.openWallet(
             'development',
             this.knownWalletSeed
