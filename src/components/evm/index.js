@@ -32,7 +32,7 @@ export default class EVM {
             this.ref = ref;
             var cb;
             cb = () => {
-                if (this.isLoaded()) {
+                if (this._isLoaded()) {
                     this.ref.contentWindow.queueMessageReply = this._response;
                 } else {
                     setTimeout(cb, 100);
@@ -85,6 +85,25 @@ export default class EVM {
         return this.provider;
     };
 
+    queue = (cmd, cb) => {
+        const id = ++this._counter;
+        this._cbMap[id] = cb;
+        this._queue.push({ data: cmd, id: id });
+    };
+
+    /**
+    * Async method to check that the EVM has been initialized correctly and is ready
+    * to rock.
+    * @returns {Promise}
+    */
+   isReady = () => {
+        return new Promise((resolve) => {
+            if (this._isReady()) {
+                resolve(true);
+            }
+        });
+    }
+
     _response = msg => {
         if (this._cbMap[msg.id]) {
             const cb = this._cbMap[msg.id];
@@ -93,13 +112,7 @@ export default class EVM {
         }
     };
 
-    queue = (cmd, cb) => {
-        const id = ++this._counter;
-        this._cbMap[id] = cb;
-        this._queue.push({ data: cmd, id: id });
-    };
-
-    isLoaded = () => {
+    _isLoaded = () => {
         return (
             this.ref &&
             this.ref.contentWindow &&
@@ -107,14 +120,14 @@ export default class EVM {
         );
     };
 
-    isReady = () => {
-        return this.isLoaded() && this.ref.contentWindow.queueMessageReply;
+    _isReady = () => {
+        return this._isLoaded() && this.ref.contentWindow.queueMessageReply;
     };
 
     _processQueue = () => {
         if (this._processBusy) return;
         this._processBusy = true;
-        if (this.isReady() && this._queue.length > 0) {
+        if (this._isReady() && this._queue.length > 0) {
             this.ref.contentWindow.queueMessage(this._queue.pop());
         }
         this._processBusy = false;

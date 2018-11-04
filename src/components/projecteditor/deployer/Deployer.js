@@ -131,11 +131,11 @@ export default class Deployer extends Component {
         });
     };
 
-    run = e => {
+    async run(event) {
         const { chainPreferences } = this.props;
 
         var redeploy = this.redeploy;
-        if (e) {
+        if (event) {
             e.preventDefault();
             e.stopPropagation(); // Don't auto focus on the window.
             redeploy = true;
@@ -145,6 +145,14 @@ export default class Deployer extends Component {
             isRunning: true,
             consoleRows: []
         });
+
+        this._updateConsole({
+            channel: 1,
+            msg: 'Initializing EVM',
+        });
+
+        // Make sure the EVM is ready before proceeding
+        await this.props.functions.EVM.isReady();
 
         const project = this.props.item.getProject();
         const env = project.getEnvironment();
@@ -1162,7 +1170,7 @@ if(typeof(Contracts)==="undefined") var Contracts={};
                     <button
                         className={classnames(['btnNoBg'], {[style.running] : isRunning})}
                         title="Redeploy"
-                        onClick={this.run}
+                        onClick={() => this.run()}
                     >
                         <Tooltip title="Redeploy">
                             <IconRun />

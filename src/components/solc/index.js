@@ -68,8 +68,6 @@ export default class Solc {
     * @returns {Promise}
     */
     isReady = () => {
-        // TODO - Make sure in the future we have a fallback in case there was a problem init the
-        // compiler
         return new Promise((resolve) => {
             if (this._isReady()) {
                 resolve(true);

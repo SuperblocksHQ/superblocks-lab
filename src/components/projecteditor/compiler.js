@@ -64,14 +64,18 @@ export default class Compiler extends Component {
         );
     };
 
-    async run() {
+    async run(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation(); // Don't auto focus on the window.
+        }
+
         if (this.state.isRunning) return;
 
         this.setState({
-            isRunning: true
+            isRunning: true,
+            consoleRows: []
         });
-
-        this.state.consoleRows.length = 0;
 
         this._updateConsole({
             channel: 1,
@@ -417,7 +421,7 @@ export default class Compiler extends Component {
                     <button
                         className={classnames(['btnNoBg'], {[style.running] : isRunning})}
                         title="Recompile"
-                        onClick={() => this.run()}
+                        onClick={(event) => this.run(event)}
                     >
                         <Tooltip title="Recompile">
                             <IconRun />
