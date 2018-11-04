@@ -36,7 +36,7 @@ export default class TextInput extends PureComponent {
 
         return(
             <div>
-                <div className={classNames(["superInputDark", style.inputContainer])}>
+                <div className={classNames("superInputDark", style.inputContainer)}>
                     { label != null && <label htmlFor="name">{label}</label> }
                     <input
                         id={id}
@@ -45,6 +45,7 @@ export default class TextInput extends PureComponent {
                         defaultValue={defaultValue}
                         disabled={disabled}
                         onChange={onChangeText}
+                        className={classNames({[style.error]: error != null})}
                         {...props}
                         />
                 </div>
