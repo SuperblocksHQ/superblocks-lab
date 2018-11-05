@@ -27,7 +27,7 @@ export default class BottomBar extends Component {
 
     render() {
         const { chainPreferences, endpoint } = this.props;
-        const gasPrice = web3.fromWei(chainPreferences.gasPrice, 'Gwei');
+        const gasPrice = this.web3.fromWei(chainPreferences.gasPrice, 'Gwei');
         return (
             <div className={style.bottomStatusBar}>
                 <span className={style.left}>
