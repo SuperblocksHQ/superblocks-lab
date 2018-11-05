@@ -191,7 +191,7 @@ export default class ProjectItem extends Item {
             );
             this.setHiddenItem('app_preview', previewItem);
 
-            // Traverase the file structure to get `/dappfile.json`, this will prepare the file tree
+            // Traverse the file structure to get `/dappfile.json`, this will prepare the file tree
             // so that the file `/dappfile.json` will get represented by the DappfileItem item created prior.
             this.getItemByPath(['', 'dappfile.json'], this)
                 .then(item => {
@@ -281,13 +281,13 @@ export default class ProjectItem extends Item {
                                     resolve(item);
                                 })
                                 .catch(() => {
-                                    reject();
+                                    reject("Path not found");
                                 });
                         }
                         return;
                     }
                 }
-                reject();
+                reject("Path not found");
             });
         });
     };

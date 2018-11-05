@@ -64,34 +64,38 @@ export default class Backend {
     };
 
     // Check single project and convert it if needed.
+    // isConverted = 1 means converted and no info lost, 2 means converted and info is lost.
     convertProject = (project, cb) => {
-        var isConverted = false;
+        var isConverted = 0;
         try {
-            if (!project.format) {
-                project = this._convertProject1_0to1_0_0(project);
-                isConverted = true;
+            if (project.files && !project.dappfile) {
+                // Assume this is the 1.1.0 format.
+                // Fall through.
             }
+            else {
+                // These are the old JSON formats.
+                if (!project.format) {
+                    project = this._convertProject1_0to1_0_0(project);
+                    isConverted = 1;
+                }
 
-            if (project.format == 'dapps1.0.0') {
-                project = this._convertProject1_0_0to1_1_0(project);
-                isConverted = true;
+                if (project.format == 'dapps1.0.0') {
+                    project = this._convertProject1_0_0to1_1_0(project);
+                    isConverted = 2;
+                }
             }
         } catch (e) {
             console.log('Could not convert project', e);
-            cb(2);
+            cb(3);
             return;
         }
 
-        if (isConverted) {
-            cb(1, project);
-        } else {
-            cb(0);
-        }
+        cb(isConverted, project);
     };
 
     /**
-     * This taked the dappfile object and turns it into a file: `/dappfile.json`
-     * It only takes what we recognize.
+     * This takes the dappfile object and turns it into a file: `/dappfile.json`
+     * It only transforms and keeps things we recognize.
      *
      */
     _convertProject1_0_0to1_1_0 = project => {
@@ -133,6 +137,7 @@ export default class Backend {
         });
 
         const dappfile2 = {
+            format: DAPP_FORMAT_VERSION.substr(5),  // IMPORTANT: if the format of this variable changes this must be updated. We only want the "x.y.z" part.
             project: dappfile.project,
             environments: dappfile.environments,
             wallets: wallets,
@@ -695,7 +700,14 @@ export default class Backend {
             files: files,
         };
         data.projects.push(project);
-        localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
+        try {
+            localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
+        }
+        catch(e) {
+            alert("Error: The browser local storage exceeded it's quota. Please delete some projects to make room for new ones.");
+            setTimeout(() => cb(1), 1);
+            return;
+        }
         setTimeout(() => cb(0), 1);
     };
 
@@ -786,42 +798,18 @@ export default class Backend {
         else setTimeout(() => cb({ status: 1 }), 1);
     };
 
-    _deleteBuildDir = root => {
-        delete root['/']['children']['build'];
-    };
-
-    //_clearDotfiles = (root) => {
-    //// This will clear all keys starting with a dot.
-    //// Changes are done in place in the 'root' object.
-    //const keys=Object.keys(root);
-    //for(var index=0;index<keys.length;index++) {
-    //const key=keys[index];
-    //if(key[0]=='.') {
-    //delete root[key];
-    //continue;
-    //}
-    //const node=root[key];
-    //if(node.type=='d') {
-    //this._clearDotfiles(node.children);
-    //}
-    //}
-    //};
-
-    // TODO: NOT DONE YET
     downloadProject = (item, keepState) => {
-        const exportName = 'superblocks_project_' + project.getName() + '.zip';
+        const exportName = 'superblocks_project_' + item.getName() + '.zip';
 
         const zip = new JSZip();
 
-        console.log(project);
-        return;
         const data =
             JSON.parse(localStorage.getItem(DAPP_FORMAT_VERSION)) || {};
 
         if (!data.projects) data.projects = [];
 
-        var project = data.projects.filter(item => {
-            return item.inode == inode;
+        var project = data.projects.filter(item2 => {
+            return item.getInode() == item2.inode;
         })[0];
 
         if (!project) {
@@ -832,40 +820,121 @@ export default class Backend {
         if (!project.files)
             project.files = { '/': { type: 'd', children: {} } };
 
-        const parts = path.split('/');
         var node = project.files['/'];
 
-        const fn = (node) => {
+        const fn = (node, path) => {
             return new Promise( (resolve) => {
+                if (path == "build/" && !keepState) {
+                    resolve();
+                    return;
+                }
                 if (node.children) {
-                    // TODO: this must be asynchrified so it pops of elemets of an array instead of itereting through using map, since it's going to be recursive calls.
-                    node.children.map( (child) => {
-                        if (child.type == 'f') {
-                            // File
-                            const filePath = "";  // TODO: Needs to be built up in the recursion..
-                            zip.file(filePath, child.contents);
+                    const childrenKeys = Object.keys(node.children);
+                    const fn2 = () => {
+                        const childKey = childrenKeys.pop();
+                        if (childKey) {
+                            const child = node.children[childKey];
+                            if (child.type == 'f') {
+                                zip.file(path + childKey, child.contents);
+                                fn2();
+                                return
+                            }
+                            else {
+                                // Directory
+                                fn(child, path + childKey + '/').then( () => {
+                                    fn2();
+                                    return;
+                                });
+                            }
                         }
                         else {
-                            // Directory
-                            fn(child).then( () => {
-                                // TODO:
-                            });
+                            resolve();
+                            return;
                         }
-                    });
+                    };
+
+                    fn2();
                 }
                 else {
                     resolve();
                 }
             });
         };
-        fn(node).then( () => {
-            zip.generateAsync({type:"blob"})
+
+        fn(node, "").then( () => {
+            zip.generateAsync({type: "blob"})
                 .then( (blob) => {
-                    if (!keepState) {
-                        this._deleteBuildDir(project2.files);
-                    }
                     FileSaver.saveAs(blob, exportName);
             });
         });
     };
+
+    unZip = (data) => {
+        return new Promise( (resolve, reject) => {
+            const zip = new JSZip();
+            zip.loadAsync(data).then( () => {
+                // Create a files object containing all files in the project object.
+                const files = {
+                    '/': {
+                        children: {}
+                    },
+                };
+                const project = {
+                    files: files,
+                };
+                const createFile = (path, contents) => {
+                    const a = path.split('/');
+                    var node = files['/'];
+
+                    while (a.length > 0) {
+                        const nodeName = a.shift();
+                        if (a.length > 0) {
+                            // Dir
+                            if (!node.children[nodeName]) {
+                                // Create dir
+                                node.children[nodeName] = {
+                                    type: 'd',
+                                    children: {},
+                                };
+                            }
+                            node = node.children[nodeName];
+                        }
+                        else {
+                            // The file
+                            node.children[nodeName] = {
+                                type: 'f',
+                                contents: contents,
+                            };
+                        }
+                    }
+                };
+
+                const keys = Object.keys(zip.files);
+                const fn = () => {
+                    return new Promise( resolve => {
+                        const key = keys.pop();
+                        if (!key) {
+                            resolve();
+                            return;
+                        }
+                        const node = zip.files[key];
+                        if (!node.dir) {
+                            // Create file
+                            node.async('string').then( content => {
+                                createFile(key, content);
+                                fn().then(resolve);
+                            });
+                        }
+                        else {
+                            fn().then(resolve);
+                        }
+                    });
+                };
+
+                fn().then( () => {
+                    resolve(project);
+                });
+            })
+        });
+    }
 }
