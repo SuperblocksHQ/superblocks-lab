@@ -144,10 +144,10 @@ export default class Editor extends Component {
         e.preventDefault();
         this.save(e);
         const subitem = this.props.item.getChildren().filter(elm => {
-            return elm.props.item.props.type2 == 'interact';
+            return elm.getType2() == 'interact';
         })[0];
         if (subitem)
-            this.props.router.panes.openContractItem(
+            this.props.router.panes.openItem(
                 subitem,
                 this.props.parent.props.parent.props.id
             );
