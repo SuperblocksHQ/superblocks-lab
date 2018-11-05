@@ -16,10 +16,10 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Units from 'ethereumjs-units';
 import style from './style.less';
 import * as validations from '../../../../validations';
 import TextInput from '../../../textInput';
+import Web3 from 'web3';
 
 export default class ChainPreferences extends Component {
 
@@ -28,6 +28,12 @@ export default class ChainPreferences extends Component {
         errorGasPrice: null,
         tempGasLimit: this.props.chainPreferences.gasLimit,
         tempGasPrice: this.props.chainPreferences.gasPrice
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.web3 = new Web3();
     }
 
     onChange = (e, key) => {
@@ -53,7 +59,6 @@ export default class ChainPreferences extends Component {
 
         // To make sure we update the input tip correctly
         this.setState({
-            tempGasLimit: gasLimitValue,
             tempGasPrice: gasPriceValue
         });
     }
@@ -66,12 +71,10 @@ export default class ChainPreferences extends Component {
         const {
             errorGasLimit,
             errorGasPrice,
-            tempGasLimit,
             tempGasPrice
         } = this.state;
 
-        const gasLimitGwei = Units.convert(tempGasLimit, 'wei', 'gwei');
-        const gasPriceGwei = Units.convert(tempGasPrice, 'wei', 'gwei');
+        const gasPriceGwei = this.web3.fromWei(tempGasPrice, 'Gwei');
 
         return (
             <div>
@@ -86,7 +89,6 @@ export default class ChainPreferences extends Component {
                                 error={errorGasLimit}
                                 onChangeText={(e)=>{this.onChange(e, 'gasLimit')}}
                                 defaultValue={gasLimit}
-                                tip={gasLimitGwei + ' Gwei'}
                             />
                             <div className={style.note}>Maximum amount of gas available to each block and transaction. <b>Leave blank for default.</b></div>
                             <TextInput
