@@ -252,7 +252,8 @@ module.exports = {
             options: {
               formatter: require.resolve('react-dev-utils/eslintFormatter'),
               eslintPath: require.resolve('eslint'),
-
+              configFile: path.join(paths.appSrc, '../config/eslint/eslint.json'),
+              emitWarning: true
             },
             loader: require.resolve('eslint-loader'),
           },

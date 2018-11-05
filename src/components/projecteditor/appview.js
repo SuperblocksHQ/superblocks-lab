@@ -239,7 +239,7 @@ export default class AppView extends Component {
                         Lab, so downloading your DApp makes no sense until you
                         choose any other network than Browser.
                     </p>
-                    <div style={{marginTop: 54}}>
+                    <div style={{marginTop: 15}}>
                         <a
                             className="btn2"
                             onClick={this.props.functions.modal.cancel}
@@ -252,7 +252,7 @@ export default class AppView extends Component {
             const modalData = {
                 title: 'Cannot export DApp for the Browser network',
                 body: body,
-                style: { 'text-align': 'center', height: '263px' },
+                style: { 'text-align': 'center' },
             };
             const modal = <Modal data={modalData} />;
             this.props.functions.modal.show({
@@ -296,7 +296,7 @@ export default class AppView extends Component {
                     After download you can upload the DApp HTML file to any
                     (decentralized) web host of choice.
                 </p>
-                <div style={{marginTop: 49}}>
+                <div style={{marginTop: 15}}>
                     <a
                         className="btn2"
                         style={{marginRight: 30}}
@@ -313,7 +313,7 @@ export default class AppView extends Component {
         const modalData = {
             title: 'Download DApp for the ' + this.state.network + ' network',
             body: body,
-            style: { 'text-align': 'center', height: '280px' },
+            style: { 'text-align': 'center' },
         };
         const modal = <Modal data={modalData} />;
         this.props.functions.modal.show({
