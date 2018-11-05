@@ -16,7 +16,7 @@
 
 import { connect } from 'react-redux';
 import ProjectEditor from './ProjectEditor';
-import { openTransactionsHistoryPanel, hideTransactionsHistoryPanel, toggleTransactionsHistoryPanel } from '../../actions/view';
+import { openTransactionsHistoryPanel, closeTransactionsHistoryPanel, toggleTransactionsHistoryPanel } from '../../actions/view';
 import { getopenTransactionsHistoryPanel } from '../../selectors/view';
 
 const mapStateToProps = state => ({
