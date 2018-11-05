@@ -378,7 +378,7 @@ export default class FileItem extends Item {
                             this.redrawMain(true);
                         });
                     } else {
-                        alert('Could not create the file.', status);
+                        status == 3 ? alert('File with that name already exists.', status) : alert('Could not create the file.', status);
                     }
                 });
             }
@@ -404,7 +404,7 @@ export default class FileItem extends Item {
                             this.redrawMain(true);
                         });
                     } else {
-                        alert('Could not create the folder.', status);
+                        status == 3 ? alert('Folder with that name already exists.', status) : alert('Could not create the folder.', status);
                     }
                 });
             }
