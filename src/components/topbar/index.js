@@ -17,7 +17,7 @@ import {
     IconDiscord,
     IconCheck
 } from '../icons';
-const JSZip = require("jszip");
+import JSZip from 'jszip';
 import Dappfile from '../projecteditor/control/item/dappfileItem';
 
 const PreferencesAction = () => (
