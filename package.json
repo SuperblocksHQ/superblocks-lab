@@ -110,7 +110,6 @@
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
-    "shortid": "^2.2.13",
     "solc": "^0.4.25",
     "web3": "0.19"
   },
