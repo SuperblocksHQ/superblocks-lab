@@ -14,10 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-const Empty = require('./empty.json');
-const HelloWorld = require('./hello.json');
-const NewsFeed = require('./newsfeed.json');
-const RaiseToSummon = require('./raisetosummon.json');
 const EmptyZip = require('./empty.zip');
 const HelloZip = require('./hello.zip');
 const NewsZip = require('./newsfeed.zip');
@@ -55,7 +51,7 @@ export default class Templates {
         {
             "id": 1,
             "name": "Hello World",
-            "description": "Simple Hello World starter",
+            "description": "Simple Hello World starter project",
             "image": "/static/img/templates/img-hello-world.png",
             "categories": [0, 3],
             "zip": HelloZip,
