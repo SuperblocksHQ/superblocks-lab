@@ -89,7 +89,7 @@ export class Window {
     };
 
     renderSub = () => {
-        if (this.props.item.props.type == 'file') {
+        if (this.props.item.getType() == 'file') {
             return (
                 <div
                     className="full"
@@ -107,8 +107,8 @@ export class Window {
                 </div>
             );
         } else if (
-            this.props.item.props.type == 'contract' &&
-            this.props.item.props.type2 == 'configure'
+            this.props.item.getType() == 'contract' &&
+            this.props.item.getType2() == 'configure'
         ) {
             return (
                 <ContractEditor
@@ -119,7 +119,7 @@ export class Window {
                     router={this.props.router}
                 />
             );
-        } else if (this.props.item.props.type == 'project') {
+        } else if (this.props.item.getType() == 'project') {
             return (
                 <AppEditor
                     id={this.subId}
@@ -130,8 +130,8 @@ export class Window {
                 />
             );
         } else if (
-            this.props.item.props.type == 'contract' &&
-            this.props.item.props.type2 == 'compile'
+            this.props.item.getType() == 'contract' &&
+            this.props.item.getType2() == 'compile'
         ) {
             return (
                 <div
@@ -152,8 +152,8 @@ export class Window {
                 </div>
             );
         } else if (
-            this.props.item.props.type == 'contract' &&
-            this.props.item.props.type2 == 'deploy'
+            this.props.item.getType() == 'contract' &&
+            this.props.item.getType2() == 'deploy'
         ) {
             return (
                 <div
@@ -173,7 +173,7 @@ export class Window {
                     />
                 </div>
             );
-        } else if (this.props.item.props.type == 'account') {
+        } else if (this.props.item.getType() == 'account') {
             return (
                 <AccountEditor
                     id={this.subId}
@@ -185,8 +185,8 @@ export class Window {
                 />
             );
         } else if (
-            this.props.item.props.type == 'tutorials' &&
-            this.props.item.props.type2 == 'manual'
+            this.props.item.getType() == 'tutorials' &&
+            this.props.item.getType2() == 'manual'
         ) {
             return (
                 <TutorialsManual
@@ -197,8 +197,8 @@ export class Window {
                 />
             );
         } else if (
-            this.props.item.props.type == 'tutorials' &&
-            this.props.item.props.type2 == 'online'
+            this.props.item.getType() == 'tutorials' &&
+            this.props.item.getType2() == 'online'
         ) {
             return (
                 <TutorialsOnline
@@ -209,8 +209,8 @@ export class Window {
                 />
             );
         } else if (
-            this.props.item.props.type == 'app' &&
-            this.props.item.props.type2 == 'view'
+            this.props.item.getType() == 'app' &&
+            this.props.item.getType2() == 'view'
         ) {
             return (
                 <AppView
@@ -222,8 +222,8 @@ export class Window {
                 />
             );
         } else if (
-            this.props.item.props.type == 'contract' &&
-            this.props.item.props.type2 == 'interact'
+            this.props.item.getType() == 'contract' &&
+            this.props.item.getType2() == 'interact'
         ) {
             return (
                 <ContractInteraction
@@ -234,7 +234,7 @@ export class Window {
                     functions={this.props.functions}
                 />
             );
-        } else if (this.props.item.props.type == 'transaction_log') {
+        } else if (this.props.item.getType() == 'transaction_log') {
             return (
                 <TransactionLog
                     id={this.subId}
@@ -246,8 +246,8 @@ export class Window {
                 />
             );
         } else if (
-            this.props.item.props.type == 'info' &&
-            this.props.item.props.type2 == 'welcome'
+            this.props.item.getType() == 'info' &&
+            this.props.item.getType2() == 'welcome'
         ) {
             return <Welcome router={this.props.router} />;
         }
@@ -273,10 +273,10 @@ export class Window {
             return this.props.item.props.state.title;
         if (this.childComponent && this.childComponent.getTitle)
             return this.childComponent.getTitle();
-        if (this.props.item.props.type == 'file')
+        if (this.props.item.getType() == 'file')
             return this.props.item.props.title;
-        if (this.props.item.props.type == 'contract') {
-            switch (this.props.item.props.type2) {
+        if (this.props.item.getType() == 'contract') {
+            switch (this.props.item.getType2()) {
                 case 'configure':
                 case 'interact':
                 case 'compile':
