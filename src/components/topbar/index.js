@@ -159,7 +159,7 @@ class ProjectDialog extends Component {
     importProject3 = project => {
         const backend = new Backend();
         backend.convertProject(project, (status, project2) => {
-            if (status == 2) {
+            if (status > 1) {
                 const modalData = {
                     title: 'Project converted',
                     body: (
@@ -190,7 +190,7 @@ class ProjectDialog extends Component {
                         return modal;
                     },
                 });
-            } else if (status == 3) {
+            } else if (status == -1) {
                 alert('Error: Could not import project.');
             } else {
                 this.importProject4(project.files);

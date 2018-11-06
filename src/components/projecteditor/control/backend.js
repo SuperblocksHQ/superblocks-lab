@@ -64,7 +64,7 @@ export default class Backend {
     };
 
     // Check single project and convert it if needed.
-    // isConverted = 1 means converted and no info lost, 2 means converted and info is lost.
+    // isConverted = 1 means converted and no info lost, 2 means converted and info is lost, -1 means error, 0 means not converted.
     convertProject = (project, cb) => {
         var isConverted = 0;
         try {
@@ -76,17 +76,17 @@ export default class Backend {
                 // These are the old JSON formats.
                 if (!project.format) {
                     project = this._convertProject1_0to1_0_0(project);
-                    isConverted = 1;
+                    isConverted = 2;
                 }
 
                 if (project.format == 'dapps1.0.0') {
                     project = this._convertProject1_0_0to1_1_0(project);
-                    isConverted = 2;
+                    isConverted++;
                 }
             }
         } catch (e) {
             console.log('Could not convert project', e);
-            cb(3);
+            cb(-1);
             return;
         }
 
@@ -183,7 +183,7 @@ export default class Backend {
                     continue;
                 }
                 var a = name.match(
-                    '^[.](.+)[.][SsOoLl][.]([^.]+)([.]?.*).(deploy|address|tx)$'
+                    '^[.](.+)[.][Ss][Oo][Ll][.]([^.]+)([.]?.*)[.](deploy|address|tx)$'
                 );
                 if (a) {
                     const contractName = a[1];
@@ -199,7 +199,7 @@ export default class Backend {
                     break;
                 }
                 var a = name.match(
-                    '^[.](.+)[.][SsOoLl][.]([^.]+)([.]?.*).(abi|meta|bin|hash)$'
+                    '^[.](.+)[.][Ss][Oo][Ll][.]([^.]+)([.]?.*)[.](abi|meta|bin|hash)$'
                 );
                 if (a) {
                     const contractName = a[1];
@@ -935,6 +935,9 @@ export default class Backend {
                     resolve(project);
                 });
             })
+            .catch( (e) => {
+                reject();
+            });
         });
     }
 }
