@@ -20,6 +20,7 @@ import SelectedTemplate from './selectTemplate';
 import ProjectDetails from './projectDetails';
 import Templates from '../templates';
 import DappfileItem from '../projecteditor/control/item/dappfileItem';
+import JSZipUtils from 'jszip-utils';
 
 export default class NewDapp extends Component {
     state = {
@@ -38,36 +39,45 @@ export default class NewDapp extends Component {
         });
     };
 
-    onProjectDetailsDone = projectInfo => {
+    onProjectDetailsDone = async projectInfo => {
         const { closeAllPanels } = this.props;
+
+        const fn = (files) => {
+            // Try to decode the `/dappfile.json`.
+            var dappfile;
+            try {
+                dappfile = JSON.parse(
+                    files['/'].children['dappfile.json'].contents
+                );
+            } catch (e) {
+                dappfile = DappfileItem.getDefaultDappfile();
+                files['/'].children['dappfile.json'] = { type: 'f' };
+            }
+            dappfile.project.info.name = name;
+            dappfile.project.info.title = title;
+            files['/'].children['dappfile.json'].contents = JSON.stringify(
+                dappfile, null, 4
+            );
+
+            this.props.backend.createProject(files, status =>
+                this.props.cb(status)
+            );
+
+            this.closeModal();
+            closeAllPanels();
+        };
 
         const name = projectInfo.name;
         const title = projectInfo.title;
 
-        const files = this.state.selectedTemplate.files;
-
-        // Try to decode the `/dappfile.json`.
-        var dappfile;
-        try {
-            dappfile = JSON.parse(
-                files['/'].children['dappfile.json'].contents
-            );
-        } catch (e) {
-            dappfile = DappfileItem.getDefaultDappfile();
-            files['/'].children['dappfile.json'] = { type: 'f' };
-        }
-        dappfile.project.info.name = name;
-        dappfile.project.info.title = title;
-        files['/'].children['dappfile.json'].contents = JSON.stringify(
-            dappfile
-        );
-
-        this.props.backend.createProject(files, status =>
-            this.props.cb(status)
-        );
-
-        this.closeModal();
-        closeAllPanels();
+        JSZipUtils.getBinaryContent(this.state.selectedTemplate.zip, async (err, data) => {
+            if (err) {
+                alert('Error: Could not load zip file.');
+                return;
+            }
+            const project = await this.props.backend.unZip(data);
+            fn(project.files);
+        });
     };
 
     closeModal() {

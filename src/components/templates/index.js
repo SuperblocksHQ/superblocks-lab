@@ -18,6 +18,10 @@ const Empty = require('./empty.json');
 const HelloWorld = require('./hello.json');
 const NewsFeed = require('./newsfeed.json');
 const RaiseToSummon = require('./raisetosummon.json');
+const EmptyZip = require('./empty.zip');
+const HelloZip = require('./hello.zip');
+const NewsZip = require('./newsfeed.zip');
+const RaiseZip = require('./raisetosummon.zip');
 
 export default class Templates {
     static categories = [
@@ -39,5 +43,38 @@ export default class Templates {
         },
     ];
 
-    static templates = [Empty, HelloWorld, NewsFeed, RaiseToSummon];
+    static templates = [
+        {
+            "id": 0,
+            "name": "Empty Project",
+            "description": "Empty project",
+            "image": "/static/img/templates/img-empty.png",
+            "categories": [0, 2],
+            "zip": EmptyZip,
+        },
+        {
+            "id": 1,
+            "name": "Hello World",
+            "description": "Simple Hello World starter",
+            "image": "/static/img/templates/img-hello-world.png",
+            "categories": [0, 3],
+            "zip": HelloZip,
+        },
+        {
+            "id": 2,
+            "name": "Uncensorable News Feed",
+            "description": "Publish news that nobody can censor",
+            "image": "/static/img/templates/img-news-feed.png",
+            "categories": [0, 2],
+            "zip": NewsZip,
+        },
+        {
+            "id": 3,
+            "name": "Raise to Summon",
+            "description": "Raise Funds to summon a V.I.P. to a meetup/conference/hackathon",
+            "image": "/static/img/templates/img-raise-to-summon.png",
+            "categories": [0, 1],
+            "zip": RaiseZip,
+        },
+    ];
 }
