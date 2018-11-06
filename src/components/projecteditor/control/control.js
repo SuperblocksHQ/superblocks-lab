@@ -166,12 +166,15 @@ export default class Control extends Component {
      * if all windows successfully closed then remove project from explorer.
      */
     _closeProject = cb => {
-        this.props.router.panes.closeAll(status => {
+        const { router, closeAllPanels } = this.props;
+        router.panes.closeAll(status => {
             if (status == 0) {
                 this.setState({ activeProject: null });
             }
             if (cb) cb(status);
         });
+
+        closeAllPanels();
     };
 
     /**
