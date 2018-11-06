@@ -54,7 +54,7 @@ export class FileEntry extends Component {
         );
 
         return (
-            <DropdownContainer dropdownContent={contextMenuFile} useRightClick={true} onContextMenu={e => e.preventDefault()}>
+            <DropdownContainer dropdownContent={contextMenuFile} useRightClick={!isReadOnly} onContextMenu={e => e.preventDefault()}>
                 <div className={style.projectContractsTitleContainer} onClick={openItem}>
                     <ShowActions
                         isReadOnly={isReadOnly}
