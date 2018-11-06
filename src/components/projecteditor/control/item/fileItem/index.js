@@ -493,10 +493,22 @@ export default class FileItem extends Item {
         }
     };
 
+    // Checks if file is in App folder and is one of the main files needed for View panel
+    _isAppFile = () => {
+       return (this.props.state.__parent.getFullPath() == '/app' && 
+            (
+                (this.getTitle() == 'app.css') || 
+                (this.getTitle() == 'app.html') || 
+                (this.getTitle() == 'app.js')
+            )
+        );
+    }
+
     _renderFileTitle = (level, index) => {
         if (this.getType() == "file") {
             return (
                 <FileEntry
+                   isAppFile={this._isAppFile()}
                    openItem={this._openItem}
                    title={this.getTitle()}
                    isReadOnly={this.isReadOnly()}
