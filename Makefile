@@ -36,24 +36,10 @@ build_external_dev:
 build_external_dist:
 	mkdir -p ./src/components/superprovider/dist
 	sed 's#ORIGIN#"$(ORIGIN_DIST)"#g' ./src/components/superprovider/web3provider.js | ./node_modules/babel-cli/bin/babel.js --presets env >./src/components/superprovider/dist/web3provider.js
-dist: build
+dist: clean build
 	@echo "You did bump the version (./bump_version.sh) prio, right?"
-	rm -rf dist
-	mkdir dist
-	cp -r ./build/static ./dist
-	cp ./build/*.js ./dist
-	cp ./build/*.css ./dist
-	cp ./build/index.html ./dist
-	cp ./build/favicon.ico ./dist
-	cp ./build/manifest.json ./dist
-	cp -r ./build/vs ./dist
-	cp -r ./build/solc ./dist
-	cp -r ./build/evm ./dist
-	rm ./dist/sw.js
-	@echo "Done."
 clean:
 	rm -rf build
-	rm -rf dist
 npm:
 	yarn
 
