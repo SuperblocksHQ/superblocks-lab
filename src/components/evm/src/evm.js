@@ -894,12 +894,13 @@ function sendRawTransaction(data, callback) {
     );
 
     _vm.blockchain.getHead(function(err, block) {
+        var timeNowInSeconds = Math.floor(Date.now() / 1000);
         var nextBlock = new Block();
         nextBlock.header.number = blockNumber() + 1;
         nextBlock.header.difficulty = block.header.difficulty;
         nextBlock.header.parentHash = block.hash();
         nextBlock.header.timestamp = new Buffer(
-            _pad(Date.now().toString(16)),
+            _pad(timeNowInSeconds.toString(16)),
             'hex'
         );
         nextBlock.transactions.push(tx);
