@@ -75,7 +75,8 @@ export default class ProjectEditor extends Component {
         if (this.props.router.panes) {
             this.props.router.panes.redraw(all);
         }
-    };
+        this.forceUpdate();
+    }
 
     onMouseMove = e => {
         e.stopPropagation();
