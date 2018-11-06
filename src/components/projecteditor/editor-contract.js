@@ -16,7 +16,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import shortId from 'shortid';
 import classNames from 'classnames';
 import style from './style-editor-contract.less';
 import { IconTrash, IconAdd } from '../icons';
@@ -272,7 +271,7 @@ export default class ContractEditor extends Component {
                 {
                     this.state.args.map((arg, index) => {
                         return (
-                            <div key={arg.id} className={style.argumentContainer}>
+                            <div key={index} className={style.argumentContainer}>
                                 <ConstructorArgument
                                     index={index}
                                     argument={arg}
@@ -307,7 +306,7 @@ export default class ContractEditor extends Component {
     addArgument = e => {
         e.preventDefault();
         this.setState(prevState => ({
-            args: [...prevState.args, { id: shortId.generate(), value: '' }]
+            args: [...prevState.args, { value: '' }]
         }));
     };
 
