@@ -43,7 +43,7 @@ export default class Deployer extends Component {
         this.run();
     }
 
-    canClose = cb => {
+    canClose = (cb, silent) => {
         cb(0);
     };
 
