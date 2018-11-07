@@ -567,7 +567,7 @@ export default class AppView extends Component {
             .getHiddenItem('accounts')
             .getChildren()
             .map(account => {
-                ret.push({ name: account.name, value: index++ });
+                ret.push({ name: account.getName(), value: index++ });
             });
         return ret;
     };

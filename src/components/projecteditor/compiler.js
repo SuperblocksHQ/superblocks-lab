@@ -208,8 +208,8 @@ export default class Compiler extends Component {
                                     Object.keys(data.contracts).length == 0
                                 ) {
                                     this._updateConsole({
-                                        channel: 3,
-                                        msg: 'Ate bad code and died, compilation aborted.',
+                                        channel: 2,
+                                        msg: '[ERROR] Ate bad code and died, compilation aborted.',
                                     });
                                     // Clear ABI and BIN
                                     delFiles();

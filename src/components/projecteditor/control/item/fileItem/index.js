@@ -465,6 +465,9 @@ export default class FileItem extends Item {
             //alert("Illegal filename.");
             //return false;
             //}
+            if (newFile == this.getFullPath()) {
+                return;
+            }
             const suffix1 =
                 (this.getFullPath().match('^.*/[^/]+[.](.+)$') || [])[1] ||
                 '';
