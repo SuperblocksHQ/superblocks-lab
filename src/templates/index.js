@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-const EmptyZip = require('./empty.zip');
-const HelloZip = require('./hello.zip');
-const NewsZip = require('./newsfeed.zip');
-const RaiseZip = require('./raisetosummon.zip');
+const EmptyZip = require('../assets/static/templates/empty.zip');
+const HelloZip = require('../assets/static/templates/hello.zip');
+const NewsZip = require('../assets/static/templates/newsfeed.zip');
+const RaiseZip = require('../assets/static/templates/raisetosummon.zip');
 
 export default class Templates {
     static categories = [

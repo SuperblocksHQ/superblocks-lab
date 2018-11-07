@@ -59,6 +59,8 @@ export default class TransactionLogPanel extends Component {
             5,
             0
         );
+
+        console.log("hola");
         return <div className={style.transactionlogPanel}>{transactions}</div>;
     }
 }
