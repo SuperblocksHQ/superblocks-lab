@@ -40,8 +40,6 @@ export default class NewDapp extends Component {
     };
 
     onProjectDetailsDone = async projectInfo => {
-        const { closeAllPanels } = this.props;
-
         const fn = (files) => {
             // Try to decode the `/dappfile.json`.
             var dappfile;
