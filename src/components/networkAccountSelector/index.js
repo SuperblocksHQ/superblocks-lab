@@ -21,12 +21,11 @@ class NetworkDropdown extends Component {
         var networks;
         const project = this.props.router.control.getActiveProject();
         if (!project) {
-            // Setup default network just for show.
+            // Setup default stub network just for show. This is due to the fact that atm networks are
+            // actually dependent on the project.
             networks = [
                 {
-                    getName: () => {
-                        return 'browser';
-                    },
+                    getName: () => 'browser',
                 },
             ];
         } else {
@@ -87,11 +86,13 @@ class NetworkSelector extends Component {
 
     onNetworkSelectedHandle = network => {
         const project = this.props.router.control.getActiveProject();
-        project.getHiddenItem('environments').setChosen(network);
-        this.setState({
-            network: network,
-        });
-        this.props.router.main.redraw(true);
+        if (project) {
+            project.getHiddenItem('environments').setChosen(network);
+            this.setState({
+                network: network,
+            });
+            this.props.router.main.redraw(true);
+        }
     };
 
     render() {
