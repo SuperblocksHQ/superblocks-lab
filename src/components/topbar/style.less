@@ -71,6 +71,7 @@
         border-bottom: 2px solid transparent;
         transition: all 0.3s ease;
         height: 100%;
+        cursor: pointer;
         &:hover {
             color: #E0E0E0;
             border-color: @primary-color;
@@ -240,13 +241,15 @@
             padding: 0;
             margin: 0;
             >li {
-                padding: 2px 24px;
+                
                 &:hover {
                     background: @white-color-hover;
                 }
             }
         }
         a {
+            display: flex;
+            padding: 2px 24px;
             color: #262E33;
         }
         .communityIcon {

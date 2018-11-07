@@ -52,12 +52,12 @@ const HelpDropdownDialog = () => (
                 </a>
             </li>
             <li>
-                <div className={style.container}>
-                    <a href="https://discord.gg/6Cgg2Dw" target="_blank" rel="noopener noreferrer" title="Superblocks' community">Join our Community!</a>
+                <a className={style.container} href="https://discord.gg/6Cgg2Dw" target="_blank" rel="noopener noreferrer" title="Superblocks' community">
+                    Join our Community!
                     <span className={style.communityIcon}>
                         <IconDiscord color="#7289DA"/>
                     </span>
-                </div>
+                </a>
             </li>
         </ul>
     </div>
