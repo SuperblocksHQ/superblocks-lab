@@ -124,6 +124,8 @@ export default class ProjectItem extends Item {
                 );
                 // Update dappfile.
                 this.addContract(name, source, args);
+
+                contractsItem.props.state._children.push(contractItem);
             }
         }
         return contractItem;
