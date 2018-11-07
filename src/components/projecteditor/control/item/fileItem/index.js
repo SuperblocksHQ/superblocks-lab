@@ -47,8 +47,6 @@ export default class FileItem extends Item {
                 : props.state.toggable;
         props.state.open =
             props.state.open === undefined ? true : props.state.open;
-        props.state.readonly =
-            props.state.readonly === undefined ? true : props.state.readonly;
         super(props, router);
         if (props.type == "folder") {
             props.state.children = (props.state.children === undefined ? this._createChildren : props.state.children);
@@ -270,6 +268,7 @@ export default class FileItem extends Item {
                             // Now we need to notify this file and all below if this is a folder that they have been moved.
                             // Contract files need to adjust their settings in the dappfile, which they will do when notified.
                             // It is important this is done before we recache the children below.
+                            // Note that when renaming a non contract to a contract file the dappfile will get updated at a later stage.
                             if (this.notifyMoved) {
                                 var promise = this.notifyMoved(oldPath);
                             }
@@ -278,7 +277,7 @@ export default class FileItem extends Item {
                             }
                             promise
                                 .then( () => {
-                                    // Recache the children
+                                    // Recache the children, this will create the missing contract.
                                     newParent.getChildren(true, () => {
                                         const children2 = newParent.getChildren();
                                         this._copyState(children2, [this]);
