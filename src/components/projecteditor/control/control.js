@@ -441,10 +441,6 @@ export default class Control extends Component {
         }
     };
 
-    downloadProject = (project, keepState) => {
-        this.backend.downloadProject(project.props.state.data.dir, keepState);
-    };
-
     _openContractMake = (e, item) => {
         e.preventDefault();
         const item2 = this._filterItem(item, { type: 'make' });
