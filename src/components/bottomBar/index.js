@@ -19,7 +19,7 @@ import { getChainPreferences } from '../../selectors/settings';
 import BottomBar from './BottomBar';
 
 const mapStateToProps = state => ({
-    chainPreferences: getChainPreferences(state),
+    networkPreferences: getChainPreferences(state),
 });
 
 export default connect(mapStateToProps, null)(BottomBar);

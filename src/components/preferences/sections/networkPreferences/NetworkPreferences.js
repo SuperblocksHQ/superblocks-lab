@@ -21,13 +21,13 @@ import * as validations from '../../../../validations';
 import TextInput from '../../../textInput';
 import Web3 from 'web3';
 
-export default class ChainPreferences extends Component {
+export default class NetworkPreferences extends Component {
 
     state = {
         errorGasLimit: null,
         errorGasPrice: null,
-        tempGasLimit: this.props.chainPreferences.gasLimit,
-        tempGasPrice: this.props.chainPreferences.gasPrice
+        tempGasLimit: this.props.networkPreferences.gasLimit,
+        tempGasPrice: this.props.networkPreferences.gasPrice
     }
 
     constructor(props) {
@@ -79,7 +79,7 @@ export default class ChainPreferences extends Component {
 
         return (
             <div className={style.container}>
-                <h2>Chain Preferences</h2>
+                <h2>Network Preferences</h2>
                 <div className={style.form}>
                     <form action="">
                         <div className={style.field}>
@@ -111,7 +111,7 @@ export default class ChainPreferences extends Component {
     }
 }
 
-ChainPreferences.propTypes = {
+NetworkPreferences.propTypes = {
     onPreferenceChange: PropTypes.func.isRequired
 }
 
