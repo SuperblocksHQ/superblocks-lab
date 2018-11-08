@@ -28,6 +28,7 @@ import {
     IconJS,
     IconCss,
     IconMd,
+    IconJSON,
     IconShowPreview,
     IconMosaic,
 } from '../../../../icons';
@@ -82,6 +83,10 @@ export default class FileItem extends Item {
                     case 'sol':
                         type2 = 'contract';
                         icon = <IconContract />;
+                        break;
+                    case 'json':
+                        type2 = 'json';
+                        icon = <IconJSON />;
                         break;
                 }
             }
