@@ -366,8 +366,9 @@ class AccountSelector extends Component {
 
     accountBalance = () => {
         // Return cached balance of account
-        const { accountType, isLocked, network, address } = this.accountType();
-        return ((this.state.balances[network] || {})[address] || '0') + ' eth';
+        const { network, address } = this.accountType();
+        const balance = ((this.state.balances[network] || {})[address] || '0');
+        return balance.substring(0, balance.toString().indexOf(".") + 8) + ' eth';
     };
 
     getWeb3 = endpoint => {
@@ -480,15 +481,16 @@ class AccountSelector extends Component {
             >
                 <div className={classnames([style.selector, style.account])}>
                     {accountIcon}
-                    <div title={address} className={style.nameContainer}>
-                        {account}
-                        <br />
-                        <span style={{fontSize: '0.5em'}}>{accountBalance}</span>
-                    </div>
-                    <div className={style.dropdownIcon}>
-                        <IconDropdown height="8" width="10" />
+                    <div className={style.accountContainer}>
+                        <div title={address} className={style.nameContainer}>
+                            {account}
+                        </div>
+                        <div className={style.dropdownIcon}>
+                            <IconDropdown height="8" width="10" />
+                        </div>
                     </div>
                 </div>
+                <span className={style.accountBalance}>{accountBalance}</span>
             </DropdownContainer>
         );
     }
