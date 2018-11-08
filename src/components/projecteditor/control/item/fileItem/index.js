@@ -486,7 +486,9 @@ export default class FileItem extends Item {
                 suffix1.toLowerCase() == 'sol' &&
                 suffix1.toLowerCase() != suffix2.toLowerCase()
             ) {
-                alert('A contract must have the .sol file ending.');
+                // NOTE: To allow a .sol to be renamed to a generic file we will need to strip away some
+                // stuff from the contractitem. That's why we don't allow it for now.
+                alert('When renaming a contract it must retain the .sol suffix.');
                 return;
             }
             if(newFile.length > 255) {
