@@ -27,7 +27,6 @@ import TutorialsManual from '../tutorials/manual';
 import TutorialsOnline from '../tutorials/online';
 import AppView from './appview.js';
 import ContractInteraction from './contractinteraction';
-import TransactionLog from '../blockexplorer/transactionlog';
 import Welcome from './welcome';
 import { IconClose } from '../icons';
 
@@ -230,17 +229,6 @@ export class Window {
                     id={this.subId}
                     parent={this}
                     item={this.props.item}
-                    router={this.props.router}
-                    functions={this.props.functions}
-                />
-            );
-        } else if (this.props.item.getType() == 'transaction_log') {
-            return (
-                <TransactionLog
-                    id={this.subId}
-                    parent={this}
-                    name={this.props.item.props._name}
-                    project={this.props.item.props._project}
                     router={this.props.router}
                     functions={this.props.functions}
                 />
