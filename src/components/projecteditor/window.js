@@ -257,22 +257,23 @@ export class Window {
     };
 
     getTitle = () => {
-        if (this.props.item.props.state.title)
-            return this.props.item.props.state.title;
-        if (this.childComponent && this.childComponent.getTitle)
-            return this.childComponent.getTitle();
-        if (this.props.item.getType() == 'file')
-            return this.props.item.props.title;
         if (this.props.item.getType() == 'contract') {
             switch (this.props.item.getType2()) {
                 case 'configure':
                 case 'interact':
                 case 'compile':
                 case 'deploy':
-                    return this.props.item.props._contract;
+                    return this.props.item.props.state.__parent.props.state.title;
             }
         }
-        return this.props.item.props.title;
+
+        if (this.props.item.props.state.title)
+            return this.props.item.props.state.title;
+
+        if (this.childComponent && this.childComponent.getTitle)
+            return this.childComponent.getTitle();
+
+        return "<no name>";
     };
 
     getIcon = () => {
