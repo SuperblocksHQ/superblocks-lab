@@ -76,7 +76,7 @@ export default class ChainPreferences extends Component {
         const gasPriceGwei = this.web3.fromWei(tempGasPrice, 'Gwei');
 
         return (
-            <div>
+            <div className={style.container}>
                 <h2>Chain Preferences</h2>
                 <div className={style.form}>
                     <form action="">

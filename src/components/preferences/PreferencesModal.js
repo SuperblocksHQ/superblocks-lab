@@ -73,20 +73,22 @@ export default class PreferencesModal extends Component {
                         title="Preferences"
                         onCloseClick={this.onCloseClickHandle}
                     />
-                    <div className={classNames([style.area, style.container])}>
+                    <div className={style.area}>
                         <div className={style.categoriesArea}>
-                            <ul>
-                                {
-                                    categories.map(category =>
-                                        <li key={category.id} className={categorySelectedId == category.id ? style.selected : null}>
-                                            <PreferenceCategory
-                                                icon={category.icon}
-                                                title={category.name}
-                                                onCategorySelected={() => this.onCategorySelected(category.id)}/>
-                                        </li>
-                                    )
-                                }
-                            </ul>
+                            <div className={style.categoriesContainer}>
+                                <ul>
+                                    {
+                                        categories.map(category =>
+                                            <li key={category.id} className={categorySelectedId == category.id ? style.selected : null}>
+                                                <PreferenceCategory
+                                                    icon={category.icon}
+                                                    title={category.name}
+                                                    onCategorySelected={() => this.onCategorySelected(category.id)}/>
+                                            </li>
+                                        )
+                                    }
+                                </ul>
+                            </div>
                         </div>
                         <div className={style.preferencesArea}>
                             <ChainPreferences
@@ -94,8 +96,10 @@ export default class PreferencesModal extends Component {
                         </div>
                     </div>
                     <div className={style.footer}>
-                        <button onClick={this.onCloseClickHandle} className="btn2 noBg mr-2">Cancel</button>
-                        <button onClick={this.onSavePreferences} className="btn2">Save</button>
+                        <div className={style.buttonsContainer}>
+                            <button onClick={this.onCloseClickHandle} className="btn2 noBg mr-2">Cancel</button>
+                            <button onClick={this.onSavePreferences} className="btn2">OK</button>
+                        </div>
                     </div>
                 </div>
             </div>
