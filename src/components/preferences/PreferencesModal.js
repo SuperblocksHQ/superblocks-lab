@@ -98,7 +98,7 @@ export default class PreferencesModal extends Component {
                     <div className={style.footer}>
                         <div className={style.buttonsContainer}>
                             <button onClick={this.onCloseClickHandle} className="btn2 noBg mr-2">Cancel</button>
-                            <button onClick={this.onSavePreferences} className="btn2">OK</button>
+                            <button onClick={this.onSavePreferences} className="btn2">Save</button>
                         </div>
                     </div>
                 </div>
