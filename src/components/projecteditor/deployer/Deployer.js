@@ -826,7 +826,18 @@ export default class Deployer extends Component {
 
     _buildBin = (obj, cb) => {
         var contract = null;
-        contract = obj.web3.eth.contract(JSON.parse(obj.abi));
+        var parsedABI;
+        try {
+            parsedABI = JSON.parse(obj.abi);
+        } catch (e) {
+            this._stderr(
+                'Could not parse ABI file. ' +
+                    e.toString()
+            );
+            cb(1);
+            return;
+        }
+        contract = obj.web3.eth.contract(parsedABI);
         const args = obj.args.concat([{ data: obj.bin }]);
         var bin2;
         var err = '';
