@@ -26,6 +26,6 @@ describe('actions', () => {
         const expectedAction = {
             type: 'CLOSE_TRANSACTIONS_HISTORY_PANEL'
         };
-        expect(actions.hideTransactionsHistoryPanel()).toEqual(expectedAction);
+        expect(actions.closeTransactionsHistoryPanel()).toEqual(expectedAction);
     });
 });
