@@ -184,7 +184,7 @@ export default class Deployer extends Component {
             txsrc: this._makeFileName(src, this.network, 'tx'),
             deploysrc: this._makeFileName(src, this.network, 'deploy'),
             contractsjssrc:
-                '/build/contracts/' +
+                '/build/' +
                 contractFilename +
                 '/' +
                 contractFilename +
