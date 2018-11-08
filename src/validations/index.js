@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 export const validateGasLimit = (gasLimit) =>
-    ((gasLimit < 0 || gasLimit > 7900000) ? 'GAS_LIMIT' : null);
+    ((gasLimit <= 0 || gasLimit > 7900000) ? 'GAS_LIMIT' : null);
 
 export const validateGasPrice = (gasPrice) =>
-    ((gasPrice < 0 || gasPrice > 100000000000) ? 'GAS_PRICE' : null);
+    ((gasPrice <= 0 || gasPrice > 100000000000) ? 'GAS_PRICE' : null);
