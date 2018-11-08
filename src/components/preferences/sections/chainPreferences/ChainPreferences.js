@@ -40,6 +40,7 @@ export default class ChainPreferences extends Component {
         var value = e.target.value;
         var gasLimitValue = this.state.tempGasLimit;
         var gasPriceValue = this.state.tempGasPrice;
+
         if (key === "gasLimit") {
             gasLimitValue = Number(value);
         } else if (key === "gasPrice") {
@@ -59,19 +60,17 @@ export default class ChainPreferences extends Component {
 
         // To make sure we update the input tip correctly
         this.setState({
+            tempGasLimit: gasLimitValue,
             tempGasPrice: gasPriceValue
         });
     }
 
     render() {
         const {
-            chainPreferences: { gasPrice },
-            chainPreferences: { gasLimit }
-        } = this.props;
-        const {
             errorGasLimit,
             errorGasPrice,
-            tempGasPrice
+            tempGasLimit,
+            tempGasPrice,
         } = this.state;
 
         const gasPriceGwei = this.web3.fromWei(tempGasPrice, 'Gwei');
@@ -88,7 +87,7 @@ export default class ChainPreferences extends Component {
                                 label="Gas Limit"
                                 error={errorGasLimit}
                                 onChangeText={(e)=>{this.onChange(e, 'gasLimit')}}
-                                defaultValue={gasLimit}
+                                defaultValue={tempGasLimit}
                             />
                             <div className={style.note}>Maximum amount of gas available to each block and transaction. <b>Leave blank for default.</b></div>
                             <TextInput
@@ -97,7 +96,7 @@ export default class ChainPreferences extends Component {
                                 label="Gas Price"
                                 error={errorGasPrice}
                                 onChangeText={(e)=>{this.onChange(e, 'gasPrice')}}
-                                defaultValue={gasPrice}
+                                defaultValue={tempGasPrice}
                                 tip={gasPriceGwei + ' Gwei'}
                             />
                             <div className={style.note}>The price of each unit of gas, in WEI. <b>Leave blank for default.</b></div>
