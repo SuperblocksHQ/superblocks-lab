@@ -37,32 +37,34 @@ export default class ChainPreferences extends Component {
     }
 
     onChange = (e, key) => {
-        var value = e.target.value;
+        const value = e.target.value;
         var gasLimitValue = this.state.tempGasLimit;
         var gasPriceValue = this.state.tempGasPrice;
 
         if (key === "gasLimit") {
-            gasLimitValue = Number(value);
+            gasLimitValue = value;
         } else if (key === "gasPrice") {
-            gasPriceValue = Number(value);
+            gasPriceValue = value;
         }
 
-        const errorGasLimit = validations.validateGasLimit(gasLimitValue);
-        const errorGasPrice = validations.validateGasPrice(gasPriceValue);
-        this.setState({ errorGasLimit, errorGasPrice });
+        const errorGasLimit = gasLimitValue ? validations.validateGasLimit(Number(gasLimitValue)) : null;
+        const errorGasPrice = gasPriceValue ? validations.validateGasPrice(Number(gasPriceValue)) : null;
 
+        // To make sure we update the input the UI correctly
+        this.setState({
+            errorGasLimit,
+            errorGasPrice,
+            tempGasLimit: gasLimitValue,
+            tempGasPrice: gasPriceValue
+        });
+
+        // Make sure to notify upstream only when both values are actually valid
         if (!errorGasLimit && !errorGasPrice) {
             this.props.onPreferenceChange({
                 gasLimit: gasLimitValue,
                 gasPrice: gasPriceValue
             });
         }
-
-        // To make sure we update the input tip correctly
-        this.setState({
-            tempGasLimit: gasLimitValue,
-            tempGasPrice: gasPriceValue
-        });
     }
 
     render() {

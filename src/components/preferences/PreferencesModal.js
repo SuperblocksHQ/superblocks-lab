@@ -55,8 +55,8 @@ export default class PreferencesModal extends Component {
             tempPreferences: {
                 ...this.state.tempPreferences,
                 chain: {
-                    gasLimit: gasLimit ? gasLimit : this.state.tempPreferences.chain.gasLimit,
-                    gasPrice: gasPrice ? gasPrice : this.state.tempPreferences.chain.gasPrice
+                    gasLimit: gasLimit,
+                    gasPrice: gasPrice
                 }
             }
         });

@@ -22,13 +22,13 @@ class ErrorMessage extends PureComponent {
       case 'GAS_LIMIT':
         return (
           <div id="error.gasLimit">
-            {"The Gas Limit has to be between 0 and 7900000"}
+            {"The Gas Limit has to be between 1 and 7900000"}
           </div>
         );
       case 'GAS_PRICE':
         return (
           <div id="error.gasPrice">
-            {"The Gas Price has to be between 0 and 100000000000"}
+            {"The Gas Price has to be between 1 and 100000000000"}
           </div>
         );
       default:
