@@ -4,6 +4,7 @@ import styleNormal from './style-normal.less';
 import styleSmall from './style-small.less';
 import classnames from 'classnames';
 import Web3 from 'web3';
+import { IconRun } from '../icons';
 
 export default class RenderTransactions {
     constructor(txlog, renderSmall, redrawFn) {
@@ -70,9 +71,14 @@ export default class RenderTransactions {
         if (!tx.receipt) {
             return (
                 <div
-                    className={classNames([this.style.status, this.style.pending])}
+                    className={classNames([
+                        this.style.status, 
+                        this.style.pending,
+                    ])}
                 >
-                    Success
+                    <div className={this.style.running}>
+                        <IconRun className={this.style.running} />
+                    </div>
                 </div>
             );
         } else {
