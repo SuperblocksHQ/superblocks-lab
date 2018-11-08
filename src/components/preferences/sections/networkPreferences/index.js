@@ -16,10 +16,10 @@
 
 import { connect } from 'react-redux';
 import { getChainPreferences } from '../../../../selectors/settings';
-import ChainPreferences from './ChainPreferences';
+import NetworkPreferences from './NetworkPreferences';
 
 const mapStateToProps = state => ({
-    chainPreferences: getChainPreferences(state),
+    networkPreferences: getChainPreferences(state),
 });
 
-export default connect(mapStateToProps, null)(ChainPreferences);
+export default connect(mapStateToProps, null)(NetworkPreferences);

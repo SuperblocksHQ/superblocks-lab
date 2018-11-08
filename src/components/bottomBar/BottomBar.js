@@ -26,8 +26,8 @@ export default class BottomBar extends Component {
     }
 
     render() {
-        const { chainPreferences, endpoint } = this.props;
-        const gasPrice = this.web3.fromWei(chainPreferences.gasPrice, 'Gwei');
+        const { networkPreferences, endpoint } = this.props;
+        const gasPrice = this.web3.fromWei(networkPreferences.gasPrice, 'Gwei');
         return (
             <div className={style.bottomStatusBar}>
                 <span className={style.left}>
@@ -35,7 +35,7 @@ export default class BottomBar extends Component {
                     <span className={style.noteText}>All files are stored in the browser only, download to backup</span>
                 </span>
                 <div className={style.right}>
-                <span>Gas Limit: {chainPreferences.gasLimit}</span>
+                <span>Gas Limit: {networkPreferences.gasLimit}</span>
                 <span>Gas Price: {gasPrice} Gwei</span>
                 <span>{endpoint}</span>
                 </div>

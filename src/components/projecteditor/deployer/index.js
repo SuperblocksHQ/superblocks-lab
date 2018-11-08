@@ -19,7 +19,7 @@ import { getChainPreferences } from '../../../selectors/settings';
 import Deployer from './Deployer';
 
 const mapStateToProps = state => ({
-    chainPreferences: getChainPreferences(state),
+    networkPreferences: getChainPreferences(state),
 });
 
 export default connect(mapStateToProps, null)(Deployer);

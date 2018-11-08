@@ -20,7 +20,7 @@ import classNames from 'classnames';
 import style from './style.less';
 import ModalHeader from '../modal/modalHeader';
 import PreferenceCategory from './preferenceCategory';
-import ChainPreferences from './sections/chainPreferences';
+import NetworkPreferences from './sections/networkPreferences';
 import {
     IconChain
 } from '../icons';
@@ -49,7 +49,7 @@ export default class PreferencesModal extends Component {
         this.onCloseClickHandle();
     }
 
-    chainPreferenceChangeHandle = ({ gasLimit, gasPrice }) => {
+    networkPreferenceChangeHandle = ({ gasLimit, gasPrice }) => {
         this.setState({
             ...this.state,
             tempPreferences: {
@@ -64,7 +64,7 @@ export default class PreferencesModal extends Component {
 
     render() {
         let { categories } = this.props;
-        categories = [{ id: 0, name: "Chain", icon: <IconChain /> }]
+        categories = [{ id: 0, name: "Network", icon: <IconChain /> }]
         let { categorySelectedId } = this.state;
         return(
             <div className={classNames([style.prefrerencesModal, "modal"])}>
@@ -91,8 +91,8 @@ export default class PreferencesModal extends Component {
                             </div>
                         </div>
                         <div className={style.preferencesArea}>
-                            <ChainPreferences
-                                onPreferenceChange={this.chainPreferenceChangeHandle}/>
+                            <NetworkPreferences
+                                onPreferenceChange={this.networkPreferenceChangeHandle}/>
                         </div>
                     </div>
                     <div className={style.footer}>

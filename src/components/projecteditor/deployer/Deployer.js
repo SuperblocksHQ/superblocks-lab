@@ -132,7 +132,7 @@ export default class Deployer extends Component {
     };
 
     run = e => {
-        const { chainPreferences } = this.props;
+        const { networkPreferences } = this.props;
 
         var redeploy = this.redeploy;
         if (e) {
@@ -168,8 +168,8 @@ export default class Deployer extends Component {
             web3: this._getWeb3(endpoint),
             endpoint: endpoint,
             network: this.network,
-            gasPrice: "0x".concat(chainPreferences.gasPrice.toString(16)),
-            gasLimit: "0x".concat(chainPreferences.gasLimit.toString(16)),
+            gasPrice: "0x".concat(Number(networkPreferences.gasPrice).toString(16)),
+            gasLimit: "0x".concat(Number(networkPreferences.gasLimit).toString(16)),
             recompile: this.recompile,
             redeploy: redeploy,
             contract: contract,
