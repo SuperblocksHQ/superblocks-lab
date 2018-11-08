@@ -536,20 +536,25 @@ export default class Backend {
             targetFolder = folder2;
         }
 
-        if (targetFolder.children[b[2]]) {
+        try {
+            if (targetFolder.children[b[2]]) {
+                setTimeout(() => cb(6), 1);
+                return;
+            }
+
+            const o = sourceFolder.children[a[2]];
+            o.name = b[2];
+
+            delete sourceFolder.children[a[2]];
+
+            targetFolder.children[b[2]] = o;
+
+            localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
+            setTimeout(() => cb(0), 1);
+        } catch(e) {
             setTimeout(() => cb(6), 1);
             return;
         }
-
-        const o = sourceFolder.children[a[2]];
-        o.name = b[2];
-
-        delete sourceFolder.children[a[2]];
-
-        targetFolder.children[b[2]] = o;
-
-        localStorage.setItem(DAPP_FORMAT_VERSION, JSON.stringify(data));
-        setTimeout(() => cb(0), 1);
     };
 
     /**
