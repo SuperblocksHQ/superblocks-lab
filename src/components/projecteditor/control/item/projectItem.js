@@ -113,8 +113,12 @@ export default class ProjectItem extends Item {
                             title: file,
                             name: name,
                             args: args,
+                            toggable: true,
                             project: this,
                         },
+                        // This is to handle a special case when a non .sol file is renamed into a .sol file.
+                        // Since the file item already exsts and it's props will overwrite these new props.
+                        _preserveProps: ['source', 'name', 'args', 'toggable', 'children'],
                     },
                     this.router
                 );
