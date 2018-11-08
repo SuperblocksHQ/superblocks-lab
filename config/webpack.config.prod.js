@@ -110,7 +110,7 @@ module.exports = {
   // In production, we only want to load the app code.
   entry: [paths.appIndexJs],
   output: {
-    // The build folder.
+    // The dist folder.
     path: paths.appBuild,
     // Generated JS file names (with nested folders).
     // There will be one main bundle, and one file per asynchronous chunk.
@@ -397,7 +397,7 @@ module.exports = {
             // See https://github.com/webpack/webpack/issues/6571
             sideEffects: true,
           },
-          // "file" loader makes sure assets end up in the `build` folder.
+          // "file" loader makes sure assets end up in the `dist` folder.
           // When you `import` an asset, you get its filename.
           // This loader doesn't use a "test" so it will catch all modules
           // that fall through the other loaders.
