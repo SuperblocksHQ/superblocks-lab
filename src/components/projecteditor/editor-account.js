@@ -108,6 +108,7 @@ export default class AccountEditor extends Component {
         } else {
             address = this.props.item.getAddress(env);
         }
+        address = address || "";  // To not have the input component be uncontrolled.
 
         const network = env;
         // Initial (editable) values
