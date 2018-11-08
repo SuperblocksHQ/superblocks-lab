@@ -46,7 +46,6 @@ export default class TextInput extends PureComponent {
                             onKeyUp={onChangeText}
                             defaultValue={defaultValue}
                             disabled={disabled}
-                            onChange={onChangeText}
                             className={classNames({[style.error]: error != null})}
                             {...props}
                         />
