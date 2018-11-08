@@ -245,6 +245,9 @@ export default class RenderTransactions {
                         <b>To:</b> {this._renderAddress(tx.obj.to)}
                     </div>
                     <div className={this.style.row}>
+                        <b>Tx:</b> <div className={this.style.address}>{tx.obj.hash}</div>
+                    </div>
+                    <div className={this.style.row}>
                         <b>Value:</b>{' '}
                         <span title="{value} wei">{valueFormatted} ether</span>
                     </div>
