@@ -377,7 +377,7 @@ export default class FileItem extends Item {
                             this.redrawMain(true);
                         });
                     } else {
-                        status == 3 ? alert('File with that name already exists.', status) : alert('Could not create the file.', status);
+                        status == 3 ? alert('A file or folder with that name already exists at this location. Please choose a different name.', status) : alert('Could not create the file.', status);
                     }
                 });
             }
@@ -497,10 +497,10 @@ export default class FileItem extends Item {
 
     // Checks if file is in App folder and is one of the main files needed for View panel
     _isAppFile = () => {
-       return (this.props.state.__parent.getFullPath() == '/app' && 
+       return (this.props.state.__parent.getFullPath() == '/app' &&
             (
-                (this.getTitle() == 'app.css') || 
-                (this.getTitle() == 'app.html') || 
+                (this.getTitle() == 'app.css') ||
+                (this.getTitle() == 'app.html') ||
                 (this.getTitle() == 'app.js')
             )
         );
