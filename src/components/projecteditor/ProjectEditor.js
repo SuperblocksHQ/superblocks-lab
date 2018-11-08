@@ -28,6 +28,7 @@ import { IconTransactions, IconClose } from '../icons';
 export default class ProjectEditor extends Component {
     state = {
         controlPanelWidth: 280,
+        minSize: 280,
         draggin: false
     }
 
@@ -81,14 +82,18 @@ export default class ProjectEditor extends Component {
     onMouseMove = e => {
         e.stopPropagation();
         e.preventDefault();
-        const { dragging } = this.state;
+        const { dragging, minSize } = this.state;
         const maxSize = screen.width * 0.35;
         if (!dragging) return;
-        if (e.pageX < maxSize) {
+        if (e.pageX < maxSize && e.pageX > minSize) {
             this.setState({
                 controlPanelWidth: e.pageX
             });
-        } else if (e.pageX >= maxSize) {
+        } else if (e.pageX <= minSize - 150) {
+            this.setState({
+                controlPanelWidth: 0
+            });
+        } else if (e.pageX >= maxSize || e.pageX <= minSize) {
             return null;
         } else {
             this.onMouseUp(e);
@@ -112,6 +117,19 @@ export default class ProjectEditor extends Component {
             dragging: true,
         });
     };
+
+    onDoubleClick = e => {
+        e.stopPropagation();
+        e.preventDefault();
+        const { minSize } = this.state;
+
+        // only left mouse button
+        if (e.button !== 0) return;
+
+        this.setState({
+            controlPanelWidth: minSize
+        });
+    }
 
     onShowHideTransactionsClicked = () => {
         const { toggleTransactionsHistoryPanel } = this.props;
@@ -162,6 +180,7 @@ export default class ProjectEditor extends Component {
                     <span
                         className="resizer vertical"
                         onMouseDown={this.onMouseDown}
+                        onDoubleClick={this.onDoubleClick}
                     />
                     <div style={{ position: "relative", width: "100%" }}>
                         <div

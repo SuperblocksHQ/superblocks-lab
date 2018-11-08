@@ -88,9 +88,8 @@ select {
         }
     }
     .title {
-        display: inline-block;
+        display: flex;
         max-width: 99%;
-        overflow: hidden;
         float: left;
     }
     .collapsed {
@@ -306,21 +305,39 @@ select {
     align-items: center;
     position: relative;
     align-items: center;
-    .title {
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .icons {
         display: flex;
     }
+    .title {
+        display: flex;
+        width: 100%;
+        min-width: 50px;
+        a {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    .buttonsWrapper {
+        display: flex;
+        order: 3;
+        justify-content: flex-end;
+        min-width: 90px;
+    }
+    &.directoryEntry {
+        .buttonsWrapper {
+            min-width: 90px;
+        }
+    }
+    &.fileEntry {
+        .buttonsWrapper {
+            min-width: 40px;
+        }
+    }
     .buttons {
-        position: absolute;
-        right: 0;
-        display: inherit;
-        margin-left: auto;
-        float: right;
+        display: flex;
         overflow: hidden;
-        text-align: right;
-        margin-right: 10px;
-        height: 100%;
+        justify-content: flex-end;
+        width: 100%;
         button, a {
             color: #fff;
             opacity: .6;

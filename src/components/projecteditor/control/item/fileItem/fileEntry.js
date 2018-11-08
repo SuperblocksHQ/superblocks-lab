@@ -24,6 +24,7 @@ import { DropdownContainer } from '../../../../dropdown';
 import Tooltip from '../../../../tooltip';
 import { FadeInComponent } from './fadeInComponent';
 import { ShowActions } from './showActions';
+import classnames from 'classnames';
 
 export class FileEntry extends Component {
     render() {
@@ -56,24 +57,26 @@ export class FileEntry extends Component {
 
         return (
             <DropdownContainer dropdownContent={contextMenuFile} useRightClick={!isReadOnly && !isAppFile} onContextMenu={e => e.preventDefault()}>
-                <div className={style.projectContractsTitleContainer} onClick={openItem}>
+                <div className={classnames(style.projectContractsTitleContainer, style.fileEntry)} onClick={openItem}>
                     <ShowActions
                         isReadOnly={isReadOnly || isAppFile}
                         actionContainer={
-                            <FadeInComponent>
-                                <div className={style.buttons} onClick={e => e.stopPropagation()}>
-                                    <a href="#" title="Rename file" onClick={clickRenameFile}>
-                                        <Tooltip title="Rename">
-                                            <IconEdit />
-                                        </Tooltip>
-                                    </a>
-                                    <a href="#" title="Delete file" onClick={clickDeleteFile} >
-                                        <Tooltip title="Delete">
-                                            <IconTrash />
-                                        </Tooltip>
-                                    </a>
-                                </div>
-                            </FadeInComponent>
+                            <div className={style.buttonsWrapper}>
+                                <FadeInComponent>
+                                    <div className={style.buttons} onClick={e => e.stopPropagation()}>
+                                        <a href="#" title="Rename file" onClick={clickRenameFile}>
+                                            <Tooltip title="Rename">
+                                                <IconEdit />
+                                            </Tooltip>
+                                        </a>
+                                        <a href="#" title="Delete file" onClick={clickDeleteFile} >
+                                            <Tooltip title="Delete">
+                                                <IconTrash />
+                                            </Tooltip>
+                                        </a>
+                                    </div>
+                                </FadeInComponent>
+                            </div>
                         }
                     >
                             {icons}

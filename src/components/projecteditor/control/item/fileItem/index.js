@@ -567,21 +567,25 @@ export default class FileItem extends Item {
         return (
             <div className={style.projectContractsTitleContainer} onClick={item._angleClicked}>
                 <div className={style.header}>
+                    { icons }
                     <div className={style.title}>
-                        { icons }
-                        { item.getTitle() }
+                        <a title={item.getTitle()} href="#">
+                            { item.getTitle() }
+                        </a>
                     </div>
-                    <div className={style.buttons}>
-                        <button className="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
-                            <Tooltip title="Show Preview">
-                                <IconShowPreview />
-                            </Tooltip>
-                        </button>
-                        <button className="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
-                            <Tooltip title="Show Mosaic">
-                                <IconMosaic />
-                            </Tooltip>
-                        </button>
+                    <div className={style.buttonsWrapper}>
+                        <div className={style.buttons}>
+                            <button className="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
+                                <Tooltip title="Show Preview">
+                                    <IconShowPreview />
+                                </Tooltip>
+                            </button>
+                            <button className="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
+                                <Tooltip title="Show Mosaic">
+                                    <IconMosaic />
+                                </Tooltip>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
