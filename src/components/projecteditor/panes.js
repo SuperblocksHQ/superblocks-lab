@@ -45,21 +45,22 @@ const TestControls =(props)=>{
     return(
         <div className={style.testControls}>
             <span className={style.icons}>
-                <div className={style.buttons}>
+                <div>
                     <button className="btnNoBg" title="Run" onClick={props.onClickPlay}>
                         <IconPlay className={style.iconPlay} />
                     </button>
                 </div>
-        <div className={style.buttons}>
-            <button className="btnNoBg" title="Refresh" onClick={
-                () => {
+        <div>
+                    <button className="btnNoBg" title="Refresh" onClick={
+                        () => {
                     {
                         // TODO: FIXME: selection by index position
                         const index = 0;
                         testRunnerBridge.runSingle(props.evmProvider, index);
                     }
                 }
-            }>
+            }
+            >
                 <IconRun  />
             </button>
         </div>
@@ -80,9 +81,10 @@ const TestControls =(props)=>{
         </div>)
 };
 const TestFilesHeader =(props)=>{
-    const { total, totalDone } =props;
+    const { total, totalDone, time } =props;
     return(<div className={style.testFile }>
         <span className={style.bartext}>Done {totalDone} of {total} tests</span>
+        <span>{time}</span>
     </div>)
 };
 
@@ -378,16 +380,16 @@ export default class Panes extends Component {
                            <ConsoleTopBar closeTestPanel={this.props.closeTestPanel}/>
                            <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize="100px" vertical={false} >
                                <div className={style.leftPane}>
-                                   <TestFilesHeader total={13} totalDone={6} />
+                                   <TestFilesHeader total={13} totalDone={13} time={'60ms'} />
                                    <TestControls onClickPlay={()=>testRunnerBridge.runAll(this.props.functions.EVM.getProvider())} />
-                                   <div id="test" style={{position:'absolute',left:20, top:40}} > <Test open={this.state.open} /></div>
+                                   <div id="test" style={{position:'absolute',left:20, top:40, width: '90%'}} > <Test open={this.state.open} /></div>
                                </div>
                                <div className={style.rightPane}>
                                    <div className={style.rightStatusBar}>
                                        <span className={style.statusBar}>Test Summary</span>
-                                       <span style={{ color: '#7ed321' }} className={style.statusBar}>{this.props.testPassed} Passed</span>
-                                       <span style={{ color: '#d0021b' }} className={style.statusBar}>{this.props.testFailed} Failed</span>
-                                       <span className={style.statusBar}>{this.props.testTotal} Total</span>
+                                       <span style={{ color: '#7ed321' }} className={style.statusBar}>{this.props.testPassed ? this.props.testPassed : 0} Passed</span>
+                                       <span style={{ color: '#d0021b' }} className={style.statusBar}>{this.props.testFailed ? this.props.testFailed : 0} Failed</span>
+                                       <span className={style.statusBar}>{this.props.testTotal ? this.props.testTotal : 0  } Total</span>
                                </div>
                                    <div className={style.consoleText}>NOTE - Console output from this specific test</div>
                                </div>
