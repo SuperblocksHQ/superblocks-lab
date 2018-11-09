@@ -15,6 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
+import classNames from 'classnames';
 import style from './style-editor-contract.less';
 import Backend from './control/backend';
 
@@ -99,9 +100,10 @@ export default class AppEditor extends Component {
                         <h1 className={style.title}>Edit DApp Configuration</h1>
                         <div className={style.form}>
                             <form action="">
-                                <div className={style.field}>
-                                    <p>Name:</p>
+                                <div className={classNames(['superInputDark', style.field])}>
+                                    <label htmlFor="name">Name</label>
                                     <input
+                                        id="name"
                                         maxLength="20"
                                         type="text"
                                         value={form.name}
@@ -113,9 +115,10 @@ export default class AppEditor extends Component {
                                         }}
                                     />
                                 </div>
-                                <div className={style.field}>
-                                    <p>Title:</p>
+                                <div className={classNames(['superInputDark', style.field])}>
+                                    <label htmlFor="title">Title</label>
                                     <input
+                                        id="title"
                                         maxLength="20"
                                         type="text"
                                         value={form.title}
