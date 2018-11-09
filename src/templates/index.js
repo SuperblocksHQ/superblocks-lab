@@ -19,6 +19,7 @@ const HelloZip = require('../assets/static/templates/hello.zip');
 const NewsZip = require('../assets/static/templates/newsfeed.zip');
 const RaiseZip = require('../assets/static/templates/raisetosummon.zip');
 const VotingZip = require('../assets/static/templates/voting.zip');
+const SafeMathZip = require('../assets/static/templates/safemath.zip');
 
 export default class Templates {
     static categories = [
@@ -37,6 +38,10 @@ export default class Templates {
         {
             id: 3,
             name: 'Introduction',
+        },
+        {
+            id: 4,
+            name: 'Math',
         },
     ];
 
@@ -80,6 +85,14 @@ export default class Templates {
             "image": "/static/img/templates/img-voting-system.png",
             "categories": [0, 2],
             "zip": VotingZip,
+        },
+        {
+            "id": 5,
+            "name": "SafeMath",
+            "description": "Math operations with safety checks",
+            "image": "/static/img/templates/img-safemath.png",
+            "categories": [0, 4],
+            "zip": SafeMathZip,
         },
     ];
 }
