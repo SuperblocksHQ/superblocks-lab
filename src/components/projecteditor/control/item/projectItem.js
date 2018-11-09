@@ -660,8 +660,8 @@ export default class ProjectItem extends Item {
             .then(() => {
                 if (cb) cb(0);
             })
-            .catch(() => {
-                alert('Could not save dappfile.');
+            .catch((e) => {
+                alert('Could not save dappfile (account).');
                 if (cb) cb(1);
             });
     };
