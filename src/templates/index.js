@@ -65,11 +65,11 @@ export default class Templates {
         },
         {
             "id": 2,
-            "name": "Uncensorable News Feed",
-            "description": "Publish news that nobody can censor",
-            "image": "/static/img/templates/img-news-feed.png",
-            "categories": [0, 2],
-            "zip": NewsZip,
+            "name": "ERC-20 Token",
+            "description": "Example DApp which uses ERC-20 standard",
+            "image": "/static/img/templates/img-erc20-token.png",
+            "categories": [0, 1],
+            "zip": ERC20TokenZip,
         },
         {
             "id": 3,
@@ -81,6 +81,14 @@ export default class Templates {
         },
         {
             "id": 4,
+            "name": "Uncensorable News Feed",
+            "description": "Publish news that nobody can censor",
+            "image": "/static/img/templates/img-news-feed.png",
+            "categories": [0, 2],
+            "zip": NewsZip,
+        },
+        {
+            "id": 5,
             "name": "Voting System",
             "description": "Simple voting system that you can tweak according to your needs",
             "image": "/static/img/templates/img-voting-system.png",
@@ -88,20 +96,12 @@ export default class Templates {
             "zip": VotingZip,
         },
         {
-            "id": 5,
+            "id": 6,
             "name": "SafeMath",
             "description": "Math operations with safety checks",
             "image": "/static/img/templates/img-safemath.png",
             "categories": [0, 4],
             "zip": SafeMathZip,
-        },
-        {
-            "id": 6,
-            "name": "ERC-20 Token",
-            "description": "Example DApp which uses ERC-20 standard",
-            "image": "/static/img/templates/img-erc20-token.png",
-            "categories": [0, 2],
-            "zip": ERC20TokenZip,
         },
     ];
 }
