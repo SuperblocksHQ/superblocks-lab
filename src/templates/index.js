@@ -18,6 +18,7 @@ const EmptyZip = require('../assets/static/templates/empty.zip');
 const HelloZip = require('../assets/static/templates/hello.zip');
 const NewsZip = require('../assets/static/templates/newsfeed.zip');
 const RaiseZip = require('../assets/static/templates/raisetosummon.zip');
+const VotingZip = require('../assets/static/templates/voting.zip');
 
 export default class Templates {
     static categories = [
@@ -71,6 +72,14 @@ export default class Templates {
             "image": "/static/img/templates/img-raise-to-summon.png",
             "categories": [0, 1],
             "zip": RaiseZip,
+        },
+        {
+            "id": 4,
+            "name": "Voting System",
+            "description": "Simple voting system that you can tweak according to your needs",
+            "image": "/static/img/templates/img-voting-system.png",
+            "categories": [0, 2],
+            "zip": VotingZip,
         },
     ];
 }
