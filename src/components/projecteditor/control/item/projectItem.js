@@ -142,6 +142,14 @@ export default class ProjectItem extends Item {
     };
 
     /**
+     * Check if all files in the project are in a saved state.
+     **/
+    isSaved = () => {
+        // TODO: traverse all cached children and check the files if they are not saved.
+        return true;
+    };
+
+    /**
      * Prepare the project for being used by
      * loading the dappfile into cache and initializing the filesystem.
      *
