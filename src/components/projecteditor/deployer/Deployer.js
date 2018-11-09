@@ -183,14 +183,7 @@ export default class Deployer extends Component {
             addresssrc: this._makeFileName(src, this.network, 'address'),
             txsrc: this._makeFileName(src, this.network, 'tx'),
             deploysrc: this._makeFileName(src, this.network, 'deploy'),
-            contractsjssrc:
-                '/build/' +
-                contractFilename +
-                '/' +
-                contractFilename +
-                '.' +
-                this.network +
-                '.js',
+            contractsjssrc: this._makeFileName(src, this.network, 'js'),
         };
 
         this.accountName = project.getAccount();
