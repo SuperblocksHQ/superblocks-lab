@@ -141,6 +141,9 @@ export default class ProjectItem extends Item {
         this.backend.deleteProject(this.getInode(), cb);
     };
 
+    /**
+     * Check if all files in the project are in a saved state.
+     **/
     isSaved = () => {
         // TODO: traverse all cached children and check the files if they are not saved.
         return true;
