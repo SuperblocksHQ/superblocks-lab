@@ -20,6 +20,7 @@ const NewsZip = require('../assets/static/templates/newsfeed.zip');
 const RaiseZip = require('../assets/static/templates/raisetosummon.zip');
 const VotingZip = require('../assets/static/templates/voting.zip');
 const SafeMathZip = require('../assets/static/templates/safemath.zip');
+const ERC20TokenZip = require('../assets/static/templates/erc-20-token.zip');
 
 export default class Templates {
     static categories = [
@@ -93,6 +94,14 @@ export default class Templates {
             "image": "/static/img/templates/img-safemath.png",
             "categories": [0, 4],
             "zip": SafeMathZip,
+        },
+        {
+            "id": 6,
+            "name": "ERC-20 Token",
+            "description": "Example DApp which uses ERC-20 standard",
+            "image": "/static/img/templates/img-erc20-token.png",
+            "categories": [0, 2],
+            "zip": ERC20TokenZip,
         },
     ];
 }
