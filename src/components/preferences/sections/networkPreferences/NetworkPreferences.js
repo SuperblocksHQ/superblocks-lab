@@ -87,7 +87,7 @@ export default class NetworkPreferences extends Component {
 
         return (
             <div className={style.container}>
-                <h2>Chain network preferences</h2>
+                <h2>Chain Network Preferences</h2>
                 <div className={style.form}>
                     <form action="">
                         <div className={style.field}>
