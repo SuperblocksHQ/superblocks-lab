@@ -141,6 +141,11 @@ export default class ProjectItem extends Item {
         this.backend.deleteProject(this.getInode(), cb);
     };
 
+    isSaved = () => {
+        // TODO: traverse all cached children and check the files if they are not saved.
+        return true;
+    };
+
     /**
      * Prepare the project for being used by
      * loading the dappfile into cache and initializing the filesystem.
