@@ -29,9 +29,7 @@ export default class PreferencesModal extends Component {
 
     state = {
         categorySelectedId: 0,
-        tempPreferences: {
-            network: {}
-        }
+        categories: [{ id: 0, name: "Chain Network", icon: <IconChain /> }]
     }
 
     onCategorySelected(id) {
@@ -45,25 +43,14 @@ export default class PreferencesModal extends Component {
     }
 
     onSavePreferences = () => {
-        this.props.savePreferences(this.state.tempPreferences);
+        this.props.savePreferences({
+            network: this.networkPreferences.getPreferences()
+        });
         this.onCloseClickHandle();
     }
 
-    networkPreferenceChangeHandle = ({ gasLimit, gasPrice }) => {
-        this.setState({
-            tempPreferences: {
-                network: {
-                    gasLimit: gasLimit,
-                    gasPrice: gasPrice
-                }
-            }
-        });
-    }
-
     render() {
-        let { categories } = this.props;
-        categories = [{ id: 0, name: "Chain Network", icon: <IconChain /> }]
-        let { categorySelectedId } = this.state;
+        const { categories, categorySelectedId } = this.state;
         return(
             <div className={classNames([style.prefrerencesModal, "modal"])}>
                 <div className={style.container}>
@@ -89,8 +76,7 @@ export default class PreferencesModal extends Component {
                             </div>
                         </div>
                         <div className={style.preferencesArea}>
-                            <NetworkPreferences
-                                onPreferenceChange={this.networkPreferenceChangeHandle}/>
+                            <NetworkPreferences onRef={ref => (this.networkPreferences = ref)}/>
                         </div>
                     </div>
                     <div className={style.footer}>

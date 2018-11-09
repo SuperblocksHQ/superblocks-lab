@@ -36,19 +36,26 @@ export default class NetworkPreferences extends Component {
         this.web3 = new Web3();
     }
 
+    componentDidMount() {
+        this.props.onRef(this)
+    }
+
+    componentWillUnmount() {
+        this.props.onRef(undefined)
+    }
+
+    getPreferences() {
+        return {
+            gasLimit: this.state.errorGasLimit ? this.props.networkPreferences.gasLimit : this.state.tempGasLimit,
+            gasPrice: this.state.errorGasPrice ? this.props.networkPreferences.gasPrice : this.state.tempGasPrice
+        }
+    }
+
     onChange = (e, key) => {
         const value = e.target.value;
         if (key === "gasLimit") {
             const gasLimitValue = value;
             const errorGasLimit = gasLimitValue ? validations.validateGasLimit(Number(gasLimitValue)) : null;
-
-            // Make sure to notify upstream only when the value is actually valid
-            if (!errorGasLimit) {
-                this.props.onPreferenceChange({
-                    gasLimit: gasLimitValue,
-                    errorGasLimit
-                });
-            }
 
             // To make sure we update the input the UI correctly
             this.setState({
@@ -59,14 +66,6 @@ export default class NetworkPreferences extends Component {
         } else if (key === "gasPrice") {
             const gasPriceValue = value;
             const errorGasPrice = gasPriceValue ? validations.validateGasPrice(Number(gasPriceValue)) : null;
-
-            // Make sure to notify upstream only when the value is actually valid
-            if (!errorGasPrice) {
-                this.props.onPreferenceChange({
-                    gasPrice: gasPriceValue,
-                    errorGasPrice
-                });
-            }
 
             // To make sure we update the input the UI correctly
             this.setState({
@@ -88,7 +87,7 @@ export default class NetworkPreferences extends Component {
 
         return (
             <div className={style.container}>
-                <h2>Network Preferences</h2>
+                <h2>Chain network preferences</h2>
                 <div className={style.form}>
                     <form action="">
                         <div className={style.field}>
@@ -121,7 +120,7 @@ export default class NetworkPreferences extends Component {
 }
 
 NetworkPreferences.propTypes = {
-    onPreferenceChange: PropTypes.func.isRequired
+    onRef: PropTypes.object.isRequired
 }
 
 
