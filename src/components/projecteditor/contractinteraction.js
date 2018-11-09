@@ -438,7 +438,7 @@ export default class ContractInteraction extends Component {
                 padding: 20px;
                 padding-top: 0;
                 margin-bottom: 10px;
-                border-bottom: dotted 1px #ccc;
+                border-bottom: 1px solid #3c3c3c;
             }
             .constant {
             }
@@ -504,6 +504,9 @@ export default class ContractInteraction extends Component {
             }
             .call button {
                 margin-left: 10px;
+            }
+            button {
+                cursor: pointer;
             }
             .returns {
                 margin-top: 10px;
