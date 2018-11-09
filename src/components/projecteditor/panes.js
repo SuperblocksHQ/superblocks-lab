@@ -166,6 +166,11 @@ export default class Panes extends Component {
 
     tabClicked = (e, id) => {
         e.preventDefault();
+        // Close file on middle click
+        if(e.button == 1) {
+            this.tabClickedClose(e, id);
+            return;
+        }
         this.activePaneId = id;
         this.forceUpdate();
     };
@@ -257,10 +262,9 @@ export default class Panes extends Component {
             cls[selected] = isSelected;
             return (
                 <div key={index}>
-                    <a
-                        href="#"
+                    <div
                         className={classnames(cls)}
-                        onClick={e => this.tabClicked(e, pane.id)}
+                        onMouseDown={e => this.tabClicked(e, pane.id)}
                         onContextMenu={e => this.tabRightClicked(e, pane.id)}
                     >
                         <DropdownContainer
@@ -287,7 +291,7 @@ export default class Panes extends Component {
                                 </div>
                             </div>
                         </DropdownContainer>
-                    </a>
+                    </div>
                 </div>
             );
         });
