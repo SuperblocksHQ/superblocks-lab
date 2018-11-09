@@ -30,7 +30,7 @@ export default class PreferencesModal extends Component {
     state = {
         categorySelectedId: 0,
         tempPreferences: {
-            chain: {}
+            network: {}
         }
     }
 
@@ -51,10 +51,8 @@ export default class PreferencesModal extends Component {
 
     networkPreferenceChangeHandle = ({ gasLimit, gasPrice }) => {
         this.setState({
-            ...this.state,
             tempPreferences: {
-                ...this.state.tempPreferences,
-                chain: {
+                network: {
                     gasLimit: gasLimit,
                     gasPrice: gasPrice
                 }
@@ -64,7 +62,7 @@ export default class PreferencesModal extends Component {
 
     render() {
         let { categories } = this.props;
-        categories = [{ id: 0, name: "Network", icon: <IconChain /> }]
+        categories = [{ id: 0, name: "Chain Network", icon: <IconChain /> }]
         let { categorySelectedId } = this.state;
         return(
             <div className={classNames([style.prefrerencesModal, "modal"])}>

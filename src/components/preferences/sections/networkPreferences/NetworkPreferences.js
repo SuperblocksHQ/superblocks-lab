@@ -38,31 +38,40 @@ export default class NetworkPreferences extends Component {
 
     onChange = (e, key) => {
         const value = e.target.value;
-        var gasLimitValue = this.state.tempGasLimit;
-        var gasPriceValue = this.state.tempGasPrice;
-
         if (key === "gasLimit") {
-            gasLimitValue = value;
+            const gasLimitValue = value;
+            const errorGasLimit = gasLimitValue ? validations.validateGasLimit(Number(gasLimitValue)) : null;
+
+            // Make sure to notify upstream only when the value is actually valid
+            if (!errorGasLimit) {
+                this.props.onPreferenceChange({
+                    gasLimit: gasLimitValue,
+                    errorGasLimit
+                });
+            }
+
+            // To make sure we update the input the UI correctly
+            this.setState({
+                errorGasLimit,
+                tempGasLimit: gasLimitValue
+            });
+
         } else if (key === "gasPrice") {
-            gasPriceValue = value;
-        }
+            const gasPriceValue = value;
+            const errorGasPrice = gasPriceValue ? validations.validateGasPrice(Number(gasPriceValue)) : null;
 
-        const errorGasLimit = gasLimitValue ? validations.validateGasLimit(Number(gasLimitValue)) : null;
-        const errorGasPrice = gasPriceValue ? validations.validateGasPrice(Number(gasPriceValue)) : null;
+            // Make sure to notify upstream only when the value is actually valid
+            if (!errorGasPrice) {
+                this.props.onPreferenceChange({
+                    gasPrice: gasPriceValue,
+                    errorGasPrice
+                });
+            }
 
-        // To make sure we update the input the UI correctly
-        this.setState({
-            errorGasLimit,
-            errorGasPrice,
-            tempGasLimit: gasLimitValue,
-            tempGasPrice: gasPriceValue
-        });
-
-        // Make sure to notify upstream only when both values are actually valid
-        if (!errorGasLimit && !errorGasPrice) {
-            this.props.onPreferenceChange({
-                gasLimit: gasLimitValue,
-                gasPrice: gasPriceValue
+            // To make sure we update the input the UI correctly
+            this.setState({
+                errorGasPrice,
+                tempGasPrice: gasPriceValue
             });
         }
     }
