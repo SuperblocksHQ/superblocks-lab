@@ -2,7 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 import styleNormal from './style-normal.less';
 import styleSmall from './style-small.less';
-import classnames from 'classnames';
 import Web3 from 'web3';
 import { IconRun } from '../icons';
 
@@ -293,7 +292,7 @@ export default class RenderTransactions {
         const gasCostFormatted = this.web3.fromWei(gasCost, 'ether');
         classes[this.style.txbox] = true;
         return (
-            <div key={tx.hash} className={classnames(classes)}>
+            <div key={tx.hash} className={classNames(classes)}>
                 {this._renderHeader(tx, type)}
                 <div className={this.style.infoContainer}>
                     {this._renderLeft(tx, type, network)}
