@@ -110,7 +110,7 @@ module.exports = {
   // In production, we only want to load the app code.
   entry: [paths.appIndexJs],
   output: {
-    // The build folder.
+    // The dist folder.
     path: paths.appBuild,
     // Generated JS file names (with nested folders).
     // There will be one main bundle, and one file per asynchronous chunk.
@@ -252,7 +252,8 @@ module.exports = {
             options: {
               formatter: require.resolve('react-dev-utils/eslintFormatter'),
               eslintPath: require.resolve('eslint'),
-
+              configFile: path.join(paths.appSrc, '../config/eslint/eslint.json'),
+              emitWarning: true
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -396,7 +397,7 @@ module.exports = {
             // See https://github.com/webpack/webpack/issues/6571
             sideEffects: true,
           },
-          // "file" loader makes sure assets end up in the `build` folder.
+          // "file" loader makes sure assets end up in the `dist` folder.
           // When you `import` an asset, you get its filename.
           // This loader doesn't use a "test" so it will catch all modules
           // that fall through the other loaders.
@@ -473,19 +474,21 @@ module.exports = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
-    new WorkboxWebpackPlugin.GenerateSW({
-      clientsClaim: true,
-      exclude: [/\.map$/, /asset-manifest\.json$/],
-      importWorkboxFrom: 'cdn',
-      navigateFallback: publicUrl + '/index.html',
-      navigateFallbackBlacklist: [
-        // Exclude URLs starting with /_, as they're likely an API call
-        new RegExp('^/_'),
-        // Exclude URLs containing a dot, as they're likely a resource in
-        // public/ and not a SPA route
-        new RegExp('/[^/]+\\.[^/]+$'),
-      ],
-    }),
+    // TODO - Disabled this feature for now as it was causing some really strange caching
+    // issues when deploying a new version of the tool
+    // new WorkboxWebpackPlugin.GenerateSW({
+    //   clientsClaim: true,
+    //   exclude: [/\.map$/, /asset-manifest\.json$/],
+    //   importWorkboxFrom: 'cdn',
+    //   navigateFallback: publicUrl + '/index.html',
+    //   navigateFallbackBlacklist: [
+    //     // Exclude URLs starting with /_, as they're likely an API call
+    //     new RegExp('^/_'),
+    //     // Exclude URLs containing a dot, as they're likely a resource in
+    //     // public/ and not a SPA route
+    //     new RegExp('/[^/]+\\.[^/]+$'),
+    //   ],
+    // }),
     new CopyWebpackPlugin([{ context: `src/assets`, from: `**/*` }]),
     new CopyWebpackPlugin([ { from: 'node_modules/monaco-editor/min/vs', to: 'vs', } ]),
     new CopyWebpackPlugin([ { context: `src/components/solc/dist`, from: '**/*', to: 'solc', } ]),

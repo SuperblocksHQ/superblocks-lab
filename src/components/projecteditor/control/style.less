@@ -46,22 +46,21 @@ select {
 
 .item {
     user-select: none;
+    position: relative;
     .icons {
-        .caret {
-            float: left;
-            width: 25px;
-            overflow: hidden;
-            text-align: center;
-        }
+        display: flex;
         .nocaret {
             float: left;
             overflow: hidden;
+            width: 25px;
         }
         .icon {
             float: left;
             width: 25px;
             overflow: hidden;
             margin-top: 2px;
+            text-align: center;
+            margin-right: 3px;
         }
         .noicon {
             float: left;
@@ -90,9 +89,8 @@ select {
         }
     }
     .title {
-        display: inline-block;
+        display: flex;
         max-width: 99%;
-        overflow: hidden;
         float: left;
     }
     .collapsed {
@@ -136,84 +134,84 @@ select {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 45px;
+            padding-left: 35px;
         }
     }
     .level5 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 70px;
+            padding-left: 50px;
         }
     }
     .level6 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 90px;
+            padding-left: 65px;
         }
     }
     .level7 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 110px;
+            padding-left: 80px;
         }
     }
     .level8 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 130px;
+            padding-left: 95px;
         }
     }
     .level9 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 150px;
+            padding-left: 110px;
         }
     }
     .level10 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 170px;
+            padding-left: 125px;
         }
     }
     .level11 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 190px;
+            padding-left: 140px;
         }
     }
     .level12 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 210px;
+            padding-left: 155px;
         }
     }
     .level13 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 230px;
+            padding-left: 170px;
         }
     }
     .level14 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 250px;
+            padding-left: 185px;
         }
     }
     .level15 {
         display: block;
         line-height: 28px;
         .header {
-            padding-left: 270px;
+            padding-left: 200px;
         }
     }
     .hidden {
@@ -308,21 +306,39 @@ select {
     align-items: center;
     position: relative;
     align-items: center;
-    .title {
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .icons {
         display: flex;
     }
+    .title {
+        display: flex;
+        width: 100%;
+        min-width: 50px;
+        a {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    .buttonsWrapper {
+        display: flex;
+        order: 3;
+        justify-content: flex-end;
+        min-width: 90px;
+    }
+    &.directoryEntry {
+        .buttonsWrapper {
+            min-width: 90px;
+        }
+    }
+    &.fileEntry {
+        .buttonsWrapper {
+            min-width: 40px;
+        }
+    }
     .buttons {
-        position: absolute;
-        right: 0;
-        display: inherit;
-        margin-left: auto;
-        float: right;
+        display: flex;
         overflow: hidden;
-        text-align: right;
-        margin-right: 10px;
-        height: 100%;
+        justify-content: flex-end;
+        width: 100%;
         button, a {
             color: #fff;
             opacity: .6;
@@ -347,12 +363,12 @@ select {
 
 .contextMenu {
     display: block;
-    position: fixed;
+    position: absolute;
     margin-top: -1px;
     margin-left: 30px;
-    background-color: #000000;
+    background-color: #141414;
     z-index: 1;
-    min-width: 250px;
+    min-width: 245px;
     z-index: 5;
     border-radius: 4px;
     padding: 4px 0;

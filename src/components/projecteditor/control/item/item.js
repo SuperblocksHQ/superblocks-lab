@@ -174,15 +174,18 @@ export default class Item {
                     // Copy over original state object to new item.
                     // But copy back all value which are double underscored, those we actually want the latest properties of,
                     // such as `__parent`, which will refer to the newly created parent item.
+                    // Also copy back any keys which are defined in targetChild._preserveProps array
                     const newState = targetChild.props.state;
                     targetChild.props.state = sourceChild.props.state;
                     const keys = Object.keys(newState);
                     for (let index = 0; index < keys.length; index++) {
                         let key = keys[index];
-                        if (key.substr(0, 2) == '__') {
+                        if (key.substr(0, 2) == '__' || (targetChild.props._preserveProps || []).indexOf(key) > -1) {
                             targetChild.props.state[key] = newState[key];
                         }
                     }
+
+                    delete targetChild.props._preserveProps;
                 }
             }
         }

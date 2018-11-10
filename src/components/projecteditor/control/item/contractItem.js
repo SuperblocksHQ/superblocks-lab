@@ -173,7 +173,7 @@ export default class ContractItem extends FileItem {
             this.getProject().moveContract(oldPath, this.getFullPath(), resolve);
             this._moveContractBuildFiles(oldPath, this.getSource());
         });
-    }
+    };
 
     /**
      * Return the source path for the contract file, as defined in the dappfile.

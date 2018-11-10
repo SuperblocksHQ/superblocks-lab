@@ -29,38 +29,40 @@
     }
 
     .area {
-        padding: 80px 15px 125px 32px;
+        display: flex;
+        //padding: 80px 15px 125px 32px;
     }
     .container {
         width: 900px;
         display: flex;
+        flex-direction: column;
         .categoriesArea {
-            width: 20%;
+            width: 25%;
             border-right: 1px solid @modal-separator-color;
-            .categoriesTitle {
-                font-weight: 600;
-                margin-bottom: 16px;
-            }
-            ul {
-                list-style-type: none;
-                margin: 0;
-                padding: 0;
-                color: #c7c7c7;
-                li {
-                    line-height: 40px;
-                    padding: 0 16px;
-                    border-radius: 2px;
-                    &:hover {
-                        background-color: @modal-color-hover;
-                        cursor: pointer;
-                        color: #fff;
+            .categoriesContainer {
+                margin-top: 15px;
+                margin-left: 32px;
+                ul {
+                    list-style-type: none;
+                    margin: 0;
+                    padding: 0;
+                    color: #c7c7c7;
+                    li {
+                        line-height: 40px;
+                        padding: 0 16px;
+                        border-radius: 2px;
+                        &:hover {
+                            background-color: @modal-color-hover;
+                            cursor: pointer;
+                            color: #fff;
+                        }
                     }
-                }
-                .selected {
-                    background-color: @primary-color;
-                    color: #fff;
-                    &:hover {
+                    .selected {
                         background-color: @primary-color;
+                        color: #fff;
+                        &:hover {
+                            background-color: @primary-color;
+                        }
                     }
                 }
             }
@@ -68,12 +70,15 @@
         .preferencesArea {
             width: 80%;
             overflow-y: auto;
-            margin: 0px 10px 20px 40px;
+            padding: 20px 10px 40px 40px;
         }
     }
     .footer {
-        position: absolute;
-        right: 40px;
-        bottom: 40px;
+        display: flex;
+        border-top: 1px solid @modal-separator-color;
+        .buttonsContainer {
+            margin-left: auto;
+            padding: 15px 20px;
+        }
     }
 }

@@ -87,6 +87,26 @@ export default class DappfileItem extends FileItem {
         return this.props.state.dappfile;
     };
 
+    static validateDappfile = (dappfile) => {
+        const defDappfile = DappfileItem.getDefaultDappfile();
+
+        if (!dappfile.project) {
+            dappfile.project = defDappfile.project;
+        }
+
+        if (!dappfile.environments) {
+            dappfile.environments = defDappfile.environments;
+        }
+
+        if (!dappfile.wallets) {
+            dappfile.wallets = defDappfile.wallets;
+        }
+
+        if (!dappfile.accounts) {
+            dappfile.accounts = defDappfile.accounts;
+        }
+    };
+
     static getDefaultDappfile = () => {
         const obj = {
             project: {

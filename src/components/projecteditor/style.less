@@ -26,6 +26,7 @@
         clear: both;
     }
     .control {
+        overflow: hidden;
         position: relative;
         float: left;
         display: block;
@@ -65,9 +66,8 @@
                 float: left;
                 min-width: 60px;
                 background-color: #2D2D2D;
-                a {
-                    color: #969696;
-                }
+                cursor: pointer;
+                color: #969696;
                 .tabContainer {
                     div {
                         float: left;
@@ -82,16 +82,11 @@
                         margin-left: 10px;
                         display: none;
                         font-size: 0.85em;
-                        a {
-                            font-weight: 700;
-                        }
                     }
                 }
                 &.selected {
                     background-color: #1e1e1e;
-                    a {
-                        color: #FFFFFF;
-                    }
+                    color: #FFFFFF;
                     .close {
                         display: block;
                     }
@@ -102,7 +97,7 @@
                 position: fixed;
                 margin-left: 40px;
                 margin-top: 15px;
-                background-color: #000000;
+                background-color: #141414;
                 z-index: 1;
                 min-width: 180px;
                 padding: 4px 0;

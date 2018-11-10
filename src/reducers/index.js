@@ -1,6 +1,7 @@
 import app from './app';
 import projects from './projects';
 import settings from './settings';
+import view from './view';
 
 const rehydrated = (state = false, action) => {
     switch (action.type) {
@@ -16,4 +17,5 @@ export default {
     app,
     settings,
     projects,
+    view
 };

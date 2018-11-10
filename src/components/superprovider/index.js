@@ -188,7 +188,7 @@ export default class SuperProvider {
                         body:
                             'Please understand that Superblocks Lab has no power over which network is targeted when using an external provider. It is your responsibility that the network is the same as it is expected to be.',
                         style: {
-                            'background-color': '#cd5c5c',
+                            'backgroundColor': '#cd5c5c',
                             color: '#fef7ff',
                         },
                     };

@@ -113,13 +113,19 @@ export default class ProjectItem extends Item {
                             title: file,
                             name: name,
                             args: args,
+                            toggable: true,
                             project: this,
                         },
+                        // This is to handle a special case when a non .sol file is renamed into a .sol file.
+                        // Since the file item already exsts and it's props will overwrite these new props.
+                        _preserveProps: ['source', 'name', 'args', 'toggable', 'children'],
                     },
                     this.router
                 );
                 // Update dappfile.
                 this.addContract(name, source, args);
+
+                contractsItem.props.state._children.push(contractItem);
             }
         }
         return contractItem;
@@ -135,6 +141,9 @@ export default class ProjectItem extends Item {
         this.backend.deleteProject(this.getInode(), cb);
     };
 
+    /**
+     * Check if all files in the project are in a saved state.
+     **/
     isSaved = () => {
         // TODO: traverse all cached children and check the files if they are not saved.
         return true;
@@ -191,7 +200,7 @@ export default class ProjectItem extends Item {
             );
             this.setHiddenItem('app_preview', previewItem);
 
-            // Traverase the file structure to get `/dappfile.json`, this will prepare the file tree
+            // Traverse the file structure to get `/dappfile.json`, this will prepare the file tree
             // so that the file `/dappfile.json` will get represented by the DappfileItem item created prior.
             this.getItemByPath(['', 'dappfile.json'], this)
                 .then(item => {
@@ -281,13 +290,13 @@ export default class ProjectItem extends Item {
                                     resolve(item);
                                 })
                                 .catch(() => {
-                                    reject();
+                                    reject("Path not found");
                                 });
                         }
                         return;
                     }
                 }
-                reject();
+                reject("Path not found");
             });
         });
     };
@@ -651,8 +660,8 @@ export default class ProjectItem extends Item {
             .then(() => {
                 if (cb) cb(0);
             })
-            .catch(() => {
-                alert('Could not save dappfile.');
+            .catch((e) => {
+                alert('Could not save dappfile (account).');
                 if (cb) cb(1);
             });
     };

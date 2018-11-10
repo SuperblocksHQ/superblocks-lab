@@ -28,6 +28,8 @@ import {
     IconJS,
     IconCss,
     IconMd,
+    IconJSON,
+    IconBinary,
     IconShowPreview,
     IconMosaic,
 } from '../../../../icons';
@@ -47,8 +49,6 @@ export default class FileItem extends Item {
                 : props.state.toggable;
         props.state.open =
             props.state.open === undefined ? true : props.state.open;
-        props.state.readonly =
-            props.state.readonly === undefined ? true : props.state.readonly;
         super(props, router);
         if (props.type == "folder") {
             props.state.children = (props.state.children === undefined ? this._createChildren : props.state.children);
@@ -84,6 +84,14 @@ export default class FileItem extends Item {
                     case 'sol':
                         type2 = 'contract';
                         icon = <IconContract />;
+                        break;
+                    case 'json':
+                        type2 = 'json';
+                        icon = <IconJSON />;
+                        break;
+                    case 'bin':
+                        type2 = 'bin';
+                        icon = <IconBinary />;
                         break;
                 }
             }
@@ -270,6 +278,7 @@ export default class FileItem extends Item {
                             // Now we need to notify this file and all below if this is a folder that they have been moved.
                             // Contract files need to adjust their settings in the dappfile, which they will do when notified.
                             // It is important this is done before we recache the children below.
+                            // Note that when renaming a non contract to a contract file the dappfile will get updated at a later stage.
                             if (this.notifyMoved) {
                                 var promise = this.notifyMoved(oldPath);
                             }
@@ -278,7 +287,7 @@ export default class FileItem extends Item {
                             }
                             promise
                                 .then( () => {
-                                    // Recache the children
+                                    // Recache the children, this will create the missing contract.
                                     newParent.getChildren(true, () => {
                                         const children2 = newParent.getChildren();
                                         this._copyState(children2, [this]);
@@ -378,7 +387,7 @@ export default class FileItem extends Item {
                             this.redrawMain(true);
                         });
                     } else {
-                        alert('Could not create the file.', status);
+                        status == 3 ? alert('A file or folder with that name already exists at this location. Please choose a different name.', status) : alert('Could not create the file.', status);
                     }
                 });
             }
@@ -404,7 +413,7 @@ export default class FileItem extends Item {
                             this.redrawMain(true);
                         });
                     } else {
-                        alert('Could not create the folder.', status);
+                        status == 3 ? alert('Folder with that name already exists.', status) : alert('Could not create the folder.', status);
                     }
                 });
             }
@@ -465,6 +474,9 @@ export default class FileItem extends Item {
             //alert("Illegal filename.");
             //return false;
             //}
+            if (newFile == this.getFullPath()) {
+                return;
+            }
             const suffix1 =
                 (this.getFullPath().match('^.*/[^/]+[.](.+)$') || [])[1] ||
                 '';
@@ -474,7 +486,9 @@ export default class FileItem extends Item {
                 suffix1.toLowerCase() == 'sol' &&
                 suffix1.toLowerCase() != suffix2.toLowerCase()
             ) {
-                alert('A contract must have the .sol file ending.');
+                // NOTE: To allow a .sol to be renamed to a generic file we will need to strip away some
+                // stuff from the contractitem. That's why we don't allow it for now.
+                alert('When renaming a contract it must retain the .sol suffix.');
                 return;
             }
             if(newFile.length > 255) {
@@ -493,10 +507,22 @@ export default class FileItem extends Item {
         }
     };
 
+    // Checks if file is in App folder and is one of the main files needed for View panel
+    _isAppFile = () => {
+       return (this.props.state.__parent.getFullPath() == '/app' &&
+            (
+                (this.getTitle() == 'app.css') ||
+                (this.getTitle() == 'app.html') ||
+                (this.getTitle() == 'app.js')
+            )
+        );
+    }
+
     _renderFileTitle = (level, index) => {
         if (this.getType() == "file") {
             return (
                 <FileEntry
+                   isAppFile={this._isAppFile()}
                    openItem={this._openItem}
                    title={this.getTitle()}
                    isReadOnly={this.isReadOnly()}
@@ -553,21 +579,25 @@ export default class FileItem extends Item {
         return (
             <div className={style.projectContractsTitleContainer} onClick={item._angleClicked}>
                 <div className={style.header}>
+                    { icons }
                     <div className={style.title}>
-                        { icons }
-                        { item.getTitle() }
+                        <a title={item.getTitle()} href="#">
+                            { item.getTitle() }
+                        </a>
                     </div>
-                    <div className={style.buttons}>
-                        <button className="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
-                            <Tooltip title="Show Preview">
-                                <IconShowPreview />
-                            </Tooltip>
-                        </button>
-                        <button className="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
-                            <Tooltip title="Show Mosaic">
-                                <IconMosaic />
-                            </Tooltip>
-                        </button>
+                    <div className={style.buttonsWrapper}>
+                        <div className={style.buttons}>
+                            <button className="btnNoBg" onClick={(e)=>{ item._openAppPreview(e, item)} } title="Show Preview">
+                                <Tooltip title="Show Preview">
+                                    <IconShowPreview />
+                                </Tooltip>
+                            </button>
+                            <button className="btnNoBg" onClick={(e)=>{ item._openAppComposite(e, item)} } title="Mosaic View">
+                                <Tooltip title="Show Mosaic">
+                                    <IconMosaic />
+                                </Tooltip>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

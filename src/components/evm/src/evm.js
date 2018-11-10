@@ -894,12 +894,13 @@ function sendRawTransaction(data, callback) {
     );
 
     _vm.blockchain.getHead(function(err, block) {
+        var timeNowInSeconds = Math.floor(Date.now() / 1000);
         var nextBlock = new Block();
         nextBlock.header.number = blockNumber() + 1;
         nextBlock.header.difficulty = block.header.difficulty;
         nextBlock.header.parentHash = block.hash();
         nextBlock.header.timestamp = new Buffer(
-            _pad(Date.now().toString(16)),
+            _pad(timeNowInSeconds.toString(16)),
             'hex'
         );
         nextBlock.transactions.push(tx);
@@ -942,7 +943,23 @@ function sendRawTransaction(data, callback) {
                         console.error(err);
                         callback(err, null);
                     } else {
-                        callback(null, transactionHash);
+                        var errorMessage = null;
+
+                        //
+                        // EIP 838
+                        // REVERT with reason
+                        //
+                        var returnData = results.results[0].vm.return;
+                        if(returnData) {
+                            var errorSelector = '08c379a0';                                     // Generic error selector. See also: Error(string)
+                            var returnDataSelector = returnData.slice(0,4).toString('hex');     // Check selector ...
+                            if(returnDataSelector === errorSelector ) {                         // ... looking for generic error.
+                                var returnDataString = returnData.slice(4).toString('hex');     // Read ABI-encoded string. Then,
+                                errorMessage = decode('string', returnDataString)[0];           // decode the output.
+                            }
+                        }
+
+                        callback(errorMessage, transactionHash);
                         _debugLog('[Block] finished running');
                         _debugLog(results);
                         //console.info("[Transaction] returned: " + results.results[0].vm.return.toString("hex"));

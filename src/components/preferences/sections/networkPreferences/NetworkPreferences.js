@@ -19,48 +19,75 @@ import PropTypes from 'prop-types';
 import style from './style.less';
 import * as validations from '../../../../validations';
 import TextInput from '../../../textInput';
+import Web3 from 'web3';
 
-export default class ChainPreferences extends Component {
+export default class NetworkPreferences extends Component {
 
     state = {
         errorGasLimit: null,
         errorGasPrice: null,
-        gasLimit: null,
-        gasPrice: null
+        tempGasLimit: this.props.networkPreferences.gasLimit,
+        tempGasPrice: this.props.networkPreferences.gasPrice
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.web3 = new Web3();
     }
 
     componentDidMount() {
-        const { chainPreferences } = this.props;
-        this.gasLimit = chainPreferences.gasLimit;
-        this.gasPrice = chainPreferences.gasPrice;
+        this.props.onRef(this)
+    }
+
+    componentWillUnmount() {
+        this.props.onRef(undefined)
+    }
+
+    getPreferences() {
+        return {
+            gasLimit: this.state.errorGasLimit ? this.props.networkPreferences.gasLimit : this.state.tempGasLimit,
+            gasPrice: this.state.errorGasPrice ? this.props.networkPreferences.gasPrice : this.state.tempGasPrice
+        }
     }
 
     onChange = (e, key) => {
-        var value = e.target.value;
+        const value = e.target.value;
         if (key === "gasLimit") {
-            this.gasLimit = Number(value);
+            const gasLimitValue = value;
+            const errorGasLimit = gasLimitValue ? validations.validateGasLimit(Number(gasLimitValue)) : null;
+
+            // To make sure we update the input the UI correctly
+            this.setState({
+                errorGasLimit,
+                tempGasLimit: gasLimitValue
+            });
+
         } else if (key === "gasPrice") {
-            this.gasPrice = Number(value);
-        }
+            const gasPriceValue = value;
+            const errorGasPrice = gasPriceValue ? validations.validateGasPrice(Number(gasPriceValue)) : null;
 
-        const errorGasLimit = validations.validateGasLimit(this.gasLimit);
-        const errorGasPrice = validations.validateGasPrice(this.gasPrice);
-        this.setState({ errorGasLimit, errorGasPrice });
-
-        if (!errorGasLimit && errorGasPrice) {
-            this.props.onPreferenceChange({
-                gasLimit: this.gasLimit,
-                gasPrice: this.gasPrice
+            // To make sure we update the input the UI correctly
+            this.setState({
+                errorGasPrice,
+                tempGasPrice: gasPriceValue
             });
         }
     }
 
     render() {
-        const { chainPreferences } = this.props;
-        const { errorGasLimit, errorGasPrice } = this.state;
+        const {
+            errorGasLimit,
+            errorGasPrice,
+            tempGasLimit,
+            tempGasPrice,
+        } = this.state;
+
+        const gasPriceGwei = this.web3.fromWei(tempGasPrice, 'Gwei');
+
         return (
-            <div>
-                <h2>Chain Preferences</h2>
+            <div className={style.container}>
+                <h2>Chain Network Preferences</h2>
                 <div className={style.form}>
                     <form action="">
                         <div className={style.field}>
@@ -70,7 +97,7 @@ export default class ChainPreferences extends Component {
                                 label="Gas Limit"
                                 error={errorGasLimit}
                                 onChangeText={(e)=>{this.onChange(e, 'gasLimit')}}
-                                defaultValue={chainPreferences.gasLimit}
+                                defaultValue={tempGasLimit}
                             />
                             <div className={style.note}>Maximum amount of gas available to each block and transaction. <b>Leave blank for default.</b></div>
                             <TextInput
@@ -79,7 +106,8 @@ export default class ChainPreferences extends Component {
                                 label="Gas Price"
                                 error={errorGasPrice}
                                 onChangeText={(e)=>{this.onChange(e, 'gasPrice')}}
-                                defaultValue={chainPreferences.gasPrice}
+                                defaultValue={tempGasPrice}
+                                tip={gasPriceGwei + ' Gwei'}
                             />
                             <div className={style.note}>The price of each unit of gas, in WEI. <b>Leave blank for default.</b></div>
                         </div>
@@ -91,8 +119,8 @@ export default class ChainPreferences extends Component {
     }
 }
 
-ChainPreferences.propTypes = {
-    onPreferenceChange: PropTypes.func.isRequired
+NetworkPreferences.propTypes = {
+    onRef: PropTypes.object.isRequired
 }
 
 

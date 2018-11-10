@@ -20,7 +20,7 @@ import classNames from 'classnames';
 import style from './style.less';
 import ModalHeader from '../modal/modalHeader';
 import PreferenceCategory from './preferenceCategory';
-import ChainPreferences from './sections/chainPreferences';
+import NetworkPreferences from './sections/networkPreferences';
 import {
     IconChain
 } from '../icons';
@@ -29,9 +29,7 @@ export default class PreferencesModal extends Component {
 
     state = {
         categorySelectedId: 0,
-        tempPreferences: {
-            chain: {}
-        }
+        categories: [{ id: 0, name: "Chain Network", icon: <IconChain /> }]
     }
 
     onCategorySelected(id) {
@@ -45,27 +43,14 @@ export default class PreferencesModal extends Component {
     }
 
     onSavePreferences = () => {
-        this.props.savePreferences(this.state.tempPreferences);
+        this.props.savePreferences({
+            network: this.networkPreferences.getPreferences()
+        });
         this.onCloseClickHandle();
     }
 
-    chainPreferenceChangeHandle = ({ gasLimit, gasPrice }) => {
-        this.setState({
-            ...this.state,
-            tempPreferences: {
-                ...this.state.tempPreferences,
-                chain: {
-                    gasLimit: gasLimit ? gasLimit : this.state.tempPreferences.chain.gasLimit,
-                    gasPrice: gasPrice ? gasPrice : this.state.tempPreferences.chain.gasPrice
-                }
-            }
-        });
-    }
-
     render() {
-        let { categories } = this.props;
-        categories = [{ id: 0, name: "Chain", icon: <IconChain /> }]
-        let { categorySelectedId } = this.state;
+        const { categories, categorySelectedId } = this.state;
         return(
             <div className={classNames([style.prefrerencesModal, "modal"])}>
                 <div className={style.container}>
@@ -73,29 +58,32 @@ export default class PreferencesModal extends Component {
                         title="Preferences"
                         onCloseClick={this.onCloseClickHandle}
                     />
-                    <div className={classNames([style.area, style.container])}>
+                    <div className={style.area}>
                         <div className={style.categoriesArea}>
-                            <ul>
-                                {
-                                    categories.map(category =>
-                                        <li key={category.id} className={categorySelectedId == category.id ? style.selected : null}>
-                                            <PreferenceCategory
-                                                icon={category.icon}
-                                                title={category.name}
-                                                onCategorySelected={() => this.onCategorySelected(category.id)}/>
-                                        </li>
-                                    )
-                                }
-                            </ul>
+                            <div className={style.categoriesContainer}>
+                                <ul>
+                                    {
+                                        categories.map(category =>
+                                            <li key={category.id} className={categorySelectedId == category.id ? style.selected : null}>
+                                                <PreferenceCategory
+                                                    icon={category.icon}
+                                                    title={category.name}
+                                                    onCategorySelected={() => this.onCategorySelected(category.id)}/>
+                                            </li>
+                                        )
+                                    }
+                                </ul>
+                            </div>
                         </div>
                         <div className={style.preferencesArea}>
-                            <ChainPreferences
-                                onPreferenceChange={this.chainPreferenceChangeHandle}/>
+                            <NetworkPreferences onRef={ref => (this.networkPreferences = ref)}/>
                         </div>
                     </div>
                     <div className={style.footer}>
-                        <button onClick={this.onCloseClickHandle} className="btn2 noBg mr-2">Cancel</button>
-                        <button onClick={this.onSavePreferences} className="btn2">Save</button>
+                        <div className={style.buttonsContainer}>
+                            <button onClick={this.onCloseClickHandle} className="btn2 noBg mr-2">Cancel</button>
+                            <button onClick={this.onSavePreferences} className="btn2">Save</button>
+                        </div>
                     </div>
                 </div>
             </div>

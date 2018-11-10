@@ -28,6 +28,7 @@ export default class TextInput extends PureComponent {
             onChangeText,
             type,
             label,
+            tip,
             defaultValue,
             disabled,
             error,
@@ -36,17 +37,21 @@ export default class TextInput extends PureComponent {
 
         return(
             <div>
-                <div className={classNames(["superInputDark", style.inputContainer])}>
+                <div className={classNames("superInputDark", style.container)}>
                     { label != null && <label htmlFor="name">{label}</label> }
-                    <input
-                        id={id}
-                        type={type}
-                        onKeyUp={onChangeText}
-                        defaultValue={defaultValue}
-                        disabled={disabled}
-                        onChange={onChangeText}
-                        {...props}
+                    <div className={style.inputContainer}>
+                        <input
+                            id={id}
+                            type={type}
+                            onKeyUp={onChangeText}
+                            defaultValue={defaultValue}
+                            disabled={disabled}
+                            className={classNames({[style.error]: error != null})}
+                            {...props}
                         />
+                        {tip != null && <div className={style.tip}>{tip}</div>}
+                    </div>
+
                 </div>
                 { error != null && <ErrorMessage error={error} className={style.errorMessage}/>}
             </div>

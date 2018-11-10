@@ -108,6 +108,7 @@ export default class AccountEditor extends Component {
         } else {
             address = this.props.item.getAddress(env);
         }
+        address = address || "";  // To not have the input component be uncontrolled.
 
         const network = env;
         // Initial (editable) values
@@ -167,11 +168,12 @@ export default class AccountEditor extends Component {
     };
 
     _save = cb => {
+        const project = this.props.item.getProject();
+
         if (this.props.item.getName() != this.form.name) {
             // Name is changing, check for clash.
             if (
-                this.props.item
-                    .getProject()
+                project
                     .getHiddenItem('accounts')
                     .getByName(this.form.name)
             ) {
@@ -183,12 +185,13 @@ export default class AccountEditor extends Component {
 
         const oldname = this.props.item.getName();
         this.props.item.reKey(this.form.name);
-        this.props.item
-            .getProject()
-            .setAccountName(oldname, this.form.name, () => {
-                this.props.router.main.redraw(true);
-                cb(0);
-            });
+        project.setAccountName(oldname, this.form.name, () => {
+            if (project.getHiddenItem('accounts').getChosen() == oldname) {
+                project.getHiddenItem('accounts').setChosen(this.form.name);
+            }
+            this.props.router.main.redraw(true);
+            cb(0);
+        });
     };
 
     onEnvChange = (e, value) => {

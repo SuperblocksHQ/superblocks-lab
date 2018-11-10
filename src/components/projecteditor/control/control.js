@@ -166,12 +166,15 @@ export default class Control extends Component {
      * if all windows successfully closed then remove project from explorer.
      */
     _closeProject = cb => {
-        this.props.router.panes.closeAll(status => {
+        const { router, closeAllPanels } = this.props;
+        router.panes.closeAll(status => {
             if (status == 0) {
                 this.setState({ activeProject: null });
             }
             if (cb) cb(status);
         });
+
+        closeAllPanels();
     };
 
     /**
@@ -438,10 +441,6 @@ export default class Control extends Component {
         }
     };
 
-    downloadProject = (project, keepState) => {
-        this.backend.downloadProject(project.props.state.data.dir, keepState);
-    };
-
     _openContractMake = (e, item) => {
         e.preventDefault();
         const item2 = this._filterItem(item, { type: 'make' });
@@ -466,32 +465,6 @@ export default class Control extends Component {
         }
         return true;
     };
-
-    //_renderContractsSectionTitle = (level, index, item) => {
-    //var projectItem = item.props.state.project;
-    //return (
-    //<div className={classnames([style.projectContractsTitleContainer])} onClick={(e)=>this._angleClicked(e, item)}>
-    //<div>
-    //<div>{item.getTitle()}</div>
-    //</div>
-    //<div className={style.buttons}>
-    //<button className="btnNoBg" title="New contract" onClick={(e)=>{this._clickNewContract(e, projectItem);}}>
-    //<IconAddFile />
-    //</button>
-    //</div>
-    //</div>
-    //);
-    //};
-
-    //_renderLearnSectionTitle = (level, index, item) => {
-    //return (
-    //<div className={classnames([style.projectContractsTitleContainer, 'mt-4'])} onClick={ (e)=>this._angleClicked(e, item) }>
-    //<div>
-    //{ item.getTitle() }
-    //</div>
-    //</div>
-    //);
-    //};
 
     openTransactionHistory = () => {
         // Open the transaction history tab for the open project.
@@ -604,36 +577,6 @@ export default class Control extends Component {
         });
         this._openItem(e, account);
     };
-
-    //_getProjectWindowCount=(projectItem)=> {
-    //var count=0;
-    //if(this.props.router.panes) {
-    //this.props.router.panes.panes.map((pane, index)=> {
-    //pane.windows.map((win, index2)=> {
-    //if(win.props.item.props.state.project && win.props.item.props.state.project.getId()==projectItem.getId()) {
-    //count++;
-    //}
-    //});
-    //});
-    //}
-
-    //return count;
-    //};
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
 
     _menuTop = (level, index, item) => (
         <NetworkAccountSelector

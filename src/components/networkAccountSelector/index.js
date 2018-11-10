@@ -21,12 +21,11 @@ class NetworkDropdown extends Component {
         var networks;
         const project = this.props.router.control.getActiveProject();
         if (!project) {
-            // Setup default network just for show.
+            // Setup default stub network just for show. This is due to the fact that atm networks are
+            // actually dependent on the project.
             networks = [
                 {
-                    getName: () => {
-                        return 'browser';
-                    },
+                    getName: () => 'browser',
                 },
             ];
         } else {
@@ -87,11 +86,13 @@ class NetworkSelector extends Component {
 
     onNetworkSelectedHandle = network => {
         const project = this.props.router.control.getActiveProject();
-        project.getHiddenItem('environments').setChosen(network);
-        this.setState({
-            network: network,
-        });
-        this.props.router.main.redraw(true);
+        if (project) {
+            project.getHiddenItem('environments').setChosen(network);
+            this.setState({
+                network: network,
+            });
+            this.props.router.main.redraw(true);
+        }
     };
 
     render() {
@@ -365,8 +366,9 @@ class AccountSelector extends Component {
 
     accountBalance = () => {
         // Return cached balance of account
-        const { accountType, isLocked, network, address } = this.accountType();
-        return ((this.state.balances[network] || {})[address] || '0') + ' eth';
+        const { network, address } = this.accountType();
+        const balance = ((this.state.balances[network] || {})[address] || '0');
+        return balance.substring(0, balance.toString().indexOf(".") + 8) + ' eth';
     };
 
     getWeb3 = endpoint => {
@@ -479,15 +481,16 @@ class AccountSelector extends Component {
             >
                 <div className={classnames([style.selector, style.account])}>
                     {accountIcon}
-                    <div title={address} className={style.nameContainer}>
-                        {account}
-                        <br />
-                        <span style={{fontSize: '0.5em'}}>{accountBalance}</span>
-                    </div>
-                    <div className={style.dropdownIcon}>
-                        <IconDropdown height="8" width="10" />
+                    <div className={style.accountContainer}>
+                        <div title={address} className={style.nameContainer}>
+                            {account}
+                        </div>
+                        <div className={style.dropdownIcon}>
+                            <IconDropdown height="8" width="10" />
+                        </div>
                     </div>
                 </div>
+                <span className={style.accountBalance}>{accountBalance}</span>
             </DropdownContainer>
         );
     }

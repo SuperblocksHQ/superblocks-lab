@@ -17,6 +17,8 @@ import {
     IconDiscord,
     IconCheck
 } from '../icons';
+import JSZip from 'jszip';
+import Dappfile from '../projecteditor/control/item/dappfileItem';
 
 const PreferencesAction = () => (
     <div className={style.action}>
@@ -50,12 +52,12 @@ const HelpDropdownDialog = () => (
                 </a>
             </li>
             <li>
-                <div className={style.container}>
-                    <a href="https://discord.gg/6Cgg2Dw" target="_blank" rel="noopener noreferrer" title="Superblocks' community">Join our Community!</a>
+                <a className={style.container} href="https://discord.gg/6Cgg2Dw" target="_blank" rel="noopener noreferrer" title="Superblocks' community">
+                    Join our Community!
                     <span className={style.communityIcon}>
                         <IconDiscord color="#7289DA"/>
                     </span>
-                </div>
+                </a>
             </li>
         </ul>
     </div>
@@ -105,6 +107,7 @@ class ProjectDialog extends Component {
     };
 
     importProject = e => {
+        // Thanks to Richard Bondi for contributing with this upload code.
         e.preventDefault();
         var uploadAnchorNode = document.createElement('input');
         uploadAnchorNode.setAttribute('id', 'importFileInput');
@@ -120,21 +123,33 @@ class ProjectDialog extends Component {
         var reader = new FileReader();
 
         reader.onloadend = evt => {
-            var dappfileJSONObj;
+            var project;
             if (evt.target.readyState == FileReader.DONE) {
-                try {
-                    const obj = JSON.parse(evt.target.result);
-                    if (!obj.files) {
-                        alert('Error: Invalid project file');
-                        return;
-                    }
-                    dappfileJSONObj = obj;
-                } catch (e) {
-                    alert('Error: Invalid JSON file.');
+                if (evt.target.result.length > 1024**2) {
+                    alert('File to big to be handled. Max size in 1 MB.');
                     return;
                 }
 
-                this.importProject3(dappfileJSONObj);
+                const backend = new Backend();
+                backend.unZip(evt.target.result).then( (project) => {
+                    this.importProject3(project);
+                })
+                .catch( () => {
+                    console.log("Could not parse import as zip, trying JSON.");
+                    try {
+                        const obj = JSON.parse(evt.target.result);
+                        if (!obj.files) {
+                            alert('Error: Invalid project file. Must be ZIP-file (or legacy JSON format).');
+                            return;
+                        }
+                        project = obj;
+                    } catch (e) {
+                        alert('Error: Invalid project file. Must be ZIP-file (or legacy JSON format).');
+                        return;
+                    }
+                    this.importProject3(project);
+                });
+
             }
         };
         var blob = file.slice(0, file.size);
@@ -144,7 +159,7 @@ class ProjectDialog extends Component {
     importProject3 = project => {
         const backend = new Backend();
         backend.convertProject(project, (status, project2) => {
-            if (status == 1) {
+            if (status > 1) {
                 const modalData = {
                     title: 'Project converted',
                     body: (
@@ -168,22 +183,22 @@ class ProjectDialog extends Component {
                 const modal = <Modal data={modalData} />;
                 this.props.functions.modal.show({
                     cancel: () => {
-                        this.importProject4(project2);
+                        this.importProject4(project2.files);
                         return true;
                     },
                     render: () => {
                         return modal;
                     },
                 });
-            } else if (status == 2) {
+            } else if (status == -1) {
                 alert('Error: Could not import project.');
             } else {
-                this.importProject4(project);
+                this.importProject4(project.files);
             }
         });
     };
 
-    importProject4 = obj => {
+    importProject4 = files => {
         var title = '';
         var name = '';
         var dappfile;
@@ -191,9 +206,14 @@ class ProjectDialog extends Component {
         // Try to decode the `/dappfile.json`.
         try {
             dappfile = JSON.parse(
-                obj.files['/'].children['dappfile.json'].contents
+                files['/'].children['dappfile.json'].contents
             );
-        } catch (e) {}
+        } catch (e) {
+            // Create a default dappfile.
+            console.log('Create default dappfile.json for import');
+            dappfile = Dappfile.getDefaultDappfile();
+            files['/'].children['dappfile.json'] = {type: 'f'};
+        }
 
         try {
             title = dappfile.project.info.title || '';
@@ -201,6 +221,9 @@ class ProjectDialog extends Component {
         } catch (e) {
             dappfile.project = { info: {} };
         }
+
+        // This will make sure the dappfile has a sane state.
+        Dappfile.validateDappfile(dappfile);
 
         do {
             var name2 = prompt('Please give the project a name.', name);
@@ -240,15 +263,16 @@ class ProjectDialog extends Component {
         try {
             dappfile.project.info.name = name;
             dappfile.project.info.title = title;
-            obj.files['/'].children['dappfile.json'].contents = JSON.stringify(
-                dappfile
+            files['/'].children['dappfile.json'].contents = JSON.stringify(
+                dappfile, null, 4
             );
         } catch (e) {
+            console.error(e);
             alert('Error: could not import project.');
             return;
         }
 
-        this.props.router.control.importProject(obj.files);
+        this.props.router.control.importProject(files);
     };
 
     deleteProject = (e, project) => {
