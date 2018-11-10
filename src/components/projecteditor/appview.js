@@ -421,6 +421,10 @@ export default class AppView extends Component {
     };
 
     _checkContracts = (contracts, cb) => {
+        // NOTE: we don't check contract deployemnt as for now
+        cb(0);
+        return;
+
         const files = [];
         for (var index = 0; index < contracts.length; index++) {
             files.push(contracts[index][0]);
@@ -481,10 +485,13 @@ export default class AppView extends Component {
                 file,
                 body => {
                     if (body.status != 0) {
-                        cb(1);
-                        return;
+                        // NOTE: we currently allow for missing contract compilations.
+                        //cb(1);
+                        //return;
                     }
-                    bodies.push(body.contents);
+                    else {
+                        bodies.push(body.contents);
+                    }
                     fn(files, bodies, status => {
                         cb2(status);
                     });
