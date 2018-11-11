@@ -72,48 +72,42 @@ NetworkDropdown.propTypes = {
 class NetworkSelector extends Component {
     constructor(props) {
         super(props);
-
-        var network = 'browser';
-        const project = this.props.router.control.getActiveProject();
-        if (project) {
-            network = project.getEnvironment();
-        }
-
-        this.state = {
-            network: network,
-        }
     }
 
     onNetworkSelectedHandle = network => {
         const project = this.props.router.control.getActiveProject();
         if (project) {
             project.getHiddenItem('environments').setChosen(network);
-            this.setState({
-                network: network,
-            });
             this.props.router.main.redraw(true);
         }
     };
 
-    render() {
+    getNetwork = () => {
+        var network = 'browser';
         var endpoint = '';
         const project = this.props.router.control.getActiveProject();
         if (project) {
-            endpoint = project.getEndpoint(this.state.network);
+            network = project.getHiddenItem('environments').getChosen() || network;
+            endpoint = project.getEndpoint(network);
         }
+        return {network, endpoint};
+    };
+
+    render() {
+        var {network, endpoint} = this.getNetwork();
         return (
             <DropdownContainer
                 dropdownContent={
                     <NetworkDropdown
                         router={this.props.router}
-                        networkSelected={this.state.network}
+                        networkSelected={network}
                         onNetworkSelected={this.onNetworkSelectedHandle}
                     />
                 }
             >
                 <div className={classnames([style.selector])}>
                     <div className={style.capitalize} title={endpoint}>
-                        {this.state.network}
+                        {network}
                     </div>
                     <div className={style.dropdownIcon}>
                         <IconDropdown />
