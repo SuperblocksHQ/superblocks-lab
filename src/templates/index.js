@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-const EmptyZip = require('../assets/static/templates/empty.zip');
-const HelloZip = require('../assets/static/templates/hello.zip');
-const NewsZip = require('../assets/static/templates/newsfeed.zip');
-const RaiseZip = require('../assets/static/templates/raisetosummon.zip');
-const VotingZip = require('../assets/static/templates/voting.zip');
-const SafeMathZip = require('../assets/static/templates/safemath.zip');
-const ERC20TokenZip = require('../assets/static/templates/erc-20-token.zip');
+const EmptyZip = require('./empty.zip');
+const HelloZip = require('./hello.zip');
+const NewsZip = require('./newsfeed.zip');
+const RaiseZip = require('./raisetosummon.zip');
+const VotingZip = require('./voting.zip');
+const SafeMathZip = require('./safemath.zip');
+const ERC20TokenZip = require('./erc-20-token.zip');
 
 export default class Templates {
     static categories = [
