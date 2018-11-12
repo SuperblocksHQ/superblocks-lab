@@ -23,10 +23,10 @@ describe('solc', function() {
     this.timeout(10000);
 
     // Template file paths
-    const emptyTemplatePath = "./src/assets/static/templates/empty.zip";
-    const helloWorldTemplatePath = "./src/assets/static/templates/hello.zip";
-    const newsFeedTemplatePath = "./src/assets/static/templates/newsfeed.zip";
-    const raiseToSummonTemplatePath = "./src/assets/static/templates/raisetosummon.zip";
+    const emptyTemplatePath = "./src/templates/empty.zip";
+    const helloWorldTemplatePath = "./src/templates/hello.zip";
+    const newsFeedTemplatePath = "./src/templates/newsfeed.zip";
+    const raiseToSummonTemplatePath = "./src/templates/raisetosummon.zip";
 
     // Compiler settings
     const compilerPath = "../src/components/solc/dist/soljson-v0.4.25+commit.59dbf8f1.js"
