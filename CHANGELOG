@@ -7,7 +7,13 @@
 + Addition: Ability to inspect compiled contract data #122
 + Addition: Ability to inspect the contract ABI #123
 + Addition: Change cursor state when hovering buttons in Interact #208
++ Addition: New Preferences dialog (settings)
++ Addition: Enable custom Network parameters (new dialog)
++ Addition: New voting example template
++ Addition: New ERC20 example template
++ Addition: New SafeMath example template
 * Improvement: Change project download format from JSON to ZIP #169
+* Improvement: Change from Preact to React
 * Fix: Buffer deprecation warning during package install #23
 * Fix: Unmet dependencies warning during yarn install #24
 * Fix: Clicking the window tab opens up a new browser tab #60
