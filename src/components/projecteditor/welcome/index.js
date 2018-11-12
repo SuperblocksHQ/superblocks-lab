@@ -23,7 +23,6 @@ import style from './style.less';
 export default class Welcome extends Component {
 
     onCreateNewProjectClick = (e) => {
-        console.log(this.props);
         this.props.router.control.newDapp(e);
     }
 
