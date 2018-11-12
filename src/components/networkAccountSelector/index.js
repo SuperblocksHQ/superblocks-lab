@@ -197,11 +197,8 @@ class AccountDropdown extends Component {
             <div className={classnames([style.accounts])}>
                 <div className={style.title}>Select an Account</div>
                 {renderedAccounts}
-                <div className={style.newAccount}>
-                    <button
-                        className="btnNoBg"
-                        onClick={this.props.onNewAccountClicked}
-                    >
+                <div className={style.newAccount} onClick={this.props.onNewAccountClicked}>
+                    <button className="btnNoBg">
                         + New Account
                     </button>
                 </div>
