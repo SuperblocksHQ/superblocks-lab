@@ -18,6 +18,7 @@
 * Fix: Unmet dependencies warning during yarn install #24
 * Fix: Clicking the window tab opens up a new browser tab #60
 * Fix: Unable to click on highlighted area in Help/General #137
+* Fix: Unable to see left menu actions when contract name is too long #164
 * Miscellaneous other minor improvements and bug fixes
 
 
