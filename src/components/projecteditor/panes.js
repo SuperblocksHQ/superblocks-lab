@@ -382,7 +382,7 @@ export default class Panes extends Component {
                                <div className={style.leftPane}>
                                    <TestFilesHeader total={13} totalDone={13} time={'60ms'} />
                                    <TestControls onClickPlay={()=>testRunnerBridge.runAll(this.props.functions.EVM.getProvider())} />
-                                   <div id="test" style={{position:'absolute',left:20, top:40, width: '90%'}} > <Test open={this.state.open} /></div>
+                                   <div id="test" style={{position:'absolute',left:20, top:40, width: '98%'}} > <Test open={this.state.open} /></div>
                                </div>
                                <div className={style.rightPane}>
                                    <div className={style.rightStatusBar}>

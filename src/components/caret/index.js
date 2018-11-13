@@ -8,7 +8,7 @@ import classNames from "classnames";
 
 const Caret = ({ onClick, expanded = false, styles } = props) => {
     return(
-    <div className={classNames([style.caret, styles])} onClick={onClick}>
+    <div className={classNames(style.caret, styles)} style={styles} onClick={onClick}>
         { expanded ?
             <IconAngleDown height="5" width="8" />
             :

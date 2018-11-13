@@ -3,6 +3,7 @@ import Caret from '../../../src/components/caret';
 import style from './style.less';
 import { IconTick, IconCross } from "../icons"
 import classNames from "classnames";
+// TODO: FIXME: Remove padding Left of ul;
 // data structure for collapsible component
 const TestData = [
     {
@@ -96,12 +97,12 @@ const TestData = [
 ];
 export default class Test extends React.Component {
     render() {
-        // loop through the persons array and create a new component for each, passing the current person (id and name) and it's children (person.people) as props
+        // loop through the persons array and create a new component for each, passing the current person (id and name) and it's children (Test.children) as props
 
         let nodes = TestData.map(function(person) {
             return (
                 <div>
-                <Node class={style.testColorChange} node={person} children={person.children} time={person.time} />
+                <Node node={person} children={person.children} time={person.time} />
                 </div>
             );
         });
@@ -122,9 +123,12 @@ class Node extends React.Component {
         super(props);
         this.state ={
             open: true,
+            selected: null
         }
     }
-
+    changeColor=(node)=>{
+        this.setState({selected: node.id})
+};
     render() {
         let childnodes = null;
         // the Node component calls itself if there are children
@@ -132,8 +136,7 @@ class Node extends React.Component {
             childnodes = this.props.children.map((childnode)=> {
                 return (
                     this.state.open &&
-                <div><Node node={childnode} children={childnode.children} time={childnode.time}/>
-                </div>
+                <Node node={childnode} children={childnode.children} time={childnode.time}/>
 
                 );
             });
@@ -143,12 +146,12 @@ class Node extends React.Component {
         const testPassed = true;
         return (
             <span key={this.props.node.id}>
-                <div class={style.testColorChange}>
+                <div class={style.testColorChange} onClick={()=>this.changeColor(this.props.node)}  style={{ border: '1px solid #252525', backgroundColor: this.state.selected ? 'rgba(255, 69, 92, 0.4)': null}}>
                     <div>{testPassed ? <IconTick /> : <IconCross />}<span className={classNames([style.testResults])}>{this.props.node.name}</span>
                     </div>
                         <span class={style.testTime}> {this.props.time} </span></div>
                 { childnodes ?
-                    <span><Caret expanded={this.state.open} onClick={()=>this.setState({open:!this.state.open})} /><ul>{childnodes}</ul></span>
+                    <span><Caret styles={{ position: 'relative', bottom:'34px'}} expanded={this.state.open} onClick={()=>this.setState({open:!this.state.open})} /><ul>{childnodes}</ul></span>
                     : null }
             </span>
         );
