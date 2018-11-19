@@ -161,6 +161,7 @@ export function CustomReporter(runner) {
 
     runner.on("end", function(){
         console.log("[TestRunner] ended test run with status: ", outputData, successCount, failureCount, testData);
+        return outputData, successCount, failureCount, testData
     });
 
     // TODO:

@@ -55,7 +55,6 @@ export default class TestRunner {
     _run(testCode, contractsData, accountAddress, accountKey, web3) {
         // TODO: FIXME: input data error handling
         console.log("[TestRunner] setting up test runner ...");
-
         const thisReference = this;
         const contracts = thisReference._createAliases(contractsData);
 

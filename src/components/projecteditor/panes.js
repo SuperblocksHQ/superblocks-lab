@@ -28,7 +28,9 @@ import Test from './testResults';
 //              consider it to be a state, props, control, ... ?
 import { testRunnerBridge } from "../testing/bridge";
 
-const ConsoleTopBar =(props)=>(
+const ConsoleTopBar =(props)=>
+{
+    return(
         <div className={style.consoleTopBar}>
             <span className={style.testBar}>
                 <IconTest className={style.icon}  />
@@ -41,6 +43,7 @@ const ConsoleTopBar =(props)=>(
             </div>
         </div>
 );
+}
 const TestControls =(props)=>{
     return(
         <div className={style.testControls}>
@@ -88,6 +91,7 @@ const TestFilesHeader =(props)=>{
     </div>)
 };
 
+
 export default class Panes extends Component {
 
     constructor(props) {
@@ -96,7 +100,8 @@ export default class Panes extends Component {
         this.activePaneId=null;
         props.router.register("panes", this);
         this.state={
-            open:true,
+            open: true,
+            resultData: []
         }
     }
 
@@ -359,10 +364,20 @@ export default class Panes extends Component {
         });
         return (<div>{html}</div>);
     };
+
+
+    onPlayRun = () =>{
+        testRunnerBridge.runAll(this.props.functions.EVM.getProvider());
+        setTimeout(()=>{
+            this.setState({resultData: testRunnerBridge.readData() })
+        },2000)
+
+};
     render() {
         const header=this.renderHeader();
         const panes=this.renderPanes();
-
+        console.log('result data::', this.state.resultData);
+        const { resultData } = this.state;
         const { isActionPanelShowing, testPanel } = this.props;
 
         return (
@@ -377,21 +392,21 @@ export default class Panes extends Component {
                            {panes}
                        </div>
                        <div>
-                           <ConsoleTopBar closeTestPanel={this.props.closeTestPanel}/>
+                           <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
                            <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize="100px" vertical={false} >
                                <div className={style.leftPane}>
-                                   <TestFilesHeader total={13} totalDone={13} time={'60ms'} />
-                                   <TestControls onClickPlay={()=>testRunnerBridge.runAll(this.props.functions.EVM.getProvider())} />
-                                   <div id="test" style={{position:'absolute',left:20, top:40, width: '98%'}} > <Test open={this.state.open} /></div>
+                                   <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={'60ms'} />
+                                   <TestControls onClickPlay={this.onPlayRun }   />
+                                   <div id="test" style={{position:'absolute',left: 20, top: 40, width: '98%'}} > <Test open={this.state.open} /></div>
                                </div>
                                <div className={style.rightPane}>
                                    <div className={style.rightStatusBar}>
                                        <span className={style.statusBar}>Test Summary</span>
-                                       <span style={{ color: '#7ed321' }} className={style.statusBar}>{this.props.testPassed ? this.props.testPassed : 0} Passed</span>
-                                       <span style={{ color: '#d0021b' }} className={style.statusBar}>{this.props.testFailed ? this.props.testFailed : 0} Failed</span>
-                                       <span className={style.statusBar}>{this.props.testTotal ? this.props.testTotal : 0  } Total</span>
+                                       <span style={{ color: '#7ed321' }} className={style.statusBar}>{resultData.summary ? resultData.summary.passed : 0} Passed</span>
+                                       <span style={{ color: '#d0021b' }} className={style.statusBar}>{resultData.summary ? resultData.summary.failed : 0} Failed</span>
+                                       <span className={style.statusBar}>{resultData.summary ? resultData.summary.total : 0  } Total</span>
                                </div>
-                                   <div className={style.consoleText}>NOTE - Console output from this specific test</div>
+                                   <div className={style.consoleText}>{resultData.consoleOutput !== '' ? resultData.consoleOutput  : 'NOTE - Console output from this specific test'}</div>
                                </div>
                            </SplitterLayout>
                        </div>
