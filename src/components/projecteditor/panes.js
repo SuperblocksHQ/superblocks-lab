@@ -54,16 +54,7 @@ const TestControls =(props)=>{
                     </button>
                 </div>
         <div>
-                    <button className="btnNoBg" title="Refresh" onClick={
-                        () => {
-                    {
-                        // TODO: FIXME: selection by index position
-                        const index = 0;
-                        testRunnerBridge.runSingle(props.evmProvider, index);
-                    }
-                }
-            }
-            >
+                    <button className="btnNoBg" title="Refresh" onClick={props.onClickRetry}>
                 <IconRun  />
             </button>
         </div>
@@ -373,6 +364,12 @@ export default class Panes extends Component {
         },2000)
 
 };
+    onRetry = () => {
+        // TODO: FIXME: selection by index position
+        const index = 0;
+        testRunnerBridge.runSingle(this.props.functions.EVM.getProvider(), index);
+    };
+
     render() {
         const header=this.renderHeader();
         const panes=this.renderPanes();
@@ -396,7 +393,7 @@ export default class Panes extends Component {
                            <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize="100px" vertical={false} >
                                <div className={style.leftPane}>
                                    <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={'60ms'} />
-                                   <TestControls onClickPlay={this.onPlayRun }   />
+                                   <TestControls onClickPlay={this.onPlayRun } onClickRetry={this.onRetry} />
                                    <div id="test" style={{position:'absolute',left: 20, top: 40, width: '98%'}} > <Test open={this.state.open} /></div>
                                </div>
                                <div className={style.rightPane}>
