@@ -151,9 +151,12 @@ class Node extends React.Component {
         // return our list element
         // display children if there are any
         const testPassed = true;
+        const backgroundColorGreen = 'rgba(126, 211, 33,0.4)';
+        const backgroundColorRed = 'rgba(255, 69, 92, 0.4)';
+        const selectionBackgroundColor = this.state.selected ? (testPassed ?  backgroundColorGreen : backgroundColorRed ) : null;
         return (
             <span key={this.props.node.id}>
-                <div class={style.testColorChange} onClick={()=>this.changeColor(this.props.node)}  style={{ border: '1px solid #252525', backgroundColor: this.state.selected ? 'rgba(255, 69, 92, 0.4)': null}}>
+                <div class={style.testColorChange} onClick={()=>this.changeColor(this.props.node)}  style={{ border: '1px solid #252525', backgroundColor: selectionBackgroundColor}}>
                     <div>{testPassed ? <IconTick /> : <IconCross />}<span className={classNames([style.testResults])}>{this.props.node.name}</span>
                     </div>
                         <span class={style.testTime}> {this.props.time} </span></div>
