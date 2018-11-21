@@ -411,7 +411,7 @@ export default class Panes extends Component {
                                        <span style={{ color: '#d0021b' }} className={style.statusBar}>{resultData.summary ? resultData.summary.failed : 0} Failed</span>
                                        <span className={style.statusBar}>{resultData.summary ? resultData.summary.total : 0  } Total</span>
                                </div>
-                                   <div className={style.consoleText}>{resultData.consoleOutput !== '' ? resultData.consoleOutput  : 'NOTE - Console output from this specific test'}</div>
+                                   <div className={style.consoleText}>{resultData.consoleOutput}</div>
                                </div>
                            </SplitterLayout>
                        </div>
