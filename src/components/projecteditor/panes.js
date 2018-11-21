@@ -24,6 +24,10 @@ import { IconClose, IconTest, IconPlay, IconStop, IconRun, IconCheck } from '../
 import { DropdownContainer } from '../dropdown';
 import Caret from '../../../src/components/caret';
 import Test from './testResults';
+
+// TODO: FIXME: move TestData to bridge code
+import { setTestData } from './testResults';
+
 // TODO: FIXME: consider relocating to more appropriate place;
 //              consider it to be a state, props, control, ... ?
 import { testRunnerBridge } from "../testing/bridge";
@@ -357,17 +361,21 @@ export default class Panes extends Component {
     };
 
 
+    // TODO: FIXME: improve action names
     onPlayRun = () =>{
         testRunnerBridge.runAll(this.props.functions.EVM.getProvider());
         setTimeout(()=>{
             this.setState({resultData: testRunnerBridge.readData() })
-        },2000)
+        },2000);
 
+        setTestData();
 };
     onRetry = () => {
         // TODO: FIXME: selection by index position
         const index = 0;
         testRunnerBridge.runSingle(this.props.functions.EVM.getProvider(), index);
+
+        setTestData();
     };
 
     render() {

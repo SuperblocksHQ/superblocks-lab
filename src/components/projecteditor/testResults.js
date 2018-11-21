@@ -3,19 +3,24 @@ import Caret from '../../../src/components/caret';
 import style from './style.less';
 import { IconTick, IconCross } from "../icons"
 import classNames from "classnames";
+
+
 // TODO: FIXME: Remove padding Left of ul;
 // data structure for collapsible component
-const TestData = [
-    {
-    id: 1,
-    name: "/test/contract.js",
-    time:"10ms",
-    children: [
-        [{
-            id: 3,
-            name: "FundRaise",
-            time:"4ms",
-            children: [
+var TestData = [];
+
+export function setTestData() {
+    TestData = [
+        {
+            id: 1,
+                name: "/test/contract.js",
+                time:"10ms",
+                children: [
+                    [{
+                        id: 3,
+                        name: "FundRaise",
+                        time:"4ms",
+                        children: [
                         {
                             id: 4,
                             name: "has an Owner",
@@ -45,20 +50,20 @@ const TestData = [
                             time:"4ms",
                         },
 
-            ]
-        }]
-],
-},
-    {
-        id: 1,
-        name: "/test/contract.js",
-        time:"4ms",
-        children: [
-            [{
-                id: 3,
-                name: "FundRaise",
-                time:"4ms",
-                children: [
+                        ]
+                    }]
+            ],
+        },
+        {
+            id: 1,
+            name: "/test/contract.js",
+            time:"4ms",
+            children: [
+                [{
+                    id: 3,
+                    name: "FundRaise",
+                    time:"4ms",
+                    children: [
 
                     {
 
@@ -90,11 +95,13 @@ const TestData = [
                         time:"4ms",
                     },
 
-                ]
-            }]
-        ],
-    }
-];
+                    ]
+                }]
+            ],
+        }
+    ];
+}
+
 export default class Test extends React.Component {
     render() {
         // loop through the persons array and create a new component for each, passing the current person (id and name) and it's children (Test.children) as props
