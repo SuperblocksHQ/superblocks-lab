@@ -9,70 +9,84 @@ import classNames from "classnames";
 // data structure for collapsible component
 var TestData = [];
 
-export function setTestData() {
-    TestData = [
-        {
-            id: 1,
-                name: "/test/contract.js",
-                time:"10ms",
+export function setTestData(data) {
+    // TODO: FIXME: add support to "Suites" (describe)
+    // TODO: FIXME: automatically iterate over all tests
+
+    const testFileName = "/test/HelloWorld.js";
+    var contractName;
+    var contractTotalTime = 0;
+    var testEntries = [];
+    for(var i=0; i<data.length; i++) {
+
+        //
+        // Take into account empty parent means this is a new contract node
+        if(data[i].parent && data[i].parent.title === "") {
+            contractName = data[i].title.split(":")[1];
+        } else {
+
+            //
+            // Considers duration to be a condition that is only
+            // present for tests (not suites or describe)
+            if(data[i] && data[i].duration !== undefined) {
+                const testId = i;
+                const testName = data[testId].title;
+                const testTime = data[testId].duration;
+                const testTimeString = testTime + " ms";
+
+                const testEntry = {
+                    id: testId,
+                    name: testName,
+                    time: testTimeString,
+                };
+
+                //
+                // Update data
+                contractTotalTime += testTime;
+                testEntries.push(testEntry);
+            }
+        }
+    }
+
+
+    const contractTotalTimeString = contractTotalTime + " ms";
+
+    const testTotalTime = contractTotalTime;
+    const testTotalTimeString = contractTotalTime + " ms";
+
+    const newTest = {
+        id: -1,
+        name: testFileName,
+        time: testTotalTimeString,
+        children: [
+            [{
+                id: -1,
+                name: contractName,
+                time: contractTotalTimeString,
+                children: testEntries
+            }]
+        ]
+    };
+    TestData.push(newTest);
+
+    const totalDummyTestTime = 5*4;
+    const totalDummyTestTimeString = totalDummyTestTime + " ms";
+    const dummyTest = {
+        id: 1,
+        name: "/test/contract.js",
+        time: totalDummyTestTimeString,
+        children: [
+            [{
+                id: 3,
+                name: "FundRaise",
+                time: totalDummyTestTimeString,
                 children: [
-                    [{
-                        id: 3,
-                        name: "FundRaise",
-                        time:"4ms",
-                        children: [
-                        {
-                            id: 4,
-                            name: "has an Owner",
-                            time:"4ms",
-                        },
-                        {
-
-                            id: 5,
-                            name: "has an Owner",
-                            time:"4ms",
-                        },
-                        {
-                            id: 6,
-                            name: "accepts fund",
-                            time:"4ms",
-                        },
-                        {
-
-                            id: 5,
-                            name: "Is able to pause or unpause",
-                            time:"4ms",
-                        },
-                        {
-
-                            id: 5,
-                            name: "permits owner to receive funds",
-                            time:"4ms",
-                        },
-
-                        ]
-                    }]
-            ],
-        },
-        {
-            id: 1,
-            name: "/test/contract.js",
-            time:"4ms",
-            children: [
-                [{
-                    id: 3,
-                    name: "FundRaise",
-                    time:"4ms",
-                    children: [
-
                     {
-
                         id: 4,
                         name: "has an Owner",
                         time:"4ms",
                     },
                     {
-
                         id: 5,
                         name: "has an Owner",
                         time:"4ms",
@@ -83,23 +97,23 @@ export function setTestData() {
                         time:"4ms",
                     },
                     {
-
                         id: 5,
                         name: "Is able to pause or unpause",
                         time:"4ms",
                     },
                     {
-
                         id: 5,
                         name: "permits owner to receive funds",
                         time:"4ms",
                     },
+                ]
+            }]
+        ],
+    };
 
-                    ]
-                }]
-            ],
-        }
-    ];
+    //
+    // Update data
+    TestData.push(dummyTest);
 }
 
 export default class Test extends React.Component {

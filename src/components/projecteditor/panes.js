@@ -365,11 +365,12 @@ export default class Panes extends Component {
     onPlayRun = () =>{
         testRunnerBridge.runAll(this.props.functions.EVM.getProvider());
         setTimeout(()=>{
-            this.setState({resultData: testRunnerBridge.readData() })
+            const data = testRunnerBridge.readData();
+            this.setState({resultData: data})
+            setTestData(data.reportOutput);
         },2000);
+    };
 
-        setTestData();
-};
     onRetry = () => {
         // TODO: FIXME: selection by index position
         const index = 0;
