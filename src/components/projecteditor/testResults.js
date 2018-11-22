@@ -104,12 +104,12 @@ export function setTestData() {
 
 export default class Test extends React.Component {
     render() {
-        // loop through the persons array and create a new component for each, passing the current person (id and name) and it's children (Test.children) as props
 
-        let nodes = TestData.map(function(person) {
+        // loop through the array and create a new component for each, passing the current data and its children (Test.children) as props
+        let nodes = TestData.map(function(data) {
             return (
                 <div>
-                <Node node={person} children={person.children} time={person.time} />
+                <Node node={data} children={data.children} time={data.time} />
                 </div>
             );
         });
