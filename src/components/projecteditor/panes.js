@@ -27,6 +27,9 @@ export default class Panes extends Component {
         super(props);
         this.panes = [];
         this.activePaneId = null;
+        this.state = {
+            mousePosition: 0
+        }
         props.router.register('panes', this);
     }
 
@@ -161,7 +164,7 @@ export default class Panes extends Component {
     tabRightClicked = (e, id) => {
         // We save the pane id for when closing all other panes.
         e.preventDefault();
-        this.setState({ showContextMenuPaneId: id });
+        this.setState({ showContextMenuPaneId: id, mousePosition: e.pageX });
     };
 
     tabClicked = (e, id) => {
@@ -247,7 +250,7 @@ export default class Panes extends Component {
         const selected = style.selected;
         const html = this.panes.map((pane, index) => {
             const contextMenu = (
-                <div className={style.contextMenu}>
+                <div className={classnames([style.contextMenu])} style={{left: this.state.mousePosition}}>
                     <div className={style.item} onClick={this.closeAllPanes}>
                         Close all
                     </div>
@@ -261,41 +264,40 @@ export default class Panes extends Component {
             cls[tab] = true;
             cls[selected] = isSelected;
             return (
-                <div key={index}>
-                    <div
+                <div
+                    key={index}
+                    onMouseDown={e => this.tabClicked(e, pane.id)}
+                    onContextMenu={e => this.tabRightClicked(e, pane.id)}
+                >
+                    <DropdownContainer
                         className={classnames(cls)}
-                        onMouseDown={e => this.tabClicked(e, pane.id)}
-                        onContextMenu={e => this.tabRightClicked(e, pane.id)}
+                        dropdownContent={contextMenu}
+                        useRightClick={true}
                     >
-                        <DropdownContainer
-                            dropdownContent={contextMenu}
-                            useRightClick={true}
-                        >
-                            <div className={style.tabContainer}>
-                                <div className={style.title}>
-                                    <div className={style.icon}>
-                                        {pane.getIcon()}
-                                    </div>
-                                    <div className={style.title2}>
-                                        {pane.getTitle()}
-                                    </div>
+                        <div className={style.tabContainer}>
+                            <div className={style.title}>
+                                <div className={style.icon}>
+                                    {pane.getIcon()}
                                 </div>
-                                <div className={style.close}>
-                                    <button className="btnNoBg"
-                                        onClick={ e =>
-                                            this.tabClickedClose(e, pane.id)
-                                        }
-                                    >
-                                        <IconClose />
-                                    </button>
+                                <div className={style.title2}>
+                                    {pane.getTitle()}
                                 </div>
                             </div>
-                        </DropdownContainer>
-                    </div>
+                            <div className={style.close}>
+                                <button className="btnNoBg"
+                                    onClick={ e =>
+                                        this.tabClickedClose(e, pane.id)
+                                    }
+                                >
+                                    <IconClose />
+                                </button>
+                            </div>
+                        </div>
+                    </DropdownContainer>
                 </div>
             );
         });
-        return <div>{html}</div>;
+        return <React.Fragment>{html}</React.Fragment>;
     };
 
     getPaneHeight = () => {
