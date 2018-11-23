@@ -8,11 +8,19 @@ import classNames from "classnames";
 // TODO: FIXME: Remove padding Left of ul;
 // data structure for collapsible component
 var TestData = [];
+var selectedTestId = null;
+
+export function readSelectedTestId() {
+    return selectedTestId;
+}
 
 export function setTestData(data) {
     // TODO: FIXME: add support to "Suites" (describe)
     // TODO: FIXME: automatically iterate over all tests
 
+    TestData = [];
+
+    var uiCounter = 0;
     const testFileName = "/test/HelloWorld.js";
     var contractName;
     var contractTotalTime = 0;
@@ -35,6 +43,7 @@ export function setTestData(data) {
                 const testTimeString = testTime + " ms";
 
                 const testEntry = {
+                    uiCounter: uiCounter++,
                     id: testId,
                     name: testName,
                     time: testTimeString,
@@ -55,11 +64,13 @@ export function setTestData(data) {
     const testTotalTimeString = contractTotalTime + " ms";
 
     const newTest = {
-        id: -1,
+        uiCounter: uiCounter++,
+        id: -2,
         name: testFileName,
         time: testTotalTimeString,
         children: [
             [{
+                uiCounter: uiCounter++,
                 id: -1,
                 name: contractName,
                 time: contractTotalTimeString,
@@ -72,36 +83,43 @@ export function setTestData(data) {
     const totalDummyTestTime = 5*4;
     const totalDummyTestTimeString = totalDummyTestTime + " ms";
     const dummyTest = {
+        uiCounter: 100,
         id: 1,
         name: "/test/contract.js",
         time: totalDummyTestTimeString,
         children: [
             [{
+                uiCounter: 101,
                 id: 3,
                 name: "FundRaise",
                 time: totalDummyTestTimeString,
                 children: [
                     {
+                        uiCounter: 102,
                         id: 4,
                         name: "has an Owner",
                         time:"4ms",
                     },
                     {
+                        uiCounter: 103,
                         id: 5,
                         name: "has an Owner",
                         time:"4ms",
                     },
                     {
+                        uiCounter: 104,
                         id: 6,
                         name: "accepts fund",
                         time:"4ms",
                     },
                     {
+                        uiCounter: 105,
                         id: 5,
                         name: "Is able to pause or unpause",
                         time:"4ms",
                     },
                     {
+                        uiCounter: 106,
                         id: 5,
                         name: "permits owner to receive funds",
                         time:"4ms",
@@ -117,13 +135,35 @@ export function setTestData(data) {
 }
 
 export default class Test extends React.Component {
+    constructor(props){
+        super(props);
+
+        this.state ={
+            selected: null
+        }
+    }
+
+    storeSelection = (node) => {
+        selectedTestId = node.id;
+
+        this.setState({
+            selected: node.uiCounter
+        });
+    };
+
+    readSelection = () => {
+        return this.state.selected;
+    }
+
     render() {
+
+        const thisReference = this;
 
         // loop through the array and create a new component for each, passing the current data and its children (Test.children) as props
         let nodes = TestData.map(function(data) {
             return (
                 <div>
-                    <Node node={data} children={data.children} time={data.time} />
+                    <Node readSelection={thisReference.readSelection} storeSelection={thisReference.storeSelection} node={data} children={data.children} time={data.time} />
                 </div>
             );
         });
@@ -145,12 +185,13 @@ class Node extends React.Component {
 
         this.state ={
             open: true,
-            selected: null
         }
     }
 
     changeColor=(node)=>{
-        this.setState({selected: node.id})
+        if(this.props.storeSelection) {
+            this.props.storeSelection(node);
+        }
     };
 
     render() {
@@ -158,10 +199,11 @@ class Node extends React.Component {
 
         // the Node component calls itself if there are children
         if(this.props.children) {
+            const thisReference = this;
             childnodes = this.props.children.map((childnode)=> {
                 return (
                     this.state.open &&
-                    <Node node={childnode} children={childnode.children} time={childnode.time}/>
+                    <Node readSelection={thisReference.props.readSelection} storeSelection={thisReference.props.storeSelection} node={childnode} children={childnode.children} time={childnode.time}/>
                 );
             });
         }
@@ -171,7 +213,7 @@ class Node extends React.Component {
         const testPassed = true;
         const backgroundColorGreen = 'rgba(126, 211, 33,0.4)';
         const backgroundColorRed = 'rgba(255, 69, 92, 0.4)';
-        const selectionBackgroundColor = this.state.selected ? (testPassed ?  backgroundColorGreen : backgroundColorRed ) : null;
+        const selectionBackgroundColor = this.props.readSelection() === this.props.node.uiCounter ? (testPassed ?  backgroundColorGreen : backgroundColorRed ) : null;
         return (
             <span key={this.props.node.id}>
                 <div class={style.testColorChange} onClick={()=>this.changeColor(this.props.node)}  style={{ border: '1px solid #252525', backgroundColor: selectionBackgroundColor}}>
