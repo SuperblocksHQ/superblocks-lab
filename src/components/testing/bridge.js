@@ -92,11 +92,9 @@ class TestRunnerBridge {
 
     runSingle(evmProvider, index) {
         // TODO: FIXME: input data error checking
-        // TODO: FIXME: find a way to better organize and reliably access tests by indices
-        const adjustedIndex = index + 3;
         const data = this.readData().reportOutput;
         // TODO: FIXME: returned data error checking (index access)
-        const testTitle = data[adjustedIndex].title;
+        const testTitle = data[index].title;
         // TODO: FIXME: returned object error checking
         const web3Object = this._getWeb3(evmProvider);
 

@@ -26,7 +26,7 @@ import Caret from '../../../src/components/caret';
 import Test from './testResults';
 
 // TODO: FIXME: move TestData to bridge code
-import { setTestData } from './testResults';
+import { readSelectedTestId, setTestData } from './testResults';
 
 // TODO: FIXME: consider relocating to more appropriate place;
 //              consider it to be a state, props, control, ... ?
@@ -373,10 +373,13 @@ export default class Panes extends Component {
 
     onRetry = () => {
         // TODO: FIXME: selection by index position
-        const index = 0;
+        const index = readSelectedTestId();
         testRunnerBridge.runSingle(this.props.functions.EVM.getProvider(), index);
-
-        setTestData();
+        setTimeout(()=>{
+            const data = testRunnerBridge.readData();
+            this.setState({resultData: data})
+            setTestData(data.reportOutput);
+        },2000);
     };
 
     render() {
