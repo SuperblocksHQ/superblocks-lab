@@ -16,7 +16,6 @@
 
 import { Component } from 'preact';
 import classNames from 'classnames';
-import SplitPane from 'react-split-pane';
 import style from './style';
 import Control from './control';
 import Panes from './panes';
@@ -24,7 +23,6 @@ import TopBar from '../topbar';
 import ContactContainer from '../contactContainer';
 import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
 import { IconTransactions, IconClose, IconTest } from '../icons';
-import SplitterLayout from 'react-splitter-layout';
 export default class ProjectEditor extends Component {
 
     state = {
