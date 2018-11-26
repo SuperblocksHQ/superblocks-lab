@@ -214,6 +214,7 @@ class Node extends React.Component {
         const backgroundColorGreen = 'rgba(126, 211, 33,0.4)';
         const backgroundColorRed = 'rgba(255, 69, 92, 0.4)';
         const selectionBackgroundColor = this.props.readSelection() === this.props.node.uiCounter ? (testPassed ?  backgroundColorGreen : backgroundColorRed ) : null;
+        // TODO: FIXME: inline styles should be defined elsewhere in aseparate less file
         return (
             <span key={this.props.node.id}>
                 <div class={style.testColorChange} onClick={()=>this.changeColor(this.props.node)}  style={{ border: '1px solid #252525', backgroundColor: selectionBackgroundColor}}>
@@ -231,7 +232,7 @@ class Node extends React.Component {
                 {
                     childnodes ?
                     <span>
-                        <Caret styles={{ position: 'relative', bottom:'34px'}} expanded={this.state.open} onClick={()=>this.setState({open:!this.state.open})} />
+                        <Caret styles={{ position: 'relative', bottom:'34px', cursor: 'pointer'}} expanded={this.state.open} onClick={()=>this.setState({open:!this.state.open})} />
                         <ul>
                             {childnodes}
                         </ul>
