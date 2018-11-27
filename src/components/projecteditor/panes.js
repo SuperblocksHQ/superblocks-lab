@@ -402,7 +402,7 @@ export default class Panes extends Component {
                     </div>
                     <div>
                         <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
-                        <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize="100px" vertical={false} >
+                        <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={75} primaryMinSize={25} secondaryMinSize={25} vertical={false}>
                             <div className={style.leftPane}>
                                 <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={'60ms'} />
                                 <TestControls onClickPlay={this.onPlayRun } onClickRetry={this.onRetry} />
