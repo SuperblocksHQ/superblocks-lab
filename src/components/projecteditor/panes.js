@@ -396,30 +396,32 @@ export default class Panes extends Component {
                </div>
                {/*remove this condition and add proper state management for handling closing the pane.*/}
                { this.props.testPanel &&
-                   <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} vertical={true} style={{overflow:'hidden'}}>
-                       <div key="panes2" className={style.panes}>
-                           {panes}
-                       </div>
-                       <div>
-                           <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
-                           <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize="100px" vertical={false} >
-                               <div className={style.leftPane}>
-                                   <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={'60ms'} />
-                                   <TestControls onClickPlay={this.onPlayRun } onClickRetry={this.onRetry} />
-                                   <div id="test" style={{position:'absolute',left: 20, top: 40, width: '98%'}} > <Test open={this.state.open} /></div>
-                               </div>
-                               <div className={style.rightPane}>
-                                   <div className={style.rightStatusBar}>
-                                       <span className={style.statusBar}>Test Summary</span>
-                                       <span style={{ color: '#7ed321' }} className={style.statusBar}>{resultData.summary ? resultData.summary.passed : 0} Passed</span>
-                                       <span style={{ color: '#d0021b' }} className={style.statusBar}>{resultData.summary ? resultData.summary.failed : 0} Failed</span>
-                                       <span className={style.statusBar}>{resultData.summary ? resultData.summary.total : 0  } Total</span>
-                               </div>
-                                   <div className={style.consoleText}>{resultData.consoleOutput}</div>
-                               </div>
-                           </SplitterLayout>
-                       </div>
-                   </SplitterLayout>
+                <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} vertical={true} style={{overflow:'hidden'}}>
+                    <div key="panes2" className={style.panes}>
+                        {panes}
+                    </div>
+                    <div>
+                        <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
+                        <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize="100px" vertical={false} >
+                            <div className={style.leftPane}>
+                                <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={'60ms'} />
+                                <TestControls onClickPlay={this.onPlayRun } onClickRetry={this.onRetry} />
+                                <div id="test" style={{position:'absolute',left: 20, top: 40, width: '98%'}} >
+                                    <Test open={this.state.open} />
+                                </div>
+                            </div>
+                        <div className={style.rightPane}>
+                            <div className={style.rightStatusBar}>
+                                <span className={style.statusBar}>Test Summary</span>
+                                <span style={{ color: '#7ed321' }} className={style.statusBar}>{resultData.summary ? resultData.summary.passed : 0} Passed</span>
+                                <span style={{ color: '#d0021b' }} className={style.statusBar}>{resultData.summary ? resultData.summary.failed : 0} Failed</span>
+                                <span className={style.statusBar}>{resultData.summary ? resultData.summary.total : 0  } Total</span>
+                            </div>
+                            <div className={style.consoleText}>{resultData.consoleOutput}</div>
+                        </div>
+                        </SplitterLayout>
+                    </div>
+                </SplitterLayout>
                }
                {
                    !this.props.testPanel &&
