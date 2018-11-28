@@ -26,6 +26,7 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+      # error An unexpected error occurred: "https://registry.yarnpkg.com/flatmap-stream/-/flatmap-stream-0.1.1.tgz: Request failed \"404 Not Found\"".
       - run: yarn install
 
       - save_cache:
