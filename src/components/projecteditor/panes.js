@@ -396,7 +396,7 @@ export default class Panes extends Component {
                </div>
                {/*remove this condition and add proper state management for handling closing the pane.*/}
                { this.props.testPanel &&
-                <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} vertical={true} style={{overflow:'hidden'}}>
+                <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} vertical={true}>
                     <div key="panes2" className={style.panes}>
                         {panes}
                     </div>
