@@ -406,7 +406,7 @@ export default class Panes extends Component {
                             <div className={style.leftPane}>
                                 <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={'60ms'} />
                                 <TestControls onClickPlay={this.onPlayRun } onClickRetry={this.onRetry} />
-                                <div id="test" style={{position:'absolute',left: 20, top: 40, width: '98%'}} >
+                                <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
                                     <Test open={this.state.open} />
                                 </div>
                             </div>
