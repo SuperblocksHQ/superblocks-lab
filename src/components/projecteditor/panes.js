@@ -16,11 +16,76 @@
 
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import SplitterLayout from "react-splitter-layout";
 import PropTypes from 'prop-types';
 import style from './style.less';
 import { Pane, PaneComponent } from './pane';
-import { IconClose } from '../icons';
+import { IconClose, IconTest, IconPlay, IconStop, IconRun, IconCheck } from '../icons';
 import { DropdownContainer } from '../dropdown';
+import Caret from '../../../src/components/caret';
+import Test from './testResults';
+
+// TODO: FIXME: move TestData to bridge code
+import { readSelectedTestId, readTotalTestDataTime, setTestData } from './testResults';
+
+// TODO: FIXME: consider relocating to more appropriate place;
+//              consider it to be a state, props, control, ... ?
+import { testRunnerBridge } from "../testing/bridge";
+
+const ConsoleTopBar =(props)=>
+{
+    return(
+        <div className={style.consoleTopBar}>
+            <span className={style.testBar}>
+                <IconTest className={style.icon}  />
+            <span className={style.testText}>Tests</span>
+            </span>
+            <div className={style.closeIcon}>
+                <button className="btnNoBg">
+                    <IconClose className={style.closeIcon} onClick={props.closeTestPanel} />
+                </button>
+            </div>
+        </div>
+);
+}
+const TestControls =(props)=>{
+    return(
+        <div className={style.testControls}>
+            <span className={style.icons}>
+                <div>
+                    <button className="btnNoBg" title="Run" onClick={props.onClickPlay}>
+                        <IconPlay className={style.iconPlay} />
+                    </button>
+                </div>
+        <div>
+                    <button className="btnNoBg" title="Refresh" onClick={props.onClickRetry}>
+                <IconRun  />
+            </button>
+        </div>
+       <div className={style.buttons}>
+             <button className="btnNoBg" title="Stop" onClick={
+                () => {
+                    {
+                        // TODO: FIXME: being used as a way to debug data
+                        // TODO: FIXME: remove debugging code
+                        console.warn(testRunnerBridge.readData());
+                    }
+                }
+             }>
+                  <IconStop />
+             </button>
+        </div>
+            </span>
+        </div>)
+};
+const TestFilesHeader =(props)=>{
+    const { total, totalDone, time } =props;
+    return(<div className={style.testFile }>
+        <span className={style.bartext}>Done {totalDone} of {total} tests</span>
+        <span>{time}</span>
+    </div>)
+};
+
 
 export default class Panes extends Component {
     constructor(props) {
@@ -28,6 +93,10 @@ export default class Panes extends Component {
         this.panes = [];
         this.activePaneId = null;
         props.router.register('panes', this);
+        this.state={
+            open: true,
+            resultData: []
+        }
     }
 
     componentDidMount() {
@@ -343,11 +412,39 @@ export default class Panes extends Component {
         return <div>{html}</div>;
     };
 
+
+    // TODO: FIXME: improve action names
+    onPlayRun = () =>{
+        const thisReference = this;
+        testRunnerBridge.runAll(this.props.functions.EVM.getProvider());
+        setTimeout(()=>{
+            const data = testRunnerBridge.readData();
+            this.setState({resultData: data})
+            setTestData(data.reportOutput);
+            thisReference.redraw();
+        },2000);
+    };
+
+    onRetry = () => {
+        const thisReference = this;
+        // TODO: FIXME: selection by index position
+        const index = readSelectedTestId();
+        testRunnerBridge.runSingle(this.props.functions.EVM.getProvider(), index);
+        setTimeout(()=>{
+            const data = testRunnerBridge.readData();
+            this.setState({resultData: data})
+            setTestData(data.reportOutput);
+            thisReference.redraw();
+        },2000);
+    };
+
     render() {
         const header = this.renderHeader();
         const panes = this.renderPanes();
 
-        const { isActionPanelShowing } = this.props;
+        console.log('result data::', this.state.resultData);
+        const { resultData } = this.state;
+        const { isActionPanelShowing, testPanel } = this.props;
 
         return (
             <div
@@ -361,10 +458,44 @@ export default class Panes extends Component {
                 <div key="header" id="panes_header" className={style.header}>
                     {header}
                 </div>
-                <div key="panes2" className={style.panes}>
-                    {panes}
-                </div>
-            </div>
+                {/*remove this condition and add proper state management for handling closing the pane.*/}
+               { this.props.testPanel &&
+                <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} vertical={true}>
+                    <div key="panes2" className={style.panes}>
+                        {panes}
+                    </div>
+                    <div>
+                        <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
+                        <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize={30} secondaryMinSize={30} vertical={false}>
+                            <div className={style.leftPane}>
+                                <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={readTotalTestDataTime() + " ms"} />
+                                <TestControls onClickPlay={this.onPlayRun } onClickRetry={this.onRetry} />
+                                <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
+                                    <Test open={this.state.open} />
+                                </div>
+                            </div>
+                        <div className={style.rightPane}>
+                            <div className={style.rightStatusBar}>
+                                <span className={style.statusBar}>Test Summary</span>
+                                <span style={{ color: '#7ed321' }} className={style.statusBar}>{resultData.summary ? resultData.summary.passed : 0} Passed</span>
+                                <span style={{ color: '#d0021b' }} className={style.statusBar}>{resultData.summary ? resultData.summary.failed : 0} Failed</span>
+                                <span className={style.statusBar}>{resultData.summary ? resultData.summary.total : 0  } Total</span>
+                            </div>
+                            <div className={style.consoleText}>{resultData.consoleOutput}</div>
+                        </div>
+                        </SplitterLayout>
+                    </div>
+                </SplitterLayout>
+               }
+               {
+                   !this.props.testPanel &&
+                   <div key="panes2" className={style.panes}>
+                       {panes}
+                   </div>
+               }
+           </div>
+
+
         );
     }
 }

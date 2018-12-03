@@ -23,13 +23,14 @@ import TopBar from '../topbar';
 import BottomBar from '../bottomBar';
 import ContactContainer from '../contactContainer';
 import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
-import { IconTransactions, IconClose } from '../icons';
+import { IconTransactions, IconClose, IconTest } from '../icons';
 
 export default class ProjectEditor extends Component {
     state = {
         controlPanelWidth: 280,
         minSize: 280,
-        draggin: false
+        draggin: false,
+        openPanel: true
     }
 
     constructor(props) {
@@ -50,6 +51,11 @@ export default class ProjectEditor extends Component {
             },
             false
         );
+    }
+
+    handleClosePanel=()=>{
+        this.setState({openPanel: false})
+
     }
 
     // we could get away with not having this (and just having the listeners on
@@ -155,8 +161,21 @@ export default class ProjectEditor extends Component {
                 ).endpoint;
             }
         }
-        const { controlPanelWidth } = this.state;
+        const { controlPanelWidth, openPanel } = this.state;
         const { displayTransactionsPanel } = this.props;
+        // TODO: FIXME: tests button must be rendered in BottomBar
+        const testsPanelButton = (
+                <div className={style.testPanel}>
+                    <div className={style.actions}>
+                        <button className={classNames([style.action, "btnNoBg"])}
+                                onClick={()=>this.setState({openPanel: !openPanel})}>
+                            <IconTest className={style.testTube} />
+                            <span>Tests</span>
+                        </button>
+                    </div>
+                </div>
+        );
+
         return (
             <div className={style.projecteditor} id="main_container">
                 <TopBar
@@ -188,11 +207,7 @@ export default class ProjectEditor extends Component {
                             id="main_panes"
                             className={style.panescontainer}
                         >
-                            <Panes
-                                router={this.props.router}
-                                functions={this.props.functions}
-                                isActionPanelShowing={displayTransactionsPanel}
-                            />
+                            <Panes closeTestPanel={this.handleClosePanel} testPanel={openPanel} router={this.props.router} functions={this.props.functions} isActionPanelShowing={displayTransactionsPanel} />
                             {displayTransactionsPanel ? (
                                 <div className={style.actionContainer}>
                                     <div className={style.header}>
@@ -231,6 +246,7 @@ export default class ProjectEditor extends Component {
                                 </button>
                             </div>
                         </div>
+
                         <BottomBar
                             endpoint={endpoint}
                         />
