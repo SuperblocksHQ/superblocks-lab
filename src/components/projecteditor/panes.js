@@ -26,7 +26,7 @@ import Caret from '../../../src/components/caret';
 import Test from './testResults';
 
 // TODO: FIXME: move TestData to bridge code
-import { readSelectedTestId, setTestData } from './testResults';
+import { readSelectedTestId, readTotalTestDataTime, setTestData } from './testResults';
 
 // TODO: FIXME: consider relocating to more appropriate place;
 //              consider it to be a state, props, control, ... ?
@@ -404,7 +404,7 @@ export default class Panes extends Component {
                         <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
                         <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize={30} secondaryMinSize={30} vertical={false}>
                             <div className={style.leftPane}>
-                                <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={'60ms'} />
+                                <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={readTotalTestDataTime() + " ms"} />
                                 <TestControls onClickPlay={this.onPlayRun } onClickRetry={this.onRetry} />
                                 <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
                                     <Test open={this.state.open} />

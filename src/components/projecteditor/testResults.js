@@ -9,9 +9,14 @@ import classNames from "classnames";
 // data structure for collapsible component
 var TestData = [];
 var selectedTestId = null;
+var totalTestDataTime = 0;
 
 export function readSelectedTestId() {
     return selectedTestId;
+}
+
+export function readTotalTestDataTime() {
+    return totalTestDataTime;
 }
 
 export function setTestData(data) {
@@ -19,6 +24,7 @@ export function setTestData(data) {
     // TODO: FIXME: automatically iterate over all tests
 
     TestData = [];
+    totalTestDataTime = 0;
 
     var uiCounter = 0;
     const testFileName = "/test/HelloWorld.js";
@@ -57,6 +63,7 @@ export function setTestData(data) {
         }
     }
 
+    totalTestDataTime += contractTotalTime;
 
     const contractTotalTimeString = contractTotalTime + " ms";
 
@@ -81,6 +88,8 @@ export function setTestData(data) {
     TestData.push(newTest);
 
     const totalDummyTestTime = 5*4;
+    totalTestDataTime += totalDummyTestTime;
+
     const totalDummyTestTimeString = totalDummyTestTime + " ms";
     const dummyTest = {
         uiCounter: 100,
