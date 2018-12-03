@@ -268,15 +268,19 @@ export default class Editor extends Component {
     };
 
     render() {
+        const toolbar = this.renderToolbar();
+        const height = this.getHeight();
+        const width = this.getWidth();
+        const showMinimap = width > 1000;
         const options = {
             selectOnLineNumbers: true,
             readOnly: this.props.item.isReadOnly(),
             folding: "true",
             foldingStrategy: "indentation",
+            minimap: {
+                enabled: showMinimap
+            }
         };
-        const toolbar = this.renderToolbar();
-        const height = this.getHeight();
-        const width = this.getWidth();
         if (
             height != this.currentEditorHeight ||
             width != this.currentEditorWidth
