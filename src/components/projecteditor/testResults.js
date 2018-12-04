@@ -210,9 +210,13 @@ class Node extends React.Component {
         if(this.props.children) {
             const thisReference = this;
             childnodes = this.props.children.map((childnode)=> {
+                var node = childnode;
+                if(!node.id) {
+                    node = childnode[0];
+                }
                 return (
                     this.state.open &&
-                    <Node key={"node_" + childnode.id} readSelection={thisReference.props.readSelection} storeSelection={thisReference.props.storeSelection} node={childnode} children={childnode.children} time={childnode.time}/>
+                    <Node key={"node_" + node.id} readSelection={thisReference.props.readSelection} storeSelection={thisReference.props.storeSelection} node={node} children={node.children} time={node.time}/>
                 );
             });
         }
