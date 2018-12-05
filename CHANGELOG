@@ -3,7 +3,7 @@
 ## [1.2.0]
 
 + Addition: Add a warning modal when trying to deploy to Mainnet #162
-* Improvement: enable arrays as input when interacting with contract #186
+* Improvement: Enable arrays as input when interacting with contract #186
 * Improvement: Allow for grouping code blocks in editor (folding) #230
 * Change: Update the list of upcoming features #254
 * Fix: Account injections not working in appview for test networks #256
