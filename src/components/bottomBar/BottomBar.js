@@ -17,6 +17,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import style from './style.less';
+import classNames from 'classnames';
+import { IconTest } from '../icons';
 
 export default class BottomBar extends Component {
 
@@ -30,6 +32,13 @@ export default class BottomBar extends Component {
         const gasPrice = this.web3.fromWei(networkPreferences.gasPrice, 'Gwei');
         return (
             <div className={style.bottomStatusBar}>
+                <div className={style.actions}>
+                    <button className={classNames([style.action, "btnNoBg"])}
+                            onClick={ () => this.props.togglePanel() }>
+                        <IconTest className={style.testTube} />
+                        <span className={style.testLabel}>Tests</span>
+                    </button>
+                </div>
                 <span className={style.left}>
                     <span className={style.note}>Note</span>
                     <span className={style.noteText}>All files are stored in the browser only, download to backup</span>

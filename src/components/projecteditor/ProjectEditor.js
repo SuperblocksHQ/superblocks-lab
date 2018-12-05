@@ -23,7 +23,7 @@ import TopBar from '../topbar';
 import BottomBar from '../bottomBar';
 import ContactContainer from '../contactContainer';
 import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
-import { IconTransactions, IconClose, IconTest } from '../icons';
+import { IconTransactions, IconClose } from '../icons';
 
 export default class ProjectEditor extends Component {
     state = {
@@ -53,9 +53,12 @@ export default class ProjectEditor extends Component {
         );
     }
 
-    handleClosePanel=()=>{
-        this.setState({openPanel: false})
+    handleClosePanel = () => {
+        this.setState({openPanel: false});
+    }
 
+    handleTogglePanel = () => {
+        this.setState({openPanel: !this.state.openPanel});
     }
 
     // we could get away with not having this (and just having the listeners on
@@ -163,18 +166,6 @@ export default class ProjectEditor extends Component {
         }
         const { controlPanelWidth, openPanel } = this.state;
         const { displayTransactionsPanel } = this.props;
-        // TODO: FIXME: tests button must be rendered in BottomBar
-        const testsPanelButton = (
-                <div className={style.testPanel}>
-                    <div className={style.actions}>
-                        <button className={classNames([style.action, "btnNoBg"])}
-                                onClick={()=>this.setState({openPanel: !openPanel})}>
-                            <IconTest className={style.testTube} />
-                            <span>Tests</span>
-                        </button>
-                    </div>
-                </div>
-        );
 
         return (
             <div className={style.projecteditor} id="main_container">
@@ -248,7 +239,7 @@ export default class ProjectEditor extends Component {
                         </div>
 
                         <BottomBar
-                            endpoint={endpoint}
+                            endpoint={endpoint} togglePanel={this.handleTogglePanel}
                         />
                 </div>
                 </div>
