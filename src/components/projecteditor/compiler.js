@@ -16,10 +16,8 @@
 
 import React, { Component } from 'react';
 import sha256 from 'crypto-js/sha256';
-import classnames from 'classnames';
 import style from './style-console.less';
-import { IconRun } from '../icons';
-import Tooltip from '../tooltip';
+import Toolbar from './toolbar';
 
 export default class Compiler extends Component {
 
@@ -72,7 +70,8 @@ export default class Compiler extends Component {
         if (this.state.isRunning) return;
 
         this.setState({
-            isRunning: true
+            isRunning: true,
+            consoleRows: []
         });
 
         const contracts = this.props.item
@@ -102,7 +101,6 @@ export default class Compiler extends Component {
                     });
                     return;
                 }
-                this.state.consoleRows.length = 0;
                 // This timeout can be removed.
                 setTimeout(() => {
                     var contractbody;
@@ -241,10 +239,26 @@ export default class Compiler extends Component {
                                                 ' references library contracts. Superblocks Lab does not yet support library contract linking, only contract imports.',
                                         });
                                         delFiles();
-                                    } else if (contractObj) {
-                                        const metadata = JSON.parse(
-                                            contractObj.metadata
-                                        );
+                                    } else if (contractObj && contractObj.metadata) {
+                                        var metadata;
+                                        try {
+                                            metadata = JSON.parse(
+                                                contractObj.metadata
+                                            );
+                                        }
+                                        catch(e) {
+                                            console.error("Could not parse compiler output", contractObj);
+                                            this._updateConsole({
+                                                channel: 2,
+                                                msg:
+                                                    '[ERROR] The contract ' +
+                                                    srcfilename +
+                                                    ' could not be compiled.',
+                                            });
+                                            this.callback(1);
+                                            return;
+                                        }
+
                                         // Save ABI and BIN
                                         // First load, then save and close.
                                         const cb = (
@@ -404,27 +418,18 @@ export default class Compiler extends Component {
     }
 
     renderToolbar = () => {
-        const { isRunning } = this.state;
+        const { isRunning, status } = this.state;
+        const { item } = this.props;
         return (
-            <div className={style.toolbar} id={this.id + '_header'}>
-                <div className={style.buttons}>
-                    <button
-                        className={classnames(['btnNoBg'], {[style.running] : isRunning})}
-                        title="Recompile"
-                        onClick={this.run}
-                    >
-                        <Tooltip title="Recompile">
-                            <IconRun />
-                        </Tooltip>
-                    </button>
-                </div>
-                <div className={style.status}>{this.state.status}</div>
-                <div className={style.info}>
-                    <span>
-                        Compile {this.props.item.getParent().getSource()}
-                    </span>
-                </div>
-            </div>
+            <Toolbar
+                id={this.id}
+                status={status}
+                contractPath={item.getParent().getSource()}
+                onTriggerActionClick={this.run}
+                isRunning={isRunning}
+                iconTitle="Recompile"
+                infoTitle="compile"
+            />
         );
     };
 
