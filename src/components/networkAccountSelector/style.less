@@ -21,6 +21,8 @@
         }
         .accountContainer {
             display: flex;
+            max-width: 295px;
+            padding-right: 15px;
         }
     }
     .accountBalance {
@@ -30,6 +32,8 @@
     }
     .nameContainer {
         margin: -4px 0px -4px 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .separator {
         border-left: 1px solid #979797;
@@ -98,6 +102,11 @@
             border-left: 2px solid;
             border-color: transparent;
             margin: 0;
+            .accountName {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 80%;
+            }
             &:hover {
                 background-color: rgba(128, 46, 255, 0.10);
                 cursor: pointer;

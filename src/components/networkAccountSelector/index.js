@@ -175,7 +175,7 @@ class AccountDropdown extends Component {
                             this.props.onAccountChosen(account.getName());
                         }}
                     >
-                        <div>{account.getName()}</div>
+                        <div className={style.accountName}>{account.getName()}</div>
                         <div style={{marginLeft: 'auto'}}>
                             <button
                                 className="btnNoBg"
