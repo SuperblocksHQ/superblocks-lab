@@ -303,7 +303,8 @@ export default class Panes extends Component {
     getPaneHeight = () => {
         const a = document.getElementById('panes');
         const b = document.getElementById('panes_header');
-        return a.offsetHeight - b.offsetHeight - 80; // 80 is the magic number to adjust for height taken by borders/toolbars.
+        const magicNumber = window.innerWidth < 1000 ? 50 : 80;
+        return a.offsetHeight - b.offsetHeight - magicNumber; // 80 is the magic number to adjust for height taken by borders/toolbars. 50 is when we don't display bottomBar from 1000px (screen size) and below.
     };
 
     renderPanes = () => {
