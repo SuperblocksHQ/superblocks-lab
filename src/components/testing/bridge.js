@@ -26,6 +26,14 @@ class TestRunnerBridge {
     constructor() {
         this.testRunner = new TestRunner();
 
+        //
+        // Reference to Solc compiler
+        this.compiler = null;
+
+        //
+        // Contracts data hash map
+        this.contractsData = {};
+
         // TODO: FIXME: read currently selected network address from "Select a Network"
         this.endpoint="http://superblocks-browser"; // TODO: FIXME: support other networks
 
@@ -54,6 +62,98 @@ class TestRunnerBridge {
         */
     }
 
+    setCompiler(compiler) {
+        this.compiler = compiler;
+    }
+
+    // Take project settings to extract hash map of contract names and their respective source code
+    setContractsData(project) {
+        if(!this.compiler) {
+            console.error("Unable to set testing contracts data. Compiler reads: ", this.compiler);
+            return;
+        }
+
+        console.log("Preparing testing contracts data...");
+
+        const thisReference = this;
+        const contractsPath = "/contracts";
+        var contractSources = {}
+
+        project.listFiles(contractsPath, function(status, list) {
+            if(status === 0){
+                // TODO: FIXME: handle sub-directories
+                for(var i=0; i<list.length; i++) {
+                    const file = list[i]
+                    const fileName = file.name;
+                    const fullPath = contractsPath + "/" + fileName;
+
+                    const suffix = (fullPath.match('^.*/[^/]+[.](.+)$') || [])[1] || '';
+                    const suffixLowerCase = suffix.toLowerCase();
+
+                    //
+                    // Read contracts only
+                    if(file.type === "f" && suffixLowerCase == "sol") {
+                        const key = fileName;
+                        project.loadFile(fullPath, function(result){
+                            if(result.status === 0) {
+                                const value = result.contents;
+                                contractSources[key] = value;
+
+                                const input = {
+                                    language: 'Solidity',
+                                    sources: {},
+                                    settings: {
+                                        optimizer: {
+                                            enabled: false,
+                                            runs: 200,
+                                        },
+                                        evmVersion: 'byzantium',
+                                        libraries: {},
+                                        outputSelection: {
+                                            '*': {
+                                                '*': [
+                                                    'metadata',
+                                                    'evm.bytecode',
+                                                    'evm.gasEstimates',
+                                                ],
+                                            },
+                                        },
+                                    },
+                                };
+                                input.sources[key] = { content: value };
+
+                                // TODO: FIXME: other required files for compiling the aforementioned input
+                                const files = {};
+
+                                thisReference.compiler.queue({ input: JSON.stringify(input), files: files }, function(result) {
+                                    const resultJson = JSON.parse(result);
+                                    const contractFile = resultJson.contracts[fileName];
+
+                                    for(var contract in contractFile) {
+                                        const contractData = contractFile[contract];
+                                        const abi = JSON.parse(contractData.metadata).output.abi;
+                                        const bytecode = "0x" + contractData.evm.bytecode.object;
+
+                                        thisReference.contractsData[contract] = {
+                                            abi: abi,
+                                            bin: bytecode
+                                        };
+                                    }
+                                });
+                            } else {
+                                console.error("Error trying to load contract: " + fullPath);
+                            }
+                        });
+                    }
+                }
+            } else {
+                console.error("Error trying to read contracts path: " + contractsPath);
+            }
+        });
+
+        console.log("Finished preparing contracts data: ", this.contractsData);
+    }
+
     _getWeb3(evmProvider) {
         // TODO: FIXME: input parameter error checking
         var provider;
@@ -80,8 +180,7 @@ class TestRunnerBridge {
         this.testRunner.runAll(
             PLACEHOLDER_REFERENCE_TEST_CODE,        // TODO: FIXME: read user-created test code content (string)
 
-            PLACEHOLDER_REFERENCE_CONTRACTS_DATA,   // TODO: FIXME: read currently available contracts data from dappfile
-                                                    //              Format: data[contractName]={abi: JSON.parse(abi.contents), bin: bin.contents}
+            this.contractsData,
 
             PLACEHOLDER_REFERENCE_ACCOUNT_ADDRESS,  // TODO: FIXME: read currently selected account address from "Select an Account"
 
@@ -103,8 +202,7 @@ class TestRunnerBridge {
 
             PLACEHOLDER_REFERENCE_TEST_CODE,        // TODO: FIXME: read user-created test code content (string)
 
-            PLACEHOLDER_REFERENCE_CONTRACTS_DATA,   // TODO: FIXME: read currently available contracts data from dappfile
-                                                    //              Format: data[contractName]={abi: JSON.parse(abi.contents), bin: bin.contents}
+            this.contractsData,
 
             PLACEHOLDER_REFERENCE_ACCOUNT_ADDRESS,  // TODO: FIXME: read currently selected account address from "Select an Account"
 
@@ -303,12 +401,6 @@ const PLACEHOLDER_REFERENCE_TEST_CODE=`
         });
     });
 `;
-
-var PLACEHOLDER_REFERENCE_CONTRACTS_DATA={}
-PLACEHOLDER_REFERENCE_CONTRACTS_DATA["HelloWorld"]={
-    abi: [{"constant":false,"inputs":[{"name":"newMessage","type":"string"}],"name":"update","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"message","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"initMessage","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}],
-    bin: "0x6060604052341561000f57600080fd5b6040516103c13803806103c1833981016040528080518201919050508060009080519060200190610041929190610048565b50506100ed565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061008957805160ff19168380011785556100b7565b828001600101855582156100b7579182015b828111156100b657825182559160200191906001019061009b565b5b5090506100c491906100c8565b5090565b6100ea91905b808211156100e65760008160009055506001016100ce565b5090565b90565b6102c5806100fc6000396000f30060606040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680633d7403a314610051578063e21f37ce146100ae575b600080fd5b341561005c57600080fd5b6100ac600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509190505061013c565b005b34156100b957600080fd5b6100c1610156565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156101015780820151818401526020810190506100e6565b50505050905090810190601f16801561012e5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b80600090805190602001906101529291906101f4565b5050565b60008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156101ec5780601f106101c1576101008083540402835291602001916101ec565b820191906000526020600020905b8154815290600101906020018083116101cf57829003601f168201915b505050505081565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061023557805160ff1916838001178555610263565b82800160010185558215610263579182015b82811115610262578251825591602001919060010190610247565b5b5090506102709190610274565b5090565b61029691905b8082111561029257600081600090555060010161027a565b5090565b905600a165627a7a72305820bb261bb5858618e117ce6751ee971eccf221b3efade6c29d04b739a5e37335ab00290000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c48656c6c6f20576f726c64210000000000000000000000000000000000000000"
-};
 
 const PLACEHOLDER_REFERENCE_ACCOUNT_ADDRESS="0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd";
 

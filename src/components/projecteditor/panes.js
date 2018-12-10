@@ -100,9 +100,28 @@ export default class Panes extends Component {
     }
 
     componentDidMount() {
+        // TODO: FIXME: consider relocating to more appropriate place
+        const compiler = this.props.functions.compiler;
+        if(compiler) {
+            testRunnerBridge.setCompiler(compiler);
+        } else {
+            console.error("Unable to set test compiler reference. Reads: ", compiler);
+        }
+
         window.addEventListener('resize', () => {
             this.redraw();
         });
+    }
+
+    componentDidUpdate() {
+        // TODO: FIXME: consider relocating to more appropriate place
+        //              consider project reloads
+        const project = this.props.router.control.getActiveProject();
+        if(project) {
+            testRunnerBridge.setContractsData(project);
+        } else {
+            console.error("Unable to retrieve active project for test contracts data. Reads: ", project);
+        }
     }
 
     addWindow = (props, paneId) => {
