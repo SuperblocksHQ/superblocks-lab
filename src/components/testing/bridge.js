@@ -34,6 +34,11 @@ class TestRunnerBridge {
         // Contracts data hash map
         this.contractsData = {};
 
+        //
+        // Currently selected account
+        this.testAccountAddress = null;
+        this.testAccountKey = null;
+
         // TODO: FIXME: read currently selected network address from "Select a Network"
         this.endpoint="http://superblocks-browser"; // TODO: FIXME: support other networks
 
@@ -67,7 +72,7 @@ class TestRunnerBridge {
     }
 
     // Take project settings to extract hash map of contract names and their respective source code
-    setContractsData(project) {
+    _setContractsData(project, wallet) {
         if(!this.compiler) {
             console.error("Unable to set testing contracts data. Compiler reads: ", this.compiler);
             return;
@@ -154,6 +159,105 @@ class TestRunnerBridge {
         console.log("Finished preparing contracts data: ", this.contractsData);
     }
 
+    // Take project settings to extract hash map of contract names and their respective source code
+    _setAccountsData(projectReference, walletReference) {
+        if(!walletReference) {
+            console.error("Unable to set testing accounts data. Wallet reads: ", walletReference);
+            return;
+        }
+
+        console.log("Preparing testing accounts data...");
+
+        const thisReference = this;
+
+        //
+        // Note: derived from contractinteraction::_getAccountAddress
+        //
+        // TODO: FIXME: depends on project reload (asynchronous wallet load)
+        //              consider project reloads
+        function getAccountAddress () {
+            // Check given account, try to open and get address
+            const accountName = projectReference.getAccount();
+            if (!accountName) {
+                return null;
+            }
+
+            const env = projectReference.getEnvironment();
+            const accounts = projectReference.getHiddenItem('accounts');
+            const account = accounts.getByName(accountName);
+            const accountIndex = account.getAccountIndex(env);
+            const walletName = account.getWallet(env);
+            const wallets = projectReference.getHiddenItem('wallets');
+            const wallet = wallets.getByName(walletName);
+
+            if (!wallet) {
+                return null;
+            }
+            const walletType = wallet.getWalletType();
+
+            if (walletType == 'external') {
+                // Metamask seems to always only provide one (the chosen) account.
+                var extAccounts = [];
+                if (window.web3 && window.web3.eth)
+                    extAccounts = window.web3.eth.accounts || [];
+                if (extAccounts.length < accountIndex + 1) {
+                    // Account not matched
+                    return null;
+                }
+                return extAccounts[accountIndex];
+            }
+
+            if (walletReference.isOpen(walletName)) {
+                const address = walletReference.getAddress(walletName, accountIndex);
+                return address;
+            }
+
+            return null;
+        };
+
+        //
+        // Note: derived from superprovider::getKey
+        //
+        // TODO: FIXME: consider compressing getAccount* into a single pass (overlapping calls and data)
+        function getAccountKey () {
+            // Check given account, try to open and get address, else return [].
+            const accountName = projectReference.getAccount();
+            if (!accountName) {
+                return null;
+            }
+
+            const env = projectReference.getEnvironment();
+            const accounts = projectReference.getHiddenItem('accounts');
+            const account = accounts.getByName(accountName);
+            const accountIndex = account.getAccountIndex(env);
+            const walletName = account.getWallet(env);
+            const wallets = projectReference.getHiddenItem('wallets');
+            const wallet = wallets.getByName(walletName);
+
+            walletReference.getKey(walletName, accountIndex, function(status, key) {
+                if (status == 0) {
+                    const address = walletReference.getAddress(walletName, accountIndex);
+                    thisReference.testAccountKey = key;
+                } else {
+                    const msg = "Could not get key for wallet " + walletName + ".";
+                    console.error(msg);
+                    thisReference.testAccountKey = null;
+                }
+            });
+        };
+
+        this.testAccountAddress = getAccountAddress();
+        getAccountKey();
+    }
+
+    //
+    // Take project settings to load project-specific references data
+    // to be used in the testing environment
+    loadReferencesData(project, wallet) {
+        this._setContractsData(project);
+        this._setAccountsData(project, wallet);
+    }
+
     _getWeb3(evmProvider) {
         // TODO: FIXME: input parameter error checking
         var provider;
@@ -181,10 +285,8 @@ class TestRunnerBridge {
             PLACEHOLDER_REFERENCE_TEST_CODE,        // TODO: FIXME: read user-created test code content (string)
 
             this.contractsData,
-
-            PLACEHOLDER_REFERENCE_ACCOUNT_ADDRESS,  // TODO: FIXME: read currently selected account address from "Select an Account"
-
-            PLACEHOLDER_REFERENCE_ACCOUNT_KEY,      // TODO: FIXME: read currently selected account address from "Select an Account" and wallet
+            this.testAccountAddress,
+            this.testAccountKey,
 
             web3Object)                             // TODO: FIXME: consider reusing available web3 object ?
     }
@@ -203,10 +305,8 @@ class TestRunnerBridge {
             PLACEHOLDER_REFERENCE_TEST_CODE,        // TODO: FIXME: read user-created test code content (string)
 
             this.contractsData,
-
-            PLACEHOLDER_REFERENCE_ACCOUNT_ADDRESS,  // TODO: FIXME: read currently selected account address from "Select an Account"
-
-            PLACEHOLDER_REFERENCE_ACCOUNT_KEY,      // TODO: FIXME: read currently selected account address from "Select an Account" and wallet
+            this.testAccountAddress,
+            this.testAccountKey,
 
             web3Object);                            // TODO: FIXME: consider reusing available web3 object ?
     }
@@ -401,7 +501,3 @@ const PLACEHOLDER_REFERENCE_TEST_CODE=`
         });
     });
 `;
-
-const PLACEHOLDER_REFERENCE_ACCOUNT_ADDRESS="0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd";
-
-const PLACEHOLDER_REFERENCE_ACCOUNT_KEY="3867b6c26d09eda0a03e523f509e317d1656adc2f64b59f8b630c76144db0f17";

@@ -117,8 +117,9 @@ export default class Panes extends Component {
         // TODO: FIXME: consider relocating to more appropriate place
         //              consider project reloads
         const project = this.props.router.control.getActiveProject();
+        const wallet = this.props.functions.wallet;
         if(project) {
-            testRunnerBridge.setContractsData(project);
+            testRunnerBridge.loadReferencesData(project, wallet);
         } else {
             console.error("Unable to retrieve active project for test contracts data. Reads: ", project);
         }

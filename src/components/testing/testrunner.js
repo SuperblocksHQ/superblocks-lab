@@ -53,7 +53,17 @@ export default class TestRunner {
     }
 
     _run(testCode, contractsData, accountAddress, accountKey, web3) {
-        // TODO: FIXME: input data error handling
+        // TODO: FIXME: revisit input data error handling
+        if(!accountAddress || accountAddress === null) {
+            console.error("[TestRunner] Unable to run: undefined account address");
+            return;
+        }
+
+        if(!accountKey || accountKey === null) {
+            console.error("[TestRunner] Unable to run: undefined account key");
+            return;
+        }
+
         console.log("[TestRunner] setting up test runner ...");
         const thisReference = this;
         const contracts = thisReference._createAliases(contractsData);
