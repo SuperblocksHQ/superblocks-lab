@@ -358,7 +358,7 @@ export default class Panes extends Component {
                 id="panes"
                 className="full"
                 style={{
-                    width: isActionPanelShowing ? 'calc(100% - 450px)' : '100%',
+                    width: isActionPanelShowing && window.innerWidth > 1300 ? 'calc(100% - 450px)' : '100%',
                 }}
             >
                 <div key="header" id="panes_header" className={style.header}>
