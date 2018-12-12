@@ -439,31 +439,16 @@ export default class Panes extends Component {
         return <div>{html}</div>;
     };
 
+    onTestCompleted = (data) => {
+        if(!data) {
+            console.error("Unable to read data from completed test");
+            return;
+        }
 
-    // TODO: FIXME: improve action names
-    onPlayRun = () =>{
-        const thisReference = this;
-        testRunnerBridge.runAll(this.props.functions.EVM.getProvider());
-        setTimeout(()=>{
-            const data = testRunnerBridge.readData();
-            this.setState({resultData: data})
-            setTestData(data.reportOutput);
-            thisReference.redraw();
-        },2000);
-    };
-
-    onRetry = () => {
-        const thisReference = this;
-        // TODO: FIXME: selection by index position
-        const index = readSelectedTestId();
-        testRunnerBridge.runSingle(this.props.functions.EVM.getProvider(), index);
-        setTimeout(()=>{
-            const data = testRunnerBridge.readData();
-            this.setState({resultData: data})
-            setTestData(data.reportOutput);
-            thisReference.redraw();
-        },2000);
-    };
+        this.setState({resultData: data});
+        setTestData(data.reportOutput);
+        this.redraw();
+    }
 
     render() {
         const header = this.renderHeader();
@@ -472,6 +457,8 @@ export default class Panes extends Component {
         console.log('result data::', this.state.resultData);
         const { resultData } = this.state;
         const { isActionPanelShowing, testPanel } = this.props;
+
+        const evmProvider = this.props.functions.EVM.getProvider();
 
         return (
             <div
@@ -496,7 +483,7 @@ export default class Panes extends Component {
                         <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize={30} secondaryMinSize={30} vertical={false}>
                             <div className={style.leftPane}>
                                 <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={readTotalTestDataTime() + " ms"} />
-                                <TestControls onClickPlay={this.onPlayRun } onClickRetry={this.onRetry} />
+                                <TestControls onClickPlay={() => {testRunnerBridge.onPlayRun(evmProvider, this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(evmProvider, readSelectedTestId(), this.onTestCompleted)}} />
                                 <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
                                     <Test open={this.state.open} />
                                 </div>

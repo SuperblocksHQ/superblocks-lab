@@ -312,7 +312,7 @@ class TestRunnerBridge {
                 thisReference.isLoadingTestFiles = false;
 
             } else {
-                console.error("Error trying to read contracts path: " + contractsPath);
+                console.error("Error trying to read contracts path: " + testsPath);
             }
         });
     }
@@ -394,6 +394,32 @@ class TestRunnerBridge {
             consoleOutput: status,
         };
     }
+
+    // TODO: FIXME: set proper action name (rename)
+    onPlayRun(evmProvider, callback) {
+        this.runAll(evmProvider);
+
+        const data = this.readData();
+        // TODO: FIXME: remove timeout in favor of asynchronous event
+        // to be executed after the previous run call
+        setTimeout(()=>{
+            callback(data);
+        },2000);
+    }
+
+    // TODO: FIXME: set proper action name (rename)
+    onRetry(evmProvider, index, callback) {
+        console.warn(evmProvider, index, callback);
+        // TODO: FIXME: index: selection by index position
+        testRunnerBridge.runSingle(evmProvider, index, callback);
+
+        const data = this.readData();
+        // TODO: FIXME: remove timeout in favor of asynchronous event
+        // to be executed after the previous run call
+        setTimeout(()=>{
+            callback(data);
+        },2000);
+    };
 }
 
 export const testRunnerBridge = new TestRunnerBridge();
