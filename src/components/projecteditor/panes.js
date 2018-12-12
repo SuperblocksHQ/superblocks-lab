@@ -123,6 +123,13 @@ export default class Panes extends Component {
         } else {
             console.error("Unable to retrieve active project for test contracts data. Reads: ", project);
         }
+
+        // TODO: FIXME: consider relocating to more appropriate place
+        if(project) {
+            testRunnerBridge.loadTestFiles(project);
+        } else {
+            console.error("Unable to retrieve active project for loading test files. Reads: ", project);
+        }
     }
 
     addWindow = (props, paneId) => {

@@ -39,6 +39,11 @@ class TestRunnerBridge {
         this.testAccountAddress = null;
         this.testAccountKey = null;
 
+        //
+        // Currently loaded test files
+        this.testFiles = {};
+        this.isLoadingTestFiles = false;
+
         // TODO: FIXME: read currently selected network address from "Select a Network"
         this.endpoint="http://superblocks-browser"; // TODO: FIXME: support other networks
 
@@ -256,6 +261,60 @@ class TestRunnerBridge {
     loadReferencesData(project, wallet) {
         this._setContractsData(project);
         this._setAccountsData(project, wallet);
+    }
+
+    loadTestFiles(project) {
+
+        // Early exit
+        if(this.isLoadingTestFiles) {
+            return;
+        }
+
+        this.isLoadingTestFiles = true;
+        console.log("Loading test files...");
+
+        const thisReference = this;
+        const testsPath = "/tests";
+
+        // Load data
+        project.listFiles(testsPath, function(status, list) {
+            if(status === 0){
+
+                //
+                // Rebuild data from scractch
+                thisReference.testFiles = {};
+
+                // TODO: FIXME: handle sub-directories
+                for(var i=0; i<list.length; i++) {
+                    const file = list[i]
+                    const fileName = file.name;
+                    const fullPath = testsPath + "/" + fileName;
+
+                    const suffix = (fullPath.match('^.*/[^/]+[.](.+)$') || [])[1] || '';
+                    const suffixLowerCase = suffix.toLowerCase();
+
+                    //
+                    // Read JavaScript files only
+                    if(file.type === "f" && suffixLowerCase == "js") {
+                        project.loadFile(fullPath, function(result) {
+                            thisReference.testFiles[fileName] = result.contents;
+                        });
+                    }
+                }
+
+                //
+                // Toggle early exit condition
+                //
+                // TODO: FIXME: considering this helps preventing multiple loadFile calls,
+                // which happens asynchronously, it would be more correct to
+                // aggregate the data in the loop first and do the loadFiles on a separate step
+                // later. After loading is complete, only then toggle this flag.
+                thisReference.isLoadingTestFiles = false;
+
+            } else {
+                console.error("Error trying to read contracts path: " + contractsPath);
+            }
+        });
     }
 
     _getWeb3(evmProvider) {
