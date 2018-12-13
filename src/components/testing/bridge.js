@@ -284,6 +284,10 @@ class TestRunnerBridge {
                 // Rebuild data from scractch
                 thisReference.testFiles = {};
 
+                //
+                // TODO: FIXME: always add the placeholder entry (demonstration purposes only)
+                thisReference.testFiles["HelloWorldPlaceholder.test.js"] = PLACEHOLDER_REFERENCE_TEST_CODE;
+
                 // TODO: FIXME: handle sub-directories
                 for(var i=0; i<list.length; i++) {
                     const file = list[i]
@@ -341,8 +345,7 @@ class TestRunnerBridge {
         const web3Object = this._getWeb3(evmProvider);
 
         this.testRunner.runAll(
-            PLACEHOLDER_REFERENCE_TEST_CODE,        // TODO: FIXME: read user-created test code content (string)
-
+            this.testFiles,
             this.contractsData,
             this.testAccountAddress,
             this.testAccountKey,
@@ -358,11 +361,17 @@ class TestRunnerBridge {
         // TODO: FIXME: returned object error checking
         const web3Object = this._getWeb3(evmProvider);
 
+        // TODO: FIXME: call the placeholder entry (for demonstration purposes only)
+        // TODO: FIXME: index must be transformed into the respective file (section)
+        //              in case there are multiple tests in a file.
+        const file = "HelloWorldPlaceholder.test.js";
+
         this.testRunner.runSingle(
-            testTitle,
+            file,                                   // TODO: FIXME: Grab test file from testFiles instead
 
-            PLACEHOLDER_REFERENCE_TEST_CODE,        // TODO: FIXME: read user-created test code content (string)
+            testTitle,                              // TODO: FIXME: Grab test title from testFiles instead
 
+            this.testFiles,
             this.contractsData,
             this.testAccountAddress,
             this.testAccountKey,

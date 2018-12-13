@@ -113,19 +113,28 @@ export default class TestRunner {
         return this._status;
     }
 
-    runAll(testCode, contractsData, accountAddress, accountKey, web3) {
-        this._run(testCode, contractsData, accountAddress, accountKey, web3);
+    runAll(testFiles, contractsData, accountAddress, accountKey, web3) {
+        for(var testName in testFiles) {
+            const testCode = testFiles[testName];
+            this._run(testCode, contractsData, accountAddress, accountKey, web3);
+        }
     };
 
-    runSingle(title, testCode, contractsData, accountAddress, accountKey, web3) {
+    runSingle(file, title, testFiles, contractsData, accountAddress, accountKey, web3) {
         // TODO: FIXME: add error checking
         // TODO: FIXME: consider multiple occurrences
         //              consider case (in)sensitive
         //              consider single and double quotes
-        const regex = new RegExp("it*.\'" + title + "\'*.,{1}");
-        const replaceWith = 'it.only("' + title + '",';
-        const singleTestCode = testCode.replace(regex, replaceWith);
+        for(var testName in testFiles) {
+            if(testName === file) {
+                const testCode = testFiles[testName];
+                const regex = new RegExp("it*.\'" + title + "\'*.,{1}");
+                const replaceWith = 'it.only("' + title + '",';
+                const singleTestCode = testCode.replace(regex, replaceWith);
 
-        this._run(singleTestCode, contractsData, accountAddress, accountKey, web3);
+                this._run(singleTestCode, contractsData, accountAddress, accountKey, web3);
+                return;
+            }
+        }
     };
 }
