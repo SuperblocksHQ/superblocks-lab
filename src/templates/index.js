@@ -22,6 +22,7 @@ const VotingZip = require('./voting.zip');
 const SafeMathZip = require('./safemath.zip');
 const ERC20TokenZip = require('./erc-20-token.zip');
 const CryptoPizzaZip = require('./cryptopizza.zip');
+const ChainlinkZip = require('./chainlink.zip');
 
 export default class Templates {
     static categories = [
@@ -111,6 +112,14 @@ export default class Templates {
             "image": "/static/img/templates/img-safemath.png",
             "categories": [0, 4],
             "zip": SafeMathZip,
+        },
+        {
+            "id": 8,
+            "name": "Chainlink",
+            "description": "Use Chainlink to enable external connectivity for your smart contracts",
+            "image": "/static/img/templates/img-chainlink.png",
+            "categories": [0, 2],
+            "zip": ChainlinkZip,
         },
     ];
 }
