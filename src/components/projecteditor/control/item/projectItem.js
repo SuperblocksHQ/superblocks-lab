@@ -119,6 +119,7 @@ export default class ProjectItem extends Item {
                         // This is to handle a special case when a non .sol file is renamed into a .sol file.
                         // Since the file item already exsts and it's props will overwrite these new props.
                         _preserveProps: ['source', 'name', 'args', 'toggable', 'children'],
+                        renameFile: this.props.renameFile
                     },
                     this.router
                 );
@@ -168,8 +169,10 @@ export default class ProjectItem extends Item {
                         file: '',
                         project: this,
                     },
+                    renameFile: this.props.renameFile
                 },
-                this.router
+                this.router,
+                this.functions
             );
             this.setChildren([fileItem]);
 
@@ -366,15 +369,20 @@ export default class ProjectItem extends Item {
                             args: contract.args,
                             project: this,
                         },
+                        renameFile: this.props.renameFile
                     },
                     this.router
                 );
                 children.push(childItem);
             }
             // Copy over the state from cached children to new children, so they appear to be the same (but the objects are new).
+            // NOTE: we are using the key 'source' for comparing these items with eachother because this is a flat list
+            // and the actually file structure is an hierarchical tree where key is just the filename, but since we have
+            // a flat list here we need to key of the full path.
             contractsItem._copyState(
                 children,
-                contractsItem.props.state._children || []
+                contractsItem.props.state._children || [],
+                'source'
             );
 
             // Save cache generated.
