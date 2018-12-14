@@ -172,7 +172,9 @@ export default class App extends Component {
 
                 this.functions.modal.close();
 
-                if (showSplash) {
+                const isIframe = this.isIframe();
+                console.log(isIframe);
+                if (showSplash && !isIframe) {
                     this._showSplash();
                 }
             } else {
@@ -301,6 +303,14 @@ export default class App extends Component {
             this.cancelModal();
         }
     };
+
+    isIframe = e => {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    }
 
     render() {
         const { isReady } = this.state;
