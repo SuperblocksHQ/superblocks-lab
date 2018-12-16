@@ -52,7 +52,7 @@ export default class TestRunner {
         return contracts;
     }
 
-    _run(testCode, contractsData, accountAddress, accountKey, web3) {
+    _run(testName, testCode, contractsData, accountAddress, accountKey, web3) {
         // TODO: FIXME: revisit input data error handling
         if(!accountAddress || accountAddress === null) {
             console.error("[TestRunner] Unable to run: undefined account address");
@@ -79,12 +79,7 @@ export default class TestRunner {
         mocha.setup("bdd");
         mocha.reporter(CustomReporter);
 
-        // TODO: FIXME: add support to dynamically generated contracts data
-        // TODO: FIXME: read contract name from contractsData
-        //              see also: createAliases function
-        const contract_name="HelloWorld";
-
-        describe("Contract name: " + contract_name, function() {
+        describe("Test name: " + testName, function() {
             try {
                 // TODO: FIXME: consider a better alternative for dynamically adding tests
                 // Note: alternatively, could use mocha.suite.addTest(new Test ... ), given the possibility to access the inner library
@@ -116,7 +111,7 @@ export default class TestRunner {
     runAll(testFiles, contractsData, accountAddress, accountKey, web3) {
         for(var testName in testFiles) {
             const testCode = testFiles[testName];
-            this._run(testCode, contractsData, accountAddress, accountKey, web3);
+            this._run(testName, testCode, contractsData, accountAddress, accountKey, web3);
         }
     };
 
@@ -132,7 +127,7 @@ export default class TestRunner {
                 const replaceWith = 'it.only("' + title + '",';
                 const singleTestCode = testCode.replace(regex, replaceWith);
 
-                this._run(singleTestCode, contractsData, accountAddress, accountKey, web3);
+                this._run(testName, singleTestCode, contractsData, accountAddress, accountKey, web3);
                 return;
             }
         }

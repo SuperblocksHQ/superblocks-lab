@@ -27,7 +27,6 @@ export function setTestData(data) {
     totalTestDataTime = 0;
 
     var uiCounter = 0;
-    const testFileName = "/test/HelloWorld.js";
     var contractName;
     var contractTotalTime = 0;
     var testEntries = [];
@@ -69,21 +68,14 @@ export function setTestData(data) {
 
     const testTotalTime = contractTotalTime;
     const testTotalTimeString = contractTotalTime + " ms";
+    const testFileName = "/tests/"+contractName;
 
     const newTest = {
         uiCounter: uiCounter++,
         id: -2,
         name: testFileName,
         time: testTotalTimeString,
-        children: [
-            [{
-                uiCounter: uiCounter++,
-                id: -1,
-                name: contractName,
-                time: contractTotalTimeString,
-                children: testEntries
-            }]
-        ]
+        children: testEntries
     };
     TestData.push(newTest);
 

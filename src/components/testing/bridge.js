@@ -408,10 +408,10 @@ class TestRunnerBridge {
     onPlayRun(evmProvider, callback) {
         this.runAll(evmProvider);
 
-        const data = this.readData();
         // TODO: FIXME: remove timeout in favor of asynchronous event
         // to be executed after the previous run call
         setTimeout(()=>{
+            const data = this.readData();
             callback(data);
         },2000);
     }
@@ -422,10 +422,10 @@ class TestRunnerBridge {
         // TODO: FIXME: index: selection by index position
         testRunnerBridge.runSingle(evmProvider, index, callback);
 
-        const data = this.readData();
         // TODO: FIXME: remove timeout in favor of asynchronous event
         // to be executed after the previous run call
         setTimeout(()=>{
+            const data = this.readData();
             callback(data);
         },2000);
     };
