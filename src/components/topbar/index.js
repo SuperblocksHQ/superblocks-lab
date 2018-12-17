@@ -459,10 +459,10 @@ export default class TopBar extends Component {
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        title="Edit in Lab"
+                        title="Open in Lab"
                     >
                         <IconEdit />
-                        <span>Edit in Lab</span>
+                        <span>Open in Lab</span>
                     </a>
                 }
                 <DropdownContainer
