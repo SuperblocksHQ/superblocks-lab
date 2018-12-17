@@ -173,7 +173,6 @@ export default class App extends Component {
                 this.functions.modal.close();
 
                 const isIframe = this.isIframe();
-                console.log(isIframe);
                 if (showSplash && !isIframe) {
                     this._showSplash();
                 }

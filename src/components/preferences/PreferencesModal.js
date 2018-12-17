@@ -52,7 +52,7 @@ export default class PreferencesModal extends Component {
     render() {
         const { categories, categorySelectedId } = this.state;
         return(
-            <div className={classNames([style.prefrerencesModal, "modal"])}>
+            <div className={classNames(["modal", style.modal, style.prefrerencesModal])}>
                 <div className={style.container}>
                     <ModalHeader
                         title="Preferences"
