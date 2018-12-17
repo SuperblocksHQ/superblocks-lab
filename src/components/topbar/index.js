@@ -15,7 +15,8 @@ import {
     IconProjectSelector,
     IconDropdown,
     IconDiscord,
-    IconCheck
+    IconCheck,
+    IconEdit
 } from '../icons';
 import JSZip from 'jszip';
 import Dappfile from '../projecteditor/control/item/dappfileItem';
@@ -425,8 +426,18 @@ export default class TopBar extends Component {
         });
     }
 
+    isIframe = e => {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    }
+
     render() {
         var title = '';
+        var url = window.location;
+        var isIframe = this.isIframe();
 
         if (this.props.router.control) {
             const openProject = this.props.router.control.getActiveProject();
@@ -437,11 +448,23 @@ export default class TopBar extends Component {
 
         return (
             <div className={style.topbar}>
-                <img
-                    className={style.logo}
-                    src="/static/img/img-lab-logo.svg"
-                    alt="Superblocks Lab logo"
-                />
+                {!isIframe && url ?
+                    <img
+                        className={style.logo}
+                        src="/static/img/img-lab-logo.svg"
+                        alt="Superblocks Lab logo"
+                    />
+                :  <a 
+                        className={style.openLab}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Edit in Lab"
+                    >
+                        <IconEdit />
+                        <span>Edit in Lab</span>
+                    </a>
+                }
                 <DropdownContainer
                     className={style.projectButton}
                     dropdownContent={
