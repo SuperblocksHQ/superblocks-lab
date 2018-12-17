@@ -75,8 +75,8 @@ function dataIncrementFailure() {
     console.log("[TestRunner] increased failure counter: " + failureCount);
 }
 
-function dataSetTotalTestCount(count) {
-    totalTestCount = count;
+function dataAddTotalTestCount(count) {
+    totalTestCount += count;
 }
 
 export function readReportOutput() {
@@ -111,7 +111,7 @@ export function CustomReporter(runner) {
             const key=suite.parent.title.split(": ")[1]; // extract title
             // TODO: FIXME: reference error handling
             if(suite.tests.length > 0) {
-                dataSetTotalTestCount(suite.tests.length);
+                dataAddTotalTestCount(suite.tests.length);
                 console.log("[TestRunner] suite \"" + suite.title + "\" total test count: " + readTotalTestCount());
                 for(var i=0;i<suite.tests.length;i++) {
                     registerTest(key, suite);
