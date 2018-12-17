@@ -21,18 +21,23 @@
   Keep track of tests
 ====================*/
 var testData={};
-function registerTest(key, test) {
-    // TODO: FIXME: input parameter error handling
-    // TODO: FIXME: index access error checking
-    if(testData[key] === undefined) {
-        testData[key] = {};
+function registerTestSuite(key, suite) {
+    if(key === null) {
+        console.error("Unable to register test suite with null key.");
+        return;
     }
 
-    if(testData[key].tests === undefined) {
-        testData[key].tests = [];
+    if(testData && suite) {
+        if(testData[key] === undefined) {
+            testData[key] = suite;
+        } else {
+            console.warn("Skipping registration for test suite entry. Key already exists: " + key);
+            return;
+        }
+    } else {
+        console.error("Unexpected failure: unable to access test suite data. testData: ", testData, " suite: ", suite);
+        return;
     }
-
-    testData[key].tests.push(test);
 }
 
 /*====================
@@ -53,6 +58,7 @@ dataReset();
 //
 // Cleanup data
 function dataReset() {
+    testData={};
     outputData=[];
     successCount=0;
     failureCount=0;
@@ -114,7 +120,7 @@ export function CustomReporter(runner) {
                 dataAddTotalTestCount(suite.tests.length);
                 console.log("[TestRunner] suite \"" + suite.title + "\" total test count: " + readTotalTestCount());
                 for(var i=0;i<suite.tests.length;i++) {
-                    registerTest(key, suite);
+                    registerTestSuite(key, suite);
                 }
             }
         }
