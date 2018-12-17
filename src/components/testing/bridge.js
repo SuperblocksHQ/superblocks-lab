@@ -47,19 +47,6 @@ class TestRunnerBridge {
         // TODO: FIXME: read currently selected network address from "Select a Network"
         this.endpoint="http://superblocks-browser"; // TODO: FIXME: support other networks
 
-        // TODO: FIXME: consider enabling custom account selection;
-        //              See also: contractinteraction.js
-        //
-        // Reference:
-        /*
-            const accountAddress=this._getAccountAddress();
-            if(accountAddress.length==0) {
-                accountAddress="0x0";
-            } else {
-                accountAddress=accountAddress[0];
-            }
-        */
-
         // TODO: FIXME: consider retrieving currently used endpoint and network settings
         // Reference:
         /*
