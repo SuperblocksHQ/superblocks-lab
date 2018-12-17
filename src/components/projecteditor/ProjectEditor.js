@@ -19,6 +19,7 @@ import classNames from 'classnames';
 import style from './style.less';
 import Control from './control';
 import Panes from './panes';
+import Explorer from './explorer';
 import TopBar from '../topbar';
 import BottomBar from '../bottomBar';
 import ContactContainer from '../contactContainer';
@@ -171,10 +172,7 @@ export default class ProjectEditor extends Component {
                         className={style.control}
                         style={{ width: controlPanelWidth }}
                     >
-                        <Control
-                            router={this.props.router}
-                            functions={this.props.functions}
-                        />
+                        <Explorer />
                         <ContactContainer />
                     </div>
                     <span
