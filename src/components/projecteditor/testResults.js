@@ -25,31 +25,28 @@ export function setTestData(data) {
 
     TestData = [];
     totalTestDataTime = 0;
-
     var uiCounter = 0;
-    var contractName;
-    var contractTotalTime = 0;
-    var testEntries = [];
-    for(var i=0; i<data.length; i++) {
 
-        //
-        // Take into account empty parent means this is a new contract node
-        if(data[i].parent && data[i].parent.title === "") {
-            contractName = data[i].title.split(":")[1];
-        } else {
+    for(var name in data) {
+        const contractName = name;
+        const tests = data[contractName].tests;
+
+        var contractTotalTime = 0;
+        var testEntries = [];
+        for(var i=0; i<tests.length; i++) {
 
             //
             // Considers duration to be a condition that is only
             // present for tests (not suites or describe)
-            if(data[i] && data[i].duration !== undefined) {
+            if(tests[i] && tests[i].duration !== undefined) {
                 const testId = i;
-                const testName = data[testId].title;
-                const testTime = data[testId].duration;
+                const testName = tests[testId].title;
+                const testTime = tests[testId].duration;
                 const testTimeString = testTime + " ms";
 
                 const testEntry = {
                     uiCounter: uiCounter++,
-                    id: testId,
+                    id: testId + uiCounter,
                     name: testName,
                     time: testTimeString,
                 };
@@ -59,25 +56,26 @@ export function setTestData(data) {
                 contractTotalTime += testTime;
                 testEntries.push(testEntry);
             }
+
         }
+
+        totalTestDataTime += contractTotalTime;
+
+        const contractTotalTimeString = contractTotalTime + " ms";
+
+        const testTotalTime = contractTotalTime;
+        const testTotalTimeString = contractTotalTime + " ms";
+        const testFileName = "/tests/"+contractName;
+
+        const newTest = {
+            uiCounter: uiCounter++,
+            id: -100 + uiCounter,
+            name: testFileName,
+            time: testTotalTimeString,
+            children: testEntries
+        };
+        TestData.push(newTest);
     }
-
-    totalTestDataTime += contractTotalTime;
-
-    const contractTotalTimeString = contractTotalTime + " ms";
-
-    const testTotalTime = contractTotalTime;
-    const testTotalTimeString = contractTotalTime + " ms";
-    const testFileName = "/tests/"+contractName;
-
-    const newTest = {
-        uiCounter: uiCounter++,
-        id: -2,
-        name: testFileName,
-        time: testTotalTimeString,
-        children: testEntries
-    };
-    TestData.push(newTest);
 
     const totalDummyTestTime = 5*4;
     totalTestDataTime += totalDummyTestTime;

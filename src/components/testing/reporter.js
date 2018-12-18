@@ -45,7 +45,6 @@ function registerTestSuite(key, suite) {
 
   Keep track of statistics
 ====================*/
-var outputData;
 var successCount;
 var failureCount;
 var totalTestCount;
@@ -59,16 +58,10 @@ dataReset();
 // Cleanup data
 function dataReset() {
     testData={};
-    outputData=[];
     successCount=0;
     failureCount=0;
     totalTestCount=0;
     reporterStatus="";
-}
-
-function dataIncrementOutput(data) {
-    // TODO: FIXME: input parameter error handling
-    outputData.push(data);
 }
 
 function dataIncrementSuccess() {
@@ -86,7 +79,7 @@ function dataAddTotalTestCount(count) {
 }
 
 export function readReportOutput() {
-    return outputData;
+    return testData;
 }
 
 export function readReportSuccesses() {
@@ -108,7 +101,6 @@ export function readReporterStatus() {
 export function CustomReporter(runner) {
     runner.on("suite", function(suite){
         // TODO: FIXME: input data error handling
-        dataIncrementOutput(suite);
         console.log("[TestRunner] incremented test data: ", suite);
 
         const parentReference = suite.parent;
@@ -128,13 +120,11 @@ export function CustomReporter(runner) {
 
     runner.on("pass", function(test){
         // TODO: FIXME: input data error handling
-        dataIncrementOutput(test);
         dataIncrementSuccess();
     });
 
     runner.on("fail", function(test, error){
         // TODO: FIXME: input data error handling
-        dataIncrementOutput(test);
         dataIncrementFailure();
         // TODO: FIXME: error handling
         console.error(error);
@@ -166,8 +156,8 @@ export function CustomReporter(runner) {
     });
 
     runner.on("end", function(){
-        console.log("[TestRunner] ended test run with status: ", outputData, successCount, failureCount, testData);
-        return outputData, successCount, failureCount, testData
+        console.log("[TestRunner] ended test run with status: ", successCount, failureCount, testData);
+        return successCount, failureCount, testData
     });
 
     // TODO:
