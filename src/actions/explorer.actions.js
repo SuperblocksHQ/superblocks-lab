@@ -23,6 +23,8 @@ export const explorerActions = {
         };
     },
 
+    // --------- Contract specific
+
     CONFIGURE_CONTRACT: 'CONFIGURE_CONTRACT',
     configureContract(id, name) {
         return {
@@ -52,6 +54,48 @@ export const explorerActions = {
         return {
             type: explorerActions.INTERACT_CONTRACT,
             data: { id, name }
+        };
+    },
+
+    // ----- Context menu
+
+    CREATE_FILE: 'CREATE_FILE',
+    createFile(parentId) {
+        return {
+            type: explorerActions.CREATE_FILE,
+            data: { parentId }
+        };
+    },
+
+    IMPORT_FILE: 'IMPORT_FILE',
+    importFile(parentId) {
+        return {
+            type: explorerActions.IMPORT_FILE,
+            data: { parentId }
+        };
+    },
+
+    CREATE_FOLDER: 'CREATE_FOLDER',
+    createFolder(parentId) {
+        return {
+            type: explorerActions.CREATE_FOLDER,
+            data: { parentId }
+        };
+    },
+
+    RENAME_ITEM: 'RENAME_ITEM',
+    renameItem(id) {
+        return {
+            type: explorerActions.RENAME_ITEM,
+            data: { id }
+        };
+    },
+
+    DELETE_ITEM: 'DELETE_ITEM',
+    deleteItem(id) {
+        return {
+            type: explorerActions.DELETE_ITEM,
+            data: { id }
         };
     }
 };

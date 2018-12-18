@@ -29,15 +29,25 @@ export class Explorer extends React.Component {
                 return (
                     <ContractItem key={ itemData.id }
                         data={ itemData }
+
                         onToggle={ actions.toggleTreeItem }
                         onClick={ actions.openFile }
+                        onRenameClick={ actions.renameItem }
+                        onDeleteClick={ actions.deleteItem }
+
                         onConfigureClick={ actions.configureContract }
                         onCompileClick={ actions.compileContract }
                         onDeployClick={ actions.deployContract }
                         onInteractClick={ actions.interactContract } />
                 );
             } else {
-                return <FileItem key={ itemData.id } data={ itemData } onClick={ actions.openFile } />;
+                return (
+                    <FileItem key={ itemData.id }
+                        data={ itemData }
+                        onClick={ actions.openFile }
+                        onRenameClick={ actions.renameItem }
+                        onDeleteClick={ actions.deleteItem } />
+                );
             }
         }
         else if (itemData.type === ExplorerItemTypes.FOLDER) {
@@ -45,7 +55,13 @@ export class Explorer extends React.Component {
                 <FolderItem key={ itemData.id }
                         data={ itemData }
                         onClick={ actions.toggleTreeItem }
-                        onToggle={ actions.toggleTreeItem }>
+                        onToggle={ actions.toggleTreeItem }
+
+                        onCreateFileClick={ actions.createFile }
+                        onImportFileClick={ actions.importFile }
+                        onCreateFolderClick={ actions.createFolder }
+                        onRenameClick={ actions.renameItem }
+                        onDeleteClick={ actions.deleteItem }>
                         { childHtml }
                 </FolderItem>
             );

@@ -25,6 +25,21 @@ const mapDispatchToProps = (dispatch) => {
         },
         interactContract: (id, name) => {
             dispatch(explorerActions.interactContract(id, name));
+        },
+        createFile: (parentId) => {
+            dispatch(explorerActions.createFile(parentId));
+        },
+        importFile: (parentId) => {
+            dispatch(explorerActions.importFile(parentId));
+        },
+        createFolder: (parentId) => {
+            dispatch(explorerActions.createFolder(parentId));
+        },
+        renameItem: (id) => {
+            dispatch(explorerActions.renameItem(id)); // TODO: this if correct
+        },
+        deleteItem: (id) => {
+            dispatch(explorerActions.renameItem(id));
         }
     };
 }

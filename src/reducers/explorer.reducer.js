@@ -8,6 +8,7 @@ export const initialState = {
         type: 'FOLDER',
         togglable: true,
         opened: true,
+        mutable: false,
         children: [
             {
                 id: '1234',
@@ -15,8 +16,9 @@ export const initialState = {
                 type: 'FOLDER',
                 togglable: true,
                 opened: false,
+                mutable: true,
                 children: [
-                    { id: '12345', name: 'smth.sol', type: 'FILE', children: [], togglable: true },
+                    { id: '12345', name: 'smth.sol', type: 'FILE', children: [], togglable: true, mutable: true },
                 ]
             },
             {
@@ -25,15 +27,25 @@ export const initialState = {
                 type: 'FOLDER',
                 togglable: true,
                 opened: false,
+                mutable: true,
                 children: [
                 ]
             },
 
             {
+                id: '34235',
+                name: 'dapp.json', 
+                type: 'FILE',
+                togglable: false,
+                mutable: false,
+                children: [ ]
+            },
+            {
                 id: '1235',
                 name: 'README.md', 
                 type: 'FILE',
                 togglable: false,
+                mutable: true,
                 children: [ ]
             }
         ]
