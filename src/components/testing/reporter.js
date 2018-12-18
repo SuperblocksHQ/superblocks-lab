@@ -100,54 +100,74 @@ export function readReporterStatus() {
 
 export function CustomReporter(runner) {
     runner.on("suite", function(suite){
-        // TODO: FIXME: input data error handling
-        console.log("[TestRunner] incremented test data: ", suite);
+        if(suite) {
+            const parentReference = suite.parent;
+            if(parentReference && parentReference.title) {
+                // TODO: FIXME: revisit the need for extracting the title (demonstration purposes only)
+                const key = parentReference.title.split(": ")[1]; // extract title
 
-        const parentReference = suite.parent;
-        if(parentReference) {
-            // TODO: FIXME: reference error handling
-            const key=suite.parent.title.split(": ")[1]; // extract title
-            // TODO: FIXME: reference error handling
-            if(suite.tests.length > 0) {
-                dataAddTotalTestCount(suite.tests.length);
-                console.log("[TestRunner] suite \"" + suite.title + "\" total test count: " + readTotalTestCount());
-                for(var i=0;i<suite.tests.length;i++) {
-                    registerTestSuite(key, suite);
+                //
+                // Register test suite
+                const suiteTests = suite.tests;
+                if(suiteTests) {
+                    const suiteLength = suiteTests.length;
+                    if(key && suiteLength > 0) {
+                        dataAddTotalTestCount(suiteLength);
+                        console.log("[TestRunner] suite \"" + suite.title + "\" total test count: " + readTotalTestCount());
+                        for(var i=0; i<suiteLength; i++) {
+                            registerTestSuite(key, suite);
+                        }
+                    }
                 }
             }
         }
     });
 
     runner.on("pass", function(test){
-        // TODO: FIXME: input data error handling
-        dataIncrementSuccess();
+        if(test) {
+            dataIncrementSuccess();
+        }
     });
 
     runner.on("fail", function(test, error){
-        // TODO: FIXME: input data error handling
-        dataIncrementFailure();
-        // TODO: FIXME: error handling
-        console.error(error);
+        if(test) {
+            if(error) {
+                console.error(error);
+                dataIncrementFailure();
 
-        // TODO: FIXME: error handling
-        const stack = error.stack.split("\n").map(
-            function(line){
-                return line.trim();
+                var stack = null;
+                const errorStack = error.stack;
+                if(errorStack) {
+                    stack = errorStack.split("\n").map(
+                        function(line){
+                            return line.trim();
+                        }
+                    );
+                }
+
+                var generatedError = null;
+                if(stack !== null && stack[1]) {
+                    generatedError = stack[1].split("<anonymous>:")[1];
+                }
+
+                if(generatedError !== null){
+                    var reason = "unknown";
+                    if(stack[0]) {
+                        reason = stack[0].split("Error: ")[1];
+                    }
+
+                    const line=generatedError.split(":")[0];
+                    const column=generatedError.split(":")[1].split(")")[0];
+                    const errorOutput="Failure in line " + line + " column " + column + ". Reason: " + reason;
+
+                    console.error(errorOutput);
+                    reporterStatus = errorOutput;
+                } else {
+                    reporterStatus = error;
+                }
+            } else {
+                console.error("Unexpected error data on failure. Test: ", test, " Error: ", error);
             }
-        );
-
-        // TODO: FIXME: error handling
-        const generatedError=stack[1].split("<anonymous>:")[1];
-        if(generatedError){
-            // TODO: FIXME: error handling
-            const reason=stack[0].split("Error: ")[1];
-            const line=generatedError.split(":")[0];
-            const column=generatedError.split(":")[1].split(")")[0];
-            const errorOutput="Failure in line " + line + " column " + column + ". Reason: " + reason;
-            console.error(errorOutput);
-            reporterStatus = errorOutput;
-        } else {
-            reporterStatus = error;
         }
     });
 
