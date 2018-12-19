@@ -343,21 +343,32 @@ class TestRunnerBridge {
     runSingle(evmProvider, index) {
         // TODO: FIXME: input data error checking
         const data = this.readData().reportOutput;
-        // TODO: FIXME: returned data error checking (index access)
-        const testTitle = data[index].title;
+
+        var counter = 0;
+        var file = null;
+        var testTitle = null;
+        for(var test in data) {
+            counter++;
+
+            if(file === null && testTitle === null) {
+                for(var i=0; i<data[test].tests.length; i++) {
+                    if(counter !== index) {
+                        counter++;
+                    } else {
+                        file = test;
+                        testTitle = data[test].tests[i].title;
+                        break;
+                    }
+                }
+            }
+        }
+
         // TODO: FIXME: returned object error checking
         const web3Object = this._getWeb3(evmProvider);
 
-        // TODO: FIXME: call the placeholder entry (for demonstration purposes only)
-        // TODO: FIXME: index must be transformed into the respective file (section)
-        //              in case there are multiple tests in a file.
-        const file = "HelloWorldPlaceholder.test.js";
-
         this.testRunner.runSingle(
-            file,                                   // TODO: FIXME: Grab test file from testFiles instead
-
-            testTitle,                              // TODO: FIXME: Grab test title from testFiles instead
-
+            file,
+            testTitle,
             this.testFiles,
             this.contractsData,
             this.testAccountAddress,
@@ -405,7 +416,6 @@ class TestRunnerBridge {
 
     // TODO: FIXME: set proper action name (rename)
     onRetry(evmProvider, index, callback) {
-        console.warn(evmProvider, index, callback);
         // TODO: FIXME: index: selection by index position
         testRunnerBridge.runSingle(evmProvider, index, callback);
 

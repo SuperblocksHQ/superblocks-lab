@@ -46,7 +46,7 @@ export function setTestData(data) {
 
                 const testEntry = {
                     uiCounter: uiCounter++,
-                    id: testId + uiCounter,
+                    id: uiCounter,
                     name: testName,
                     time: testTimeString,
                 };
