@@ -404,6 +404,7 @@ class TestRunnerBridge {
 
     // TODO: FIXME: set proper action name (rename)
     onPlayRun(evmProvider, callback) {
+        callback("Loading...");
         this.runAll(evmProvider);
 
         // TODO: FIXME: remove timeout in favor of asynchronous event
@@ -416,7 +417,7 @@ class TestRunnerBridge {
 
     // TODO: FIXME: set proper action name (rename)
     onRetry(evmProvider, index, callback) {
-        // TODO: FIXME: index: selection by index position
+        callback("Loading...");
         testRunnerBridge.runSingle(evmProvider, index, callback);
 
         // TODO: FIXME: remove timeout in favor of asynchronous event

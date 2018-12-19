@@ -446,7 +446,15 @@ export default class Panes extends Component {
         }
 
         this.setState({resultData: data});
-        setTestData(data.reportOutput);
+
+        //
+        // Set complex output data only if available
+        var output = data;
+        if(output.reportOutput) {
+            output = output.reportOutput;
+        }
+        setTestData(output);
+
         this.redraw();
     }
 

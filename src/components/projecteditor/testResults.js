@@ -22,10 +22,20 @@ export function readTotalTestDataTime() {
 export function setTestData(data) {
     // TODO: FIXME: add support to "Suites" (describe)
     // TODO: FIXME: automatically iterate over all tests
-
     TestData = [];
     totalTestDataTime = 0;
     var uiCounter = 0;
+
+    if(data.length <= 0) {
+        //
+        // Early exit in case there is no data
+        return;
+    } else if(typeof data === "string") {
+        //
+        // ... or take the input as a string message, if applicable
+        TestData = data;
+        return;
+    }
 
     for(var name in data) {
         const contractName = name;
@@ -84,13 +94,13 @@ export function setTestData(data) {
     const dummyTest = {
         uiCounter: 100,
         id: 1,
-        name: "/test/contract.js",
+        name: "/tests/a_reference_dummy_test.js",
         time: totalDummyTestTimeString,
         children: [
             [{
                 uiCounter: 101,
                 id: 3,
-                name: "FundRaise",
+                name: "HardcodedExampleResults",
                 time: totalDummyTestTimeString,
                 children: [
                     {
@@ -155,17 +165,29 @@ export default class Test extends React.Component {
     }
 
     render() {
-
         const thisReference = this;
 
-        // loop through the array and create a new component for each, passing the current data and its children (Test.children) as props
-        let nodes = TestData.map(function(data) {
-            return (
-                <div key={data.id}>
-                    <Node readSelection={thisReference.readSelection} storeSelection={thisReference.storeSelection} node={data} children={data.children} time={data.time} />
-                </div>
+        var nodes;
+        if(typeof TestData === "string") {
+            // TODO: FIXME: reconsider feedback
+            nodes = (
+                <div style={{color: "white", marginLeft: "10px"}}><p>{TestData}</p></div>
             );
-        });
+        } else if(TestData.length > 0) {
+            // loop through the array and create a new component for each, passing the current data and its children (Test.children) as props
+            nodes = TestData.map(function(data) {
+                return (
+                    <div key={data.id}>
+                        <Node readSelection={thisReference.readSelection} storeSelection={thisReference.storeSelection} node={data} children={data.children} time={data.time} />
+                    </div>
+                );
+            });
+        } else {
+            // TODO: FIXME: reconsider feedback
+            nodes = (
+                <div style={{color: "white", marginLeft: "10px"}}><p>Press the green Play button to start.</p></div>
+            );
+        }
 
         return (
             <div>
