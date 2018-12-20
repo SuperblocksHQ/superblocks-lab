@@ -85,9 +85,10 @@ export default class AppView extends Component {
             this.iframeDiv.removeChild(this.iframeDiv.firstChild);
         }
         const iframe = document.createElement('iframe');
-        iframe.src = `http://${this.props.item.getProject().getName()}.${window.location.host}/app-view.html`;
         if (window.location.hostname === 'localhost') {
             iframe.src = `http://${window.location.host}/app-view.html`;
+        } else {
+            iframe.src = `http://${this.props.item.getProject().getName()}.${window.location.host}/app-view.html`;
         }
         this.iframeDiv.appendChild(iframe);
         this.iframe = iframe;
