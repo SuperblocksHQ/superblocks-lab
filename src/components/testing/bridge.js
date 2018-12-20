@@ -71,6 +71,7 @@ class TestRunnerBridge {
         }
 
         console.log("Preparing testing contracts data...");
+        this.contractsData = {};
 
         const thisReference = this;
         const contractsPath = "/contracts";

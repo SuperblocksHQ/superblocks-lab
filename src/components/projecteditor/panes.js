@@ -20,7 +20,7 @@ import SplitterLayout from "react-splitter-layout";
 import PropTypes from 'prop-types';
 import style from './style.less';
 import { Pane, PaneComponent } from './pane';
-import { IconClose, IconTest, IconPlay, IconStop, IconRun, IconCheck } from '../icons';
+import { IconClose, IconTest, IconPlay, IconStop, IconRun } from '../icons';
 import { DropdownContainer } from '../dropdown';
 import Caret from '../../../src/components/caret';
 import Test from './testResults';

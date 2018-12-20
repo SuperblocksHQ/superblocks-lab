@@ -53,12 +53,14 @@ export function setTestData(data) {
                 const testName = tests[testId].title;
                 const testTime = tests[testId].duration;
                 const testTimeString = testTime + " ms";
+                const testState = tests[testId].state;
 
                 const testEntry = {
                     uiCounter: uiCounter++,
                     id: uiCounter,
                     name: testName,
                     time: testTimeString,
+                    state: testState
                 };
 
                 //
@@ -108,30 +110,35 @@ export function setTestData(data) {
                         id: 4,
                         name: "has an Owner",
                         time:"4ms",
+                        state: "passed"
                     },
                     {
                         uiCounter: 103,
                         id: 5,
                         name: "has an Owner",
                         time:"4ms",
+                        state: "failed"
                     },
                     {
                         uiCounter: 104,
                         id: 6,
                         name: "accepts fund",
                         time:"4ms",
+                        state: "passed"
                     },
                     {
                         uiCounter: 105,
                         id: 7,
                         name: "Is able to pause or unpause",
                         time:"4ms",
+                        state: "failed"
                     },
                     {
                         uiCounter: 106,
                         id: 8,
                         name: "permits owner to receive funds",
                         time:"4ms",
+                        state: "passed"
                     },
                 ]
             }]
@@ -218,6 +225,14 @@ class Node extends React.Component {
     render() {
         let childnodes = null;
 
+        //
+        // Set test state flag
+        var testPassed = false;
+        const testState = this.props.node.state;
+        if(testState === "passed" || testState !== "failed") {
+            testPassed = true;
+        }
+
         // the Node component calls itself if there are children
         if(this.props.children) {
             const thisReference = this;
@@ -226,6 +241,12 @@ class Node extends React.Component {
                 if(!node.id) {
                     node = childnode[0];
                 }
+
+                // Invalid outter Node group on failure
+                if(node.state === "failed") {
+                    testPassed = false;
+                }
+
                 return (
                     this.state.open &&
                     <Node key={"node_" + node.id} readSelection={thisReference.props.readSelection} storeSelection={thisReference.props.storeSelection} node={node} children={node.children} time={node.time}/>
@@ -235,7 +256,7 @@ class Node extends React.Component {
 
         // return our list element
         // display children if there are any
-        const testPassed = true;
+
         const backgroundColorGreen = 'rgba(126, 211, 33,0.4)';
         const backgroundColorRed = 'rgba(255, 69, 92, 0.4)';
         const selectionBackgroundColor = this.props.readSelection() === this.props.node.uiCounter ? (testPassed ?  backgroundColorGreen : backgroundColorRed ) : null;
