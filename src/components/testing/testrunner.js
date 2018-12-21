@@ -38,11 +38,6 @@ export default class TestRunner {
     }
 
     _createAliases(contractsData) {
-        // TODO: FIXME: input data error handling
-        // TODO: FIXME: error checking when
-        //              -  data is not valid
-        //              -  data is not present
-        //              -  when there are no elements
         var contracts="";
         for(var key in contractsData) {
             const contractName = key.toString();
@@ -53,7 +48,6 @@ export default class TestRunner {
     }
 
     _run(testName, testCode, contractsData, accountAddress, accountKey, web3) {
-        // TODO: FIXME: revisit input data error handling
         if(!accountAddress || accountAddress === null) {
             console.error("[TestRunner] Unable to run: undefined account address");
             return;
@@ -61,6 +55,11 @@ export default class TestRunner {
 
         if(!accountKey || accountKey === null) {
             console.error("[TestRunner] Unable to run: undefined account key");
+            return;
+        }
+
+        if(!web3 || web3 === null) {
+            console.error("[TestRunner] Unable to run: undefined web3 object");
             return;
         }
 
@@ -116,7 +115,16 @@ export default class TestRunner {
     };
 
     runSingle(file, title, testFiles, contractsData, accountAddress, accountKey, web3) {
-        // TODO: FIXME: add error checking
+        if(!file || file === null) {
+            console.error("[TestRunner] Unable to target empty file when running single tests");
+            return;
+        }
+
+        if(!title || title === null) {
+            console.error("[TestRunner] Unable to target empty title when running single tests");
+            return;
+        }
+
         // TODO: FIXME: consider multiple occurrences
         //              consider case (in)sensitive
         //              consider single and double quotes
@@ -128,6 +136,7 @@ export default class TestRunner {
                 const singleTestCode = testCode.replace(regex, replaceWith);
 
                 this._run(testName, singleTestCode, contractsData, accountAddress, accountKey, web3);
+
                 return;
             }
         }
