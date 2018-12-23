@@ -24,6 +24,7 @@ import { Wallet } from '../projecteditor/wallet';
 import Solc from '../solc';
 import EVM from '../evm';
 import Networks from '../../networks';
+import { previewService } from '../../services';
 
 export default class App extends Component {
 
@@ -163,6 +164,8 @@ export default class App extends Component {
                 walletSeeded = true;
             }
         );
+
+        previewService.init(this.functions.wallet, this.functions.modal);
 
         const fn = () => {
             if (this.functions.compiler.isReady()

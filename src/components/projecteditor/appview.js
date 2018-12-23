@@ -34,7 +34,7 @@ export default class AppView extends Component {
         super(props);
         this.id = props.id + '_appview';
         this.props.parent.childComponent = this;
-        this.provider = new SuperProvider({ that: this });
+        this.provider = new SuperProvider(this.id, this.props.item.getProject());
     }
 
     _getEnv = () => {
@@ -316,7 +316,7 @@ export default class AppView extends Component {
         this.props.functions.modal.show({
             render: () => {
                 return modal;
-            },
+            }
         });
     };
 
@@ -421,33 +421,6 @@ export default class AppView extends Component {
         // NOTE: we don't check contract deployemnt as for now
         cb(0);
         return;
-    };
-
-    _checkContracts2 = (contracts, cb) => {
-        const fn = (contracts, cb) => {
-            if (contracts.length == 0) {
-                cb(0);
-                return;
-            }
-            const contract = contracts.pop();
-            this._verifyContract(
-                contract[0],
-                contract[1],
-                contract[2],
-                status => {
-                    if (status > 0) {
-                        cb(status);
-                        return;
-                    }
-                    fn(contracts, status => {
-                        cb(status);
-                    });
-                }
-            );
-        };
-        fn(contracts, status => {
-            cb(status);
-        });
     };
 
     _loadFiles = (files, cb) => {

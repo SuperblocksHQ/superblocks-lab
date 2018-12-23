@@ -16,23 +16,27 @@
 
 import { connect } from 'react-redux';
 import ProjectEditor from './ProjectEditor';
-import { openTransactionsHistoryPanel, closeTransactionsHistoryPanel, toggleTransactionsHistoryPanel } from '../../actions/view';
-import { getopenTransactionsHistoryPanel } from '../../selectors/view';
+import { sidePanelsActions } from '../../actions';
 
 const mapStateToProps = state => ({
-    displayTransactionsPanel: getopenTransactionsHistoryPanel(state),
+    displayTransactionsPanel: state.sidePanels.showTransactionsHistory,
+    displayPreviewPanel: state.sidePanels.showPreview
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        toggleTransactionsHistoryPanel: () => {
-            dispatch(toggleTransactionsHistoryPanel())
+        toggleTransactionsHistoryPanel() {
+            dispatch(sidePanelsActions.toggleTransactionsHistoryPanel())
         },
-        openTransactionsHistoryPanel: () => {
-            dispatch(openTransactionsHistoryPanel())
+        openTransactionsHistoryPanel() {
+            dispatch(sidePanelsActions.openTransactionsHistoryPanel())
         },
-        closeTransactionsHistoryPanel: () => {
-            dispatch(closeTransactionsHistoryPanel())
+        closeTransactionsHistoryPanel() {
+            dispatch(sidePanelsActions.closeTransactionsHistoryPanel())
+        },
+
+        togglePreviewPanel() {
+            dispatch(sidePanelsActions.togglePreviewPanel());
         }
     }
 }

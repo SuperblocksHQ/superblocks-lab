@@ -1,4 +1,4 @@
-import * as actions from './view';
+import * as actions from './sidePanels.actions';
 
 describe('actions', () => {
     it('should create an action to toggle the transactions history panel', () => {

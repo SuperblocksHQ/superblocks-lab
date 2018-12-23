@@ -22,8 +22,8 @@ import Panes from './panes';
 import TopBar from '../topbar';
 import BottomBar from '../bottomBar';
 import ContactContainer from '../contactContainer';
-import TransactionLogPanel from '../blockexplorer/transactionlogPanel';
-import { IconTransactions, IconClose } from '../icons';
+import { PreviewSidePanel, TransactionLogPanel } from './sidePanels';
+import { IconTransactions, IconShowPreview } from '../icons';
 
 export default class ProjectEditor extends Component {
     state = {
@@ -42,7 +42,7 @@ export default class ProjectEditor extends Component {
             'keydown',
             function(e) {
                 if (
-                    e.keyCode == 83 &&
+                    e.keyCode === 83 &&
                     (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)
                 ) {
                     e.preventDefault();
@@ -84,7 +84,7 @@ export default class ProjectEditor extends Component {
         e.preventDefault();
         const { dragging, minSize } = this.state;
         const maxSize = screen.width * 0.35;
-        if (!dragging) return;
+        if (!dragging) { return; }
         if (e.pageX < maxSize && e.pageX > minSize) {
             this.setState({
                 controlPanelWidth: e.pageX
@@ -112,7 +112,7 @@ export default class ProjectEditor extends Component {
         e.preventDefault();
 
         // only left mouse button
-        if (e.button !== 0) return;
+        if (e.button !== 0) { return; }
         this.setState({
             dragging: true,
         });
@@ -124,17 +124,12 @@ export default class ProjectEditor extends Component {
         const { minSize } = this.state;
 
         // only left mouse button
-        if (e.button !== 0) return;
+        if (e.button !== 0) { return; }
 
         this.setState({
             controlPanelWidth: minSize
         });
     }
-
-    onShowHideTransactionsClicked = () => {
-        const { toggleTransactionsHistoryPanel } = this.props;
-        toggleTransactionsHistoryPanel();
-    };
 
     onProjectSelectedHandle = () => {
         const { closeTransactionsHistoryPanel } = this.props;
@@ -155,8 +150,10 @@ export default class ProjectEditor extends Component {
                 ).endpoint;
             }
         }
+
         const { controlPanelWidth } = this.state;
-        const { displayTransactionsPanel } = this.props;
+        const { displayTransactionsPanel, displayPreviewPanel, toggleTransactionsHistoryPanel, togglePreviewPanel } = this.props;
+
         return (
             <div className={style.projecteditor} id="main_container">
                 <TopBar
@@ -191,33 +188,23 @@ export default class ProjectEditor extends Component {
                             <Panes
                                 router={this.props.router}
                                 functions={this.props.functions}
-                                isActionPanelShowing={displayTransactionsPanel}
+                                isActionPanelShowing={displayTransactionsPanel || displayPreviewPanel}
                             />
-                            {displayTransactionsPanel ? (
-                                <div className={style.actionContainer}>
-                                    <div className={style.header}>
-                                        <div className={style.panelIcon}>
-                                            <IconTransactions/>
-                                        </div>
-                                        <span className={style.title}>
-                                            Transactions History
-                                        </span>
-                                        <button
-                                            className={classNames([
-                                                style.icon,
-                                                'btnNoBg',
-                                            ])}
-                                            onClick={this.onShowHideTransactionsClicked}
-                                        >
-                                            <IconClose />
-                                        </button>
-                                    </div>
-                                    <TransactionLogPanel
-                                        router={this.props.router}
-                                    />
-                                </div>
-                            ) : null}
+
+                            <div className={style.sidePanelContainer}>
+                                { displayTransactionsPanel &&
+                                <TransactionLogPanel
+                                    router={this.props.router}
+                                    onClose={toggleTransactionsHistoryPanel}
+                                /> }
+
+                                { displayPreviewPanel && 
+                                <PreviewSidePanel
+                                    onClose={togglePreviewPanel}
+                                /> }
+                            </div>
                         </div>
+
                         <div className={style.actionPanel}>
                             <div className={style.actions}>
                                 <button
@@ -225,11 +212,26 @@ export default class ProjectEditor extends Component {
                                         style.action,
                                         'btnNoBg',
                                     ])}
-                                    onClick={this.onShowHideTransactionsClicked}
+                                    onClick={toggleTransactionsHistoryPanel}
                                 >
                                     <IconTransactions />
                                     <span className={style.verticalText}>
                                         Transactions
+                                    </span>
+                                </button>
+                            </div>
+
+                            <div className={style.actions}>
+                                <button
+                                    className={classNames([
+                                        style.action,
+                                        'btnNoBg',
+                                    ])}
+                                    onClick={togglePreviewPanel}
+                                >
+                                    <IconShowPreview />
+                                    <span className={style.verticalText}>
+                                        Preview
                                     </span>
                                 </button>
                             </div>
