@@ -1,6 +1,6 @@
-import app from './app';
+import app from './app.reducer';
 import projects from './projects.reducer';
-import settings from './settings';
+import settings from './settings.reducer';
 import sidePanels from './sidePanels.reducer';
 import panes from './panes.reducer';
 
