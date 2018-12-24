@@ -44,19 +44,8 @@ class TestRunnerBridge {
         this.testFiles = {};
         this.isLoadingTestFiles = false;
 
-        // TODO: FIXME: read currently selected network address from "Select a Network"
-        this.endpoint="http://superblocks-browser"; // TODO: FIXME: support other networks
-
-        // TODO: FIXME: consider retrieving currently used endpoint and network settings
-        // Reference:
-        /*
-            const env=this.props.project.props.state.data.env;
-            const contract = this.dappfile.getItem("contracts", [{name: this.props.contract}]);
-            const src=contract.get('source');
-            const network=contract.get('network', env);
-            const endpoint=(this.props.functions.networks.endpoints[network] || {}).endpoint;
-            const web3=this._getWeb3(endpoint);
-        */
+        // TODO: consider reading currently selected network address from "Select a Network"
+        this.endpoint="http://superblocks-browser";
     }
 
     setCompiler(compiler) {
@@ -79,7 +68,7 @@ class TestRunnerBridge {
 
         project.listFiles(contractsPath, function(status, list) {
             if(status === 0){
-                // TODO: FIXME: handle sub-directories
+                // TODO: consider supporting sub-directories
                 for(var i=0; i<list.length; i++) {
                     const file = list[i]
                     const fileName = file.name;
@@ -120,7 +109,7 @@ class TestRunnerBridge {
                                 };
                                 input.sources[key] = { content: value };
 
-                                // TODO: FIXME: other required files for compiling the aforementioned input
+                                // TODO: consider supporting other required files for compiling the aforementioned input (dependencies)
                                 const files = {};
 
                                 thisReference.compiler.queue({ input: JSON.stringify(input), files: files }, function(result) {
@@ -165,82 +154,65 @@ class TestRunnerBridge {
 
         //
         // Note: derived from contractinteraction::_getAccountAddress
+        // Note: depends on asynchronous wallet load
         //
-        // TODO: FIXME: depends on project reload (asynchronous wallet load)
-        //              consider project reloads
-        function getAccountAddress () {
-            // Check given account, try to open and get address
-            const accountName = projectReference.getAccount();
-            if (!accountName) {
-                return null;
+        // Check given account, try to open and get address
+        const accountName = projectReference.getAccount();
+        if (!accountName) {
+            this.testAccountAddress=null;
+            this.testAccountKey=null;
+            return;
+        }
+
+        const env = projectReference.getEnvironment();
+        const accounts = projectReference.getHiddenItem('accounts');
+        const account = accounts.getByName(accountName);
+        const accountIndex = account.getAccountIndex(env);
+        const walletName = account.getWallet(env);
+        const wallets = projectReference.getHiddenItem('wallets');
+        const wallet = wallets.getByName(walletName);
+
+        if (!wallet) {
+            this.testAccountAddress=null;
+            this.testAccountKey=null;
+            return;
+        }
+        const walletType = wallet.getWalletType();
+
+        if (walletType == 'external') {
+            // Metamask seems to always only provide one (the chosen) account.
+            var extAccounts = [];
+            if (window.web3 && window.web3.eth)
+                extAccounts = window.web3.eth.accounts || [];
+            if (extAccounts.length < accountIndex + 1) {
+                // Account not matched
+                this.testAccountAddress=null;
+                this.testAccountKey=null;
+                return;
             }
+            this.testAccountAddress=extAccounts[accountIndex];
+        }
 
-            const env = projectReference.getEnvironment();
-            const accounts = projectReference.getHiddenItem('accounts');
-            const account = accounts.getByName(accountName);
-            const accountIndex = account.getAccountIndex(env);
-            const walletName = account.getWallet(env);
-            const wallets = projectReference.getHiddenItem('wallets');
-            const wallet = wallets.getByName(walletName);
-
-            if (!wallet) {
-                return null;
-            }
-            const walletType = wallet.getWalletType();
-
-            if (walletType == 'external') {
-                // Metamask seems to always only provide one (the chosen) account.
-                var extAccounts = [];
-                if (window.web3 && window.web3.eth)
-                    extAccounts = window.web3.eth.accounts || [];
-                if (extAccounts.length < accountIndex + 1) {
-                    // Account not matched
-                    return null;
-                }
-                return extAccounts[accountIndex];
-            }
-
-            if (walletReference.isOpen(walletName)) {
-                const address = walletReference.getAddress(walletName, accountIndex);
-                return address;
-            }
-
-            return null;
-        };
+        if (walletReference.isOpen(walletName)) {
+            this.testAccountAddress = walletReference.getAddress(walletName, accountIndex);
+        } else {
+            this.testAccountAddress=null;
+        }
 
         //
         // Note: derived from superprovider::getKey
         //
-        // TODO: FIXME: consider compressing getAccount* into a single pass (overlapping calls and data)
-        function getAccountKey () {
-            // Check given account, try to open and get address, else return [].
-            const accountName = projectReference.getAccount();
-            if (!accountName) {
-                return null;
+        // Check given account, try to open and get address, else return [].
+        walletReference.getKey(walletName, accountIndex, function(status, key) {
+            if (status == 0) {
+                const address = walletReference.getAddress(walletName, accountIndex);
+                thisReference.testAccountKey = key;
+            } else {
+                const msg = "Could not get key for wallet " + walletName + ".";
+                console.error(msg);
+                thisReference.testAccountKey = null;
             }
-
-            const env = projectReference.getEnvironment();
-            const accounts = projectReference.getHiddenItem('accounts');
-            const account = accounts.getByName(accountName);
-            const accountIndex = account.getAccountIndex(env);
-            const walletName = account.getWallet(env);
-            const wallets = projectReference.getHiddenItem('wallets');
-            const wallet = wallets.getByName(walletName);
-
-            walletReference.getKey(walletName, accountIndex, function(status, key) {
-                if (status == 0) {
-                    const address = walletReference.getAddress(walletName, accountIndex);
-                    thisReference.testAccountKey = key;
-                } else {
-                    const msg = "Could not get key for wallet " + walletName + ".";
-                    console.error(msg);
-                    thisReference.testAccountKey = null;
-                }
-            });
-        };
-
-        this.testAccountAddress = getAccountAddress();
-        getAccountKey();
+        });
     }
 
     //
@@ -276,7 +248,7 @@ class TestRunnerBridge {
                 // TODO: FIXME: always add the placeholder entry (demonstration purposes only)
                 thisReference.testFiles["HelloWorldPlaceholder.test.js"] = PLACEHOLDER_REFERENCE_TEST_CODE;
 
-                // TODO: FIXME: handle sub-directories
+                // TODO: consider supporting sub-directories
                 for(var i=0; i<list.length; i++) {
                     const file = list[i]
                     const fileName = file.name;
@@ -297,7 +269,7 @@ class TestRunnerBridge {
                 //
                 // Toggle early exit condition
                 //
-                // TODO: FIXME: considering this helps preventing multiple loadFile calls,
+                // TODO: considering this helps preventing multiple loadFile calls,
                 // which happens asynchronously, it would be more correct to
                 // aggregate the data in the loop first and do the loadFiles on a separate step
                 // later. After loading is complete, only then toggle this flag.
@@ -310,39 +282,49 @@ class TestRunnerBridge {
     }
 
     _getWeb3(evmProvider) {
-        // TODO: FIXME: input parameter error checking
-        var provider;
-        // TODO: FIXME: checking assumptions
-        if(this.endpoint.toLowerCase()=="http://superblocks-browser") {
-            provider=evmProvider;
-        }
-        else {
-            // TODO: FIXME: error checking
-            provider=new Web3.providers.HttpProvider(this.endpoint);
+        // TODO: consider caching web3 object for subsequent calls
+
+        if(!Web3) {
+            console.error("Unable to access Web3 library: ", Web3);
+            return null;
         }
 
-        // TODO: FIXME: provider error checking
-        // TODO: FIXME: resulted object error checking
+        var provider;
+        if(this.endpoint && this.endpoint.toLowerCase() === "http://superblocks-browser") {
+            if(evmProvider) {
+                provider=evmProvider;
+            } else {
+                console.error("Unable to read EVM provider: ", evmProvider);
+                return null;
+            }
+        } else {
+            if(Web3.providers) {
+                provider=new Web3.providers.HttpProvider(this.endpoint);
+            } else {
+                console.error("Unable to read Web3 providers: ", Web3.providers);
+                return null;
+            }
+        }
+
         var web3=new Web3(provider);
 
         return web3;
     };
 
     runAll(evmProvider) {
-        // TODO: FIXME: returned object error checking
         const web3Object = this._getWeb3(evmProvider);
 
-        this.testRunner.runAll(
-            this.testFiles,
-            this.contractsData,
-            this.testAccountAddress,
-            this.testAccountKey,
-
-            web3Object)                             // TODO: FIXME: consider reusing available web3 object ?
+        if(web3Object !== null) {
+            this.testRunner.runAll(
+                this.testFiles,
+                this.contractsData,
+                this.testAccountAddress,
+                this.testAccountKey,
+                web3Object);
+        }
     }
 
     runSingle(evmProvider, index) {
-        // TODO: FIXME: input data error checking
         const data = this.readData().reportOutput;
 
         var counter = 0;
@@ -364,18 +346,18 @@ class TestRunnerBridge {
             }
         }
 
-        // TODO: FIXME: returned object error checking
         const web3Object = this._getWeb3(evmProvider);
 
-        this.testRunner.runSingle(
-            file,
-            testTitle,
-            this.testFiles,
-            this.contractsData,
-            this.testAccountAddress,
-            this.testAccountKey,
-
-            web3Object);                            // TODO: FIXME: consider reusing available web3 object ?
+        if(web3Object !== null) {
+            this.testRunner.runSingle(
+                file,
+                testTitle,
+                this.testFiles,
+                this.contractsData,
+                this.testAccountAddress,
+                this.testAccountKey,
+                web3Object);
+        }
     }
 
     readData() {
@@ -403,8 +385,7 @@ class TestRunnerBridge {
         };
     }
 
-    // TODO: FIXME: set proper action name (rename)
-    onPlayRun(evmProvider, callback) {
+    onPlay(evmProvider, callback) {
         callback("Loading...");
         this.runAll(evmProvider);
 
@@ -416,7 +397,6 @@ class TestRunnerBridge {
         },2000);
     }
 
-    // TODO: FIXME: set proper action name (rename)
     onRetry(evmProvider, index, callback) {
         callback("Loading...");
         testRunnerBridge.runSingle(evmProvider, index, callback);
@@ -443,7 +423,7 @@ const PLACEHOLDER_REFERENCE_TEST_CODE=`
         var contractInstance;
 
         beforeEach(function (done) {
-            // TODO: FIXME: constructor parameters
+            // TODO: consider adding a helper for handling constructor parameters
             const contractBin = HelloWorld.bin + "0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c48656c6c6f20576f726c64210000000000000000000000000000000000000000";
             const contractABI = HelloWorld.abi;
 

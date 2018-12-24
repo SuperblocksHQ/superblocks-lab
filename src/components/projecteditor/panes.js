@@ -491,7 +491,7 @@ export default class Panes extends Component {
                         <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize={30} secondaryMinSize={30} vertical={false}>
                             <div className={style.leftPane}>
                                 <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={readTotalTestDataTime() + " ms"} />
-                                <TestControls onClickPlay={() => {testRunnerBridge.onPlayRun(evmProvider, this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(evmProvider, readSelectedTestId(), this.onTestCompleted)}} />
+                                <TestControls onClickPlay={() => {testRunnerBridge.onPlay(evmProvider, this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(evmProvider, readSelectedTestId(), this.onTestCompleted)}} />
                                 <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
                                     <Test open={this.state.open} />
                                 </div>
