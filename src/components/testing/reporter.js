@@ -103,21 +103,28 @@ export function CustomReporter(runner) {
         if(suite) {
             const parentReference = suite.parent;
             if(parentReference && parentReference.title) {
-                // TODO: FIXME: revisit the need for extracting the title (demonstration purposes only)
-                const key = parentReference.title.split(": ")[1]; // extract title
+                const splitTitle = parentReference.title.split(": ");
 
                 //
-                // Register test suite
-                const suiteTests = suite.tests;
-                if(suiteTests) {
-                    const suiteLength = suiteTests.length;
-                    if(key && suiteLength > 0) {
-                        dataAddTotalTestCount(suiteLength);
-                        console.log("[TestRunner] suite \"" + suite.title + "\" total test count: " + readTotalTestCount());
-                        for(var i=0; i<suiteLength; i++) {
-                            registerTestSuite(key, suite);
+                // Extract title
+                if(splitTitle[0] === "Test name") {
+                    const key = splitTitle[1];
+
+                    //
+                    // Register test suite
+                    const suiteTests = suite.tests;
+                    if(suiteTests) {
+                        const suiteLength = suiteTests.length;
+                        if(key && suiteLength > 0) {
+                            dataAddTotalTestCount(suiteLength);
+                            console.log("[TestRunner] suite \"" + suite.title + "\" total test count: " + readTotalTestCount());
+                            for(var i=0; i<suiteLength; i++) {
+                                registerTestSuite(key, suite);
+                            }
                         }
                     }
+                } else {
+                    console.error("Unexpected error. Parent reference title is not a valid test group: " + parentReference.title);
                 }
             }
         }

@@ -47,7 +47,7 @@ export default class TestRunner {
         return contracts;
     }
 
-    _run(testName, testCode, contractsData, accountAddress, accountKey, web3) {
+    _run(testName, testCode, contractsData, accountAddress, accountKey, web3, callback) {
         if(!accountAddress || accountAddress === null) {
             console.error("[TestRunner] Unable to run: undefined account address");
             return;
@@ -71,50 +71,55 @@ export default class TestRunner {
 
         //
         // Setup Mocha
-        // TODO: FIXME: consider create or none instead ?
-        //var suiteInstance = mocha.suite.create(mochaInstance.suite, 'Test Suite');
-        // TODO: FIXME: reference error handling
-        mocha.suite = mocha.suite.clone();
-        mocha.setup("bdd");
-        mocha.reporter(CustomReporter);
+        if(mocha && mocha.suite) {
+            // TODO: Consider create or none instead ?
+            //var suiteInstance = mocha.suite.create(mochaInstance.suite, 'Test Suite');
+            mocha.suite = mocha.suite.clone();
+            mocha.setup("bdd");
+            mocha.reporter(CustomReporter);
 
-        describe("Test name: " + testName, function() {
-            try {
-                // TODO: FIXME: consider a better alternative for dynamically adding tests
-                // Note: alternatively, could use mocha.suite.addTest(new Test ... ), given the possibility to access the inner library
-                //
-                // Reference:
-                //   const statement="describe(\"Hello World\", function(){var contractInstance;beforeEach(function(){console.warn(\"testing...\");});it(\"testing tests\",function(){console.log(true); }); });";
-                eval(contracts + testCode);
-            } catch(e) {
-                thisReference._status="Invalid test file. " + e;
-                console.error("[TestRunner] error: ", thisReference._status);
-                return;
-            }
-        });
+            describe("Test name: " + testName, function() {
+                try {
+                    // TODO: FIXME: consider a better alternative for dynamically adding tests
+                    // Note: alternatively, could use mocha.suite.addTest(new Test ... ), given the possibility to access the inner library
+                    // See also: Runner
+                    // Reference:
+                    //   const statement="describe(\"Hello World\", function(){var contractInstance;beforeEach(function(){console.warn(\"testing...\");});it(\"testing tests\",function(){console.log(true); }); });";
+                    eval(contracts + testCode);
+                } catch(e) {
+                    thisReference._status="Invalid test file. " + e;
+                    console.error("[TestRunner] error: ", thisReference._status);
+                    return;
+                }
+            });
 
-        // Invoke Mocha
-        mocha.checkLeaks();
-        //mocha.allowUncaught();
-        mocha.fullTrace();
-        // TODO: FIXME: error handling
-        const runner = mocha.run(function() {
-            console.log("[TestRunner] test run completed!");
-        });
+            // Invoke Mocha
+            mocha.checkLeaks();
+            //mocha.allowUncaught();
+            mocha.fullTrace();
+            const runner = mocha.run(function() {
+                if(callback) {
+                    callback();
+                }
+                console.log("[TestRunner] test run completed!");
+            });
+        } else {
+            console.error("[TestRunner] unable to access test library: ", mocha);
+        }
     }
 
     readStatus() {
         return this._status;
     }
 
-    runAll(testFiles, contractsData, accountAddress, accountKey, web3) {
+    runAll(testFiles, contractsData, accountAddress, accountKey, web3, callback) {
         for(var testName in testFiles) {
             const testCode = testFiles[testName];
-            this._run(testName, testCode, contractsData, accountAddress, accountKey, web3);
+            this._run(testName, testCode, contractsData, accountAddress, accountKey, web3, callback);
         }
     };
 
-    runSingle(file, title, testFiles, contractsData, accountAddress, accountKey, web3) {
+    runSingle(file, title, testFiles, contractsData, accountAddress, accountKey, web3, callback) {
         if(!file || file === null) {
             console.error("[TestRunner] Unable to target empty file when running single tests");
             return;
@@ -125,9 +130,9 @@ export default class TestRunner {
             return;
         }
 
-        // TODO: FIXME: consider multiple occurrences
-        //              consider case (in)sensitive
-        //              consider single and double quotes
+        // TODO: Consider multiple occurrences;
+        //       Consider case (in)sensitive;
+        //       Consider single and double quotes.
         for(var testName in testFiles) {
             if(testName === file) {
                 const testCode = testFiles[testName];
@@ -135,7 +140,7 @@ export default class TestRunner {
                 const replaceWith = 'it.only("' + title + '",';
                 const singleTestCode = testCode.replace(regex, replaceWith);
 
-                this._run(testName, singleTestCode, contractsData, accountAddress, accountKey, web3);
+                this._run(testName, singleTestCode, contractsData, accountAddress, accountKey, web3, callback);
 
                 return;
             }

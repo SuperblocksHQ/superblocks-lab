@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Studio.  If not, see <http://www.gnu.org/licenses/>.
 
-import ABI from '../../ethereumjs-abi-0.6.5.min.js';
+import ABI from "../../ethereumjs-abi-0.6.5.min.js";
 
 
 //
@@ -26,23 +26,29 @@ export default class TestLibrary {
     }
 
     assert_call=(instance, address, method, args, expectedType, expectedValue, done)=> {
-        // TODO: FIXME: error handling
+        if(!ABI) {
+            done(new Error("Unable to access ABI library"));
+            return;
+        }
+
         var data_name=ABI.ABI.methodID(method, args);
         var expectedValue="0x" + ABI.ABI.rawEncode(expectedType, expectedValue).toString("hex");
-        it('matches data', function (done) {
-            instance._eth.call({to: address, data: data_name}, function(error, result) {
-                if(!error) {
-                    console.warn(result);
-                    console.warn(expectedValue);
-                    if(result !== expectedValue) {
-                        done(new Error(result));
+        it("matches data", function (done) {
+            if(instance && instance._eth) {
+                instance._eth.call({to: address, data: data_name}, function(error, result) {
+                    if(!error) {
+                        if(result !== expectedValue) {
+                            done(new Error(result));
+                        } else {
+                            done();
+                        }
                     } else {
-                        done();
+                        done(new Error(error));
                     }
-                } else {
-                    done(new Error(error));
-                }
-            });
+                });
+            } else {
+                done(new Error("Unable to access Web3 instance"));
+            }
         });
     }
 }

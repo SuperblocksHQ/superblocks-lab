@@ -311,7 +311,7 @@ class TestRunnerBridge {
         return web3;
     };
 
-    runAll(evmProvider) {
+    runAll(evmProvider, callback) {
         const web3Object = this._getWeb3(evmProvider);
 
         if(web3Object !== null) {
@@ -320,11 +320,12 @@ class TestRunnerBridge {
                 this.contractsData,
                 this.testAccountAddress,
                 this.testAccountKey,
-                web3Object);
+                web3Object,
+                callback);
         }
     }
 
-    runSingle(evmProvider, index) {
+    runSingle(evmProvider, index, callback) {
         const data = this.readData().reportOutput;
 
         var counter = 0;
@@ -356,7 +357,8 @@ class TestRunnerBridge {
                 this.contractsData,
                 this.testAccountAddress,
                 this.testAccountKey,
-                web3Object);
+                web3Object,
+                callback);
         }
     }
 
@@ -387,26 +389,24 @@ class TestRunnerBridge {
 
     onPlay(evmProvider, callback) {
         callback("Loading...");
-        this.runAll(evmProvider);
 
-        // TODO: FIXME: remove timeout in favor of asynchronous event
-        // to be executed after the previous run call
-        setTimeout(()=>{
-            const data = this.readData();
+        const thisReference=this;
+        function setDataCallback() {
+            const data = thisReference.readData();
             callback(data);
-        },2000);
+        }
+        this.runAll(evmProvider, setDataCallback);
     }
 
     onRetry(evmProvider, index, callback) {
         callback("Loading...");
-        testRunnerBridge.runSingle(evmProvider, index, callback);
 
-        // TODO: FIXME: remove timeout in favor of asynchronous event
-        // to be executed after the previous run call
-        setTimeout(()=>{
-            const data = this.readData();
+        const thisReference=this;
+        function setDataCallback() {
+            const data = thisReference.readData();
             callback(data);
-        },2000);
+        }
+        testRunnerBridge.runSingle(evmProvider, index, setDataCallback);
     };
 }
 
