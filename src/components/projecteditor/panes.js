@@ -100,35 +100,66 @@ export default class Panes extends Component {
     }
 
     componentDidMount() {
-        // TODO: FIXME: consider relocating to more appropriate place
-        const compiler = this.props.functions.compiler;
-        if(compiler) {
-            testRunnerBridge.setCompiler(compiler);
-        } else {
-            console.error("Unable to set test compiler reference. Reads: ", compiler);
-        }
+        this.reloadTestRunner();
+        // TODO: improve time-based interval code to only update on change (filesystem notification)
+        this.reloadTestFilesTimer = setInterval(this.reloadTestFiles, 3000);
 
         window.addEventListener('resize', () => {
             this.redraw();
         });
     }
 
+    componentWillUnmount() {
+        clearInterval(this.reloadTestFilesTimer);
+    }
+
     componentDidUpdate() {
-        // TODO: FIXME: consider relocating to more appropriate place
-        //              consider project reloads
+        this.reloadTestRunner();
+    }
+
+    reloadTestRunner() {
+        const compiler = this.props.functions.compiler;
+        if(compiler) {
+            testRunnerBridge.setCompiler(compiler);
+        } else {
+            const errorMessage = "Unable to set test compiler reference";
+            this.onTestCompleted(errorMessage);
+            setTimeout(() => this.reloadTestRunner(), 2000);
+            return;
+        }
+
         const project = this.props.router.control.getActiveProject();
         const wallet = this.props.functions.wallet;
         if(project) {
             testRunnerBridge.loadReferencesData(project, wallet);
+            const message = "Ready";
+            if(!this.state || message !== this.state.resultData) {
+                this.onTestCompleted(message);
+            }
         } else {
-            console.error("Unable to retrieve active project for test contracts data. Reads: ", project);
+            const errorMessage = "No project selected";
+            if(!this.state ||
+                errorMessage !== this.state.resultData) {
+                this.onTestCompleted(errorMessage);
+                setTimeout(() => this.reloadTestRunner(), 2000);
+                return;
+            }
         }
+    }
 
-        // TODO: FIXME: consider relocating to more appropriate place
-        if(project) {
-            testRunnerBridge.loadTestFiles(project);
-        } else {
-            console.error("Unable to retrieve active project for loading test files. Reads: ", project);
+    reloadTestFiles = () => {
+        if(this.props && this.props.router) {
+            const project = this.props.router.control.getActiveProject();
+            if(project) {
+                const thisReference = this;
+                testRunnerBridge.loadTestFiles(project, function(errorMessage) {
+                    if(!thisReference.state ||
+                        errorMessage !== thisReference.state.resultData) {
+                        thisReference.onTestCompleted(errorMessage);
+                        setTimeout(() => thisReference.reloadTestRunner(), 2000);
+                    }
+                });
+            }
         }
     }
 
@@ -439,12 +470,30 @@ export default class Panes extends Component {
         return <div>{html}</div>;
     };
 
+    loadProvider() {
+        if(this.props.functions.EVM.isReady()) {
+            if(this.state.evmProvider === undefined) {
+                const evmProvider = this.props.functions.EVM.getProvider();
+                this.setState({evmProvider: evmProvider});
+                return evmProvider;
+            } else {
+                return this.state.evmProvider;
+            }
+        } else {
+            const errorMessage = "Compiler not loaded yet...";
+            if(!this.state ||
+                errorMessage !== this.state.resultData) {
+                this.onTestCompleted(errorMessage);
+            }
+            return null;
+        }
+    }
+
     onTestCompleted = (data) => {
         if(!data) {
             console.error("Unable to read data from completed test");
             return;
         }
-
         this.setState({resultData: data});
 
         //
@@ -466,7 +515,6 @@ export default class Panes extends Component {
         const { resultData } = this.state;
         const { isActionPanelShowing, testPanel } = this.props;
 
-        const evmProvider = this.props.functions.EVM.getProvider();
 
         return (
             <div
@@ -491,7 +539,7 @@ export default class Panes extends Component {
                         <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize={30} secondaryMinSize={30} vertical={false}>
                             <div className={style.leftPane}>
                                 <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={readTotalTestDataTime() + " ms"} />
-                                <TestControls onClickPlay={() => {testRunnerBridge.onPlay(evmProvider, this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(evmProvider, readSelectedTestId(), this.onTestCompleted)}} />
+                                <TestControls onClickPlay={() => {testRunnerBridge.onPlay(this.loadProvider(), this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(this.loadProvider(), readSelectedTestId(), this.onTestCompleted)}} />
                                 <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
                                     <Test open={this.state.open} />
                                 </div>

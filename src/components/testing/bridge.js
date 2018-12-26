@@ -161,6 +161,7 @@ class TestRunnerBridge {
         if (!accountName) {
             this.testAccountAddress=null;
             this.testAccountKey=null;
+            setTimeout(() => thisReference._setAccountsData(projectReference, walletReference), 1000);
             return;
         }
 
@@ -175,6 +176,7 @@ class TestRunnerBridge {
         if (!wallet) {
             this.testAccountAddress=null;
             this.testAccountKey=null;
+            setTimeout(() => thisReference._setAccountsData(projectReference, walletReference), 1000);
             return;
         }
         const walletType = wallet.getWalletType();
@@ -188,6 +190,7 @@ class TestRunnerBridge {
                 // Account not matched
                 this.testAccountAddress=null;
                 this.testAccountKey=null;
+                setTimeout(() => thisReference._setAccountsData(projectReference, walletReference), 1000);
                 return;
             }
             this.testAccountAddress=extAccounts[accountIndex];
@@ -197,6 +200,8 @@ class TestRunnerBridge {
             this.testAccountAddress = walletReference.getAddress(walletName, accountIndex);
         } else {
             this.testAccountAddress=null;
+            setTimeout(() => thisReference._setAccountsData(projectReference, walletReference), 1000);
+            return;
         }
 
         //
@@ -211,6 +216,8 @@ class TestRunnerBridge {
                 const msg = "Could not get key for wallet " + walletName + ".";
                 console.error(msg);
                 thisReference.testAccountKey = null;
+                setTimeout(() => thisReference._setAccountsData(projectReference, walletReference), 1000);
+                return;
             }
         });
     }
@@ -223,7 +230,7 @@ class TestRunnerBridge {
         this._setAccountsData(project, wallet);
     }
 
-    loadTestFiles(project) {
+    loadTestFiles(project, callback) {
 
         // Early exit
         if(this.isLoadingTestFiles) {
@@ -238,7 +245,7 @@ class TestRunnerBridge {
 
         // Load data
         project.listFiles(testsPath, function(status, list) {
-            if(status === 0){
+            if(status === 0 && list.length > 0){
 
                 //
                 // Rebuild data from scractch
@@ -266,18 +273,19 @@ class TestRunnerBridge {
                     }
                 }
 
-                //
-                // Toggle early exit condition
-                //
-                // TODO: considering this helps preventing multiple loadFile calls,
-                // which happens asynchronously, it would be more correct to
-                // aggregate the data in the loop first and do the loadFiles on a separate step
-                // later. After loading is complete, only then toggle this flag.
-                thisReference.isLoadingTestFiles = false;
-
             } else {
-                console.error("Error trying to read contracts path: " + testsPath);
+                const errorMessage = "No tests available in " + testsPath;
+                callback(errorMessage);
             }
+
+            //
+            // Toggle early exit condition
+            //
+            // TODO: considering this helps preventing multiple loadFile calls,
+            // which happens asynchronously, it would be more correct to
+            // aggregate the data in the loop first and do the loadFiles on a separate step
+            // later. After loading is complete, only then toggle this flag.
+            thisReference.isLoadingTestFiles = false;
         });
     }
 
@@ -312,6 +320,12 @@ class TestRunnerBridge {
     };
 
     runAll(evmProvider, callback) {
+        //
+        // Early exit
+        if(this.testFiles.length === undefined || this.testFiles.length === 0) {
+            callback("No tests available in /tests");
+        }
+
         const web3Object = this._getWeb3(evmProvider);
 
         if(web3Object !== null) {
@@ -326,6 +340,12 @@ class TestRunnerBridge {
     }
 
     runSingle(evmProvider, index, callback) {
+        //
+        // Early exit
+        if(this.testFiles.length === undefined || this.testFiles.length === 0) {
+            callback("No tests available in /tests");
+        }
+
         const data = this.readData().reportOutput;
 
         var counter = 0;
@@ -406,7 +426,7 @@ class TestRunnerBridge {
             const data = thisReference.readData();
             callback(data);
         }
-        testRunnerBridge.runSingle(evmProvider, index, setDataCallback);
+        this.runSingle(evmProvider, index, setDataCallback);
     };
 }
 

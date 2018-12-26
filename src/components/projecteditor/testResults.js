@@ -89,7 +89,7 @@ export function setTestData(data) {
         TestData.push(newTest);
     }
 
-    const totalDummyTestTime = 5*4;
+/*    const totalDummyTestTime = 5*4;
     totalTestDataTime += totalDummyTestTime;
 
     const totalDummyTestTimeString = totalDummyTestTime + " ms";
@@ -147,7 +147,7 @@ export function setTestData(data) {
 
     //
     // Update data
-    TestData.push(dummyTest);
+    TestData.push(dummyTest);*/
 }
 
 export default class Test extends React.Component {
@@ -189,11 +189,6 @@ export default class Test extends React.Component {
                     </div>
                 );
             });
-        } else {
-            // TODO: FIXME: reconsider feedback
-            nodes = (
-                <div style={{color: "white", marginLeft: "10px"}}><p>Press the green Play button to start.</p></div>
-            );
         }
 
         return (
