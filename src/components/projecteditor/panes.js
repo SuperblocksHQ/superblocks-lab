@@ -133,13 +133,12 @@ export default class Panes extends Component {
         if(project) {
             testRunnerBridge.loadReferencesData(project, wallet);
             const message = "Ready";
-            if(!this.state || message !== this.state.resultData) {
+            if(!this.state || (typeof this.state.resultData === "string" && message !== this.state.resultData) ) {
                 this.onTestCompleted(message);
             }
         } else {
             const errorMessage = "No project selected";
-            if(!this.state ||
-                errorMessage !== this.state.resultData) {
+            if(!this.state || (typeof this.state.resultData === "string" && errorMessage !== this.state.resultData) ) {
                 this.onTestCompleted(errorMessage);
                 setTimeout(() => this.reloadTestRunner(), 2000);
                 return;
