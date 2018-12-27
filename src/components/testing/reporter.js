@@ -157,7 +157,7 @@ export function CustomReporter(runner) {
                     generatedError = stack[1].split("<anonymous>:")[1];
                 }
 
-                if(generatedError !== null){
+                if(generatedError !== null && generatedError !== undefined){
                     var reason = "unknown";
                     if(stack[0]) {
                         reason = stack[0].split("Error: ")[1];
@@ -170,7 +170,7 @@ export function CustomReporter(runner) {
                     console.error(errorOutput);
                     reporterStatus = errorOutput;
                 } else {
-                    reporterStatus = error;
+                    reporterStatus = error.toString();
                 }
             } else {
                 console.error("Unexpected error data on failure. Test: ", test, " Error: ", error);
