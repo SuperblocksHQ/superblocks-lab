@@ -98,6 +98,10 @@ export function readReporterStatus() {
     return reporterStatus;
 }
 
+export function resetReportData() {
+    dataReset();
+}
+
 export function CustomReporter(runner) {
     runner.on("suite", function(suite){
         if(suite) {

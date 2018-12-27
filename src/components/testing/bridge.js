@@ -20,7 +20,7 @@
 //
 
 import TestRunner from "../testing/testrunner";
-import { readReportSuccesses, readReportFailures, readTotalTestCount, readReportOutput, readReporterStatus } from "../testing/reporter";
+import { readReportSuccesses, readReportFailures, readTotalTestCount, readReportOutput, readReporterStatus, resetReportData } from "../testing/reporter";
 
 class TestRunnerBridge {
     constructor() {
@@ -238,7 +238,12 @@ class TestRunnerBridge {
         }
 
         this.isLoadingTestFiles = true;
+
         console.log("Loading test files...");
+
+        //
+        // Rebuild data from scratch
+        this.testFiles = {};
 
         const thisReference = this;
         const testsPath = "/tests";
@@ -246,10 +251,6 @@ class TestRunnerBridge {
         // Load data
         project.listFiles(testsPath, function(status, list) {
             if(status === 0 && list.length > 0){
-
-                //
-                // Rebuild data from scractch
-                thisReference.testFiles = {};
 
                 //
                 // TODO: FIXME: always add the placeholder entry (demonstration purposes only)
@@ -324,6 +325,7 @@ class TestRunnerBridge {
         // Early exit
         if(this.testFiles.length === undefined || this.testFiles.length === 0) {
             callback("No tests available in /tests");
+            resetReportData();
         }
 
         const web3Object = this._getWeb3(evmProvider);
@@ -344,6 +346,7 @@ class TestRunnerBridge {
         // Early exit
         if(this.testFiles.length === undefined || this.testFiles.length === 0) {
             callback("No tests available in /tests");
+            resetReportData();
         }
 
         const data = this.readData().reportOutput;
