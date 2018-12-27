@@ -229,7 +229,7 @@ export default class ProjectEditor extends Component {
                                     ])}
                                     onClick={togglePreviewPanel}
                                 >
-                                    <IconShowPreview />
+                                    <IconShowPreview style={{ verticalAlign: "top" }}/>
                                     <span className={style.verticalText}>
                                         Preview
                                     </span>

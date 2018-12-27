@@ -51,9 +51,6 @@ export class PreviewSidePanel extends React.Component {
                         <button className="btnNoBg" title="Download" onClick={() => this.download()}>
                             <Tooltip title="Download DApp"><IconDownloadDApp /></Tooltip>
                         </button>
-                        <button className="btnNoBg" title="Open window" onClick={() => this.refresh()}>
-                            <Tooltip title="Open window"><IconOpenWindow /></Tooltip>
-                        </button>
                     </div>
                     <iframe id={IFRAME_ID} src={getIframeSrc()}></iframe>
                 </div>
