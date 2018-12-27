@@ -16,8 +16,9 @@
 
 import React from 'react';
 import Web3 from 'web3';
-import Tx from '../../ethereumjs-tx-1.3.3.min.js';
 import Modal from '../modal/index.js';
+
+const TxEth = () => import(/* webpackChunkName: "ethereumjs-tx" */ '../../ethereumjs-tx-1.3.3.min.js');
 
 export default class SuperProvider {
     constructor(channelId, projectItem, notifyTx) {
@@ -216,17 +217,19 @@ export default class SuperProvider {
                     endpoint: data.endpoint,
                 };
                 this._openWallet(obj2, accountName, status => {
-                    if (status !== 0) {
+                    if (status != 0) {
                         const err = 'Could not open wallet.';
                         callback(err, null);
                         return;
                     }
-                    this._getNonce(obj2, status => {
-                        if (status !== 0) {
+                    this._getNonce(obj2, async status => {
+                        if (status != 0) {
                             const err = 'Could not get nonce.';
                             callback(err, null);
                             return;
                         }
+                        const asyncTx = await TxEth();
+                        const Tx = asyncTx.default;
                         const tx = new Tx.Tx({
                             from: obj2.account.address,
                             to: obj.to,
