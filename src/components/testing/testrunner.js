@@ -87,7 +87,7 @@ export default class TestRunner {
                     //   const statement="describe(\"Hello World\", function(){var contractInstance;beforeEach(function(){console.warn(\"testing...\");});it(\"testing tests\",function(){console.log(true); }); });";
                     eval(contracts + testCode);
                 } catch(e) {
-                    thisReference._status="Invalid test file. " + e;
+                    thisReference._status="Invalid test file: " + testName + ". " + e;
                     console.error("[TestRunner] error: ", thisReference._status);
                     return;
                 }
