@@ -46,7 +46,6 @@ import iconPencil from '@fortawesome/fontawesome-free-solid/faPencilAlt';
 import iconDownload from '@fortawesome/fontawesome-free-regular/faArrowAltCircleDown';
 import iconMosaic from '@fortawesome/fontawesome-free-solid/faThLarge';
 import iconChain from '@fortawesome/fontawesome-free-solid/faLink';
-import iconPlay from '@fortawesome/fontawesome-free-solid/faPlay'
 class IconImg extends Component {
     render() {
         let { width, height, ...props } = this.props;
