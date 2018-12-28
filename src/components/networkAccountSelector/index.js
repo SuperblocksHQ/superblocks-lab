@@ -14,6 +14,7 @@ import {
     IconMetamask,
     IconMetamaskLocked,
     IconPublicAddress,
+    IconCopy,
 } from '../icons';
 
 class NetworkDropdown extends Component {
@@ -119,9 +120,22 @@ class NetworkSelector extends Component {
 }
 
 class AccountDropdown extends Component {
+    copyToClipboard = str => {
+        const el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    }
+
     render() {
         var accounts, chosenAccount;
         const project = this.props.router.control.getActiveProject();
+        const chosenEnv = project.getEnvironment();
         if (!project) {
             // Setup default account just for show.
             accounts = [
@@ -143,7 +157,12 @@ class AccountDropdown extends Component {
             cls[style.accountLink] = true;
             if (account.getName() == chosenAccount)
                 cls[style.accountLinkChosen] = true;
-
+            
+            var address = '';
+            if (this.props.functions.EVM.isReady()) {
+                const accountIndex = account.getAccountIndex('browser')
+                address = this.props.functions.wallet.getAddress('development', accountIndex);
+            }
             var deleteButton;
             if (index !== 0) {
                 deleteButton = (
@@ -187,6 +206,20 @@ class AccountDropdown extends Component {
                                     <IconEdit />
                                 </Tooltip>
                             </button>
+                        {chosenEnv == 'browser' &&
+                            <button
+                                className="btnNoBg"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.copyToClipboard(address)
+                                }}
+                            >
+                                <Tooltip title="Copy address">
+                                    <IconCopy />
+                                </Tooltip>
+                            </button>
+                        }
                             {deleteButton}
                         </div>
                     </div>
@@ -471,6 +504,7 @@ class AccountSelector extends Component {
                         onAccountEdit={this.accountEdit}
                         onAccountDelete={this.accountDelete}
                         onNewAccountClicked={this.onNewAccountClickHandle}
+                        functions={this.props.functions}
                     />
                 }
             >
