@@ -30,7 +30,7 @@ export default class ProjectEditor extends Component {
         controlPanelWidth: 280,
         minSize: 280,
         draggin: false,
-        openPanel: true
+        testPanelIsOpen: true         // TODO: FIXME: start closed
     }
 
     constructor(props) {
@@ -53,12 +53,12 @@ export default class ProjectEditor extends Component {
         );
     }
 
-    handleClosePanel = () => {
-        this.setState({openPanel: false});
+    testPanelClose = () => {
+        this.setState({testPanelIsOpen: false});
     }
 
-    handleTogglePanel = () => {
-        this.setState({openPanel: !this.state.openPanel});
+    testPanelToggle = () => {
+        this.setState({testPanelIsOpen: !this.state.testPanelIsOpen});
     }
 
     // we could get away with not having this (and just having the listeners on
@@ -164,7 +164,7 @@ export default class ProjectEditor extends Component {
                 ).endpoint;
             }
         }
-        const { controlPanelWidth, openPanel } = this.state;
+        const { controlPanelWidth, testPanelIsOpen } = this.state;
         const { displayTransactionsPanel } = this.props;
 
         return (
@@ -198,7 +198,13 @@ export default class ProjectEditor extends Component {
                             id="main_panes"
                             className={style.panescontainer}
                         >
-                            <Panes closeTestPanel={this.handleClosePanel} testPanel={openPanel} router={this.props.router} functions={this.props.functions} isActionPanelShowing={displayTransactionsPanel} />
+                            <Panes
+                                router={this.props.router}
+                                functions={this.props.functions}
+                                isActionPanelShowing={displayTransactionsPanel}
+                                closeTestPanel={this.testPanelClose}
+                                testPanel={testPanelIsOpen}
+                            />
                             {displayTransactionsPanel ? (
                                 <div className={style.actionContainer}>
                                     <div className={style.header}>
@@ -239,7 +245,8 @@ export default class ProjectEditor extends Component {
                         </div>
 
                         <BottomBar
-                            endpoint={endpoint} togglePanel={this.handleTogglePanel}
+                            endpoint={endpoint}
+                            togglePanel={this.testPanelToggle}
                         />
                 </div>
                 </div>
