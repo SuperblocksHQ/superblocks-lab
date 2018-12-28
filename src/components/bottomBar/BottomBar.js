@@ -33,8 +33,7 @@ export default class BottomBar extends Component {
         return (
             <div className={style.bottomStatusBar}>
                 <div className={style.actions}>
-                    <button className={classNames([style.action, "btnNoBg"])}
-                            onClick={ () => this.props.togglePanel() }>
+                    <button className={classNames([style.action, "btnNoBg"])} onClick={ () => this.props.togglePanel() }>
                         <IconTest className={style.testTube} />
                         <span className={style.testLabel}>Tests</span>
                     </button>

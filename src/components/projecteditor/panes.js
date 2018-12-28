@@ -38,7 +38,9 @@ const ConsoleTopBar =(props)=>
         <div className={style.consoleTopBar}>
             <span className={style.testBar}>
                 <IconTest className={style.icon}  />
-            <span className={style.testText}>Tests</span>
+                <span className={style.testText}>
+                    Tests
+                </span>
             </span>
             <div className={style.closeIcon}>
                 <button className="btnNoBg">
@@ -46,8 +48,9 @@ const ConsoleTopBar =(props)=>
                 </button>
             </div>
         </div>
-);
+    );
 }
+
 const TestControls =(props)=>{
     return(
         <div className={style.testControls}>
@@ -57,33 +60,41 @@ const TestControls =(props)=>{
                         <IconPlay className={style.iconPlay} />
                     </button>
                 </div>
-        <div>
+                <div>
                     <button className="btnNoBg" title="Refresh" onClick={props.onClickRetry}>
-                <IconRun  />
-            </button>
-        </div>
-       <div className={style.buttons}>
-             <button className="btnNoBg" title="Stop" onClick={
-                () => {
-                    {
-                        // TODO: FIXME: being used as a way to debug data
-                        // TODO: FIXME: remove debugging code
-                        console.warn(testRunnerBridge.readData());
-                    }
-                }
-             }>
-                  <IconStop />
-             </button>
-        </div>
+                        <IconRun  />
+                    </button>
+                </div>
+                <div className={style.buttons}>
+                    <button className="btnNoBg" title="Stop" onClick={
+                        () => {
+                            {
+                                // TODO: FIXME: being used as a way to debug data
+                                // TODO: FIXME: remove debugging code
+                                console.warn(testRunnerBridge.readData());
+                            }
+                        }
+                    }>
+                        <IconStop />
+                    </button>
+                </div>
             </span>
-        </div>)
+        </div>
+    );
 };
+
 const TestFilesHeader =(props)=>{
-    const { total, totalDone, time } =props;
-    return(<div className={style.testFile }>
-        <span className={style.bartext}>Done {totalDone} of {total} tests</span>
-        <span>{time}</span>
-    </div>)
+    const { total, totalDone, time } = props;
+    return(
+        <div className={style.testFile }>
+            <span className={style.bartext}>
+                Done {totalDone} of {total} tests
+            </span>
+            <span>
+                {time}
+            </span>
+        </div>
+    );
 };
 
 
@@ -528,43 +539,52 @@ export default class Panes extends Component {
                     {header}
                 </div>
                 {/*remove this condition and add proper state management for handling closing the pane.*/}
-               { this.props.testPanel &&
-                <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} vertical={true}>
+                {
+                    this.props.testPanel &&
+                    <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={60} vertical={true}>
+                        <div key="panes2" className={style.panes}>
+                            {panes}
+                        </div>
+                        <div>
+                            <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
+                            <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize={30} secondaryMinSize={30} vertical={false}>
+                                <div className={style.leftPane}>
+                                    <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={readTotalTestDataTime() + " ms"} />
+                                    <TestControls onClickPlay={() => {testRunnerBridge.onPlay(this.loadProvider(), this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(this.loadProvider(), readSelectedTestId(), this.onTestCompleted)}} />
+                                    <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
+                                        <Test open={this.state.open} />
+                                    </div>
+                                </div>
+                                <div className={style.rightPane}>
+                                    <div className={style.rightStatusBar}>
+                                        <span className={style.statusBar}>
+                                            Test Summary
+                                        </span>
+                                        <span style={{ color: '#7ed321' }} className={style.statusBar}>
+                                            {resultData.summary ? resultData.summary.passed : 0} Passed
+                                        </span>
+                                        <span style={{ color: '#d0021b' }} className={style.statusBar}>
+                                            {resultData.summary ? resultData.summary.failed : 0} Failed
+                                        </span>
+                                        <span className={style.statusBar}>
+                                            {resultData.summary ? resultData.summary.total : 0  } Total
+                                        </span>
+                                    </div>
+                                    <div className={style.consoleText}>
+                                        {resultData.consoleOutput}
+                                    </div>
+                                </div>
+                            </SplitterLayout>
+                        </div>
+                    </SplitterLayout>
+                }
+                {
+                    !this.props.testPanel &&
                     <div key="panes2" className={style.panes}>
                         {panes}
                     </div>
-                    <div>
-                        <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
-                        <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize={30} secondaryMinSize={30} vertical={false}>
-                            <div className={style.leftPane}>
-                                <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={readTotalTestDataTime() + " ms"} />
-                                <TestControls onClickPlay={() => {testRunnerBridge.onPlay(this.loadProvider(), this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(this.loadProvider(), readSelectedTestId(), this.onTestCompleted)}} />
-                                <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
-                                    <Test open={this.state.open} />
-                                </div>
-                            </div>
-                        <div className={style.rightPane}>
-                            <div className={style.rightStatusBar}>
-                                <span className={style.statusBar}>Test Summary</span>
-                                <span style={{ color: '#7ed321' }} className={style.statusBar}>{resultData.summary ? resultData.summary.passed : 0} Passed</span>
-                                <span style={{ color: '#d0021b' }} className={style.statusBar}>{resultData.summary ? resultData.summary.failed : 0} Failed</span>
-                                <span className={style.statusBar}>{resultData.summary ? resultData.summary.total : 0  } Total</span>
-                            </div>
-                            <div className={style.consoleText}>{resultData.consoleOutput}</div>
-                        </div>
-                        </SplitterLayout>
-                    </div>
-                </SplitterLayout>
-               }
-               {
-                   !this.props.testPanel &&
-                   <div key="panes2" className={style.panes}>
-                       {panes}
-                   </div>
-               }
-           </div>
-
-
+                }
+            </div>
         );
     }
 }
