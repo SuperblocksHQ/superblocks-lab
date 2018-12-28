@@ -20,7 +20,7 @@ import { sidePanelsActions } from '../../actions';
 
 const mapStateToProps = state => ({
     displayTransactionsPanel: state.sidePanels.showTransactionsHistory,
-    displayPreviewPanel: state.sidePanels.showPreview
+    previewSidePanel: state.sidePanels.preview
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -34,9 +34,23 @@ const mapDispatchToProps = (dispatch) => {
         closeTransactionsHistoryPanel() {
             dispatch(sidePanelsActions.closeTransactionsHistoryPanel())
         },
-
-        togglePreviewPanel() {
-            dispatch(sidePanelsActions.togglePreviewPanel());
+        
+        previewSidePanelActions: {
+            onClose() {
+                dispatch(sidePanelsActions.preview.togglePanel());
+            },
+            onOpen() {
+                dispatch(sidePanelsActions.preview.togglePanel());
+            },
+            onHideModals() {
+                dispatch(sidePanelsActions.preview.hideModals());
+            },
+            onTryDownload(hasExportableContent, currentEnvironment) {
+                dispatch(sidePanelsActions.preview.tryDownload(hasExportableContent, currentEnvironment));
+            },
+            onDownload() {
+                dispatch(sidePanelsActions.preview.download());
+            }
         }
     }
 }

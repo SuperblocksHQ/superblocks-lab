@@ -2,7 +2,12 @@ import { sidePanelsActions } from '../actions';
 
 export const initialState = {
     showTransactionsHistory: false,
-    showPreview: false
+    preview: {
+        showNoExportableContentModal: false,
+        showCannotExportModal: false,
+        showDownloadModal: false,
+        open: false
+    }
 };
 
 export default function sidePanelsReducer(state = initialState, action) {
@@ -11,21 +16,21 @@ export default function sidePanelsReducer(state = initialState, action) {
             return {
                 ...state,
                 showTransactionsHistory: false,
-                showPreview: false
+                preview: { ...state.preview, open: false }
             };
         }
         case sidePanelsActions.TOGGLE_TRANSACTIONS_HISTORY_PANEL: {
             return {
                 ...state,
                 showTransactionsHistory: !state.showTransactionsHistory,
-                showPreview: false
+                preview: { ...state.preview, open: false }
             };
         }
         case sidePanelsActions.OPEN_TRANSACTIONS_HISTORY_PANEL: {
             return {
                 ...state,
                 showTransactionsHistory: true,
-                showPreview: false
+                preview: { ...state.preview, open: false }
             };
         }
         case sidePanelsActions.CLOSE_TRANSACTIONS_HISTORY_PANEL: {
@@ -34,12 +39,41 @@ export default function sidePanelsReducer(state = initialState, action) {
                 showTransactionsHistory: false
             };
         }
-        case sidePanelsActions.TOGGLE_PREVIEW_PANEL:
+        case sidePanelsActions.preview.TOGGLE_PANEL:
             return {
                 ...state,
                 showTransactionsHistory: false,
-                showPreview: !state.showPreview
+                preview: { ...state.preview, open: !state.preview.open }
             };
+        case sidePanelsActions.preview.HIDE_MODALS:
+            return {
+                ...state,
+                showTransactionsHistory: false,
+                preview: {
+                    ...state.preview, 
+                    showCannotExportModal: false,
+                    showNoExportableContentModal: false,
+                    showDownloadModal: false
+                }
+            };
+        case sidePanelsActions.preview.TRY_DOWNLOAD: {
+            let showNoExportableContentModal = false;
+            let showCannotExportModal = false;
+            let showDownloadModal = false;
+
+            if (!action.data.hasExportableContent) {
+                showNoExportableContentModal = true;
+            } else if (action.data.currentEnvironment === 'browser') {
+                showCannotExportModal = true;
+            } else {
+                showDownloadModal = true;
+            }
+            
+            return {
+                ...state,
+                preview: { ...state.preview, showNoExportableContentModal, showCannotExportModal, showDownloadModal }
+            };
+        }
         default:
             return state;
     }

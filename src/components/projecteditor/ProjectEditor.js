@@ -172,7 +172,8 @@ export default class ProjectEditor extends Component {
         }
 
         const { controlPanelWidth } = this.state;
-        const { displayTransactionsPanel, displayPreviewPanel, toggleTransactionsHistoryPanel, togglePreviewPanel } = this.props;
+        const { displayTransactionsPanel, previewSidePanel, toggleTransactionsHistoryPanel,
+                previewSidePanelActions } = this.props;
 
         return (
             <div className={style.projecteditor} id="main_container">
@@ -208,7 +209,7 @@ export default class ProjectEditor extends Component {
                             <Panes
                                 router={this.props.router}
                                 functions={this.props.functions}
-                                isActionPanelShowing={displayTransactionsPanel || displayPreviewPanel}
+                                isActionPanelShowing={displayTransactionsPanel || previewSidePanel.open}
                             />
 
                             <div className={style.sidePanelContainer}>
@@ -218,9 +219,10 @@ export default class ProjectEditor extends Component {
                                     onClose={toggleTransactionsHistoryPanel}
                                 /> }
 
-                                { displayPreviewPanel && 
+                                { previewSidePanel.open && 
                                 <PreviewSidePanel
-                                    onClose={togglePreviewPanel}
+                                    {...previewSidePanel}
+                                    {...previewSidePanelActions}
                                 /> }
                             </div>
                         </div>
@@ -247,7 +249,7 @@ export default class ProjectEditor extends Component {
                                         style.action,
                                         'btnNoBg',
                                     ])}
-                                    onClick={togglePreviewPanel}
+                                    onClick={previewSidePanelActions.onOpen}
                                 >
                                     <IconShowPreview style={{ verticalAlign: "top" }}/>
                                     <span className={style.verticalText}>

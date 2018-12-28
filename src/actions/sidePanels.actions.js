@@ -21,17 +21,34 @@ export const sidePanelsActions = {
         return { type: sidePanelsActions.CLOSE_TRANSACTIONS_HISTORY_PANEL };
     },
 
-    SHOW_PREVIEW_PANEL: 'SHOW_PREVIEW_PANEL',
-    showPreviewPanel() {
-        return {
-            type: sidePanelsActions.SHOW_PREVIEW
-        };
-    },
+    preview: {
+        TOGGLE_PANEL: 'PREVIEW.TOGGLE_PANEL',
+        togglePanel() {
+            return {
+                type: sidePanelsActions.preview.TOGGLE_PANEL
+            };
+        },
 
-    TOGGLE_PREVIEW_PANEL: 'TOGGLE_PREVIEW_PANEL',
-    togglePreviewPanel() {
-        return {
-            type: sidePanelsActions.TOGGLE_PREVIEW_PANEL
-        };
+        TRY_DOWNLOAD: 'PREVIEW.TRY_DOWNLOAD',
+        tryDownload(hasExportableContent, currentEnvironment) {
+            return {
+                type: sidePanelsActions.preview.TRY_DOWNLOAD,
+                data: { hasExportableContent, currentEnvironment }
+            };
+        },
+
+        DOWNLOAD: 'PREVIEW.DOWNLOAD',
+        download() {
+            return {
+                type: sidePanelsActions.preview.DOWNLOAD
+            };
+        },
+    
+        HIDE_MODALS: 'PREVIEW.HIDE_MODALS',
+        hideModals() {
+            return {
+                type: sidePanelsActions.preview.HIDE_MODALS
+            };
+        }
     }
 };
