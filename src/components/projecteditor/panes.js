@@ -20,83 +20,14 @@ import SplitterLayout from "react-splitter-layout";
 import PropTypes from 'prop-types';
 import style from './style.less';
 import { Pane, PaneComponent } from './pane';
-import { IconClose, IconTest, IconPlay, IconStop, IconRun } from '../icons';
 import { DropdownContainer } from '../dropdown';
-import Caret from '../../../src/components/caret';
-import Test from './testResults';
-
-// TODO: FIXME: move TestData to bridge code
-import { readSelectedTestId, readTotalTestDataTime, setTestData } from './testResults';
+import { IconClose } from '../icons';
+import Test from '../testing';
+import { ConsoleTopBar, TestControls, TestFilesHeader } from '../testing';
 
 // TODO: FIXME: consider relocating to more appropriate place;
 //              consider it to be a state, props, control, ... ?
 import { testRunnerBridge } from "../testing/bridge";
-
-const ConsoleTopBar =(props)=>
-{
-    return(
-        <div className={style.consoleTopBar}>
-            <span className={style.testBar}>
-                <IconTest className={style.icon}  />
-                <span className={style.testText}>
-                    Tests
-                </span>
-            </span>
-            <div className={style.closeIcon}>
-                <button className="btnNoBg">
-                    <IconClose className={style.closeIcon} onClick={props.closeTestPanel} />
-                </button>
-            </div>
-        </div>
-    );
-}
-
-const TestControls =(props)=>{
-    return(
-        <div className={style.testControls}>
-            <span className={style.icons}>
-                <div>
-                    <button className="btnNoBg" title="Run" onClick={props.onClickPlay}>
-                        <IconPlay className={style.iconPlay} />
-                    </button>
-                </div>
-                <div>
-                    <button className="btnNoBg" title="Refresh" onClick={props.onClickRetry}>
-                        <IconRun  />
-                    </button>
-                </div>
-                <div className={style.buttons}>
-                    <button className="btnNoBg" title="Stop" onClick={
-                        () => {
-                            {
-                                // TODO: FIXME: being used as a way to debug data
-                                // TODO: FIXME: remove debugging code
-                                console.warn(testRunnerBridge.readData());
-                            }
-                        }
-                    }>
-                        <IconStop />
-                    </button>
-                </div>
-            </span>
-        </div>
-    );
-};
-
-const TestFilesHeader =(props)=>{
-    const { total, totalDone, time } = props;
-    return(
-        <div className={style.testFile }>
-            <span className={style.bartext}>
-                Done {totalDone} of {total} tests
-            </span>
-            <span>
-                {time}
-            </span>
-        </div>
-    );
-};
-
 
 export default class Panes extends Component {
     constructor(props) {
@@ -512,7 +443,7 @@ export default class Panes extends Component {
         if(output.reportOutput) {
             output = output.reportOutput;
         }
-        setTestData(output);
+        testRunnerBridge.setTestData(output);
 
         this.redraw();
     }
@@ -549,8 +480,8 @@ export default class Panes extends Component {
                             <ConsoleTopBar testResults={resultData} closeTestPanel={this.props.closeTestPanel}/>
                             <SplitterLayout customClassName='dragBar' percentage secondaryInitialSize={70} primaryMinSize={30} secondaryMinSize={30} vertical={false}>
                                 <div className={style.leftPane}>
-                                    <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={readTotalTestDataTime() + " ms"} />
-                                    <TestControls onClickPlay={() => {testRunnerBridge.onPlay(this.loadProvider(), this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(this.loadProvider(), readSelectedTestId(), this.onTestCompleted)}} />
+                                    <TestFilesHeader total={resultData.summary ? resultData.done.count : 0 } totalDone={resultData.summary ? resultData.done.total : 0 } time={testRunnerBridge.readTotalTestDataTime() + " ms"} />
+                                    <TestControls onClickPlay={() => {testRunnerBridge.onPlay(this.loadProvider(), this.onTestCompleted) }} onClickRetry={() => {testRunnerBridge.onRetry(this.loadProvider(), testRunnerBridge.readSelectedTestId(), this.onTestCompleted)}} />
                                     <div id="test" style={{position:'absolute',left: 20, top: 40, width: '94%'}} >
                                         <Test open={this.state.open} />
                                     </div>

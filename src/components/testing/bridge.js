@@ -20,7 +20,7 @@
 //
 
 import TestRunner from "../testing/testrunner";
-import { readReportSuccesses, readReportFailures, readTotalTestCount, readReportOutput, readReporterStatus, resetReportData } from "../testing/reporter";
+import { readReportSuccesses, readReportFailures, readTotalTestCount, readReportOutput, readReporterStatus } from "../testing/reporter";
 
 class TestRunnerBridge {
     constructor() {
@@ -46,6 +46,10 @@ class TestRunnerBridge {
 
         // TODO: consider reading currently selected network address from "Select a Network"
         this.endpoint="http://superblocks-browser";
+
+        this.testData = [];
+        this.totalTestDataTime = 0;
+        this.selectedTestId = null;
     }
 
     setCompiler(compiler) {
@@ -325,7 +329,6 @@ class TestRunnerBridge {
         // Early exit
         if(this.testFiles.length === undefined || this.testFiles.length === 0) {
             callback("No tests available in /tests");
-            resetReportData();
         }
 
         const web3Object = this._getWeb3(evmProvider);
@@ -346,7 +349,6 @@ class TestRunnerBridge {
         // Early exit
         if(this.testFiles.length === undefined || this.testFiles.length === 0) {
             callback("No tests available in /tests");
-            resetReportData();
         }
 
         const data = this.readData().reportOutput;
@@ -369,7 +371,6 @@ class TestRunnerBridge {
                 }
             }
         }
-
         const web3Object = this._getWeb3(evmProvider);
 
         if(web3Object !== null) {
@@ -431,6 +432,153 @@ class TestRunnerBridge {
         }
         this.runSingle(evmProvider, index, setDataCallback);
     };
+
+    setSelectedTestId(id) {
+        this.selectedTestId = id;
+    }
+
+    readSelectedTestId() {
+        return this.selectedTestId;
+    }
+
+    readTotalTestDataTime() {
+        return this.totalTestDataTime;
+    }
+
+    readTestData() {
+        return this.testData;
+    }
+
+    setTestData(data) {
+        // TODO: FIXME: add support to "Suites" (describe)
+        // TODO: FIXME: automatically iterate over all tests
+        this.testData = [];
+        this.totalTestDataTime = 0;
+        var uiCounter = 0;
+
+        if(data.length <= 0) {
+            //
+            // Early exit in case there is no data
+            return;
+        } else if(typeof data === "string") {
+            //
+            // ... or take the input as a string message, if applicable
+            this.testData = data;
+            return;
+        }
+
+        for(var name in data) {
+            const contractName = name;
+            const tests = data[contractName].tests;
+
+            var contractTotalTime = 0;
+            var testEntries = [];
+            for(var i=0; i<tests.length; i++) {
+
+                //
+                // Considers duration to be a condition that is only
+                // present for tests (not suites or describe)
+                if(tests[i] && tests[i].duration !== undefined) {
+                    const testId = i;
+                    const testName = tests[testId].title;
+                    const testTime = tests[testId].duration;
+                    const testTimeString = testTime + " ms";
+                    const testState = tests[testId].state;
+
+                    const testEntry = {
+                        uiCounter: uiCounter++,
+                        id: uiCounter,
+                        name: testName,
+                        time: testTimeString,
+                        state: testState
+                    };
+
+                    //
+                    // Update data
+                    contractTotalTime += testTime;
+                    testEntries.push(testEntry);
+                }
+
+            }
+
+            this.totalTestDataTime += contractTotalTime;
+
+            const contractTotalTimeString = contractTotalTime + " ms";
+
+            const testTotalTime = contractTotalTime;
+            const testTotalTimeString = contractTotalTime + " ms";
+            const testFileName = "/tests/"+contractName;
+
+            const newTest = {
+                uiCounter: uiCounter++,
+                id: -100 + uiCounter,
+                name: testFileName,
+                time: testTotalTimeString,
+                children: testEntries
+            };
+            this.testData.push(newTest);
+        }
+
+    /*    const totalDummyTestTime = 5*4;
+        this.totalTestDataTime += totalDummyTestTime;
+
+        const totalDummyTestTimeString = totalDummyTestTime + " ms";
+        const dummyTest = {
+            uiCounter: 100,
+            id: 1,
+            name: "/tests/a_reference_dummy_test.js",
+            time: totalDummyTestTimeString,
+            children: [
+                [{
+                    uiCounter: 101,
+                    id: 3,
+                    name: "HardcodedExampleResults",
+                    time: totalDummyTestTimeString,
+                    children: [
+                        {
+                            uiCounter: 102,
+                            id: 4,
+                            name: "has an Owner",
+                            time:"4ms",
+                            state: "passed"
+                        },
+                        {
+                            uiCounter: 103,
+                            id: 5,
+                            name: "has an Owner",
+                            time:"4ms",
+                            state: "failed"
+                        },
+                        {
+                            uiCounter: 104,
+                            id: 6,
+                            name: "accepts fund",
+                            time:"4ms",
+                            state: "passed"
+                        },
+                        {
+                            uiCounter: 105,
+                            id: 7,
+                            name: "Is able to pause or unpause",
+                            time:"4ms",
+                            state: "failed"
+                        },
+                        {
+                            uiCounter: 106,
+                            id: 8,
+                            name: "permits owner to receive funds",
+                            time:"4ms",
+                            state: "passed"
+                        },
+                    ]
+                }]
+            ],
+        };
+
+        //
+        // Update data
+        this.testData.push(dummyTest);*/
+    }
 }
 
 export const testRunnerBridge = new TestRunnerBridge();
