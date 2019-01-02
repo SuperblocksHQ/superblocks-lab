@@ -334,13 +334,25 @@ class TestRunnerBridge {
         const web3Object = this._getWeb3(evmProvider);
 
         if(web3Object !== null) {
-            this.testRunner.runAll(
-                this.testFiles,
-                this.contractsData,
-                this.testAccountAddress,
-                this.testAccountKey,
-                web3Object,
-                callback);
+            // TODO: FIXME: remove condition
+            const safeRun = false;
+            if(safeRun) {
+                this.testRunner.safeRunAll(
+                    this.testFiles,
+                    this.contractsData,
+                    this.testAccountAddress,
+                    this.testAccountKey,
+                    web3Object,
+                    callback);
+            } else {
+                this.testRunner.runAll(
+                    this.testFiles,
+                    this.contractsData,
+                    this.testAccountAddress,
+                    this.testAccountKey,
+                    web3Object,
+                    callback);
+            }
         }
     }
 
