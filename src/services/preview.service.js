@@ -13,8 +13,10 @@ export const previewService = {
             if (e.data.type === 'window-ready' && this.projectItem) {
                 const builtProject = await buildProjectHtml(this.projectItem, wallet);
                 exportableDappHtml = builtProject.exportableContent;
-                e.source.postMessage({ type: 'set-content', payload: builtProject.content }, '*');
-                this.superProvider.initIframe(document.getElementById(iframeId));
+                if (e.source) {
+                    e.source.postMessage({ type: 'set-content', payload: builtProject.content }, '*');
+                    this.superProvider.initIframe(document.getElementById(iframeId));
+                }
             }
         });
     },
