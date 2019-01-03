@@ -1,20 +1,27 @@
 import { buildProjectHtml } from './utils/buildProjectHtml';
+import SuperProvider from '../components/superprovider';
 
 let projectItem = null;
 let exportableDappHtml = null;
-let modalFunctions = null;
+let iframeId = null;
 
 export const previewService = {
-    init(wallet, modal) { // modal should be removed as parameter
-        modalFunctions = modal;
+    superProvider: null,
 
+    init(wallet) {
         window.addEventListener('message', async (e) => {
             if (e.data.type === 'window-ready' && this.projectItem) {
                 const builtProject = await buildProjectHtml(this.projectItem, wallet);
                 exportableDappHtml = builtProject.exportableContent;
                 e.source.postMessage({ type: 'set-content', payload: builtProject.content }, '*');
+                this.superProvider.initIframe(document.getElementById(iframeId));
             }
         });
+    },
+
+    initSuperProvider(_iframeId) {
+        iframeId = _iframeId;
+        this.superProvider = new SuperProvider(iframeId, previewService.projectItem);
     },
 
     get projectItem() { return projectItem; },

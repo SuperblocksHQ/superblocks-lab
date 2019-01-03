@@ -161,7 +161,7 @@ export default class App extends Component {
         this.functions.compiler = new Solc({ id: this.generateId() });
         this.functions.EVM = new EVM({ id: this.generateId() });
 
-        previewService.init(this.functions.wallet, this.functions.modal);
+        previewService.init(this.functions.wallet);
 
         const fn = () => {
             if (this.functions.compiler && this.functions.EVM) {

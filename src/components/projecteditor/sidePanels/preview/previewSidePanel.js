@@ -1,6 +1,5 @@
 import React from 'react';
 import style from '../style.less';
-import SuperProvider from '../../../superprovider';
 import { IconShowPreview, IconRefresh, IconDownloadDApp, IconOpenWindow } from '../../../icons';
 import Tooltip from '../../../tooltip';
 import OnlyIf from '../../../onlyIf';
@@ -23,23 +22,21 @@ const IFRAME_ID = 'appViewIframe';
 export class PreviewSidePanel extends React.Component {
     constructor(props) {
         super(props);
-        this.superProvider = new SuperProvider(IFRAME_ID, previewService.projectItem);
+        previewService.initSuperProvider(IFRAME_ID);
     }
 
     componentDidMount() {
-        const iframe = document.getElementById(IFRAME_ID);
-        if (iframe) {
-            this.superProvider._attachListener();
-            this.superProvider.initIframe(iframe);
-        }
+        previewService.superProvider._attachListener();
     }
 
     componentWillUnmount() {
-        this.superProvider._detachListener();
+        previewService.superProvider._detachListener();
     }
 
     refresh() {
-        document.getElementById(IFRAME_ID).contentWindow.location.reload();
+        const iframe = document.getElementById(IFRAME_ID);
+        iframe.contentWindow.location.reload();
+        
     }
 
     tryDownload() {
