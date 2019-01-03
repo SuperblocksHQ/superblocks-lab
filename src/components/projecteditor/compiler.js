@@ -70,7 +70,8 @@ export default class Compiler extends Component {
         if (this.state.isRunning) return;
 
         this.setState({
-            isRunning: true
+            isRunning: true,
+            consoleRows: []
         });
 
         const contracts = this.props.item
@@ -100,16 +101,27 @@ export default class Compiler extends Component {
                     });
                     return;
                 }
-                this.state.consoleRows.length = 0;
                 // This timeout can be removed.
                 setTimeout(() => {
                     var contractbody;
-                    this._updateConsole({
-                        channel: 1,
-                        msg:
-                            'Using Solidity compiler version ' +
-                            this.props.functions.compiler.getVersion(),
-                    });
+
+                    this._initCompiler();
+                    if (this.props.functions.compiler.isReady()) {
+
+                        this._updateConsole({
+                            channel: 1,
+                            msg:
+                                'Using Solidity compiler version ' +
+                                this.props.functions.compiler.getVersion(),
+                        });
+                    } else {
+
+                        this._updateConsole({
+                            channel: 1,
+                            msg:
+                                'Loading the compiler...'
+                        });
+                    }
                     // Run through all sources loaded and chose one for compilation and the rest for import.
                     // https://solidity.readthedocs.io/en/develop/using-the-compiler.html#compiler-input-and-output-json-description
                     const input = {
@@ -239,10 +251,26 @@ export default class Compiler extends Component {
                                                 ' references library contracts. Superblocks Lab does not yet support library contract linking, only contract imports.',
                                         });
                                         delFiles();
-                                    } else if (contractObj) {
-                                        const metadata = JSON.parse(
-                                            contractObj.metadata
-                                        );
+                                    } else if (contractObj && contractObj.metadata) {
+                                        var metadata;
+                                        try {
+                                            metadata = JSON.parse(
+                                                contractObj.metadata
+                                            );
+                                        }
+                                        catch(e) {
+                                            console.error("Could not parse compiler output", contractObj);
+                                            this._updateConsole({
+                                                channel: 2,
+                                                msg:
+                                                    '[ERROR] The contract ' +
+                                                    srcfilename +
+                                                    ' could not be compiled.',
+                                            });
+                                            this.callback(1);
+                                            return;
+                                        }
+
                                         // Save ABI and BIN
                                         // First load, then save and close.
                                         const cb = (
@@ -273,7 +301,13 @@ export default class Compiler extends Component {
                                                         );
                                                         item.save()
                                                             .then(cb2)
-                                                            .catch(delFiles);
+                                                            .catch( e => {
+                                                                this._updateConsole({
+                                                                    channel: 2,
+                                                                    msg: '[ERROR] Could not write to browser local storage. Try to delete some old projects and then try again.'
+                                                                });
+                                                                delFiles();
+                                                            });
                                                     })
                                                     .catch(() => {
                                                         delFiles();
@@ -399,6 +433,11 @@ export default class Compiler extends Component {
         this.setState(prevState => ({
             consoleRows: [...prevState.consoleRows, row]
           }))
+    }
+
+    _initCompiler() {
+        // Init compiler
+        this.props.functions.compiler.init();
     }
 
     renderToolbar = () => {

@@ -16,6 +16,7 @@
 
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 import Backend from '../projecteditor/control/backend';
 import Modal from '../modal';
@@ -24,13 +25,15 @@ import { Wallet } from '../projecteditor/wallet';
 import Solc from '../solc';
 import EVM from '../evm';
 import Networks from '../../networks';
+import AnalyticsDialog from '../analyticsDialog';
+import OnlyIf from '../onlyIf';
 
 export default class App extends Component {
 
     state = {
         modals: [],
         isReady: false
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -77,6 +80,12 @@ export default class App extends Component {
     }
 
     componentDidMount() {
+        const { notifyAppStart }  = this.props;
+
+        // Make sure we fire this event in order to let other parst of the app configure depending
+        // on the initial state (per example turning on/off analytics)
+        notifyAppStart();
+
         this._convertProjects(status => {
             this.setState({ isReady: true })
             this._init();
@@ -136,10 +145,9 @@ export default class App extends Component {
         const modalData = {
             title: 'Loading Superblocks Lab',
             body:
-                'Initializing Wallet, Solidity compiler and Ethereum Virtual Machine...',
+                'Initializing Wallet and Ethereum Virtual Machine...',
             style: { textAlign: 'center' },
         };
-        var walletSeeded = false;
         const modal = <Modal data={modalData} />;
         this.functions.modal.show({
             cancel: () => {
@@ -152,22 +160,8 @@ export default class App extends Component {
         this.functions.compiler = new Solc({ id: this.generateId() });
         this.functions.EVM = new EVM({ id: this.generateId() });
 
-        // Need to init the compiler and EVM
-        this.functions.compiler.init();
-        this.functions.EVM.init();
-
-        this.functions.wallet.openWallet(
-            'development',
-            this.knownWalletSeed,
-            () => {
-                walletSeeded = true;
-            }
-        );
-
         const fn = () => {
-            if (this.functions.compiler.isReady()
-                && this.functions.EVM.isReady()
-                && walletSeeded) {
+            if (this.functions.compiler && this.functions.EVM) {
                 console.log('Superblocks Lab ' + appVersion + ' Ready.');
 
                 this.functions.modal.close();
@@ -313,18 +307,24 @@ export default class App extends Component {
 
     render() {
         const { isReady } = this.state;
+        const { showTrackingAnalyticsDialog } = this.props;
         const modalContent = this.getModal();
+
         return (
             <div id="app" className={this.getClassNames()}>
                 <div id="app_content">
                     <div className="maincontent">
-                        {isReady && (
+                        <OnlyIf test={isReady}>
                             <ProjectEditor
                                 key="projedit"
                                 router={this.router}
                                 functions={this.functions}
+                                knownWalletSeed={this.knownWalletSeed}
                             />
-                        )}
+                            <OnlyIf test={showTrackingAnalyticsDialog}>
+                                <AnalyticsDialog />
+                            </OnlyIf>
+                        </OnlyIf>
                     </div>
                 </div>
                 <div id="app_modal" onClick={this.modalOutside}>
@@ -333,4 +333,11 @@ export default class App extends Component {
             </div>
         );
     }
+}
+
+App.propTypes = {
+    showSplash: PropTypes.bool.isRequired,
+    appVersion: PropTypes.string.isRequired,
+    notifyAppStart: PropTypes.func.isRequired,
+    showSplashNoMore: PropTypes.func.isRequired
 }

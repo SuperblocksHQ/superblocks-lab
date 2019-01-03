@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import classNames from 'classnames';
 import style from '../style.less';
-import { IconClose } from '../../icons';
+import ModalHeader from '../../modal/modalHeader';
+import { LogOnMount } from "../../../utils/analytics";
 
 const TemplateCategory = ({ onCategorySelected, title } = props) => (
     <div onClick={onCategorySelected}>{title}</div>
@@ -94,13 +95,12 @@ export default class SelectTemplate extends Component {
 
         return(
             <div className={classNames([style.newDapp, "modal"])}>
+                <LogOnMount eventType="NEW_PROJECT_SELECT_TEMPLATE"/>
                 <div className={style.step2}>
-                    <div className={style.header}>
-                        <div className={style.title}>Select Template</div>
-                        <button className={classNames([style.closeIcon, "btnNoBg"])} onClick={this.onCloseClickHandle}>
-                            <IconClose />
-                        </button>
-                    </div>
+                    <ModalHeader
+                        title="Select Template"
+                        onCloseClick={this.onCloseClickHandle}
+                    />
                     <div className={classNames([style.area, style.container])}>
                         <div className={style.categoriesArea}>
                             <div className={style.categoriesTitle}>Categories</div>
@@ -118,12 +118,14 @@ export default class SelectTemplate extends Component {
                                     }
                                 </ul>
                             </div>
-                        <div className={style.templateListArea}>
-                            <GridLayout
-                                templates={templates}
-                                onTemplateSelected={this.onTemplateSelected}
-                                templateSelectedId={templateSelected ? templateSelected.id : null}
-                                categorySelectedId={categorySelectedId}/>
+                        <div className={style.templateListContainer}>
+                            <div className={style.templateListArea}>
+                                <GridLayout
+                                    templates={templates}
+                                    onTemplateSelected={this.onTemplateSelected}
+                                    templateSelectedId={templateSelected ? templateSelected.id : null}
+                                    categorySelectedId={categorySelectedId}/>
+                            </div>
                         </div>
                     </div>
                     <div className={style.footer}>
