@@ -311,7 +311,7 @@ class Panes extends Component {
         return (
             <div
                 id="panes"
-                className={style.panescontainer}
+                className={classnames(style.panescontainer, { dragging: this.props.dragging })}
             >
                 <div key="header" id="panes_header" className={style.header}>
                     <PanesHeader
@@ -336,6 +336,7 @@ class Panes extends Component {
 Panes.propTypes = {
     router: PropTypes.object.isRequired,
     functions: PropTypes.object.isRequired,
+    dragging: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({

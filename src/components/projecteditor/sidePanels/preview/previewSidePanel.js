@@ -48,7 +48,7 @@ export class PreviewSidePanel extends React.Component {
         const isProjectOpen = Boolean(previewService.projectItem);
 
         return (
-            <BaseSidePanel icon={<IconShowPreview />} name="Preview" onClose={this.props.onClose}>
+            <BaseSidePanel icon={<IconShowPreview />} name="Preview" onClose={this.props.onClose} dragging={this.props.dragging}>
                 <OnlyIf test={isProjectOpen}>
                     <div className={style.appview}>
                         <div className={style.toolbar}>

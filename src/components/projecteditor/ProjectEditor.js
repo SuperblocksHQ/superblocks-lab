@@ -159,21 +159,21 @@ export default class ProjectEditor extends Component {
                                     onDragEnd={() => this.toggleSidePanelDragging()}
                                     onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}>
 
-                                    <Panes router={this.props.router} functions={this.props.functions} />
+                                    <Panes dragging={this.state.sidePanelDragging} router={this.props.router} functions={this.props.functions} />
                     
                                     { displayTransactionsPanel &&
                                     <TransactionLogPanel
+                                        dragging={this.state.sidePanelDragging}
                                         router={this.props.router}
                                         onClose={toggleTransactionsHistoryPanel}
                                     /> }
 
                                     { previewSidePanel.open && 
-                                    <div style={{ pointerEvents: this.state.sidePanelDragging ? 'none' : 'all', height: '100%' }}>
-                                        <PreviewSidePanel
-                                            {...previewSidePanel}
-                                            {...previewSidePanelActions}
-                                        />
-                                    </div> }
+                                    <PreviewSidePanel
+                                        dragging={this.state.sidePanelDragging}
+                                        {...previewSidePanel}
+                                        {...previewSidePanelActions}
+                                    /> }
                                     
                                 </SplitterLayout>
                             

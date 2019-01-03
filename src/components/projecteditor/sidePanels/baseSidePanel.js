@@ -6,7 +6,7 @@ import { IconClose } from '../../icons';
 
 export function BaseSidePanel(props) {
     return (
-        <div className={style.actionContainer}>
+        <div className={classNames(style.actionContainer, { dragging: props.dragging })}>
             <div className={style.header}>
                 <div className={style.panelIcon}>
                     {props.icon}
