@@ -16,8 +16,10 @@
 
 import sha256 from 'crypto-js/sha256';
 import Web3 from 'web3';
-import Tx from './ethereumjs-tx-1.3.3.min';
 import Networks from './networks';
+import * as analytics from './utils/analytics';
+
+const TxEth = () => import(/* webpackChunkName: "ethereumjs-tx" */ './ethereumjs-tx-1.3.3.min');
 
 export default class DeployerRunner {
 
@@ -48,7 +50,7 @@ export default class DeployerRunner {
     }
 
     run(e) {
-        const { networkPreferences } = this.props;
+        const { networkPreferences, functions: {EVM} } = this.props;
 
         var redeploy = this.redeploy;
         if (e) {
@@ -122,6 +124,14 @@ export default class DeployerRunner {
             return;
         }
 
+        if (!EVM.isReady()) {
+            this._stderr(
+                'The Ethereum Virtual Machine is not ready yet. Please try again in a few seconds!'
+            );
+            this.callback(1);
+            return;
+        }
+
         this._buildArgs(obj, status => {
             if (status != 0) {
                 this.callback(1);
@@ -174,6 +184,7 @@ export default class DeployerRunner {
                                     'Waiting for contract to be deployed...'
                                 );
                                 this._waitContract(obj, status => {
+                                    analytics.logEvent('CONTRACT_DEPLOYED', { network: env });
                                     this._buildJs(obj, status => {
                                         if (status != 0) {
                                             this.callback(1);
@@ -895,7 +906,9 @@ export default class DeployerRunner {
         });
     }
 
-    _sign(obj, cb) {
+    async _sign(obj, cb) {
+        const asyncTx = await TxEth();
+        const Tx = asyncTx.default;
         const tx = new Tx.Tx({
             from: obj.account.address,
             to: "",

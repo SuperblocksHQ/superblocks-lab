@@ -18,7 +18,8 @@ import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import classNames from 'classnames';
 import style from '../style.less';
-import { IconClose } from '../../icons';
+import ModalHeader from '../../modal/modalHeader';
+import { LogOnMount } from "../../../utils/analytics";
 
 export default class ProjectDetails extends Component {
     constructor(props) {
@@ -97,16 +98,12 @@ export default class ProjectDetails extends Component {
     render() {
         return (
             <div className={classNames([style.newDapp, 'modal'])}>
+                <LogOnMount eventType="NEW_PROJECT_DETAILS"/>
                 <div className={style.step1}>
-                    <div className={style.header}>
-                        <div className={style.title}>Create a new project</div>
-                        <button
-                            className={classNames([style.closeIcon, 'btnNoBg'])}
-                            onClick={this.onCloseClickHandle}
-                        >
-                            <IconClose />
-                        </button>
-                    </div>
+                    <ModalHeader
+                        title="Project Details"
+                        onCloseClick={this.onCloseClickHandle}
+                    />
                     <div className={style.area}>
                         <div className={style.form}>
                             <div className={style.info}>
