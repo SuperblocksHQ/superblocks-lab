@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DropdownContainer } from '../dropdown';
 import Tooltip from '../tooltip';
+import copy from 'copy-to-clipboard';
 import style from './style.less';
 import {
     IconDeployGreen,
@@ -120,16 +121,8 @@ class NetworkSelector extends Component {
 }
 
 class AccountDropdown extends Component {
-    copyToClipboard = str => {
-        const el = document.createElement('textarea');
-        el.value = str;
-        el.setAttribute('readonly', '');
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
+    copyAddress = str => {
+        copy(str);
     }
 
     render() {
@@ -212,7 +205,7 @@ class AccountDropdown extends Component {
                                 onClick={e => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    this.copyToClipboard(address)
+                                    this.copyAddress(address)
                                 }}
                             >
                                 <Tooltip title="Copy address">
