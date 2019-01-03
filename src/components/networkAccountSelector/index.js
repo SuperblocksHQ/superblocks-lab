@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DropdownContainer } from '../dropdown';
 import Tooltip from '../tooltip';
+import OnlyIf from '../onlyIf';
 import style from './style.less';
+import * as accountUtils from '../../utils/accounts';
 import {
     IconDeployGreen,
     IconDropdown,
@@ -157,7 +159,7 @@ class AccountDropdown extends Component {
             cls[style.accountLink] = true;
             if (account.getName() == chosenAccount)
                 cls[style.accountLinkChosen] = true;
-            
+
             var address = '';
             if (this.props.functions.EVM.isReady()) {
                 const accountIndex = account.getAccountIndex('browser')
@@ -185,6 +187,11 @@ class AccountDropdown extends Component {
                 );
             }
 
+            const formattedAddress = accountUtils.shortenAddres(address);
+            const browserNetworkSelected = chosenEnv === 'browser';
+            const accountCls = {};
+            accountCls[style.nameContainer] = browserNetworkSelected;
+
             return (
                 <div key={index}>
                     <div
@@ -194,8 +201,15 @@ class AccountDropdown extends Component {
                             this.props.onAccountChosen(account.getName());
                         }}
                     >
-                        <div>{account.getName()}</div>
-                        <div style={{marginLeft: 'auto'}}>
+                        <div className={classnames(accountCls)}>
+                            <div>{account.getName()}</div>
+                            <OnlyIf
+                                test={browserNetworkSelected}
+                            >
+                                <div className={style.address}>{formattedAddress}</div>
+                            </OnlyIf>
+                        </div>
+                        <div className={style.actionsContainer}>
                             <button
                                 className="btnNoBg"
                                 onClick={e => {
@@ -206,7 +220,9 @@ class AccountDropdown extends Component {
                                     <IconEdit />
                                 </Tooltip>
                             </button>
-                        {chosenEnv == 'browser' &&
+                        <OnlyIf
+                            test={browserNetworkSelected}
+                        >
                             <button
                                 className="btnNoBg"
                                 onClick={e => {
@@ -219,7 +235,7 @@ class AccountDropdown extends Component {
                                     <IconCopy />
                                 </Tooltip>
                             </button>
-                        }
+                        </OnlyIf>
                             {deleteButton}
                         </div>
                     </div>
