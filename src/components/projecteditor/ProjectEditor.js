@@ -154,7 +154,7 @@ export default class ProjectEditor extends Component {
                                 <SplitterLayout
                                     primaryIndex={0}
                                     secondaryMinSize={232}
-                                    secondaryInitialSize={232}
+                                    secondaryInitialSize={500}
                                     onDragStart={() => this.toggleSidePanelDragging()}
                                     onDragEnd={() => this.toggleSidePanelDragging()}
                                     onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}>
