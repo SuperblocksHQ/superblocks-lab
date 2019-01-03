@@ -127,10 +127,46 @@ class AccountDropdown extends Component {
         copy(str);
     }
 
+    getAddress = (account) => {
+        const project = this.props.router.control.getActiveProject();
+        const chosenEnv = project.getEnvironment();
+        const walletName = account.getWallet(chosenEnv);
+        let walletItem;
+        let walletType = null;
+
+        if (walletName) {
+            const walletsItem = project.getHiddenItem('wallets');
+            walletItem = walletsItem.getByName(walletName);
+        }
+
+        if (walletItem) {
+            walletType = walletItem.getWalletType();
+            if (walletType == 'external') {
+                if (window.web3) {
+                    const extAccounts = window.web3.eth.accounts || [];
+                    return extAccounts[0];
+                }
+            } else {
+                const accountIndex = account.getAccountIndex('browser')
+                if (this.props.functions.wallet.isOpen(walletName)) {
+                    try {
+                        return this.props.functions.wallet.getAddress(
+                            'development',
+                            accountIndex
+                        );
+                    } catch (ex) {
+                        return '0x0';
+                    }
+                }
+            }
+        } else {
+            return account.getAddress(chosenEnv);
+        }
+    }
+
     render() {
         var accounts, chosenAccount;
         const project = this.props.router.control.getActiveProject();
-        const chosenEnv = project.getEnvironment();
         if (!project) {
             // Setup default account just for show.
             accounts = [
@@ -155,8 +191,7 @@ class AccountDropdown extends Component {
 
             var address = '';
             if (this.props.functions.EVM.isReady()) {
-                const accountIndex = account.getAccountIndex('browser')
-                address = this.props.functions.wallet.getAddress('development', accountIndex);
+                address = this.getAddress(account);
             }
             var deleteButton;
             if (index !== 0) {
@@ -181,9 +216,6 @@ class AccountDropdown extends Component {
             }
 
             const formattedAddress = accountUtils.shortenAddres(address);
-            const browserNetworkSelected = chosenEnv === 'browser';
-            const accountCls = {};
-            accountCls[style.nameContainer] = browserNetworkSelected;
 
             return (
                 <div key={index}>
@@ -194,13 +226,9 @@ class AccountDropdown extends Component {
                             this.props.onAccountChosen(account.getName());
                         }}
                     >
-                        <div className={classnames(accountCls)}>
+                        <div className={style.nameContainer}>
                             <div>{account.getName()}</div>
-                            <OnlyIf
-                                test={browserNetworkSelected}
-                            >
                                 <div className={style.address}>{formattedAddress}</div>
-                            </OnlyIf>
                         </div>
                         <div className={style.actionsContainer}>
                             <button
@@ -213,9 +241,6 @@ class AccountDropdown extends Component {
                                     <IconEdit />
                                 </Tooltip>
                             </button>
-                        <OnlyIf
-                            test={browserNetworkSelected}
-                        >
                             <button
                                 className="btnNoBg"
                                 onClick={e => {
@@ -228,7 +253,6 @@ class AccountDropdown extends Component {
                                     <IconCopy />
                                 </Tooltip>
                             </button>
-                        </OnlyIf>
                             {deleteButton}
                         </div>
                     </div>
