@@ -13,7 +13,7 @@ function getIframeSrc() {
     if (window.location.hostname === 'localhost') {
         return `${window.location.protocol}//${window.location.host}/app-view.html`;
     } else {
-        return `${window.location.protocol}//lab-dapp.${window.location.host}/app-view.html`;
+        return `${window.location.protocol}//${window.location.host.replace('lab', 'lab-dapp')}/app-view.html`;
     }
 }
 
