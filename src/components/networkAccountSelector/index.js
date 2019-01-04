@@ -182,6 +182,8 @@ class AccountDropdown extends Component {
                                 onClick={e => {
                                     if (this.props.functions.EVM.isReady()) {
                                         this.props.onAccountEdit(e, index);
+                                    } else {
+                                        console.log("EVM is not ready!");
                                     }
                                 }}
                             >
