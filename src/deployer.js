@@ -16,8 +16,10 @@
 
 import sha256 from 'crypto-js/sha256';
 import Web3 from 'web3';
-import Tx from './ethereumjs-tx-1.3.3.min';
 import Networks from './networks';
+import * as analytics from './utils/analytics';
+
+const TxEth = () => import(/* webpackChunkName: "ethereumjs-tx" */ './ethereumjs-tx-1.3.3.min');
 
 export default class DeployerRunner {
 
@@ -48,7 +50,7 @@ export default class DeployerRunner {
     }
 
     run(e) {
-        const { networkPreferences } = this.props;
+        const { networkPreferences, functions: {EVM} } = this.props;
 
         var redeploy = this.redeploy;
         if (e) {
@@ -122,6 +124,14 @@ export default class DeployerRunner {
             return;
         }
 
+        if (!EVM.isReady()) {
+            this._stderr(
+                'The Ethereum Virtual Machine is not ready yet. Please try again in a few seconds!'
+            );
+            this.callback(1);
+            return;
+        }
+
         this._buildArgs(obj, status => {
             if (status != 0) {
                 this.callback(1);
@@ -174,6 +184,7 @@ export default class DeployerRunner {
                                     'Waiting for contract to be deployed...'
                                 );
                                 this._waitContract(obj, status => {
+                                    analytics.logEvent('CONTRACT_DEPLOYED', { network: env });
                                     this._buildJs(obj, status => {
                                         if (status != 0) {
                                             this.callback(1);
@@ -895,7 +906,9 @@ export default class DeployerRunner {
         });
     }
 
-    _sign(obj, cb) {
+    async _sign(obj, cb) {
+        const asyncTx = await TxEth();
+        const Tx = asyncTx.default;
         const tx = new Tx.Tx({
             from: obj.account.address,
             to: "",
@@ -957,19 +970,28 @@ export default class DeployerRunner {
                 this._stdout('Transaction mined, verifying code...');
                 obj.address2 = res.contractAddress;
                 obj.deployMeta = { gasUsed: res.gasUsed };
-
-                obj.web3.eth.getCode(obj.address2, 'latest', (err, res) => {
-                    if (res && res.length > 4) {
+                var counter = 10;
+                const waitCode = () => {
+                    obj.web3.eth.getCode(obj.address2, 'latest', (err, res) => {
+                        if (err || !res || res.length < 4) {
+                            if (counter-- == 0) {
+                                // Final timeout
+                                this._stderr(
+                                    'Contract code could not be verified on chain. The contract might not have been deployed. This is possibly a mismatch in the number/type of arguments given to the constructor or could also be a temporary issue in reading back the contract code from the chain.'
+                                );
+                                cb(1);
+                                return;
+                            }
+                            setTimeout(waitCode, 2000);
+                            return;
+                        }
                         this._stdout('Contract deployed at address ' + obj.address2 + '.');
                         this._stdout('Done.');
                         cb(0);
-                        return;
-                    } else {
-                        this._stderr('Contract did not get deployed. Wrong arguments to constructor?');
-                        cb(1);
-                        return;
-                    }
-                });
+                    });
+                };
+
+                waitCode();
             }
         });
     }

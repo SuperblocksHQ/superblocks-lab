@@ -19,17 +19,19 @@ PORT=3000
 endif
 
 ifndef ORIGIN_DEV
-ORIGIN_DEV=http://localhost:$(PORT)
+ORIGIN_DEV=localhost:$(PORT)
 endif
 
 ifndef ORIGIN_DIST
-ORIGIN_DIST=https://studio.superblocks.com
+ORIGIN_DIST=lab.superblocks.com
 endif
 
 watch: build_external_dev
 	yarn start
 build: build_external_dist
 	yarn build
+build_beta: build_external_dist
+	yarn build:beta
 build_external_dev:
 	mkdir -p ./src/components/superprovider/dist
 	sed 's#ORIGIN#"$(ORIGIN_DEV)"#g' ./src/components/superprovider/web3provider.js | ./node_modules/babel-cli/bin/babel.js --presets env >./src/components/superprovider/dist/web3provider.js
@@ -37,6 +39,8 @@ build_external_dist:
 	mkdir -p ./src/components/superprovider/dist
 	sed 's#ORIGIN#"$(ORIGIN_DIST)"#g' ./src/components/superprovider/web3provider.js | ./node_modules/babel-cli/bin/babel.js --presets env >./src/components/superprovider/dist/web3provider.js
 dist: clean build
+	@echo "You did bump the version (./bump_version.sh) prio, right?"
+dist_beta: clean build_beta
 	@echo "You did bump the version (./bump_version.sh) prio, right?"
 clean:
 	rm -rf build
