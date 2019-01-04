@@ -39,6 +39,7 @@ export function BaseItem(props) {
                         <div className={style.icon}>{ icon }</div>
                     </div>
                     <div className={ style.title }><a>{ props.data.name }</a></div>
+                    {props.toolbar}
                 </div>
             </DropdownContainer>
 

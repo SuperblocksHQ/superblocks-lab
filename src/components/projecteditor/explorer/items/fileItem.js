@@ -1,5 +1,7 @@
 import React from 'react';
 import { IconFile, IconHtml, IconCss, IconJS, IconMd, IconContract, IconJSON, IconBinary, IconEdit, IconTrash } from '../../../icons';
+import Tooltip from '../../../tooltip';
+import { FadeInComponent } from './fadeInComponent';
 import { BaseItem } from './baseItem';
 import style from './style.less';
 
@@ -27,8 +29,29 @@ function getFileIcon(filename) {
     }
 }
 
+export function getToolbar({ renameItem, deleteItem }) {
+    return (
+        <div className={style.buttonsWrapper}>
+            <FadeInComponent>
+                <div className={style.buttons} onClick={e => e.stopPropagation()}>
+                    <a href="#" title="Rename file" onClick={renameItem}>
+                        <Tooltip title="Rename">
+                            <IconEdit />
+                        </Tooltip>
+                    </a>
+                    <a href="#" title="Delete file" onClick={deleteItem} >
+                        <Tooltip title="Delete">
+                            <IconTrash />
+                        </Tooltip>
+                    </a>
+                </div>
+            </FadeInComponent>
+        </div>
+    );
+}
+
 export function FileItem(props) {
-    const toolbar = <span>edit tools</span>;
+    const toolbar = getToolbar(props);
 
     const contextMenu= props.data.mutable ? (
         <div className={ style.contextMenu }>

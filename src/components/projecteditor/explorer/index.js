@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(explorerActions.createFolder(parentId));
         },
         renameItem: (id) => {
-            dispatch(explorerActions.renameItem(id)); // TODO: this if correct
+            dispatch(explorerActions.renameItem(id)); // TODO: check if correct
         },
         deleteItem: (id) => {
             dispatch(explorerActions.renameItem(id));

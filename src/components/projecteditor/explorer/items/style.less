@@ -96,12 +96,39 @@ select {
         max-width: 99%;
         float: left;
         position: relative;
+        flex: 1;
     }
     .hidden {
         display: none;
     }
     .childrenContainer {
         padding-left: 20px;
+    }
+}
+
+.buttonsWrapper {
+    display: flex;
+    order: 3;
+    justify-content: flex-end;
+    padding-right: 5px;
+
+    .buttons {
+        display: flex;
+        overflow: hidden;
+        justify-content: flex-end;
+        width: 100%;
+        button, a {
+            color: #fff;
+            opacity: .6;
+            font-size: 0.8em;
+            padding-left: 4px;
+            padding-right: 4px;
+            transition: opacity .2s;
+            &:hover {
+                opacity: 1;
+                text-decoration: none;
+            }
+        }
     }
 }
 
