@@ -102,7 +102,14 @@ checkBrowsers(paths.appPath, isInteractive)
         clearConsole();
       }
       console.log(chalk.cyan('Starting the development server...\n'));
-      openBrowser(urls.localUrlForBrowser);
+
+      let firstCompilationDone = false;
+      compiler.hooks.done.tap('done', function(stats) {
+        if (!firstCompilationDone) {
+          openBrowser(urls.localUrlForBrowser);
+        }
+        firstCompilationDone = true;
+      });
     });
 
     ['SIGINT', 'SIGTERM'].forEach(function(sig) {
