@@ -46,7 +46,7 @@ Browse to `http://localhost:3000`. Note that if you use any other hostname/IP th
 yarn build
 ```
 
-The dist files will be inside `./dist`. Note that the this command uses production version of ".env" file, so in order to test it locally - the local environmental file variables should be used.
+The dist files will be inside `./dist`. Note that the this command uses production version of ".env" file, so in order to test it locally please create a ".env.local" with proper ORIGIN variable value prior to build.
 
 ### Bumping version
 Set the new version both in `app.js` and in `manifest.json`.
