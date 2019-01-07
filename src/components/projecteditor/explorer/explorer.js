@@ -13,14 +13,6 @@ export class Explorer extends React.Component {
         super(props);
     }
 
-    onFileClick() {
-
-    }
-
-    onFolderClick() {
-
-    }
-
     renderTree(itemData, actions) {
         const childHtml = itemData.children.map(i => this.renderTree(i, actions));
 
@@ -30,23 +22,23 @@ export class Explorer extends React.Component {
                     <ContractItem key={ itemData.id }
                         data={ itemData }
 
-                        onToggle={ actions.toggleTreeItem }
-                        onClick={ actions.openFile }
-                        onRenameClick={ actions.renameItem }
-                        onDeleteClick={ actions.deleteItem }
+                        onToggle={ actions.onToggleTreeItem }
+                        onClick={ actions.onOpenFile }
+                        onRenameClick={ actions.onRenameItem }
+                        onDeleteClick={ actions.onDeleteItem }
 
-                        onConfigureClick={ actions.configureContract }
-                        onCompileClick={ actions.compileContract }
-                        onDeployClick={ actions.deployContract }
-                        onInteractClick={ actions.interactContract } />
+                        onConfigureClick={ actions.onConfigureContract }
+                        onCompileClick={ actions.onCompileContract }
+                        onDeployClick={ actions.onDeployContract }
+                        onInteractClick={ actions.onInteractContract } />
                 );
             } else {
                 return (
                     <FileItem key={ itemData.id }
                         data={ itemData }
-                        onClick={ actions.openFile }
-                        onRenameClick={ actions.renameItem }
-                        onDeleteClick={ actions.deleteItem } />
+                        onClick={ actions.onOpenFile }
+                        onRenameClick={ actions.onRenameItem }
+                        onDeleteClick={ actions.onDeleteItem } />
                 );
             }
         }
@@ -54,14 +46,14 @@ export class Explorer extends React.Component {
             return (
                 <FolderItem key={ itemData.id }
                         data={ itemData }
-                        onClick={ actions.toggleTreeItem }
-                        onToggle={ actions.toggleTreeItem }
+                        onClick={ actions.onToggleTreeItem }
+                        onToggle={ actions.onToggleTreeItem }
 
-                        onCreateFileClick={ actions.createFile }
-                        onImportFileClick={ actions.importFile }
-                        onCreateFolderClick={ actions.createFolder }
-                        onRenameClick={ actions.renameItem }
-                        onDeleteClick={ actions.deleteItem }>
+                        onCreateFileClick={ actions.onCreateFile }
+                        onImportFileClick={ actions.onImportFile }
+                        onCreateFolderClick={ actions.onCreateFolder }
+                        onRenameClick={ actions.onRenameItem }
+                        onDeleteClick={ actions.onDeleteItem }>
                         { childHtml }
                 </FolderItem>
             );

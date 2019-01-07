@@ -1,7 +1,6 @@
 import React from 'react';
 import { IconFile, IconHtml, IconCss, IconJS, IconMd, IconContract, IconJSON, IconBinary, IconEdit, IconTrash } from '../../../icons';
 import Tooltip from '../../../tooltip';
-import { FadeInComponent } from './fadeInComponent';
 import { BaseItem } from './baseItem';
 import style from './style.less';
 
@@ -29,29 +28,27 @@ function getFileIcon(filename) {
     }
 }
 
-export function getToolbar({ renameItem, deleteItem }) {
+export function getToolbar(props) {
     return (
         <div className={style.buttonsWrapper}>
-            <FadeInComponent>
-                <div className={style.buttons} onClick={e => e.stopPropagation()}>
-                    <a href="#" title="Rename file" onClick={renameItem}>
-                        <Tooltip title="Rename">
-                            <IconEdit />
-                        </Tooltip>
-                    </a>
-                    <a href="#" title="Delete file" onClick={deleteItem} >
-                        <Tooltip title="Delete">
-                            <IconTrash />
-                        </Tooltip>
-                    </a>
-                </div>
-            </FadeInComponent>
+            <div className={style.buttons} onClick={e => e.stopPropagation()}>
+                <a href="#" title="Rename file" onClick={() => props.onRenameClick(props.data.id)}>
+                    <Tooltip title="Rename">
+                        <IconEdit />
+                    </Tooltip>
+                </a>
+                <a href="#" title="Delete file" onClick={() => props.onDeleteClick(props.data.id)} >
+                    <Tooltip title="Delete">
+                        <IconTrash />
+                    </Tooltip>
+                </a>
+            </div>
         </div>
     );
 }
 
 export function FileItem(props) {
-    const toolbar = getToolbar(props);
+    const toolbar = props.data.mutable ? getToolbar(props) : null;
 
     const contextMenu= props.data.mutable ? (
         <div className={ style.contextMenu }>

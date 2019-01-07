@@ -8,38 +8,38 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        toggleTreeItem: (id) => {
+        onToggleTreeItem: (id) => {
             dispatch(explorerActions.toggleTreeItem(id));
         },
-        openFile: (id) => {
+        onOpenFile: (id) => {
             dispatch(explorerActions.openFile(id));
         },
-        configureContract: (id, name) => {
+        onConfigureContract: (id, name) => {
             dispatch(explorerActions.configureContract(id, name));
         },
-        compileContract: (id, name) => {
+        onCompileContract: (id, name) => {
             dispatch(explorerActions.compileContract(id, name));
         },
-        deployContract: (id, name) => {
+        onDeployContract: (id, name) => {
             dispatch(explorerActions.deployContract(id, name));
         },
-        interactContract: (id, name) => {
+        onInteractContract: (id, name) => {
             dispatch(explorerActions.interactContract(id, name));
         },
-        createFile: (parentId) => {
+        onCreateFile: (parentId) => {
             dispatch(explorerActions.createFile(parentId));
         },
-        importFile: (parentId) => {
+        onImportFile: (parentId) => {
             dispatch(explorerActions.importFile(parentId));
         },
-        createFolder: (parentId) => {
+        onCreateFolder: (parentId) => {
             dispatch(explorerActions.createFolder(parentId));
         },
-        renameItem: (id) => {
+        onRenameItem: (id) => {
             dispatch(explorerActions.renameItem(id)); // TODO: check if correct
         },
-        deleteItem: (id) => {
-            dispatch(explorerActions.renameItem(id));
+        onDeleteItem: (id) => {
+            dispatch(explorerActions.deleteItem(id));
         }
     };
 }

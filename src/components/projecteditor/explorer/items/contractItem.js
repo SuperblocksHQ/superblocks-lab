@@ -2,9 +2,10 @@ import React from 'react';
 import { IconContract, IconConfigure, IconCompile, IconDeploy, IconInteract, IconEdit, IconTrash } from '../../../icons';
 import { BaseItem } from './baseItem';
 import style from './style.less';
+import { getToolbar } from './fileItem';
 
 export function ContractItem(props) {
-    const toolbar = <span>edit tools</span>;
+    const toolbar = getToolbar(props);
 
     function getActionButtonProps(name, onClick) {
         return { data: { id: props.data.id, name, opened: false }, onClick: () => onClick(props.id, props.name) };

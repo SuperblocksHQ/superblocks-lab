@@ -89,6 +89,9 @@ select {
                 color: #fff;
                 background-color: rgba(128, 46, 255, 0.10);
             }
+            .buttonsWrapper {
+                opacity: 1;
+            }
         }
     }
     .title {
@@ -111,6 +114,8 @@ select {
     order: 3;
     justify-content: flex-end;
     padding-right: 5px;
+    transition: opacity .3s;
+    opacity: 0;
 
     .buttons {
         display: flex;

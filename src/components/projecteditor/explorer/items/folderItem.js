@@ -1,10 +1,43 @@
 import React from 'react';
 import { IconFolder, IconFolderOpen, IconAddFile, IconImportFile, IconAddFolder, IconEdit, IconTrash } from '../../../icons';
+import Tooltip from '../../../tooltip';
 import { BaseItem } from './baseItem';
 import style from './style.less';
 
+function getToolbar(props) {
+    return (
+        <div className={style.buttonsWrapper}>
+            <div className={style.buttons} onClick={e => e.stopPropagation()}>
+                <a href="#" title="New File" onClick={() => props.onCreateFileClick(props.data.id) }>
+                    <Tooltip title="New File">
+                        <IconAddFile />
+                    </Tooltip>
+                </a>
+                <a href="#" title="New Folder" onClick={() => props.onCreateFolderClick(props.data.id)}>
+                    <Tooltip title="New Folder">
+                        <IconAddFolder />
+                    </Tooltip>
+                </a>
+                { props.data.mutable &&
+                <React.Fragment>
+                    <a href="#" title="Rename" onClick={() => props.onRenameClick(props.data.id)}>
+                        <Tooltip title="Rename">
+                            <IconEdit />
+                        </Tooltip>
+                    </a>
+                    <a href="#" title="Delete" onClick={() => props.onDeleteClick(props.data.id)} >
+                        <Tooltip title="Delete">
+                            <IconTrash />
+                        </Tooltip>
+                    </a>
+                </React.Fragment> }
+            </div>
+        </div>
+    );
+}
+
 export function FolderItem(props) {
-    const toolbar = <span>tools</span>;
+    const toolbar = getToolbar(props);
 
     const contextMenu=(
         <div className={ style.contextMenu }>
