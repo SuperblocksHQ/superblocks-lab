@@ -22,6 +22,9 @@
 import TestRunner from "../testing/testrunner";
 import { readReportSuccesses, readReportFailures, readTotalTestCount, readReportOutput, readReporterStatus } from "../testing/reporter";
 
+// TODO: FIXME: remove temporary switch
+const safeRun = false;
+
 class TestRunnerBridge {
     constructor() {
         this.testRunner = new TestRunner();
@@ -334,8 +337,7 @@ class TestRunnerBridge {
         const web3Object = this._getWeb3(evmProvider);
 
         if(web3Object !== null) {
-            // TODO: FIXME: remove condition
-            const safeRun = false;
+            // TODO: FIXME: remove switch
             if(safeRun) {
                 this.testRunner.safeRunAll(
                     this.testFiles,
@@ -399,14 +401,35 @@ class TestRunnerBridge {
     }
 
     readData() {
-        const total = readTotalTestCount();
-        const passed = readReportSuccesses();
-        const failed = readReportFailures();
-        const done = passed + failed;
-        const testRunnerStatus = this.testRunner.readStatus().toString();
-        const testReporterStatus = readReporterStatus();
-        const status = testRunnerStatus !== "" ? testRunnerStatus : testReporterStatus;
-        const report = readReportOutput();
+        var total;
+        var passed;
+        var failed;
+        var done;
+        var testRunnerStatus;
+        var testReporterStatus;
+        var status;
+        var report;
+
+        // TODO: FIXME: remove switch
+        if(safeRun) {
+            total = this.testRunner.safeReadTotalTestCount();
+            passed = this.testRunner.safeReadReportSuccesses();
+            failed = this.testRunner.safeReadReportFailures();
+            done = passed + failed;
+            testRunnerStatus = this.testRunner.readStatus().toString();
+            testReporterStatus = this.testRunner.safeReadReporterStatus();
+            status = testRunnerStatus !== "" ? testRunnerStatus : testReporterStatus;
+            report = this.testRunner.safeReadReportOutput();
+        } else {
+            total = readTotalTestCount();
+            passed = readReportSuccesses();
+            failed = readReportFailures();
+            done = passed + failed;
+            testRunnerStatus = this.testRunner.readStatus().toString();
+            testReporterStatus = readReporterStatus();
+            status = testRunnerStatus !== "" ? testRunnerStatus : testReporterStatus;
+            report = readReportOutput();
+        }
 
         return {
             done: {

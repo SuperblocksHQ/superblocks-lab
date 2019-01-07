@@ -35,6 +35,11 @@ export default class TestRunner {
 
     constructor() {
         this._status = "";
+        this.testData={};
+        this.successCount=0;
+        this.failureCount=0;
+        this.totalTestCount=0;
+        this.reporterStatus="";
     }
 
     _createAliases(contractsData) {
@@ -201,35 +206,29 @@ export default class TestRunner {
                         totalTestCount += count;
                     }
 
-                    // TODO: FIXME: re-enable accessor (message passing)
-                    /*export function readReportOutput() {
+                    function readReportOutput() {
                         return testData;
                     }
 
-                    // TODO: FIXME: re-enable accessor (message passing)
-                    export function readReportSuccesses() {
+                    function readReportSuccesses() {
                         return successCount;
                     }
 
-                    // TODO: FIXME: re-enable accessor (message passing)
-                    export function readReportFailures() {
+                    function readReportFailures() {
                         return failureCount;
                     }
 
-                    // TODO: FIXME: re-enable accessor (message passing)
-                    export function readTotalTestCount() {
+                    function readTotalTestCount() {
                         return totalTestCount;
                     }
 
-                    // TODO: FIXME: re-enable accessor (message passing)
-                    export function readReporterStatus() {
+                    function readReporterStatus() {
                         return reporterStatus;
                     }
 
-                    // TODO: FIXME: re-enable accessor (message passing)
-                    export function resetReportData() {
+                    function resetReportData() {
                         dataReset();
-                    }*/
+                    }
 
                     function CustomReporter(runner) {
                         runner.on("suite", function(suite){
@@ -321,7 +320,7 @@ export default class TestRunner {
                         });
                     }
 
-                    function run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3) {
+                    function run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, callerSourceReference, callerOriginReference) {
 
                         // TODO: FIXME: provide access to web3 object
                         //var web3=new Web3(web3);
@@ -355,16 +354,26 @@ export default class TestRunner {
                         //mocha.allowUncaught();
                         mocha.fullTrace();
                         const runner = mocha.run(function() {
-                            // TODO: FIXME: callback
-                            /*if(callback) {
-                                callback();
-                            }*/
+                            // TODO: FIXME:
+                            //const testData = readReportOutput();
+                            const testData = {};
+
+                            const successCount = readReportSuccesses();
+                            const failureCount = readReportFailures();
+                            const totalTestCount = readTotalTestCount();
+                            const reporterStatus = readReporterStatus();
+
+                            callerSourceReference.postMessage({ testData: testData, successCount: successCount, failureCount: failureCount, totalTestCount: totalTestCount, reporterStatus: reporterStatus }, callerOriginReference);
+
                             console.log("[TestRunner] test run completed!");
                         });
                     }
 
                     window.addEventListener("message", function(messageEvent) {
+                        // TODO: FIXME: add check against messageEvent.origin
                         const data = messageEvent.data;
+
+                        // TODO: FIXME: error handling
                         const testName = JSON.parse(data.testName);
                         const contracts = JSON.parse(data.contracts);
                         const testCode = JSON.parse(data.testCode);
@@ -373,7 +382,7 @@ export default class TestRunner {
                         const accountKey = JSON.parse(data.accountKey);
                         const web3 = JSON.parse(data.web3);
 
-                        run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3);
+                        run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, messageEvent.source, messageEvent.origin);
                     });
 
                 </script>
@@ -381,11 +390,14 @@ export default class TestRunner {
 
             //
             // Setup separate environment
-            // TODO: FIXME: replace existing iframe, if any
             // TODO: FIXME: hide the iframe
             const testDiv = document.getElementById("test");
+            const iframeElement = document.getElementById("test-iframe");
+            if(iframeElement !== null) {
+                iframeElement.parentNode.removeChild(iframeElement);
+            }
             // TODO: FIXME: testDiv error checking
-            const iframe = document.createElement("iframe");
+            var iframe = document.createElement("iframe");
             iframe.id = "test-iframe";
             iframe.srcdoc = content;
             // TODO: FIXME: remove development-only events
@@ -395,9 +407,50 @@ export default class TestRunner {
                         web3: JSON.stringify(web3)}, "*");
             });
             testDiv.appendChild(iframe);
+            this.iframe = iframe;
+
+
+            // TODO: FIXME: move to more appropriate place (single register)
+            window.addEventListener("message", function(messageEvent) {
+                // TODO: FIXME: add check against messageEvent.origin
+                const data = messageEvent.data;
+
+                // TODO: FIXME: error checking
+                thisReference.testData = data.testData;
+                thisReference.successCount = data.successCount;
+                thisReference.failureCount = data.failureCount;
+                thisReference.totalTestCount = data.totalTestCount;
+                thisReference.reporterStatus = data.reporterStatus;
+
+                // Call back caller
+                if(callback) {
+                    callback();
+                }
+            });
+
         } else {
             console.error("[TestRunner] unable to access test library: ", mocha);
         }
+    }
+
+    safeReadReportOutput() {
+        return this.testData;
+    }
+
+    safeReadReportSuccesses() {
+        return this.successCount;
+    }
+
+    safeReadReportFailures() {
+        return this.failureCount;
+    }
+
+    safeReadTotalTestCount() {
+        return this.totalTestCount;
+    }
+
+    safeReadReporterStatus() {
+        return this.reporterStatus;
     }
 
     readStatus() {
