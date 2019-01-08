@@ -103,7 +103,11 @@ export default class AccountDropdown extends Component {
                             <button
                                 className="btnNoBg"
                                 onClick={e => {
-                                    this.props.onAccountEdit(e, index);
+                                    if (this.props.functions.EVM.isReady()) {
+                                        this.props.onAccountEdit(e, index);
+                                    } else {
+                                        console.log("EVM is not ready!");
+                                    }
                                 }}
                             >
                                 <Tooltip title="Edit Account">
@@ -143,6 +147,7 @@ export default class AccountDropdown extends Component {
 }
 
 AccountDropdown.propTypes = {
+    functions: PropTypes.object.isRequired,
     onAccountChosen: PropTypes.func.isRequired,
     onAccountEdit: PropTypes.func.isRequired,
     onAccountDelete: PropTypes.func.isRequired,
