@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as accountUtils from '../../../utils/accounts';
 import Networks from '../../../networks';
 import classnames from 'classnames';
@@ -243,4 +244,9 @@ export default class AccountSelector extends Component {
             </DropdownContainer>
         );
     }
+}
+
+AccountSelector.propTypes = {
+    router: PropTypes.object.isRequired,
+    functions: PropTypes.object.isRequired
 }

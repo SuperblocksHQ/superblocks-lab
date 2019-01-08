@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DropdownContainer } from '../../dropdown';
 import style from '../style.less';
@@ -56,4 +57,8 @@ export default class NetworkSelector extends Component {
             </DropdownContainer>
         );
     }
+}
+
+NetworkSelector.propTypes = {
+    router: PropTypes.object.isRequired
 }

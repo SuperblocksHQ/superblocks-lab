@@ -49,6 +49,7 @@ export default class NetworkDropdown extends Component {
 }
 
 NetworkDropdown.propTypes = {
+    router: PropTypes.object.isRequired,
     networkSelected: PropTypes.string.isRequired,
     onNetworkSelected: PropTypes.func.isRequired,
-};
+}
