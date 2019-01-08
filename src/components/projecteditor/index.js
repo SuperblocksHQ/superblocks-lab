@@ -50,6 +50,9 @@ const mapDispatchToProps = (dispatch) => {
             },
             onDownload() {
                 dispatch(sidePanelsActions.preview.download());
+            },
+            onToggleWeb3Accounts() {
+                dispatch(sidePanelsActions.preview.toggleWeb3Accounts());
             }
         }
     }

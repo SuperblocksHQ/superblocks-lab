@@ -4,6 +4,7 @@ import SuperProvider from '../components/superprovider';
 let projectItem = null;
 let exportableDappHtml = null;
 let iframeId = null;
+let disableAccounts = false;
 
 export const previewService = {
     superProvider: null,
@@ -11,7 +12,7 @@ export const previewService = {
     init(wallet) {
         window.addEventListener('message', async (e) => {
             if (e.data.type === 'window-ready' && this.projectItem) {
-                const builtProject = await buildProjectHtml(this.projectItem, wallet);
+                const builtProject = await buildProjectHtml(this.projectItem, wallet, this.disableAccounts);
                 exportableDappHtml = builtProject.exportableContent;
                 if (e.source) {
                     e.source.postMessage({ type: 'set-content', payload: builtProject.content }, '*');
@@ -31,6 +32,9 @@ export const previewService = {
         projectItem = value;
         exportableDappHtml = null;
     },
+
+    get disableAccounts() { return disableAccounts; },
+    set disableAccounts(value) { disableAccounts = value; },
 
     get hasExportableContent() { return Boolean(exportableDappHtml); },
 

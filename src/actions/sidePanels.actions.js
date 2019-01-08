@@ -49,6 +49,13 @@ export const sidePanelsActions = {
             return {
                 type: sidePanelsActions.preview.HIDE_MODALS
             };
-        }
+        },
+
+        TOGGLE_WEB3_ACCOUNTS: 'PREVIEW.TOGGLE_WEB3_ACCOUNTS',
+        toggleWeb3Accounts() {
+            return {
+                type: sidePanelsActions.preview.TOGGLE_WEB3_ACCOUNTS
+            };
+        },
     }
 };

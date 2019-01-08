@@ -1,4 +1,3 @@
-import { empty } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { sidePanelsActions } from '../../actions';

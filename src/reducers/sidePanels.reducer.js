@@ -6,6 +6,7 @@ export const initialState = {
         showNoExportableContentModal: false,
         showCannotExportModal: false,
         showDownloadModal: false,
+        disableAccounts: false,
         open: false
     }
 };
@@ -74,6 +75,11 @@ export default function sidePanelsReducer(state = initialState, action) {
                 preview: { ...state.preview, showNoExportableContentModal, showCannotExportModal, showDownloadModal }
             };
         }
+        case sidePanelsActions.preview.TOGGLE_WEB3_ACCOUNTS:
+            return {
+                ...state,
+                preview: { ...state.preview, disableAccounts: !state.preview.disableAccounts }
+            }
         default:
             return state;
     }

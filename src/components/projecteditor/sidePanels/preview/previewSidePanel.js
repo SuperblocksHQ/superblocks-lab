@@ -1,7 +1,8 @@
 import React from 'react';
 import style from '../style.less';
-import { IconShowPreview, IconRefresh, IconDownloadDApp, IconOpenWindow } from '../../../icons';
+import { IconShowPreview, IconRefresh, IconDownloadDApp, IconMore } from '../../../icons';
 import Tooltip from '../../../tooltip';
+import { DropdownContainer } from '../../../dropdown';
 import OnlyIf from '../../../onlyIf';
 import { BaseSidePanel } from '../baseSidePanel';
 import { previewService } from '../../../../services';
@@ -36,12 +37,30 @@ export class PreviewSidePanel extends React.Component {
     refresh() {
         const iframe = document.getElementById(IFRAME_ID);
         iframe.contentWindow.location.reload();
-        
     }
 
     tryDownload() {
         // TODO: parameters should not be passed here, but obtained from redux app state
         this.props.onTryDownload(previewService.hasExportableContent, previewService.projectItem.getEnvironment());
+    }
+
+    toggleWeb3Accounts() {
+        this.props.onToggleWeb3Accounts();
+        this.refresh();
+    }
+
+    renderMoreDropdown() {
+        return (
+            <div className={style.moreContainer} onClick={ e => e.stopPropagation() }>
+                <div className={style.heading}>
+                    <p>Disable Web3 Accounts</p>
+                    <input type="checkbox"
+                        checked={this.props.disableAccounts}
+                        onChange={() => this.toggleWeb3Accounts()} />
+                </div>
+                <div className={style.description}>Simulate that no Web3 accounts are available</div>
+            </div>
+        );
     }
 
     render() {
@@ -52,13 +71,23 @@ export class PreviewSidePanel extends React.Component {
                 <OnlyIf test={isProjectOpen}>
                     <div className={style.appview}>
                         <div className={style.toolbar}>
+      
                             <button className="btnNoBg" title="Refresh" onClick={() => this.refresh()}>
                                 <Tooltip title="Refresh Page"><IconRefresh /></Tooltip>
                             </button>
-                            <div className={style.urlBar}>{getIframeSrc()}</div>
+
                             <button className="btnNoBg" title="Download" onClick={() => this.tryDownload()}>
                                 <Tooltip title="Download DApp"><IconDownloadDApp /></Tooltip>
                             </button>
+
+                            <div className={style.urlBar}>{getIframeSrc()}</div>
+                            
+                            <DropdownContainer dropdownContent={this.renderMoreDropdown()}>
+                                <button className="btnNoBg" title="Settings">
+                                    <Tooltip title="Settings"><IconMore /></Tooltip>
+                                </button>
+                            </DropdownContainer>
+                            
                         </div>
                         <iframe id={IFRAME_ID} src={getIframeSrc()}></iframe>
                     </div>

@@ -74,10 +74,11 @@ function makeFileName(path, network, suffix) {
     return `/build${dir}${contractName}/${contractName}.${network}.${suffix}`;
 }
 
-function getAccountAddress(project, wallet) {
+function getAccountAddress(project, wallet, disableAccounts) {
+    if (disableAccounts) { return null; }
+
     // Check given account, try to open and get address, else return [].
     const accountName = project.getAccount();
-    if (accountName === '(no provider)') { return null; }
     if (accountName === '(locked)') { return []; }
     if (!accountName) { return []; }
 
@@ -117,8 +118,9 @@ function getAccountAddress(project, wallet) {
  * Create HTML page to preview and download a project
  * @param {*} project 
  * @param {*} wallet 
+ * @param {*} disableAccounts
  */
-export function buildProjectHtml(project, wallet) {
+export function buildProjectHtml(project, wallet, disableAccounts) {
     return new Promise((resolve, reject) => {
 
         let js, css, html, contractjs;
@@ -177,7 +179,7 @@ export function buildProjectHtml(project, wallet) {
                                         contractjs + '\n' + js,
                                         project.getTitle(),
                                         endpoint,
-                                        getAccountAddress(project, wallet)
+                                        getAccountAddress(project, wallet, disableAccounts)
                                     );
 
                                     // exportable version.
