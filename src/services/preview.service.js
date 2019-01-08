@@ -1,5 +1,6 @@
 import { buildProjectHtml } from './utils/buildProjectHtml';
 import SuperProvider from '../components/superprovider';
+import Networks from '../networks';
 
 let projectItem = null;
 let exportableDappHtml = null;
@@ -24,7 +25,14 @@ export const previewService = {
 
     initSuperProvider(_iframeId) {
         iframeId = _iframeId;
-        this.superProvider = new SuperProvider(iframeId, previewService.projectItem);
+        this.superProvider = new SuperProvider(iframeId, previewService.projectItem, (hash, endpoint) => {
+            const network = Object.keys(Networks).find(key => Networks[key].endpoint === endpoint);
+            this.projectItem.getTxLog().addTx({
+                hash: hash,
+                context: 'Contract interaction',
+                network
+            });
+        });
     },
 
     get projectItem() { return projectItem; },

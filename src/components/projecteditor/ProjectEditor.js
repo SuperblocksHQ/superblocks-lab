@@ -142,7 +142,7 @@ export default class ProjectEditor extends Component {
                 />
                 <div className={style.mainWrapper}>
                     <div className={style.mainLayout}>
-                        <SplitterLayout primaryIndex={1} secondaryMinSize={280} secondaryInitialSize={280}>
+                        <SplitterLayout primaryIndex={1} secondaryMinSize={0} secondaryInitialSize={280}>
                             <div className={style.control}>
                                 <Control
                                     router={this.props.router}
