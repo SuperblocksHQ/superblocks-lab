@@ -40,104 +40,15 @@ export default class TestRunner {
         this.failureCount=0;
         this.totalTestCount=0;
         this.reporterStatus="";
+
+        this.isIframeCreated = false;
     }
 
-    _createAliases(contractsData) {
-        var contracts="";
-        for(var key in contractsData) {
-            const contractName = key.toString();
-            console.log("[TestRunner] exposing contract alias: " + contractName);
-            contracts+="const " + contractName + '=contractsData["' + contractName + '"];';
-        }
-        return contracts;
-    }
+    // TODO: FIXME: room for optimizated parameter list
+    createIframe(contracts, testName, testCode, contractsData, accountAddress, accountKey, web3, creationCallback, callback) {
+        if(!this.isIframeCreated) {
+            const thisReference = this;
 
-    _run(testName, testCode, contractsData, accountAddress, accountKey, web3, callback) {
-        if(!accountAddress || accountAddress === null) {
-            console.error("[TestRunner] Unable to run: undefined account address");
-            return;
-        }
-
-        if(!accountKey || accountKey === null) {
-            console.error("[TestRunner] Unable to run: undefined account key");
-            return;
-        }
-
-        if(!web3 || web3 === null) {
-            console.error("[TestRunner] Unable to run: undefined web3 object");
-            return;
-        }
-
-        console.log("[TestRunner] setting up test runner ...");
-        const thisReference = this;
-        const contracts = thisReference._createAliases(contractsData);
-
-        thisReference._status="";
-
-        //
-        // Setup Mocha
-        if(mocha && mocha.suite) {
-            // TODO: Consider create or none instead ?
-            //var suiteInstance = mocha.suite.create(mochaInstance.suite, 'Test Suite');
-            mocha.suite = mocha.suite.clone();
-            mocha.setup("bdd");
-            mocha.reporter(CustomReporter);
-
-            describe("Test name: " + testName, function() {
-                try {
-                    // TODO: FIXME: consider a better alternative for dynamically adding tests
-                    // Note: alternatively, could use mocha.suite.addTest(new Test ... ), given the possibility to access the inner library
-                    // See also: Runner
-                    // Reference:
-                    //   const statement="describe(\"Hello World\", function(){var contractInstance;beforeEach(function(){console.warn(\"testing...\");});it(\"testing tests\",function(){console.log(true); }); });";
-                    eval(contracts + testCode);
-                } catch(e) {
-                    thisReference._status="Invalid test file: " + testName + ". " + e;
-                    console.error("[TestRunner] error: ", thisReference._status);
-                    return;
-                }
-            });
-
-            // Invoke Mocha
-            mocha.checkLeaks();
-            //mocha.allowUncaught();
-            mocha.fullTrace();
-            const runner = mocha.run(function() {
-                if(callback) {
-                    callback();
-                }
-                console.log("[TestRunner] test run completed!");
-            });
-        } else {
-            console.error("[TestRunner] unable to access test library: ", mocha);
-        }
-    }
-
-    _safeRun(testName, testCode, contractsData, accountAddress, accountKey, web3, callback) {
-        if(!accountAddress || accountAddress === null) {
-            console.error("[TestRunner] Unable to run: undefined account address");
-            return;
-        }
-
-        if(!accountKey || accountKey === null) {
-            console.error("[TestRunner] Unable to run: undefined account key");
-            return;
-        }
-
-        if(!web3 || web3 === null) {
-            console.error("[TestRunner] Unable to run: undefined web3 object");
-            return;
-        }
-
-        console.log("[TestRunner] setting up test runner ...");
-        const thisReference = this;
-        const contracts = thisReference._createAliases(contractsData);
-
-        thisReference._status="";
-
-        //
-        // Setup Mocha
-        if(mocha && mocha.suite) {
             //TODO: FIXME: security / external source
             const content = `
                 <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
@@ -402,10 +313,9 @@ export default class TestRunner {
             iframe.srcdoc = content;
             // TODO: FIXME: remove development-only events
             iframe.addEventListener("mouseover", function(evt) {
-                iframe.contentWindow.postMessage({testName:JSON.stringify(testName), contracts:JSON.stringify(contracts), testCode: JSON.stringify(testCode),
-                        contractsData: JSON.stringify(contractsData), accountAddress: JSON.stringify(accountAddress), accountKey: JSON.stringify(accountKey),
-                        web3: JSON.stringify(web3)}, "*");
+                creationCallback(iframe);
             });
+
             testDiv.appendChild(iframe);
             this.iframe = iframe;
 
@@ -427,6 +337,115 @@ export default class TestRunner {
                     callback();
                 }
             });
+
+            this.isIframeCreated = true;
+        }
+    }
+
+    _createAliases(contractsData) {
+        var contracts="";
+        for(var key in contractsData) {
+            const contractName = key.toString();
+            console.log("[TestRunner] exposing contract alias: " + contractName);
+            contracts+="const " + contractName + '=contractsData["' + contractName + '"];';
+        }
+        return contracts;
+    }
+
+    _run(testName, testCode, contractsData, accountAddress, accountKey, web3, callback) {
+        if(!accountAddress || accountAddress === null) {
+            console.error("[TestRunner] Unable to run: undefined account address");
+            return;
+        }
+
+        if(!accountKey || accountKey === null) {
+            console.error("[TestRunner] Unable to run: undefined account key");
+            return;
+        }
+
+        if(!web3 || web3 === null) {
+            console.error("[TestRunner] Unable to run: undefined web3 object");
+            return;
+        }
+
+        console.log("[TestRunner] setting up test runner ...");
+        const thisReference = this;
+        const contracts = thisReference._createAliases(contractsData);
+
+        thisReference._status="";
+
+        //
+        // Setup Mocha
+        if(mocha && mocha.suite) {
+            // TODO: Consider create or none instead ?
+            //var suiteInstance = mocha.suite.create(mochaInstance.suite, 'Test Suite');
+            mocha.suite = mocha.suite.clone();
+            mocha.setup("bdd");
+            mocha.reporter(CustomReporter);
+
+            describe("Test name: " + testName, function() {
+                try {
+                    // TODO: FIXME: consider a better alternative for dynamically adding tests
+                    // Note: alternatively, could use mocha.suite.addTest(new Test ... ), given the possibility to access the inner library
+                    // See also: Runner
+                    // Reference:
+                    //   const statement="describe(\"Hello World\", function(){var contractInstance;beforeEach(function(){console.warn(\"testing...\");});it(\"testing tests\",function(){console.log(true); }); });";
+                    eval(contracts + testCode);
+                } catch(e) {
+                    thisReference._status="Invalid test file: " + testName + ". " + e;
+                    console.error("[TestRunner] error: ", thisReference._status);
+                    return;
+                }
+            });
+
+            // Invoke Mocha
+            mocha.checkLeaks();
+            //mocha.allowUncaught();
+            mocha.fullTrace();
+            const runner = mocha.run(function() {
+                if(callback) {
+                    callback();
+                }
+                console.log("[TestRunner] test run completed!");
+            });
+        } else {
+            console.error("[TestRunner] unable to access test library: ", mocha);
+        }
+    }
+
+    _safeRun(testName, testCode, contractsData, accountAddress, accountKey, web3, callback) {
+        if(!accountAddress || accountAddress === null) {
+            console.error("[TestRunner] Unable to run: undefined account address");
+            return;
+        }
+
+        if(!accountKey || accountKey === null) {
+            console.error("[TestRunner] Unable to run: undefined account key");
+            return;
+        }
+
+        if(!web3 || web3 === null) {
+            console.error("[TestRunner] Unable to run: undefined web3 object");
+            return;
+        }
+
+        console.log("[TestRunner] setting up test runner ...");
+        const thisReference = this;
+        const contracts = thisReference._createAliases(contractsData);
+
+        thisReference._status="";
+
+        //
+        // Setup Mocha
+        if(mocha && mocha.suite) {
+            function creationCallback(iframe) {
+                iframe.contentWindow.postMessage({testName:JSON.stringify(testName), contracts:JSON.stringify(contracts), testCode: JSON.stringify(testCode),
+                        contractsData: JSON.stringify(contractsData), accountAddress: JSON.stringify(accountAddress), accountKey: JSON.stringify(accountKey),
+                        web3: JSON.stringify(web3)}, "*");
+            }
+
+            // TODO: FIXME: call once during initialization
+            this.createIframe(contracts, testName, testCode, contractsData, accountAddress, accountKey, web3, creationCallback, callback);
 
         } else {
             console.error("[TestRunner] unable to access test library: ", mocha);
@@ -465,6 +484,8 @@ export default class TestRunner {
     };
 
     safeRunAll(testFiles, contractsData, accountAddress, accountKey, web3, callback) {
+        this.isIframeCreated = false;
+
         for(var testName in testFiles) {
             const testCode = testFiles[testName];
             this._safeRun(testName, testCode, contractsData, accountAddress, accountKey, web3, callback);
