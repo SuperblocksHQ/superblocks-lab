@@ -151,7 +151,7 @@ class AccountDropdown extends Component {
                 if (this.props.functions.wallet.isOpen(walletName)) {
                     try {
                         return this.props.functions.wallet.getAddress(
-                            'development',
+                            walletName,
                             accountIndex
                         );
                     } catch (ex) {
