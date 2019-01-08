@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal } from '../../../modal/new';
 
 export function CannotExportModal(props) {
@@ -24,3 +25,7 @@ export function CannotExportModal(props) {
         </Modal>
     );
 }
+
+CannotExportModal.propTypes = {
+    onClose: PropTypes.func.isRequired
+};

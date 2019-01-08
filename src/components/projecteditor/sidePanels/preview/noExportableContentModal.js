@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal } from '../../../modal/new';
 
 export function NoExportableContentModal(props) {
@@ -9,3 +10,7 @@ export function NoExportableContentModal(props) {
         </Modal>
     );
 }
+
+NoExportableContentModal.propTypes = {
+    onClose: PropTypes.func.isRequired
+};

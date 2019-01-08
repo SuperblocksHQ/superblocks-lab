@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal } from '../../../modal/new';
 
 export function DownloadModal(props) {
@@ -33,3 +34,9 @@ export function DownloadModal(props) {
         </Modal>
     );
 }
+
+DownloadModal.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    onDownload: PropTypes.func.isRequired,
+    environment: PropTypes.string.isRequired
+};

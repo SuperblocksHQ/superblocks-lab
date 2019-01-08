@@ -15,6 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from  'react';
+import PropTypes from 'prop-types';
 import style from './style.less';
 
 export function Modal(props) {
@@ -24,3 +25,7 @@ export function Modal(props) {
         </div>
     );
 }
+
+Modal.propTypes = {
+    onClose: PropTypes.func.isRequired
+};
