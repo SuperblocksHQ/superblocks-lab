@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DropdownContainer } from '../dropdown';
 import Tooltip from '../tooltip';
-import OnlyIf from '../onlyIf';
 import copy from 'copy-to-clipboard';
 import style from './style.less';
 import * as accountUtils from '../../utils/accounts';
@@ -127,43 +126,6 @@ class AccountDropdown extends Component {
         copy(str);
     }
 
-    getAddress = (account) => {
-        const project = this.props.router.control.getActiveProject();
-        const chosenEnv = project.getEnvironment();
-        const walletName = account.getWallet(chosenEnv);
-        let walletItem;
-        let walletType = null;
-
-        if (walletName) {
-            const walletsItem = project.getHiddenItem('wallets');
-            walletItem = walletsItem.getByName(walletName);
-        }
-
-        if (walletItem) {
-            walletType = walletItem.getWalletType();
-            if (walletType == 'external') {
-                if (window.web3) {
-                    const extAccounts = window.web3.eth.accounts || [];
-                    return extAccounts[0];
-                }
-            } else {
-                const accountIndex = account.getAccountIndex('browser')
-                if (this.props.functions.wallet.isOpen(walletName)) {
-                    try {
-                        return this.props.functions.wallet.getAddress(
-                            walletName,
-                            accountIndex
-                        );
-                    } catch (ex) {
-                        return '0x0';
-                    }
-                }
-            }
-        } else {
-            return account.getAddress(chosenEnv);
-        }
-    }
-
     render() {
         var accounts, chosenAccount;
         const project = this.props.router.control.getActiveProject();
@@ -191,7 +153,9 @@ class AccountDropdown extends Component {
 
             var address = '';
             if (this.props.functions.EVM.isReady()) {
-                address = this.getAddress(account);
+                address = accountUtils.getAddress(this.props.router.control.getActiveProject(),
+                account,
+                this.props.functions.wallet);
             }
             var deleteButton;
             if (index !== 0) {
