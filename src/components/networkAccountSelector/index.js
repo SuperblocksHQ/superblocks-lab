@@ -6,6 +6,7 @@ import Tooltip from '../tooltip';
 import copy from 'copy-to-clipboard';
 import style from './style.less';
 import * as accountUtils from '../../utils/accounts';
+import Networks from '../../networks';
 import {
     IconDeployGreen,
     IconDropdown,
@@ -153,9 +154,8 @@ class AccountDropdown extends Component {
 
             var address = '';
             if (this.props.functions.EVM.isReady()) {
-                address = accountUtils.getAddress(this.props.router.control.getActiveProject(),
-                account,
-                this.props.functions.wallet);
+                const accountInfo = accountUtils.getAccountInfo(this.props.router.control.getActiveProject(), account, this.props.functions.wallet);
+                address = accountInfo.address;
             }
             var deleteButton;
             if (index !== 0) {
@@ -331,58 +331,11 @@ class AccountSelector extends Component {
     accountType = () => {
         const project = this.props.router.control.getActiveProject();
         const accountName = project.getAccount();
-        if (!project || !accountName) return {};
-        const chosenEnv = project.getEnvironment();
-        const network = chosenEnv;
-        var isLocked = false;
-        var walletType = null;
-        var address = '';
-        var accountType;
-
         const accountsItem = project.getHiddenItem('accounts');
         const accountItem = accountsItem.getByName(accountName);
+        const wallet = this.props.functions.wallet;
 
-        const walletName = accountItem.getWallet(chosenEnv);
-        const accountIndex = accountItem.getAccountIndex(chosenEnv);
-
-        var walletItem;
-        if (walletName) {
-            const walletsItem = project.getHiddenItem('wallets');
-            walletItem = walletsItem.getByName(walletName);
-        }
-
-        if (walletItem) {
-            walletType = walletItem.getWalletType();
-            if (walletType == 'external') {
-                accountType = 'metamask';
-                if (!window.web3) {
-                    isLocked = true;
-                } else {
-                    const extAccounts = window.web3.eth.accounts || [];
-                    isLocked = extAccounts.length < 1;
-                    address = extAccounts[0];
-                }
-            } else {
-                accountType = 'wallet';
-                if (this.props.functions.wallet.isOpen(walletName)) {
-                    try {
-                        address = this.props.functions.wallet.getAddress(
-                            walletName,
-                            accountIndex
-                        );
-                    } catch (ex) {
-                        address = '0x0';
-                    }
-                } else {
-                    isLocked = true;
-                }
-            }
-        } else {
-            address = accountItem.getAddress(chosenEnv);
-            accountType = 'pseudo';
-        }
-
-        return { accountType, isLocked, network, address };
+        return accountUtils.getAccountInfo(project, accountItem, wallet);
     };
 
     accountBalance = () => {
@@ -394,7 +347,7 @@ class AccountSelector extends Component {
 
     getWeb3 = endpoint => {
         var provider;
-        if (endpoint.toLowerCase() == 'http://superblocks-browser') {
+        if (endpoint.toLowerCase() === Networks.browser.endpoint) {
             if (this.props.functions.EVM.isReady()){
                 provider = this.props.functions.EVM.getProvider();
             } else {
