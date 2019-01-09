@@ -61,7 +61,9 @@ class TestRunnerBridge {
 
     // Take project settings to extract hash map of contract names and their respective source code
     _setContractsData(project, wallet) {
-        if(!this.compiler) {
+        const isCompilerReady = this.compiler.isReady();
+        if(!this.compiler || !isCompilerReady) {
+            this.compiler.init();
             console.error("Unable to set testing contracts data. Compiler reads: ", this.compiler);
             return;
         }
@@ -420,6 +422,13 @@ class TestRunnerBridge {
             testReporterStatus = this.testRunner.safeReadReporterStatus();
             status = testRunnerStatus !== "" ? testRunnerStatus : testReporterStatus;
             report = this.testRunner.safeReadReportOutput();
+
+            const isCompilerReady = this.compiler.isReady();
+            if(!this.compiler || !isCompilerReady) {
+                console.error("Replacing test status due to compiler not being ready: " + status);
+                status = "Compiler is not ready";
+            }
+
         } else {
             total = readTotalTestCount();
             passed = readReportSuccesses();

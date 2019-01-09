@@ -265,9 +265,25 @@ export default class TestRunner {
                         //mocha.allowUncaught();
                         mocha.fullTrace();
                         const runner = mocha.run(function() {
-                            // TODO: FIXME:
-                            //const testData = readReportOutput();
-                            const testData = {};
+
+                            //
+                            // Serialize test data
+                            const testDataObject = readReportOutput();
+                            var testData = {};
+                            for(var name in testDataObject) {
+                                const contractName = name;
+                                testData[contractName] = {};
+                                testData[contractName].tests = [];
+
+                                const tests = testDataObject[contractName].tests;
+                                for(var i=0; i< tests.length; i++) {
+                                    var testObject = {};
+                                    testObject.title = tests[i].title;
+                                    testObject.duration = tests[i].duration;
+                                    testObject.state = tests[i].state;
+                                    testData[contractName].tests.push(testObject);
+                                }
+                            }
 
                             const successCount = readReportSuccesses();
                             const failureCount = readReportFailures();
@@ -311,13 +327,13 @@ export default class TestRunner {
             var iframe = document.createElement("iframe");
             iframe.id = "test-iframe";
             iframe.srcdoc = content;
-            // TODO: FIXME: remove development-only events
-            iframe.addEventListener("mouseover", function(evt) {
-                creationCallback(iframe);
-            });
+            iframe.style.display = "none";
 
             testDiv.appendChild(iframe);
             this.iframe = iframe;
+
+            // TODO: FIXME: change timer to event after iframe is ready
+            setTimeout(function() { creationCallback(iframe); }, 1000);
 
 
             // TODO: FIXME: move to more appropriate place (single register)
