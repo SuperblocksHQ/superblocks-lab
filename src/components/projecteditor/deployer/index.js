@@ -16,10 +16,12 @@
 
 import { connect } from 'react-redux';
 import { getNetworkPreferences } from '../../../selectors/settings';
+import { getSelectedEnvironment } from '../../../selectors/projects';
 import Deployer from './Deployer';
 
 const mapStateToProps = state => ({
     networkPreferences: getNetworkPreferences(state),
+    selectedEnvironment: getSelectedEnvironment(state)
 });
 
 export default connect(mapStateToProps, null)(Deployer);
