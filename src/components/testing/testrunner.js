@@ -16,6 +16,7 @@
 
 
 import Mocha from '../../mocha.js';
+import SuperProvider from '../superprovider';
 import { CustomReporter } from "../testing/reporter";
 
 //
@@ -42,17 +43,48 @@ export default class TestRunner {
         this.reporterStatus="";
 
         this.isIframeCreated = false;
+
+        // TODO: FIXME: make sure id scheme is being used correctly
+        this.id = 'super_test_runner_0';
+        this.provider = new SuperProvider({ that: this });
+
+        // TODO: FIXME: revisit bridge code to remove data declaration
+        this.endpoint="http://superblocks-browser";
     }
+
+    _getProvider = (endpoint, accounts) => {
+        var ts = 0; // TODO: FIXME: this.props.functions.session.start_time();
+        const js =
+            `<script type="text/javascript" src="/static/js/web3provider.js?ts=`
+                + ts +
+            `">
+            </script>
+            <script type="text/javascript">
+                window.web3={currentProvider:new DevKitProvider.provider("` +
+                    endpoint +
+                    `"),eth:{accounts:` +
+                    JSON.stringify(accounts) +
+                    `}};
+                console.log("[TestRunner] Using Superblocks web3 provider.", window.web3);
+            </script>
+        `;
+        return js;
+    };
 
     // TODO: FIXME: room for optimizated parameter list
     createIframe(contracts, testName, testCode, contractsData, accountAddress, accountKey, web3, creationCallback, callback) {
         if(!this.isIframeCreated) {
             const thisReference = this;
 
+            // TODO: FIXME: provide accounts (possibly reusing existing set)
+            const accounts = [];
+
             //TODO: FIXME: security / external source
+            const web3Provider=thisReference._getProvider(thisReference.endpoint, accounts);
             const content = `
-                <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
                 <script type="text/javascript" src="https://unpkg.com/web3@0.20.5/dist/web3.min.js"></script>
+                ` + web3Provider + `
+                <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
                 <script type="text/javascript">
                     /*====================
                       Test data
@@ -290,26 +322,34 @@ export default class TestRunner {
                             const totalTestCount = readTotalTestCount();
                             const reporterStatus = readReporterStatus();
 
-                            callerSourceReference.postMessage({ testData: testData, successCount: successCount, failureCount: failureCount, totalTestCount: totalTestCount, reporterStatus: reporterStatus }, callerOriginReference);
+                            callerSourceReference.postMessage({ type: "testdata", testData: testData, successCount: successCount, failureCount: failureCount, totalTestCount: totalTestCount, reporterStatus: reporterStatus }, callerOriginReference);
 
                             console.log("[TestRunner] test run completed!");
                         });
                     }
 
                     window.addEventListener("message", function(messageEvent) {
-                        // TODO: FIXME: add check against messageEvent.origin
                         const data = messageEvent.data;
 
-                        // TODO: FIXME: error handling
-                        const testName = JSON.parse(data.testName);
-                        const contracts = JSON.parse(data.contracts);
-                        const testCode = JSON.parse(data.testCode);
-                        const contractsData = JSON.parse(data.contractsData);
-                        const accountAddress = JSON.parse(data.accountAddress);
-                        const accountKey = JSON.parse(data.accountKey);
-                        const web3 = JSON.parse(data.web3);
+                        DevKitProvider.onMsg(messageEvent);
+                        ` + thisReference.provider._onMessage(` + messageEvent + `) + `
 
-                        run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, messageEvent.source, messageEvent.origin);
+                        if(data.type === "init") {
+                            console.warn("Initializing superprovider. Message event data: ", data);
+
+                        } else if(data.type === "testrun"){
+                            // TODO: FIXME: add check against messageEvent.origin
+                            // TODO: FIXME: error handling
+                            const testName = JSON.parse(data.testName);
+                            const contracts = JSON.parse(data.contracts);
+                            const testCode = JSON.parse(data.testCode);
+                            const contractsData = JSON.parse(data.contractsData);
+                            const accountAddress = JSON.parse(data.accountAddress);
+                            const accountKey = JSON.parse(data.accountKey);
+                            const web3 = JSON.parse(data.web3);
+
+                            run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, messageEvent.source, messageEvent.origin);
+                        }
                     });
 
                 </script>
@@ -331,6 +371,8 @@ export default class TestRunner {
 
             testDiv.appendChild(iframe);
             this.iframe = iframe;
+            this.provider.initIframe(iframe);
+
 
             // TODO: FIXME: change timer to event after iframe is ready
             setTimeout(function() { creationCallback(iframe); }, 1000);
@@ -341,16 +383,17 @@ export default class TestRunner {
                 // TODO: FIXME: add check against messageEvent.origin
                 const data = messageEvent.data;
 
-                // TODO: FIXME: error checking
-                thisReference.testData = data.testData;
-                thisReference.successCount = data.successCount;
-                thisReference.failureCount = data.failureCount;
-                thisReference.totalTestCount = data.totalTestCount;
-                thisReference.reporterStatus = data.reporterStatus;
+                if(data.type === "testdata"){
+                    thisReference.testData = data.testData;
+                    thisReference.successCount = data.successCount;
+                    thisReference.failureCount = data.failureCount;
+                    thisReference.totalTestCount = data.totalTestCount;
+                    thisReference.reporterStatus = data.reporterStatus;
 
-                // Call back caller
-                if(callback) {
-                    callback();
+                    // Call back caller
+                    if(callback) {
+                        callback();
+                    }
                 }
             });
 
@@ -455,7 +498,7 @@ export default class TestRunner {
         // Setup Mocha
         if(mocha && mocha.suite) {
             function creationCallback(iframe) {
-                iframe.contentWindow.postMessage({testName:JSON.stringify(testName), contracts:JSON.stringify(contracts), testCode: JSON.stringify(testCode),
+                iframe.contentWindow.postMessage({channel: -1, type: "testrun", testName:JSON.stringify(testName), contracts:JSON.stringify(contracts), testCode: JSON.stringify(testCode),
                         contractsData: JSON.stringify(contractsData), accountAddress: JSON.stringify(accountAddress), accountKey: JSON.stringify(accountKey),
                         web3: JSON.stringify(web3)}, "*");
             }
