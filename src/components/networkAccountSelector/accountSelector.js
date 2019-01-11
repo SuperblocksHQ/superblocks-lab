@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import { DropdownContainer } from '../dropdown';
+import Networks from '../../networks';
+import * as accountUtils from '../../utils/accounts';
 import style from './style.less';
 import {
     IconDropdown,
@@ -99,57 +102,9 @@ export class AccountSelector extends Component {
     accountType = () => {
         const project = this.props.router.control.getActiveProject();
         const accountName = project.getAccount();
-        if (!project || !accountName) { return {}; }
-        const chosenEnv = this.props.selectedEnvironment;
-        var isLocked = false;
-        var walletType = null;
-        var address = '';
-        var accountType;
-
         const accountsItem = project.getHiddenItem('accounts');
         const accountItem = accountsItem.getByName(accountName);
-
-        const walletName = accountItem.getWallet(chosenEnv);
-        const accountIndex = accountItem.getAccountIndex(chosenEnv);
-
-        var walletItem;
-        if (walletName) {
-            const walletsItem = project.getHiddenItem('wallets');
-            walletItem = walletsItem.getByName(walletName);
-        }
-
-        if (walletItem) {
-            walletType = walletItem.getWalletType();
-            if (walletType === 'external') {
-                accountType = 'metamask';
-                if (!window.web3) {
-                    isLocked = true;
-                } else {
-                    const extAccounts = window.web3.eth.accounts || [];
-                    isLocked = extAccounts.length < 1;
-                    address = extAccounts[0];
-                }
-            } else {
-                accountType = 'wallet';
-                if (this.props.functions.wallet.isOpen(walletName)) {
-                    try {
-                        address = this.props.functions.wallet.getAddress(
-                            walletName,
-                            accountIndex
-                        );
-                    } catch (ex) {
-                        address = '0x0';
-                    }
-                } else {
-                    isLocked = true;
-                }
-            }
-        } else {
-            address = accountItem.getAddress(chosenEnv);
-            accountType = 'pseudo';
-        }
-
-        return { accountType, isLocked, network: chosenEnv, address };
+        return accountUtils.getAccountInfo(project, accountItem, this.props.functions.wallet, this.props.selectedEnvironment);
     };
 
     accountBalance = () => {
@@ -161,7 +116,7 @@ export class AccountSelector extends Component {
 
     getWeb3 = endpoint => {
         var provider;
-        if (endpoint.toLowerCase() === 'http://superblocks-browser') {
+        if (endpoint.toLowerCase() === Networks.browser.endpoint) {
             if (this.props.functions.EVM.isReady()){
                 provider = this.props.functions.EVM.getProvider();
             } else {
@@ -262,6 +217,7 @@ export class AccountSelector extends Component {
             <DropdownContainer
                 dropdownContent={
                     <AccountsList
+                        environment={this.props.selectedEnvironment}
                         router={this.props.router}
                         onAccountChosen={this.accountChosen}
                         onAccountEdit={this.accountEdit}
@@ -286,4 +242,9 @@ export class AccountSelector extends Component {
             </DropdownContainer>
         );
     }
+}
+
+AccountSelector.propTypes = {
+    router: PropTypes.object.isRequired,
+    functions: PropTypes.object.isRequired
 }

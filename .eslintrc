@@ -1,5 +1,6 @@
 {
     "globals": {
-        "web3": true
+        "web3": true,
+        "Web3": true
     }
 }
