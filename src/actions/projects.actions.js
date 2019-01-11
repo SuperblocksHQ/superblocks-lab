@@ -8,10 +8,10 @@ export const projectActions = {
     },
 
     SET_ENVIRONMENT: 'SET_ENVIRONMENT',
-    setEnvironment(environment) {
+    setEnvironment(environmentName) {
        return {
             type: projectActions.SET_ENVIRONMENT,
-            data: environment
+            data: environmentName
        };
     }
 };

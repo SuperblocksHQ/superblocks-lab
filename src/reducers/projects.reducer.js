@@ -9,6 +9,12 @@ export const initialState = {
     }
 };
 
+function getEnvOrNull(environment) {
+    return (environment && environment.name)
+        ? environment
+        : null;
+}
+
 export default function projectsReducer(state = initialState, action) {
     switch (action.type) {
         case projectActions.SELECT_PROJECT: {
@@ -17,7 +23,9 @@ export default function projectsReducer(state = initialState, action) {
                 selectedProject: action.data 
                     ? { 
                         ...action.data,
-                        selectedEnvironment: action.data.environments[0] || initialState.selectedProject.selectedEnvironment
+                        selectedEnvironment: getEnvOrNull(state.selectedProject.selectedEnvironment)
+                            || action.data.environments[0]
+                            || initialState.selectedProject.selectedEnvironment
                     } : initialState.selectedProject,
             };
         }

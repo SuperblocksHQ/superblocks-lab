@@ -12,7 +12,7 @@ import { epics } from '../epics';
 const config = {
     key: 'root',
     storage,
-    version: 4,
+    version: 5,
     blacklist: ['app', 'sidePanels', 'panes'],
     migrate: createMigrate(migrations, { debug: true })
 };
