@@ -493,7 +493,10 @@ module.exports = {
     new CopyWebpackPlugin([ { from: 'node_modules/monaco-editor/min/vs', to: 'vs', } ]),
     new CopyWebpackPlugin([ { context: `src/components/solc/dist`, from: '**/*', to: 'solc', } ]),
     new CopyWebpackPlugin([ { context: `src/components/evm/dist`, from: '**/*', to: 'evm', } ]),
-    new CopyWebpackPlugin([ { context: `src/components/superprovider/dist`, from: 'web3provider.js', to: 'static/js', } ])
+    new CopyWebpackPlugin([ { context: `src/components/superprovider/dist`, from: 'web3provider.js', to: 'static/js', } ]),
+    new CopyWebpackPlugin([ { context: `src`, from: 'ethereumjs-abi-0.6.5.min.js', to: 'static/js', } ]),
+    new CopyWebpackPlugin([ { context: `src`, from: 'ethereumjs-tx-1.3.3.min.js', to: 'static/js', } ])
+
   ].filter(Boolean),
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

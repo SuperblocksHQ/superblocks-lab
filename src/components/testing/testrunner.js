@@ -15,6 +15,7 @@
 // along with Superblocks Studio.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import EVM from '../evm';
 import Mocha from '../../mocha.js';
 import SuperProvider from '../superprovider';
 import { CustomReporter } from "../testing/reporter";
@@ -48,6 +49,21 @@ export default class TestRunner {
         this.id = 'super_test_runner_0';
         this.provider = new SuperProvider({ that: this });
 
+        //
+        // Note: setup indirections to match expected path (superprovider requirements)
+        this.props = {};
+        this.props.functions = {};
+        this.props.functions.EVM = new EVM({ id: "999" });
+        this.props.functions.EVM.init();
+        const fn = () => {
+            if (this.props.functions.EVM && this.props.functions.EVM.isReady()) {
+                console.log('Test runner EVM Ready.');
+            } else {
+                setTimeout(fn, 500);
+            }
+        };
+        fn();
+
         // TODO: FIXME: revisit bridge code to remove data declaration
         this.endpoint="http://superblocks-browser";
     }
@@ -55,7 +71,7 @@ export default class TestRunner {
     _getProvider = (endpoint, accounts) => {
         var ts = 0; // TODO: FIXME: this.props.functions.session.start_time();
         const js =
-            `<script type="text/javascript" src="/static/js/web3provider.js?ts=`
+            `<script type="text/javascript" src="${window.location.origin}/static/js/web3provider.js?ts=`
                 + ts +
             `">
             </script>
@@ -77,7 +93,7 @@ export default class TestRunner {
             const thisReference = this;
 
             // TODO: FIXME: provide accounts (possibly reusing existing set)
-            const accounts = [];
+            const accounts = ["0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd"];
 
             //TODO: FIXME: security / external source
             const web3Provider=thisReference._getProvider(thisReference.endpoint, accounts);
@@ -85,7 +101,16 @@ export default class TestRunner {
                 <script type="text/javascript" src="https://unpkg.com/web3@0.20.5/dist/web3.min.js"></script>
                 ` + web3Provider + `
                 <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
+                <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
+                <script type="text/javascript" src="/static/js/ethereumjs-abi-0.6.5.min.js"></script>
+                <script type="text/javascript" src="/static/js/ethereumjs-tx-1.3.3.min.js"></script>
                 <script type="text/javascript">
+                    //
+                    // Utilities and libraries
+                    var ABI = ethereumjs.ABI;
+                    var Buffer = ethereumjs.Buffer.Buffer;
+                    var Tx = ethereumjs.Tx;
+
                     /*====================
                       Test data
 
@@ -331,12 +356,10 @@ export default class TestRunner {
                     window.addEventListener("message", function(messageEvent) {
                         const data = messageEvent.data;
 
-                        DevKitProvider.onMsg(messageEvent);
-                        ` + thisReference.provider._onMessage(` + messageEvent + `) + `
+                        window.DevKitProvider.onMsg(messageEvent);
 
                         if(data.type === "init") {
                             console.warn("Initializing superprovider. Message event data: ", data);
-
                         } else if(data.type === "testrun"){
                             // TODO: FIXME: add check against messageEvent.origin
                             // TODO: FIXME: error handling
@@ -394,6 +417,8 @@ export default class TestRunner {
                     if(callback) {
                         callback();
                     }
+                } else {
+                    thisReference.provider._onMessage(messageEvent);
                 }
             });
 

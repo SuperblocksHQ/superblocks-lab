@@ -263,7 +263,11 @@ class TestRunnerBridge {
 
                 //
                 // TODO: FIXME: always add the placeholder entry (demonstration purposes only)
-                thisReference.testFiles["HelloWorldPlaceholder.test.js"] = PLACEHOLDER_REFERENCE_TEST_CODE;
+                if(safeRun) {
+                    thisReference.testFiles["HelloWorldPlaceholder.test.js"] = SAFE_PLACEHOLDER_REFERENCE_TEST_CODE;
+                } else {
+                    thisReference.testFiles["HelloWorldPlaceholder.test.js"] = PLACEHOLDER_REFERENCE_TEST_CODE;
+                }
 
                 // TODO: consider supporting sub-directories
                 for(var i=0; i<list.length; i++) {
@@ -346,7 +350,7 @@ class TestRunnerBridge {
                     this.contractsData,
                     this.testAccountAddress,
                     this.testAccountKey,
-                    web3Object,
+                    evmProvider,
                     callback);
             } else {
                 this.testRunner.runAll(
@@ -633,6 +637,163 @@ export const testRunnerBridge = new TestRunnerBridge();
   for development and testing
 
 =========================*/
+const SAFE_PLACEHOLDER_REFERENCE_TEST_CODE=`
+    describe('User-created test block: manually check contract data', function (done) {
+        var contractInstance;
+
+        beforeEach(function (done) {
+            // TODO: consider adding a helper for handling constructor parameters
+            const contractBin = HelloWorld.bin + "0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c48656c6c6f20576f726c64210000000000000000000000000000000000000000";
+            const contractABI = HelloWorld.abi;
+            web3 = new Web3(window.web3 && window.web3.currentProvider);
+
+            var account_nonce=0;
+            web3.eth.getTransactionCount(accountAddress, function(error, result) {
+                if(error) {
+                    done(new Error("Could not get nonce for address " + accountAddress));
+                } else {
+                    account_nonce=result;
+
+                    const gas_price="0x3B9ACA00";
+                    const gas_limit="0x3b8260";
+                    const tx=new Tx.Tx({
+                        from: accountAddress,
+                        value: "0x0",
+                        nonce: account_nonce,
+                        gasPrice: gas_price,
+                        gasLimit: gas_limit,
+                        data: contractBin,
+                    });
+                    tx.sign(Tx.Buffer.Buffer.from(accountKey, "hex"));
+
+                    web3.eth.sendRawTransaction("0x"+tx.serialize().toString("hex"),
+                        function(error, result) {
+                            if(error) {
+                                console.error(error);
+                                done(error);
+                            } else {
+                                var currentContractTransactionHash = result;
+
+                                function getTransactionReceipt(hash, cb) {
+                                    web3.eth.getTransactionReceipt(hash,(err,res)=>{
+                                        if(err || !res || !res.blockHash) {
+                                            setTimeout(()=>{getTransactionReceipt(hash, cb)},100);
+                                        }
+                                        else  {
+                                            cb(null, res);
+                                        }
+                                    });
+                                }
+
+                                getTransactionReceipt(currentContractTransactionHash, function(err, res) {
+                                    if(err) {
+                                        console.error(err);
+                                        done(err);
+                                    } else {
+                                        var contract = web3.eth.contract(contractABI);
+                                        contractInstance = contract.at(res.contractAddress);
+                                        done();
+                                    }
+                                });
+                            }
+                    });
+                }
+            });
+        });
+
+        // NOTE: the following tests are intended
+        //       to target the Hello World template
+        it('matches message data', function (done) {
+            var expectedValue = "Hello World!";
+            contractInstance.message(function(error, result) {
+                if(error) {
+                    console.error(error);
+                    done(error);
+                } else {
+                    if(result !== expectedValue) {
+                        done(new Error(result));
+                    } else {
+                        done();
+                    }
+                }
+            });
+        });
+
+        // NOTE: the following tests are intended
+        //       to target the Hello World template
+        it('update message data', function (done) {
+            const gas_price="0x3B9ACA00";
+            const gas_limit="0x3b8260";
+            var account_nonce=0;
+            web3.eth.getTransactionCount(accountAddress, function(error, result) {
+                if(error) {
+                    done(new Error("Could not get nonce for address " + accountAddress));
+                } else {
+                    account_nonce=result;
+                    var data = ABI.ABI.simpleEncode("update(string)", "Super Hello World!");
+                    const tx=new Tx.Tx({
+                        from: accountAddress,
+                          to: contractInstance.address,
+                          value: "0x0",
+                          nonce: account_nonce,
+                          gasPrice: gas_price,
+                          gasLimit: gas_limit,
+                          data: data,
+                    });
+                    tx.sign(Tx.Buffer.Buffer.from(accountKey, "hex"));
+
+                    web3.eth.sendRawTransaction("0x"+tx.serialize().toString("hex"),
+                        function(error, result) {
+                            if(error) {
+                                console.error(error);
+                                done(error);
+                            } else {
+                                contractInstance.message(function(error, result) {
+                                    var expectedValue = "Super Hello World!";
+
+                                    if(error) {
+                                        console.error(error);
+                                        done(error);
+                                    } else {
+                                        if(result !== expectedValue) {
+                                            done(new Error(result));
+                                        } else {
+                                            // Yet another method for checking the previous assumption
+                                            var method="message";
+                                            var args=[];
+                                            var expectedType=["string"];
+                                            var expectedValue=["Super Hello World!"];
+                                            utilityLibrary.assert_call(contractInstance, contractInstance.address, method, args, expectedType, expectedValue, done);
+                                            done();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    );
+                }
+            });
+        });
+
+        // NOTE: the following tests are intended
+        //       to target the Hello World template
+        it('repeat: matches message data', function (done) {
+            var expectedValue = "Hello World!";
+            contractInstance.message(function(error, result) {
+                if(error) {
+                    console.error(error);
+                    done(error);
+                } else {
+                    if(result !== expectedValue) {
+                        done(new Error(result));
+                    } else {
+                        done();
+                    }
+                }
+            });
+        });
+    });
+`;
 const PLACEHOLDER_REFERENCE_TEST_CODE=`
     describe('User-created test block: manually check contract data', function (done) {
         var contractInstance;
