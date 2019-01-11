@@ -8,7 +8,11 @@ export function ContractItem(props) {
     const toolbar = getToolbar(props);
 
     function getActionButtonProps(name, onClick) {
-        return { data: { id: props.data.id, name, opened: false }, onClick: () => onClick(props.id, props.name) };
+        return { 
+            data: { id: props.data.id, name, opened: false }, 
+            onClick: () => onClick(props.id, props.name),
+            nocaretStyle: style.reduced
+        };
     }
 
     const contextMenu=(

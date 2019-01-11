@@ -39,6 +39,10 @@ select {
             float: left;
             overflow: hidden;
             width: 25px;
+
+            &.reduced {
+                width: 10px;
+            }
         }
         .icon {
             float: left;
@@ -70,11 +74,12 @@ select {
         display: flex;
         .overlay {
             position: absolute;
-            height: 28px;
+            height: 30px;
             left: 0;
             right: 0px;
             border-left: 2px solid;
             border-color: transparent;
+            pointer-events: none;
         }
 
         &:after {
@@ -100,6 +105,7 @@ select {
         float: left;
         position: relative;
         flex: 1;
+        white-space: nowrap;
     }
     .hidden {
         display: none;
@@ -116,6 +122,10 @@ select {
     padding-right: 5px;
     transition: opacity .3s;
     opacity: 0;
+
+    &.alwaysOn {
+        opacity: 1;
+    }
 
     .buttons {
         display: flex;

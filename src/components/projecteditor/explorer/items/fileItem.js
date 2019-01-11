@@ -52,13 +52,13 @@ export function FileItem(props) {
 
     const contextMenu= props.data.mutable ? (
         <div className={ style.contextMenu }>
-            <div onClick={ props.onRenameClick }>
+            <div onClick={ () => props.onRenameClick(props.data.id) }>
                 <div className={style.icon}>
                     <IconEdit />
                 </div>
                 Rename
             </div>
-            <div onClick={ props.onDeleteClick }>
+            <div onClick={ () => props.onDeleteClick(props.data.id) }>
                 <div className={style.icon}>
                     <IconTrash />
                 </div>

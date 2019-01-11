@@ -9,6 +9,7 @@ export const initialState = {
         togglable: true,
         opened: true,
         mutable: false,
+        isRoot: true,
         children: [
             {
                 id: '1234',

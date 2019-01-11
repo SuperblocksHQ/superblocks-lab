@@ -25,7 +25,7 @@ export function BaseItem(props) {
         );
     } else {
         caret = (
-            <div className={ style.nocaret } />
+            <div className={ classnames(style.nocaret, props.nocaretStyle) } />
         );
     }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import { IconFolder, IconFolderOpen, IconAddFile, IconImportFile, IconAddFolder, IconEdit, IconTrash } from '../../../icons';
 import Tooltip from '../../../tooltip';
 import { BaseItem } from './baseItem';
@@ -6,7 +7,7 @@ import style from './style.less';
 
 function getToolbar(props) {
     return (
-        <div className={style.buttonsWrapper}>
+        <div className={classnames(style.buttonsWrapper, { [style.alwaysOn]: props.data.isRoot })}>
             <div className={style.buttons} onClick={e => e.stopPropagation()}>
                 <a href="#" title="New File" onClick={() => props.onCreateFileClick(props.data.id) }>
                     <Tooltip title="New File">
@@ -41,19 +42,19 @@ export function FolderItem(props) {
 
     const contextMenu=(
         <div className={ style.contextMenu }>
-            <div onClick={ props.onCreateFileClick }>
+            <div onClick={ () => props.onCreateFileClick(props.data.id) }>
                 <div className={style.icon} >
                     <IconAddFile />
                 </div>
                 Create File
             </div>
-            <div onClick={ props.onImportFileClick }>
+            <div onClick={ () => props.onImportFileClick(props.data.id) }>
                 <div className={style.icon} >
                     <IconImportFile />
                 </div>
                 Import File
             </div>
-            <div onClick={ props.onCreateFolderClick }>
+            <div onClick={ () => props.onCreateFolderClick(props.data.id) }>
                 <div className={style.icon} >
                     <IconAddFolder />
                 </div>
@@ -61,13 +62,13 @@ export function FolderItem(props) {
             </div>
             { props.data.mutable &&
                 <React.Fragment>
-                <div onClick={ props.onRenameClick }>
+                <div onClick={ () => props.onRenameClick(props.data.id) }>
                     <div className={style.icon}>
                         <IconEdit />
                     </div>
                     Rename
                 </div>
-                <div onClick={ props.onDeleteClick }>
+                <div onClick={ () => props.onDeleteClick(props.data.id) }>
                     <div className={style.icon}>
                         <IconTrash />
                     </div>
