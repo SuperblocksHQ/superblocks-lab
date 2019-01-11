@@ -1,7 +1,7 @@
 import app from './app.reducer';
 import projects from './projects.reducer';
 import settings from './settings.reducer';
-import view from './view.reducer';
+import sidePanels from './sidePanels.reducer';
 import panes from './panes.reducer';
 import explorer from './explorer.reducer';
 
@@ -19,7 +19,7 @@ export default {
     app,
     settings,
     projects,
-    view,
+    sidePanels,
     panes,
     explorer
 };

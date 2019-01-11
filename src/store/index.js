@@ -13,7 +13,7 @@ const config = {
     key: 'root',
     storage,
     version: 4,
-    blacklist: ['app', 'view', 'panes', 'explorer'],
+    blacklist: ['app', 'sidePanels', 'panes', 'explorer'],
     migrate: createMigrate(migrations, { debug: true })
 };
 
