@@ -23,6 +23,9 @@
   "devDependencies": {
     "@babel/core": "7.1.0",
     "@svgr/webpack": "2.4.1",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-router-dom": "^4.3.1",
     "babel-cli": "^6.26.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
@@ -30,7 +33,7 @@
     "babel-loader": "8.0.4",
     "babel-plugin-named-asset-import": "^0.2.2",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-react-app": "^5.0.4",
+    "babel-preset-react-app": "^7.0.0",
     "babelify": "^8.0.0",
     "browserify": "^16.1.1",
     "case-sensitive-paths-webpack-plugin": "2.1.2",
