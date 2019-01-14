@@ -3,7 +3,7 @@ import { ofType } from 'redux-observable';
 import { projectActions } from '../../actions';
 import { previewService } from '../../services';
 import { getSelectedEnvironment } from '../../selectors/projects';
-import { Constants } from '../../utils';
+import Networks from '../../networks';
 import { empty, from } from 'rxjs';
 
 export const environmentUpdateEpic = (action$, state$) => action$.pipe(
@@ -14,13 +14,13 @@ export const environmentUpdateEpic = (action$, state$) => action$.pipe(
 
         // enable metamask
         const selectedEnvironment = getSelectedEnvironment(state$.value);
-        if (selectedEnvironment.name !== Constants.ENV_BROWSER &&
-            selectedEnvironment.name !== Constants.ENV_CUSTOM) {
+        if (selectedEnvironment.name !== Networks.browser.name &&
+            selectedEnvironment.name !== Networks.custom.name) {
             return from(web3.currentProvider.enable()).pipe(
                 // do nothing if user gives access to metamask
                 switchMap(() => empty()),
                 // set env back to browser in case user reject metamask access
-                catchError(() => [projectActions.setEnvironment(Constants.ENV_BROWSER)])
+                catchError(() => [projectActions.setEnvironment(Networks.browser.name)])
             );
         }
         return empty();

@@ -1,5 +1,5 @@
 import { sidePanelsActions } from '../actions';
-import { Constants } from '../utils';
+import Networks from '../networks';
 
 export const initialState = {
     showTransactionsHistory: false,
@@ -65,7 +65,7 @@ export default function sidePanelsReducer(state = initialState, action) {
 
             if (!action.data.hasExportableContent) {
                 showNoExportableContentModal = true;
-            } else if (action.data.currentEnvironment === Constants.ENV_BROWSER) {
+            } else if (action.data.currentEnvironment === Networks.browser.name) {
                 showCannotExportModal = true;
             } else {
                 showDownloadModal = true;
