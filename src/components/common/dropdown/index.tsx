@@ -26,19 +26,19 @@ export class DropdownContainer extends React.Component<Props, State> {
         this.setState({ menuVisible: true });
     };
 
-    toggleMenu = (e: Event) => {
+    toggleMenu: React.MouseEventHandler = (e) => {
         e.stopPropagation();
         this.setState((state) => ({ menuVisible: !state.menuVisible }));
     };
 
-    closeMenu = e => {
+    closeMenu: React.MouseEventHandler = e => {
         e.stopPropagation();
         this.setState({ menuVisible: false });
     };
 
     render() {
         const { dropdownContent, useRightClick, ...props } = this.props;
-        let main;
+        let main: React.ReactNode;
 
         if (useRightClick) {
             main = <div onContextMenu={this.showMenu}>{this.props.children}</div>;

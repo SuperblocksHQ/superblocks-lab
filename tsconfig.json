@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "outDir": "./dist",
-        "allowJs": true,
+        "allowJs": false,
         "checkJs": false,
         "module": "commonjs",
         "target": "esnext",
@@ -14,7 +14,8 @@
         "lib": ["es2015", "dom"]
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
     ],
     "exclude": [
         "node_modules",
