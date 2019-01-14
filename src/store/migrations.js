@@ -69,9 +69,13 @@ const migrations = {
                 selectedProject: {
                     ...projects.selectedProject,
                     ...state.selectedProject
-                }
+                },
+            },
+            settings: {
+                ...state.settings,
+                showSplash: undefined
             }
-        }
+        };
     }
 }
 

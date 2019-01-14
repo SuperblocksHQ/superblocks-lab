@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { DropdownContainer } from '../dropdown';
+import { DropdownContainer } from '../common/dropdown';
 import Networks from '../../networks';
 import * as accountUtils from '../../utils/accounts';
 import style from './style.less';
-import {
-    IconDropdown,
-    IconLock,
-    IconLockOpen,
-    IconMetamask,
-    IconMetamaskLocked,
-    IconPublicAddress,
-} from '../icons';
+import { IconDropdown, IconLock, IconLockOpen, IconMetamask, IconMetamaskLocked, IconPublicAddress } from '../icons';
 import { AccountsList } from './accountsList';
 
 export class AccountSelector extends Component {

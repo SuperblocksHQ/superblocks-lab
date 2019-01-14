@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { DropdownContainer } from '../dropdown';
+import { DropdownContainer } from '../common/dropdown';
 import style from './style.less';
 import { IconDropdown } from '../icons';
 import { NetworksList } from './networksList';
