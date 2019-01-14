@@ -144,7 +144,6 @@ export default class SuperProvider {
             const account = accounts.getByName(accountName);
 
             const env = this.getCurrentEnv();
-            console.log('SUPERPROV', env);
             const walletName = account.getWallet(env);
 
             const wallets = this.projectItem.getHiddenItem('wallets');
