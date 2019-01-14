@@ -1,28 +1,16 @@
-import onClickOutside from 'react-onclickoutside';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { DropdownBasic } from './dropDownBasic';
 
-class DropdownBasic extends Component {
-    render() {
-        return (
-            <div onClick={this.props.handleClickInside}>
-                {this.props.children}
-            </div>
-        );
-    }
-}
-export const Dropdown = onClickOutside(DropdownBasic);
-
-Dropdown.proptypes = {
-    handleClickOutside: PropTypes.func.isRequired,
-    handleClickInside: PropTypes.func.isRequired,
-};
+type Props = { dropdownContent: React.ReactNode; useRightClick: boolean; children: React.ReactNode; }
+type State = { menuVisible: boolean; }
 
 /**
  * Helper component to handle the state of showing/hiding a dropdown
  */
-export class DropdownContainer extends Component {
-    constructor(props) {
+export class DropdownContainer extends React.Component<Props, State> {
+    ignoreClassName: string;
+    
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -38,7 +26,7 @@ export class DropdownContainer extends Component {
         this.setState({ menuVisible: true });
     };
 
-    toggleMenu = (e) => {
+    toggleMenu = (e: Event) => {
         e.stopPropagation();
         this.setState((state) => ({ menuVisible: !state.menuVisible }));
     };
@@ -62,13 +50,13 @@ export class DropdownContainer extends Component {
             <div {...props}>
                 {main}
                 { this.state.menuVisible &&
-                <Dropdown
+                <DropdownBasic
                     outsideClickIgnoreClass={this.ignoreClassName}
                     handleClickOutside={this.closeMenu}
                     handleClickInside={this.closeMenu}
                 >
                     {dropdownContent}
-                </Dropdown> }
+                </DropdownBasic> }
             </div>
         );
     }
