@@ -1,7 +1,15 @@
 import React from 'react';
 import { DropdownBasic } from './dropDownBasic';
 
-type Props = { dropdownContent: React.ReactNode; useRightClick: boolean; children: React.ReactNode; }
+type Props = {
+    dropdownContent: React.ReactNode;
+    useRightClick: boolean;
+    children: React.ReactNode;
+    showMenu: boolean;
+    onCloseMenu: Function;
+    enableClickInside: boolean;
+    className: string;
+}
 type State = { menuVisible: boolean; }
 
 /**
@@ -12,14 +20,21 @@ export class DropdownContainer extends React.Component<Props, State> {
     
     constructor(props: Props) {
         super(props);
-
         this.state = {
-            menuVisible: false,
-        };
+            menuVisible: this.props.showMenu,
+        }
 
         // the ignore class name should be specific only this instance of the component
         //  in order to close other dropdown in case a new one is opened
         this.ignoreClassName = 'ignore-react-onclickoutside' + Date.now();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.showMenu !== this.props.showMenu) {
+            this.setState({
+                menuVisible: this.props.showMenu
+            });
+        }
     }
 
     showMenu = () => {
@@ -33,11 +48,16 @@ export class DropdownContainer extends React.Component<Props, State> {
 
     closeMenu: React.MouseEventHandler = e => {
         e.stopPropagation();
+
+        if (this.props.onCloseMenu) {
+            this.props.onCloseMenu();
+        }
+
         this.setState({ menuVisible: false });
     };
 
     render() {
-        const { dropdownContent, useRightClick, ...props } = this.props;
+        const { dropdownContent, useRightClick, enableClickInside, className, ...props } = this.props;
         let main: React.ReactNode;
 
         if (useRightClick) {
@@ -47,13 +67,13 @@ export class DropdownContainer extends React.Component<Props, State> {
         }
 
         return (
-            <div {...props}>
+            <div className={className}>
                 {main}
                 { this.state.menuVisible &&
                 <DropdownBasic
                     outsideClickIgnoreClass={this.ignoreClassName}
                     handleClickOutside={this.closeMenu}
-                    handleClickInside={this.closeMenu}
+                    handleClickInside={!enableClickInside ? this.closeMenu : undefined}
                 >
                     {dropdownContent}
                 </DropdownBasic> }
