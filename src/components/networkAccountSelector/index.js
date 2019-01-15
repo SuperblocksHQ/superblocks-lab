@@ -22,7 +22,7 @@ import { IconDeployGreen } from '../icons';
 import OnlyIf from '../onlyIf';
 import { NetworkSelector } from './networkSelector';
 import { AccountSelector } from './accountSelector';
-import { projectActions } from '../../actions/projects.actions';
+import { projectsActions } from '../../actions';
 
 class NetworkAccountSelector extends Component {
     render() {
@@ -53,7 +53,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
     return {
         onNetworkSelected(environment) {
-            dispatch(projectActions.setEnvironment(environment));
+            dispatch(projectsActions.setEnvironment(environment));
         }
     };
 };

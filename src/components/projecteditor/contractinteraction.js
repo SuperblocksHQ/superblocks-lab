@@ -18,7 +18,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import style from './style-appview.less';
 import { IconRun } from '../icons';
-import { getSelectedEnvironment } from '../../selectors/projects';
+import { projectSelectors } from '../../selectors';
 
 var Generator = require('../contractinteraction');
 import SuperProvider from '../superprovider';
@@ -664,7 +664,7 @@ class ContractInteraction extends Component {
 }
 
 const mapStateToProps = state => ({
-    selectedEnvironment: getSelectedEnvironment(state),
+    selectedEnvironment: projectSelectors.getSelectedEnvironment(state),
 });
 
 const mapDispatchToProps = dispatch => {

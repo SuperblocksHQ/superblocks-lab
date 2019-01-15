@@ -129,8 +129,8 @@ function getAccountAddress(project, wallet, disableAccounts, env) {
 
 /**
  * Create HTML page to preview and download a project
- * @param {*} project 
- * @param {*} wallet 
+ * @param {*} project
+ * @param {*} wallet
  * @param {*} disableAccounts
  */
 export function buildProjectHtml(project, wallet, disableAccounts, environment) {

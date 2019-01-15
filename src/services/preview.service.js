@@ -53,7 +53,7 @@ export const previewService = {
     },
 
     get projectItem() { return projectItem; },
-    set projectItem(value) { 
+    set projectItem(value) {
         projectItem = value;
         exportableDappHtml = null;
     },

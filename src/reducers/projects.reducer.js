@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { projectActions } from '../actions/projects.actions';
+import { projectsActions } from '../actions/projects.actions';
 
 export const initialState = {
     selectedProject: {
@@ -33,7 +33,7 @@ function getEnvOrNull(environment) {
 
 export default function projectsReducer(state = initialState, action) {
     switch (action.type) {
-        case projectActions.SELECT_PROJECT: {
+        case projectsActions.SELECT_PROJECT: {
             return {
                 ...state,
                 selectedProject: action.data 
@@ -45,7 +45,7 @@ export default function projectsReducer(state = initialState, action) {
                     } : initialState.selectedProject,
             };
         }
-        case projectActions.SET_ENVIRONMENT:
+        case projectsActions.SET_ENVIRONMENT:
             return {
                 ...state,
                 selectedProject: {
@@ -54,6 +54,16 @@ export default function projectsReducer(state = initialState, action) {
                                         || initialState.selectedProject.selectedEnvironment
                 }
             };
+
+        case projectsActions.UPDATE_PROJECT_SETTINGS_SUCCESS: {
+            return {
+                ...state,
+                selectedProject: {
+                    ...state.selectedProject,
+                    name: action.data.name
+                },
+            };
+        }
         default:
             return state;
     }
