@@ -107,9 +107,11 @@ export default class TestRunner {
                 <script type="text/javascript">
                     //
                     // Utilities and libraries
-                    var ABI = ethereumjs.ABI;
-                    var Buffer = ethereumjs.Buffer.Buffer;
-                    var Tx = ethereumjs.Tx;
+                    // Note: relies on custom export path i.e. ethereumjs files are modified
+                    // Note: double check in case it conflicts with existing or future usage of asynchronous tx module loading (webpack)
+                    var ABI = ethereumjsABI.ABI;
+                    var Buffer = ethereumjsTx.Buffer.Buffer;
+                    var Tx = ethereumjsTx.Tx;
 
                     /*====================
                       Test data

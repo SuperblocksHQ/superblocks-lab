@@ -656,7 +656,7 @@ const SAFE_PLACEHOLDER_REFERENCE_TEST_CODE=`
 
                     const gas_price="0x3B9ACA00";
                     const gas_limit="0x3b8260";
-                    const tx=new Tx.Tx({
+                    const tx=new Tx({
                         from: accountAddress,
                         value: "0x0",
                         nonce: account_nonce,
@@ -664,7 +664,7 @@ const SAFE_PLACEHOLDER_REFERENCE_TEST_CODE=`
                         gasLimit: gas_limit,
                         data: contractBin,
                     });
-                    tx.sign(Tx.Buffer.Buffer.from(accountKey, "hex"));
+                    tx.sign(Buffer.from(accountKey, "hex"));
 
                     web3.eth.sendRawTransaction("0x"+tx.serialize().toString("hex"),
                         function(error, result) {
@@ -730,8 +730,8 @@ const SAFE_PLACEHOLDER_REFERENCE_TEST_CODE=`
                     done(new Error("Could not get nonce for address " + accountAddress));
                 } else {
                     account_nonce=result;
-                    var data = ABI.ABI.simpleEncode("update(string)", "Super Hello World!");
-                    const tx=new Tx.Tx({
+                    var data = ABI.simpleEncode("update(string)", "Super Hello World!");
+                    const tx=new Tx({
                         from: accountAddress,
                           to: contractInstance.address,
                           value: "0x0",
@@ -740,7 +740,7 @@ const SAFE_PLACEHOLDER_REFERENCE_TEST_CODE=`
                           gasLimit: gas_limit,
                           data: data,
                     });
-                    tx.sign(Tx.Buffer.Buffer.from(accountKey, "hex"));
+                    tx.sign(Buffer.from(accountKey, "hex"));
 
                     web3.eth.sendRawTransaction("0x"+tx.serialize().toString("hex"),
                         function(error, result) {
@@ -758,12 +758,6 @@ const SAFE_PLACEHOLDER_REFERENCE_TEST_CODE=`
                                         if(result !== expectedValue) {
                                             done(new Error(result));
                                         } else {
-                                            // Yet another method for checking the previous assumption
-                                            var method="message";
-                                            var args=[];
-                                            var expectedType=["string"];
-                                            var expectedValue=["Super Hello World!"];
-                                            utilityLibrary.assert_call(contractInstance, contractInstance.address, method, args, expectedType, expectedValue, done);
                                             done();
                                         }
                                     }
