@@ -18,6 +18,6 @@ export const initialState = {
     version: '1.5.0',
 };
 
-export default function appReducer(state = initialState, action) {
+export default function appReducer(state = initialState, action: any) {
     return state;
 }

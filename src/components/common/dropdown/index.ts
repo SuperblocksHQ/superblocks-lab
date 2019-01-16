@@ -14,11 +14,4 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import onClickOutside from 'react-onclickoutside';
-import React from 'react';
-
-type Props = { children?: React.ReactNode, handleClickInside?: React.MouseEventHandler };
-
-export const DropdownBasic = onClickOutside<Props>(({ handleClickInside, children }) => (
-    <div onClick={handleClickInside}>{children}</div>
-));
+export { DropdownContainer } from './dropdownContainer';

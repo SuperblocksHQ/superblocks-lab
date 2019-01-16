@@ -994,6 +994,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-onclickoutside@^6.7.0":
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/@types/react-onclickoutside/-/react-onclickoutside-6.7.0.tgz#5cc4807ec26decdc9031bc7c87fc8cfbe09b92cc"
+  integrity sha512-5u9HYXHuTBAfDTBSwhJ6867ngksrzaQOhv/PwPwICdTsPMCujWeg3/KLeFuJ4JVouA7KBrB+/98COUNBn/kkyA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-router-dom@^4.3.1":
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-4.3.1.tgz#71fe2918f8f60474a891520def40a63997dafe04"
