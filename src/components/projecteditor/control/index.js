@@ -1,23 +1,21 @@
 import { connect } from 'react-redux';
-
 import Control from './control';
 import { getAppVersion } from '../../../selectors/app';
-import { getSelectedProjectId } from '../../../selectors/projects';
-import { selectProject, explorerActions } from '../../../actions';
-import { closeAllPanels } from '../../../actions/view';
+import { projectSelectors } from '../../../selectors';
+import { projectsActions, explorerActions, sidePanelsActions } from '../../../actions';
 
 const mapStateToProps = state => ({
     appVersion: getAppVersion(state),
-    selectedProjectId: getSelectedProjectId(state),
+    selectedProjectId: projectSelectors.getSelectedProjectId(state)
 });
 
 const mapDispatchToProps = dispatch => {
     return {
-        selectProject: (id, name) => {
-            dispatch(selectProject(id, name));
+        selectProject: (project) => {
+            dispatch(projectsActions.selectProject(project));
         },
         closeAllPanels: () => {
-            dispatch(closeAllPanels())
+            dispatch(sidePanelsActions.closeAllPanels())
         },
         renameFile: (id, name) => {
             dispatch(explorerActions.renameFile(id, name));

@@ -17,12 +17,11 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import style from './style.less';
-import { Editor, ContractEditor, AppEditor, AccountEditor } from './editors';
+import { Editor, ContractEditor, ProjectSettings, AccountEditor } from './editors';
 import Compiler from './compiler';
 import Deployer from './deployer';
 import TutorialsManual from '../tutorials/manual';
 import TutorialsOnline from '../tutorials/online';
-import AppView from './appview.js';
 import ContractInteraction from './contractinteraction';
 import Welcome from './welcome';
 import { IconClose } from '../icons';
@@ -117,7 +116,7 @@ export class Window {
             );
         } else if (this.props.item.getType() == 'project') {
             return (
-                <AppEditor
+                <ProjectSettings
                     id={this.subId}
                     key={this.subId}
                     item={this.props.item}
@@ -205,19 +204,6 @@ export class Window {
                 />
             );
         } else if (
-            this.props.item.getType() == 'app' &&
-            this.props.item.getType2() == 'view'
-        ) {
-            return (
-                <AppView
-                    id={this.subId}
-                    parent={this}
-                    item={this.props.item}
-                    router={this.props.router}
-                    functions={this.props.functions}
-                />
-            );
-        } else if (
             this.props.item.getType() == 'contract' &&
             this.props.item.getType2() == 'interact'
         ) {
@@ -262,6 +248,8 @@ export class Window {
                 case 'deploy':
                     return this.props.item.props.state.__parent.props.state.title;
             }
+        } else if (this.props.item.getType() === 'project') {
+            return this.props.item.getHeaderTitle();
         }
 
         if (this.props.item.props.state.title)

@@ -26,10 +26,10 @@ import WalletsItem from './walletsItem';
 import WalletItem from './walletItem';
 import EnvironmentsItem from './environmentsItem';
 import EnvironmentItem from './environmentItem';
-import { IconShowPreview } from '../../../icons';
+import { IconConfigure } from '../../../icons';
 
 import Backend from '../backend';
-import TransactionLogData from '../../../blockexplorer/transactionlogdata';
+import TransactionLogData from '../../sidePanels/blockexplorer/transactionlogdata';
 
 export default class ProjectItem extends Item {
     constructor(props, router, functions) {
@@ -63,20 +63,20 @@ export default class ProjectItem extends Item {
         return this.props.state.title || '';
     };
 
+    getHeaderTitle = () => {
+        return 'Project Settings';
+    }
+
+    getIcon = () => {
+        return <IconConfigure />;
+    };
+
     getName = () => {
         const dappfile = this._getDappfile();
         if (dappfile) {
             return dappfile.getName();
         }
         return this.props.state.name || '';
-    };
-
-    getEnvironment = () => {
-        const environmentsItem = this.getHiddenItem('environments');
-        const firstEnv = environmentsItem.getChildren()[0];
-        const defaultEnv = firstEnv ? firstEnv.getName() : 'browser';
-        const chosen = environmentsItem.getChosen() || defaultEnv;
-        return chosen;
     };
 
     getAccount = () => {
@@ -187,21 +187,6 @@ export default class ProjectItem extends Item {
 
             const contractsItem = this._getContractsItem();
             this.setHiddenItem('contracts', contractsItem);
-
-            const previewItem = new Item(
-                {
-                    type: 'app',
-                    type2: 'view',
-                    icon: <IconShowPreview />,
-                    state: {
-                        title: 'Preview',
-                        key: 'app_preview',
-                        project: this,
-                    },
-                },
-                this.router
-            );
-            this.setHiddenItem('app_preview', previewItem);
 
             // Traverse the file structure to get `/dappfile.json`, this will prepare the file tree
             // so that the file `/dappfile.json` will get represented by the DappfileItem item created prior.

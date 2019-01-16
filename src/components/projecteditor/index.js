@@ -16,23 +16,46 @@
 
 import { connect } from 'react-redux';
 import ProjectEditor from './ProjectEditor';
-import { openTransactionsHistoryPanel, closeTransactionsHistoryPanel, toggleTransactionsHistoryPanel } from '../../actions/view';
-import { getopenTransactionsHistoryPanel } from '../../selectors/view';
+import { projectSelectors } from '../../selectors';
+import { sidePanelsActions } from '../../actions';
 
 const mapStateToProps = state => ({
-    displayTransactionsPanel: getopenTransactionsHistoryPanel(state),
+    displayTransactionsPanel: state.sidePanels.showTransactionsHistory,
+    previewSidePanel: state.sidePanels.preview,
+    selectedEnvironment: projectSelectors.getSelectedEnvironment(state)
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        toggleTransactionsHistoryPanel: () => {
-            dispatch(toggleTransactionsHistoryPanel())
+        toggleTransactionsHistoryPanel() {
+            dispatch(sidePanelsActions.toggleTransactionsHistoryPanel())
         },
-        openTransactionsHistoryPanel: () => {
-            dispatch(openTransactionsHistoryPanel())
+        openTransactionsHistoryPanel() {
+            dispatch(sidePanelsActions.openTransactionsHistoryPanel())
         },
-        closeTransactionsHistoryPanel: () => {
-            dispatch(closeTransactionsHistoryPanel())
+        closeTransactionsHistoryPanel() {
+            dispatch(sidePanelsActions.closeTransactionsHistoryPanel())
+        },
+        
+        previewSidePanelActions: {
+            onClose() {
+                dispatch(sidePanelsActions.preview.togglePanel());
+            },
+            onOpen() {
+                dispatch(sidePanelsActions.preview.togglePanel());
+            },
+            onHideModals() {
+                dispatch(sidePanelsActions.preview.hideModals());
+            },
+            onTryDownload(hasExportableContent, currentEnvironment) {
+                dispatch(sidePanelsActions.preview.tryDownload(hasExportableContent, currentEnvironment));
+            },
+            onDownload() {
+                dispatch(sidePanelsActions.preview.download());
+            },
+            onToggleWeb3Accounts() {
+                dispatch(sidePanelsActions.preview.toggleWeb3Accounts());
+            }
         }
     }
 }

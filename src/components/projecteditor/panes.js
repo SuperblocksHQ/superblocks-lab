@@ -261,8 +261,7 @@ class Panes extends Component {
     getPaneHeight = () => {
         const a = document.getElementById('panes');
         const b = document.getElementById('panes_header');
-        const magicNumber = window.innerWidth < 1000 ? 50 : 80;
-        return a.offsetHeight - b.offsetHeight - magicNumber; // 80 is the magic number to adjust for height taken by borders/toolbars. 50 is when we don't display bottomBar from 1000px (screen size) and below.
+        return a.offsetHeight - b.offsetHeight;
     };
 
     renderPanes = () => {
@@ -307,13 +306,10 @@ class Panes extends Component {
     render() {
         const panes = this.renderPanes();
 
-        const { isActionPanelShowing } = this.props;
-
         return (
             <div
-                key="panes"
                 id="panes"
-                className="full"
+                className={classnames(style.panescontainer, { dragging: this.props.dragging })}
                 style={{
                     width: isActionPanelShowing && window.innerWidth > 1300 ? 'calc(100% - 450px)' : '100%',
                 }}
@@ -330,7 +326,7 @@ class Panes extends Component {
                         tabClickedClose={this.tabClickedClose}>
                     </PanesHeader>
                 </div>
-                <div key="panes2" className={style.panes}>
+                <div className={style.panes}>
                     {panes}
                 </div>
             </div>
@@ -341,7 +337,7 @@ class Panes extends Component {
 Panes.propTypes = {
     router: PropTypes.object.isRequired,
     functions: PropTypes.object.isRequired,
-    isActionPanelShowing: PropTypes.bool.isRequired,
+    dragging: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({

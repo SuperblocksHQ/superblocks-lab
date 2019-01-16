@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import style from './style.less';
 import { IconClose } from '../icons';
-import { DropdownContainer } from '../dropdown';
+import { DropdownContainer } from '../common';
 
 export default class PanesHeader extends Component {
     constructor(props) {
@@ -50,13 +50,12 @@ export default class PanesHeader extends Component {
     }
 
     render() {
-        const html = this.props.panes.map((paneData, index) => {
+        return this.props.panes.map((paneData, index) => {
             const iconElement = this.props.paneComponents[index].getIcon();
             const contextMenu = this.getContextMenuElement();
 
             return (
-                <div key={index}>
-                    <div
+                    <div key={index}
                         className={ this.getClassnames(paneData) }
                         onMouseDown={e => this.props.tabClicked(e, paneData.id)}
                         onContextMenu={e => {
@@ -83,11 +82,9 @@ export default class PanesHeader extends Component {
                             </div>
                         </DropdownContainer>
                     </div>
-                </div>
             );
         });
-        return <React.Fragment>{html}</React.Fragment>;
-    };
+    }
 }
 
 PanesHeader.propTypes = {
