@@ -88,7 +88,7 @@ export default class TestRunner {
     };
 
     // TODO: FIXME: room for optimizated parameter list
-    createIframe(contracts, testName, testCode, contractsData, accountAddress, accountKey, web3, creationCallback, callback) {
+    createIframe(creationCallback, callback) {
         if(!this.isIframeCreated) {
             const thisReference = this;
 
@@ -294,7 +294,6 @@ export default class TestRunner {
 
                         // TODO: FIXME: provide access to web3 object
                         //var web3=new Web3(web3);
-
                         // TODO: Consider create or none instead ?
                         //var suiteInstance = mocha.suite.create(mochaInstance.suite, 'Test Suite');
                         mocha.suite = mocha.suite.clone();
@@ -384,18 +383,23 @@ export default class TestRunner {
             // Setup separate environment
             // TODO: FIXME: hide the iframe
             const testDiv = document.getElementById("test");
-            const iframeElement = document.getElementById("test-iframe");
-            if(iframeElement !== null) {
-                iframeElement.parentNode.removeChild(iframeElement);
+
+            //
+            // Remove existing iframe
+            if(false) {
+                const iframeElement = document.getElementById("test-iframe");
+                if(iframeElement !== null) {
+                    iframeElement.parentNode.removeChild(iframeElement);
+                }
             }
+
             // TODO: FIXME: testDiv error checking
             var iframe = document.createElement("iframe");
-            iframe.id = "test-iframe";
+            iframe.id = "test-iframe" + Math.random();      // TODO: FIXME: consider proper unique identifiers here
             iframe.srcdoc = content;
             iframe.style.display = "none";
 
             testDiv.appendChild(iframe);
-            this.iframe = iframe;
             this.provider.initIframe(iframe);
 
 
@@ -515,7 +519,7 @@ export default class TestRunner {
             return;
         }
 
-        console.log("[TestRunner] setting up test runner ...");
+        console.log("[TestRunner] setting up test runner for " + testName);
         const thisReference = this;
         const contracts = thisReference._createAliases(contractsData);
 
@@ -531,7 +535,7 @@ export default class TestRunner {
             }
 
             // TODO: FIXME: call once during initialization
-            this.createIframe(contracts, testName, testCode, contractsData, accountAddress, accountKey, web3, creationCallback, callback);
+            this.createIframe(creationCallback, callback);
 
         } else {
             console.error("[TestRunner] unable to access test library: ", mocha);
