@@ -57,7 +57,7 @@ export default class TestRunner {
         this.props.functions.EVM.init();
         const fn = () => {
             if (this.props.functions.EVM && this.props.functions.EVM.isReady()) {
-                console.log('Test runner EVM Ready.');
+                console.log("[TestRunner] EVM Ready");
             } else {
                 setTimeout(fn, 500);
             }
@@ -89,8 +89,8 @@ export default class TestRunner {
 
     // TODO: FIXME: room for optimizated parameter list
     createIframe(creationCallback, callback) {
+        const thisReference = this;
         if(!this.isIframeCreated) {
-            const thisReference = this;
 
             // TODO: FIXME: provide accounts (possibly reusing existing set)
             const accounts = ["0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd"];
@@ -127,6 +127,7 @@ export default class TestRunner {
 
                         if(testData && suite) {
                             if(testData[key] === undefined) {
+                                console.log("[TestRunner] Registering test suite entry: " + key);
                                 testData[key] = suite;
                             } else {
                                 console.warn("Skipping registration for test suite entry. Key already exists: " + key);
@@ -372,6 +373,7 @@ export default class TestRunner {
                             const accountKey = JSON.parse(data.accountKey);
                             const web3 = JSON.parse(data.web3);
 
+                            console.log("[TestRunner] Invoke run for test name: " + testName);
                             run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, messageEvent.source, messageEvent.origin);
                         }
                     });
@@ -401,35 +403,35 @@ export default class TestRunner {
 
             testDiv.appendChild(iframe);
             this.provider.initIframe(iframe);
-
-
-            // TODO: FIXME: change timer to event after iframe is ready
-            setTimeout(function() { creationCallback(iframe); }, 1000);
-
-
-            // TODO: FIXME: move to more appropriate place (single register)
-            window.addEventListener("message", function(messageEvent) {
-                // TODO: FIXME: add check against messageEvent.origin
-                const data = messageEvent.data;
-
-                if(data.type === "testdata"){
-                    thisReference.testData = data.testData;
-                    thisReference.successCount = data.successCount;
-                    thisReference.failureCount = data.failureCount;
-                    thisReference.totalTestCount = data.totalTestCount;
-                    thisReference.reporterStatus = data.reporterStatus;
-
-                    // Call back caller
-                    if(callback) {
-                        callback();
-                    }
-                } else {
-                    thisReference.provider._onMessage(messageEvent);
-                }
-            });
-
-            this.isIframeCreated = true;
+            this.iframe = iframe;
         }
+
+        // TODO: FIXME: change timer to event after iframe is ready
+        setTimeout(function() { creationCallback(thisReference.iframe); }, 1000);
+
+
+        // TODO: FIXME: move to more appropriate place (single register)
+        window.addEventListener("message", function(messageEvent) {
+            // TODO: FIXME: add check against messageEvent.origin
+            const data = messageEvent.data;
+
+            if(data.type === "testdata"){
+                thisReference.testData = data.testData;
+                thisReference.successCount = data.successCount;
+                thisReference.failureCount = data.failureCount;
+                thisReference.totalTestCount = data.totalTestCount;
+                thisReference.reporterStatus = data.reporterStatus;
+
+                // Call back caller
+                if(callback) {
+                    callback();
+                }
+            } else {
+                thisReference.provider._onMessage(messageEvent);
+            }
+        });
+
+        this.isIframeCreated = true;
     }
 
     _createAliases(contractsData) {
@@ -529,6 +531,7 @@ export default class TestRunner {
         // Setup Mocha
         if(mocha && mocha.suite) {
             function creationCallback(iframe) {
+                console.log("[TestRunner] Sending message to iframe to invoke testrun command. testName: " + testName);
                 iframe.contentWindow.postMessage({channel: -1, type: "testrun", testName:JSON.stringify(testName), contracts:JSON.stringify(contracts), testCode: JSON.stringify(testCode),
                         contractsData: JSON.stringify(contractsData), accountAddress: JSON.stringify(accountAddress), accountKey: JSON.stringify(accountKey),
                         web3: JSON.stringify(web3)}, "*");

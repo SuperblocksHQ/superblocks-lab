@@ -410,6 +410,10 @@ class Panes extends Component {
         testRunnerBridge.setTestData(output);
 
         this.redraw();
+
+        if(data && data.reportOutput && Object.keys(data.reportOutput).length > 0) {
+            console.log("Test completed: ", data);
+        }
     }
 
     render() {

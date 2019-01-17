@@ -41673,7 +41673,6 @@ module.exports = function (opts, cb) {
     // check to the sender's account to make sure it has enough wei and the correct nonce
     var fromAccount = self.stateManager.cache.get(tx.from);
     var message;
-console.warn(new BN(tx.from).toString("hex"));
     if (!opts.skipBalance && new BN(fromAccount.balance).lt(tx.getUpfrontCost())) {
       message = "sender doesn't have enough funds to send tx. The upfront cost is: " + tx.getUpfrontCost().toString() + ' and the sender\'s account only has: ' + new BN(fromAccount.balance).toString();
       cb(new Error(message));
