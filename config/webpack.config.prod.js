@@ -263,6 +263,20 @@ module.exports = {
         ],
         include: paths.appSrc,
       },
+
+      // It's important to do this before Babel processes files
+      {
+        test: /\.(ts|tsx)$/,
+        enforce: 'pre',
+        use: [
+            {
+                loader: 'tslint-loader',
+                options: { emitErrors: true, failOnHint: true, typeCheck: true, configFile: paths.appTsLint, tsConfigFile: paths.appTsConfig }
+            }
+        ],
+        include: paths.appSrc,
+      },
+
       {
         // "oneOf" will traverse all following loaders until one will
         // match the requirements. When no loader matches it will fall

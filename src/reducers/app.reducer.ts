@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+import { AnyAction } from 'redux';
+
 export const initialState = {
     version: '1.6.1',
 };
 
-export default function appReducer(state = initialState, action: any) {
+export default function appReducer(state = initialState, action: AnyAction) {
     return state;
 }

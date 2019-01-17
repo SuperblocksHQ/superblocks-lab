@@ -17,8 +17,8 @@
 import onClickOutside from 'react-onclickoutside';
 import React from 'react';
 
-type Props = { children?: React.ReactNode, handleClickInside?: React.MouseEventHandler };
+interface IProps { children?: React.ReactNode; handleClickInside?: React.MouseEventHandler; }
 
-export const DropdownBasic = onClickOutside<Props>(({ handleClickInside, children }) => (
+export const DropdownBasic = onClickOutside<IProps>(({ handleClickInside, children }) => (
     <div onClick={handleClickInside}>{children}</div>
 ));

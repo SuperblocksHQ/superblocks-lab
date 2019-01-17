@@ -17,35 +17,35 @@
 import React from 'react';
 import { DropdownBasic } from './dropDownBasic';
 
-type Props = {
+interface IProps {
     dropdownContent: React.ReactNode;
     useRightClick: boolean;
     children: React.ReactNode;
     showMenu: boolean;
-    onCloseMenu: Function;
+    onCloseMenu: () => void;
     enableClickInside: boolean;
     className: string;
 }
-type State = { menuVisible: boolean; }
+interface IState { menuVisible: boolean; }
 
 /**
  * Helper component to handle the state of showing/hiding a dropdown
  */
-export class DropdownContainer extends React.Component<Props, State> {
+export class DropdownContainer extends React.Component<IProps, IState> {
     ignoreClassName: string;
-    
-    constructor(props: Props) {
+
+    constructor(props: IProps) {
         super(props);
         this.state = {
             menuVisible: this.props.showMenu,
-        }
+        };
 
         // the ignore class name should be specific only this instance of the component
         //  in order to close other dropdown in case a new one is opened
         this.ignoreClassName = 'ignore-react-onclickoutside' + Date.now();
     }
 
-    componentDidUpdate(prevProps: Props) {
+    componentDidUpdate(prevProps: IProps) {
         if (prevProps.showMenu !== this.props.showMenu) {
             this.setState({
                 menuVisible: this.props.showMenu
@@ -55,12 +55,12 @@ export class DropdownContainer extends React.Component<Props, State> {
 
     showMenu = () => {
         this.setState({ menuVisible: true });
-    };
+    }
 
     toggleMenu: React.MouseEventHandler = (e) => {
         e.stopPropagation();
         this.setState((state) => ({ menuVisible: !state.menuVisible }));
-    };
+    }
 
     closeMenu: React.MouseEventHandler = e => {
         e.stopPropagation();
@@ -70,7 +70,7 @@ export class DropdownContainer extends React.Component<Props, State> {
         }
 
         this.setState({ menuVisible: false });
-    };
+    }
 
     render() {
         const { dropdownContent, useRightClick, enableClickInside, className, ...props } = this.props;
