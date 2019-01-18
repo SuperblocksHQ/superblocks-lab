@@ -463,8 +463,11 @@ class TestRunnerBridge {
         callback("Loading...");
 
         const thisReference=this;
-        function setDataCallback() {
-            const data = thisReference.readData();
+        function setDataCallback(data) {
+            // TODO: FIXME: remove alternate code path
+            if(!safeRun) {
+                data = thisReference.readData();
+            }
             callback(data);
         }
         this.runAll(evmProvider, setDataCallback);
@@ -498,6 +501,11 @@ class TestRunnerBridge {
     }
 
     setTestData(data) {
+        if(safeRun) {
+            console.error("Data format has changed! Data is ready: ", data);
+            return;
+        }
+
         // TODO: FIXME: add support to "Suites" (describe)
         // TODO: FIXME: automatically iterate over all tests
         this.testData = [];

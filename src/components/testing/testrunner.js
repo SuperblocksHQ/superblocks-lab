@@ -43,8 +43,6 @@ export default class TestRunner {
         this.totalTestCount=0;
         this.reporterStatus="";
 
-        this.isIframeCreated = false;
-
         // TODO: FIXME: make sure id scheme is being used correctly
         this.id = 'super_test_runner_0';
         this.provider = new SuperProvider({ that: this });
@@ -90,321 +88,318 @@ export default class TestRunner {
     // TODO: FIXME: room for optimizated parameter list
     createIframe(creationCallback, callback) {
         const thisReference = this;
-        if(!this.isIframeCreated) {
 
-            // TODO: FIXME: provide accounts (possibly reusing existing set)
-            const accounts = ["0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd"];
 
-            //TODO: FIXME: security / external source
-            const web3Provider=thisReference._getProvider(thisReference.endpoint, accounts);
-            const content = `
-                <script type="text/javascript" src="https://unpkg.com/web3@0.20.5/dist/web3.min.js"></script>
-                ` + web3Provider + `
-                <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
-                <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
-                <script type="text/javascript" src="/static/js/ethereumjs-abi-0.6.5.min.js"></script>
-                <script type="text/javascript" src="/static/js/ethereumjs-tx-1.3.3.min.js"></script>
-                <script type="text/javascript">
-                    //
-                    // Utilities and libraries
-                    // Note: relies on custom export path i.e. ethereumjs files are modified
-                    // Note: double check in case it conflicts with existing or future usage of asynchronous tx module loading (webpack)
-                    var ABI = ethereumjsABI.ABI;
-                    var Buffer = ethereumjsTx.Buffer.Buffer;
-                    var Tx = ethereumjsTx.Tx;
+        // TODO: FIXME: provide accounts (possibly reusing existing set)
+        const accounts = ["0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd"];
 
-                    /*====================
-                      Test data
+        //TODO: FIXME: security / external source
+        const web3Provider=thisReference._getProvider(thisReference.endpoint, accounts);
+        const content = `
+            <script type="text/javascript" src="https://unpkg.com/web3@0.20.5/dist/web3.min.js"></script>
+            ` + web3Provider + `
+            <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
+            <script type="text/javascript" src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
+            <script type="text/javascript" src="/static/js/ethereumjs-abi-0.6.5.min.js"></script>
+            <script type="text/javascript" src="/static/js/ethereumjs-tx-1.3.3.min.js"></script>
+            <script type="text/javascript">
+                //
+                // Utilities and libraries
+                // Note: relies on custom export path i.e. ethereumjs files are modified
+                // Note: double check in case it conflicts with existing or future usage of asynchronous tx module loading (webpack)
+                var ABI = ethereumjsABI.ABI;
+                var Buffer = ethereumjsTx.Buffer.Buffer;
+                var Tx = ethereumjsTx.Tx;
 
-                      Keep track of tests
-                    ====================*/
-                    var testData={};
-                    function registerTestSuite(key, suite) {
-                        if(key === null) {
-                            console.error("Unable to register test suite with null key.");
-                            return;
-                        }
+                /*====================
+                  Test data
 
-                        if(testData && suite) {
-                            if(testData[key] === undefined) {
-                                console.log("[TestRunner] Registering test suite entry: " + key);
-                                testData[key] = suite;
-                            } else {
-                                console.warn("Skipping registration for test suite entry. Key already exists: " + key);
-                                return;
-                            }
+                  Keep track of tests
+                ====================*/
+                var testData={};
+                function registerTestSuite(key, suite) {
+                    if(key === null) {
+                        console.error("Unable to register test suite with null key.");
+                        return;
+                    }
+
+                    if(testData && suite) {
+                        if(testData[key] === undefined) {
+                            console.log("[TestRunner] Registering test suite entry: " + key);
+                            testData[key] = suite;
                         } else {
-                            console.error("Unexpected failure: unable to access test suite data. testData: ", testData, " suite: ", suite);
+                            console.warn("Skipping registration for test suite entry. Key already exists: " + key);
                             return;
                         }
+                    } else {
+                        console.error("Unexpected failure: unable to access test suite data. testData: ", testData, " suite: ", suite);
+                        return;
                     }
+                }
 
-                    /*====================
-                      Latest test data
+                /*====================
+                  Latest test data
 
-                      Keep track of statistics
-                    ====================*/
-                    var successCount;
-                    var failureCount;
-                    var totalTestCount;
-                    var reporterStatus;
+                  Keep track of statistics
+                ====================*/
+                var successCount;
+                var failureCount;
+                var totalTestCount;
+                var reporterStatus;
 
-                    //
-                    // Initial state is reset
+                //
+                // Initial state is reset
+                dataReset();
+
+                //
+                // Cleanup data
+                function dataReset() {
+                    testData={};
+                    successCount=0;
+                    failureCount=0;
+                    totalTestCount=0;
+                    reporterStatus="";
+                }
+
+                function dataIncrementSuccess() {
+                    successCount++;
+                    console.log("[TestRunner] increased success counter: " + successCount);
+                }
+
+                function dataIncrementFailure() {
+                    failureCount++;
+                    console.log("[TestRunner] increased failure counter: " + failureCount);
+                }
+
+                function dataAddTotalTestCount(count) {
+                    totalTestCount += count;
+                }
+
+                function readReportOutput() {
+                    return testData;
+                }
+
+                function readReportSuccesses() {
+                    return successCount;
+                }
+
+                function readReportFailures() {
+                    return failureCount;
+                }
+
+                function readTotalTestCount() {
+                    return totalTestCount;
+                }
+
+                function readReporterStatus() {
+                    return reporterStatus;
+                }
+
+                function resetReportData() {
                     dataReset();
+                }
 
-                    //
-                    // Cleanup data
-                    function dataReset() {
-                        testData={};
-                        successCount=0;
-                        failureCount=0;
-                        totalTestCount=0;
-                        reporterStatus="";
-                    }
+                function CustomReporter(runner) {
+                    runner.on("suite", function(suite){
+                        if(suite) {
+                            const parentReference = suite.parent;
+                            if(parentReference && parentReference.title) {
+                                const splitTitle = parentReference.title.split(": ");
 
-                    function dataIncrementSuccess() {
-                        successCount++;
-                        console.log("[TestRunner] increased success counter: " + successCount);
-                    }
-
-                    function dataIncrementFailure() {
-                        failureCount++;
-                        console.log("[TestRunner] increased failure counter: " + failureCount);
-                    }
-
-                    function dataAddTotalTestCount(count) {
-                        totalTestCount += count;
-                    }
-
-                    function readReportOutput() {
-                        return testData;
-                    }
-
-                    function readReportSuccesses() {
-                        return successCount;
-                    }
-
-                    function readReportFailures() {
-                        return failureCount;
-                    }
-
-                    function readTotalTestCount() {
-                        return totalTestCount;
-                    }
-
-                    function readReporterStatus() {
-                        return reporterStatus;
-                    }
-
-                    function resetReportData() {
-                        dataReset();
-                    }
-
-                    function CustomReporter(runner) {
-                        runner.on("suite", function(suite){
-                            if(suite) {
-                                const parentReference = suite.parent;
-                                if(parentReference && parentReference.title) {
-                                    const splitTitle = parentReference.title.split(": ");
+                                //
+                                // Extract title
+                                if(splitTitle[0] === "Test name") {
+                                    const key = splitTitle[1];
 
                                     //
-                                    // Extract title
-                                    if(splitTitle[0] === "Test name") {
-                                        const key = splitTitle[1];
-
-                                        //
-                                        // Register test suite
-                                        const suiteTests = suite.tests;
-                                        if(suiteTests) {
-                                            const suiteLength = suiteTests.length;
-                                            if(key && suiteLength > 0) {
-                                                dataAddTotalTestCount(suiteLength);
-                                                //console.log("[TestRunner] suite \"" + suite.title + "\" total test count: " + readTotalTestCount());
-                                                for(var i=0; i<suiteLength; i++) {
-                                                    registerTestSuite(key, suite);
-                                                }
+                                    // Register test suite
+                                    const suiteTests = suite.tests;
+                                    if(suiteTests) {
+                                        const suiteLength = suiteTests.length;
+                                        if(key && suiteLength > 0) {
+                                            dataAddTotalTestCount(suiteLength);
+                                            //console.log("[TestRunner] suite \"" + suite.title + "\" total test count: " + readTotalTestCount());
+                                            for(var i=0; i<suiteLength; i++) {
+                                                registerTestSuite(key, suite);
                                             }
                                         }
-                                    } else {
-                                        console.error("Unexpected error. Parent reference title is not a valid test group: " + parentReference.title);
-                                    }
-                                }
-                            }
-                        });
-
-                        runner.on("pass", function(test){
-                            if(test) {
-                                dataIncrementSuccess();
-                            }
-                        });
-
-                        runner.on("fail", function(test, error){
-                            if(test) {
-                                if(error) {
-                                    console.error(error);
-                                    dataIncrementFailure();
-
-                                    var stack = null;
-                                    const errorStack = error.stack;
-                                    if(errorStack) {
-                                        stack = errorStack.split("\\n").map(
-                                            function(line){
-                                                return line.trim();
-                                            }
-                                            );
-                                    }
-
-                                    var generatedError = null;
-                                    if(stack !== null && stack[1]) {
-                                        generatedError = stack[1].split("<anonymous>:")[1];
-                                    }
-
-                                    if(generatedError !== null && generatedError !== undefined){
-                                        var reason = "unknown";
-                                        if(stack[0]) {
-                                            reason = stack[0].split("Error: ")[1];
-                                        }
-
-                                        const line=generatedError.split(":")[0];
-                                        const column=generatedError.split(":")[1].split(")")[0];
-                                        const errorOutput="Failure in line " + line + " column " + column + ". Reason: " + reason;
-
-                                        console.error(errorOutput);
-                                        reporterStatus = errorOutput;
-                                    } else {
-                                        reporterStatus = error.toString();
                                     }
                                 } else {
-                                    console.error("Unexpected error data on failure. Test: ", test, " Error: ", error);
+                                    console.error("Unexpected error. Parent reference title is not a valid test group: " + parentReference.title);
                                 }
                             }
-                        });
-
-                        runner.on("start", function(){
-                            dataReset();
-                        });
-
-                        runner.on("end", function(){
-                            console.log("[TestRunner] ended test run with status: ", successCount, failureCount, testData);
-                            return successCount, failureCount, testData
-                        });
-                    }
-
-                    function run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, callerSourceReference, callerOriginReference) {
-
-                        // TODO: FIXME: provide access to web3 object
-                        //var web3=new Web3(web3);
-                        // TODO: Consider create or none instead ?
-                        //var suiteInstance = mocha.suite.create(mochaInstance.suite, 'Test Suite');
-                        mocha.suite = mocha.suite.clone();
-                        mocha.setup("bdd");
-                        mocha.reporter(CustomReporter);
-
-                        describe("Test name: " + testName, function() {
-                            try {
-                                // TODO: FIXME: consider a better alternative for dynamically adding tests
-                                // Note: alternatively, could use mocha.suite.addTest(new Test ... ), given the possibility to access the inner library
-                                // See also: Runner
-                                // Reference:
-                                //   const statement="describe(\"Hello World\", function(){var contractInstance;beforeEach(function(){console.warn(\"testing...\");});it(\"testing tests\",function(){console.log(true); }); });";
-                                eval(contracts + testCode);
-                            } catch(e) {
-                                //TODO: FIXME: thisReference
-                                //thisReference._status="Invalid test file: " + testName + ". " + e;
-                                //console.error("[TestRunner] error: ", thisReference._status);
-                                console.error("[TestRunner] error: Invalid test file: " + testName + ". " + e);
-
-                                return;
-                            }
-                        });
-
-                        // Invoke Mocha
-                        mocha.checkLeaks();
-                        //mocha.allowUncaught();
-                        mocha.fullTrace();
-                        const runner = mocha.run(function() {
-
-                            //
-                            // Serialize test data
-                            const testDataObject = readReportOutput();
-                            var testData = {};
-                            for(var name in testDataObject) {
-                                const contractName = name;
-                                testData[contractName] = {};
-                                testData[contractName].tests = [];
-
-                                const tests = testDataObject[contractName].tests;
-                                for(var i=0; i< tests.length; i++) {
-                                    var testObject = {};
-                                    testObject.title = tests[i].title;
-                                    testObject.duration = tests[i].duration;
-                                    testObject.state = tests[i].state;
-                                    testData[contractName].tests.push(testObject);
-                                }
-                            }
-
-                            const successCount = readReportSuccesses();
-                            const failureCount = readReportFailures();
-                            const totalTestCount = readTotalTestCount();
-                            const reporterStatus = readReporterStatus();
-
-                            callerSourceReference.postMessage({ type: "testdata", testData: testData, successCount: successCount, failureCount: failureCount, totalTestCount: totalTestCount, reporterStatus: reporterStatus }, callerOriginReference);
-
-                            console.log("[TestRunner] test run completed!");
-                        });
-                    }
-
-                    window.addEventListener("message", function(messageEvent) {
-                        const data = messageEvent.data;
-
-                        window.DevKitProvider.onMsg(messageEvent);
-
-                        if(data.type === "init") {
-                            console.warn("Initializing superprovider. Message event data: ", data);
-                        } else if(data.type === "testrun"){
-                            // TODO: FIXME: add check against messageEvent.origin
-                            // TODO: FIXME: error handling
-                            const testName = JSON.parse(data.testName);
-                            const contracts = JSON.parse(data.contracts);
-                            const testCode = JSON.parse(data.testCode);
-                            const contractsData = JSON.parse(data.contractsData);
-                            const accountAddress = JSON.parse(data.accountAddress);
-                            const accountKey = JSON.parse(data.accountKey);
-                            const web3 = JSON.parse(data.web3);
-
-                            console.log("[TestRunner] Invoke run for test name: " + testName);
-                            run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, messageEvent.source, messageEvent.origin);
                         }
                     });
 
-                </script>
-            `;
+                    runner.on("pass", function(test){
+                        if(test) {
+                            dataIncrementSuccess();
+                        }
+                    });
 
-            //
-            // Setup separate environment
-            // TODO: FIXME: hide the iframe
-            const testDiv = document.getElementById("test");
+                    runner.on("fail", function(test, error){
+                        if(test) {
+                            if(error) {
+                                console.error(error);
+                                dataIncrementFailure();
 
-            //
-            // Remove existing iframe
-            if(false) {
-                const iframeElement = document.getElementById("test-iframe");
-                if(iframeElement !== null) {
-                    iframeElement.parentNode.removeChild(iframeElement);
+                                var stack = null;
+                                const errorStack = error.stack;
+                                if(errorStack) {
+                                    stack = errorStack.split("\\n").map(
+                                        function(line){
+                                            return line.trim();
+                                        }
+                                        );
+                                }
+
+                                var generatedError = null;
+                                if(stack !== null && stack[1]) {
+                                    generatedError = stack[1].split("<anonymous>:")[1];
+                                }
+
+                                if(generatedError !== null && generatedError !== undefined){
+                                    var reason = "unknown";
+                                    if(stack[0]) {
+                                        reason = stack[0].split("Error: ")[1];
+                                    }
+
+                                    const line=generatedError.split(":")[0];
+                                    const column=generatedError.split(":")[1].split(")")[0];
+                                    const errorOutput="Failure in line " + line + " column " + column + ". Reason: " + reason;
+
+                                    console.error(errorOutput);
+                                    reporterStatus = errorOutput;
+                                } else {
+                                    reporterStatus = error.toString();
+                                }
+                            } else {
+                                console.error("Unexpected error data on failure. Test: ", test, " Error: ", error);
+                            }
+                        }
+                    });
+
+                    runner.on("start", function(){
+                        dataReset();
+                    });
+
+                    runner.on("end", function(){
+                        console.log("[TestRunner] ended test run with status: ", successCount, failureCount, testData);
+                        return successCount, failureCount, testData
+                    });
                 }
-            }
 
-            // TODO: FIXME: testDiv error checking
-            var iframe = document.createElement("iframe");
-            iframe.id = "test-iframe" + Math.random();      // TODO: FIXME: consider proper unique identifiers here
-            iframe.srcdoc = content;
-            iframe.style.display = "none";
+                function run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, callerSourceReference, callerOriginReference) {
 
-            testDiv.appendChild(iframe);
-            this.provider.initIframe(iframe);
-            this.iframe = iframe;
+                    // TODO: FIXME: provide access to web3 object
+                    //var web3=new Web3(web3);
+                    // TODO: Consider create or none instead ?
+                    //var suiteInstance = mocha.suite.create(mochaInstance.suite, 'Test Suite');
+                    mocha.suite = mocha.suite.clone();
+                    mocha.setup("bdd");
+                    mocha.reporter(CustomReporter);
+
+                    describe("Test name: " + testName, function() {
+                        try {
+                            // TODO: FIXME: consider a better alternative for dynamically adding tests
+                            // Note: alternatively, could use mocha.suite.addTest(new Test ... ), given the possibility to access the inner library
+                            // See also: Runner
+                            // Reference:
+                            //   const statement="describe(\"Hello World\", function(){var contractInstance;beforeEach(function(){console.warn(\"testing...\");});it(\"testing tests\",function(){console.log(true); }); });";
+                            eval(contracts + testCode);
+                        } catch(e) {
+                            //TODO: FIXME: thisReference
+                            //thisReference._status="Invalid test file: " + testName + ". " + e;
+                            //console.error("[TestRunner] error: ", thisReference._status);
+                            console.error("[TestRunner] error: Invalid test file: " + testName + ". " + e);
+
+                            return;
+                        }
+                    });
+
+                    // Invoke Mocha
+                    mocha.checkLeaks();
+                    //mocha.allowUncaught();
+                    mocha.fullTrace();
+                    const runner = mocha.run(function() {
+
+                        //
+                        // Serialize test data
+                        const testDataObject = readReportOutput();
+                        var testData = {};
+                        for(var name in testDataObject) {
+                            const contractName = name;
+                            testData[contractName] = {};
+                            testData[contractName].tests = [];
+
+                            const tests = testDataObject[contractName].tests;
+                            for(var i=0; i< tests.length; i++) {
+                                var testObject = {};
+                                testObject.title = tests[i].title;
+                                testObject.duration = tests[i].duration;
+                                testObject.state = tests[i].state;
+                                testData[contractName].tests.push(testObject);
+                            }
+                        }
+
+                        const successCount = readReportSuccesses();
+                        const failureCount = readReportFailures();
+                        const totalTestCount = readTotalTestCount();
+                        const reporterStatus = readReporterStatus();
+
+                        callerSourceReference.postMessage({ type: "testdata", testData: testData, successCount: successCount, failureCount: failureCount, totalTestCount: totalTestCount, reporterStatus: reporterStatus }, callerOriginReference);
+
+                        console.log("[TestRunner] test run completed!");
+                    });
+                }
+
+                window.addEventListener("message", function(messageEvent) {
+                    const data = messageEvent.data;
+
+                    window.DevKitProvider.onMsg(messageEvent);
+
+                    if(data.type === "init") {
+                        console.warn("Initializing superprovider. Message event data: ", data);
+                    } else if(data.type === "testrun"){
+                        // TODO: FIXME: add check against messageEvent.origin
+                        // TODO: FIXME: error handling
+                        const testName = JSON.parse(data.testName);
+                        const contracts = JSON.parse(data.contracts);
+                        const testCode = JSON.parse(data.testCode);
+                        const contractsData = JSON.parse(data.contractsData);
+                        const accountAddress = JSON.parse(data.accountAddress);
+                        const accountKey = JSON.parse(data.accountKey);
+                        const web3 = JSON.parse(data.web3);
+
+                        console.log("[TestRunner] Invoke run for test name: " + testName);
+                        run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, messageEvent.source, messageEvent.origin);
+                    }
+                });
+
+            </script>
+        `;
+
+        //
+        // Setup separate environment
+        // TODO: FIXME: hide the iframe
+        const testDiv = document.getElementById("test");
+
+        //
+        // Remove existing iframe
+        const iframeElement = document.getElementById("test-iframe");
+        if(iframeElement !== null) {
+            iframeElement.parentNode.removeChild(iframeElement);
         }
+
+        // TODO: FIXME: testDiv error checking
+        var iframe = document.createElement("iframe");
+        iframe.id = "test-iframe";
+        iframe.srcdoc = content;
+        iframe.style.display = "none";
+
+        testDiv.appendChild(iframe);
+        this.provider.initIframe(iframe);
+        this.iframe = iframe;
 
         // TODO: FIXME: change timer to event after iframe is ready
         setTimeout(function() { creationCallback(thisReference.iframe); }, 1000);
@@ -430,8 +425,6 @@ export default class TestRunner {
                 thisReference.provider._onMessage(messageEvent);
             }
         });
-
-        this.isIframeCreated = true;
     }
 
     _createAliases(contractsData) {
@@ -576,12 +569,95 @@ export default class TestRunner {
         }
     };
 
-    safeRunAll(testFiles, contractsData, accountAddress, accountKey, web3, callback) {
-        this.isIframeCreated = false;
+    readData() {
+        var total;
+        var passed;
+        var failed;
+        var done;
+        var testRunnerStatus;
+        var testReporterStatus;
+        var status;
+        var report;
 
+        total = this.safeReadTotalTestCount();
+        passed = this.safeReadReportSuccesses();
+        failed = this.safeReadReportFailures();
+        done = passed + failed;
+        testRunnerStatus = this.readStatus().toString();
+        testReporterStatus = this.safeReadReporterStatus();
+        status = testRunnerStatus !== "" ? testRunnerStatus : testReporterStatus;
+        report = this.safeReadReportOutput();
+
+        return {
+            done: {
+                count: done,
+                total: total
+            },
+            reportOutput: report,
+            summary: {
+                passed: passed,
+                failed: failed,
+                total: done
+            },
+            consoleOutput: status,
+        };
+    }
+
+    safeRunAll(testFiles, contractsData, accountAddress, accountKey, web3, callback) {
+        const thisReference = this;
+
+        var aggregateCounter = 0;
+        var aggregateData = {};
+
+        //
+        // Data aggregator processor for executing before the callback
+        function aggregate() {
+            const testFilesLen = Object.keys(testFiles).length;
+
+            //
+            // Append last results
+            var nameCounter = 0;
+            for(var testName in testFiles) {
+                if(nameCounter !== (aggregateCounter-1)) {
+                    nameCounter++;
+                } else {
+                    console.log("[TestRunner] Aggregate counter = " + aggregateCounter + " | test files length: " + testFilesLen + " | Data: " , aggregateData);
+                    aggregateData[testName] = thisReference.readData();
+                }
+            }
+
+            //
+            // Exit condition: callback after all items completed
+            if( (aggregateCounter + 1) > testFilesLen) {
+                console.log("[TestRunner] Safe run all has finished. Calling back with data: ", aggregateData);
+                callback(aggregateData);
+                return;
+            }
+
+            //
+            // Select and run the next test
+            var i = 0;
+            for(var testName in testFiles) {
+                if(i !== aggregateCounter) {
+                    i++;
+                } else {
+                    //
+                    // Proceed to the next test
+                    const testCode = testFiles[testName];
+                    aggregateCounter++;
+                    thisReference._safeRun(testName, testCode, contractsData, accountAddress, accountKey, web3, aggregate);
+                    break;
+                }
+            }
+        }
+
+        //
+        // Select and run the first test
         for(var testName in testFiles) {
             const testCode = testFiles[testName];
-            this._safeRun(testName, testCode, contractsData, accountAddress, accountKey, web3, callback);
+            aggregateCounter++;
+            this._safeRun(testName, testCode, contractsData, accountAddress, accountKey, web3, aggregate);
+            return;
         }
     };
 
