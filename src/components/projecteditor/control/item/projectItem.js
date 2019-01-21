@@ -26,7 +26,7 @@ import WalletsItem from './walletsItem';
 import WalletItem from './walletItem';
 import EnvironmentsItem from './environmentsItem';
 import EnvironmentItem from './environmentItem';
-import { IconShowPreview } from '../../../icons';
+import { IconConfigure } from '../../../icons';
 
 import Backend from '../backend';
 import TransactionLogData from '../../sidePanels/blockexplorer/transactionlogdata';
@@ -63,20 +63,20 @@ export default class ProjectItem extends Item {
         return this.props.state.title || '';
     };
 
+    getHeaderTitle = () => {
+        return 'Project Settings';
+    }
+
+    getIcon = () => {
+        return <IconConfigure />;
+    };
+
     getName = () => {
         const dappfile = this._getDappfile();
         if (dappfile) {
             return dappfile.getName();
         }
         return this.props.state.name || '';
-    };
-
-    getEnvironment = () => {
-        const environmentsItem = this.getHiddenItem('environments');
-        const firstEnv = environmentsItem.getChildren()[0];
-        const defaultEnv = firstEnv ? firstEnv.getName() : 'browser';
-        const chosen = environmentsItem.getChosen() || defaultEnv;
-        return chosen;
     };
 
     getAccount = () => {

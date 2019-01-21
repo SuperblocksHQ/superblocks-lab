@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import style from './style.less';
 import Caret from '../../../caret';
-import { DropdownContainer } from '../../../dropdown';
+import { DropdownContainer } from '../../../common';
 
 export function BaseItem(props) {
     let icon = props.icon;

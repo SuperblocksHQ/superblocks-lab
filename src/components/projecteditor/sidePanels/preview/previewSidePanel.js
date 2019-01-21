@@ -2,7 +2,7 @@ import React from 'react';
 import style from '../style.less';
 import { IconShowPreview, IconRefresh, IconDownloadDApp, IconMore } from '../../../icons';
 import Tooltip from '../../../tooltip';
-import { DropdownContainer } from '../../../dropdown';
+import { DropdownContainer } from '../../../common';
 import OnlyIf from '../../../onlyIf';
 import { BaseSidePanel } from '../baseSidePanel';
 import { previewService } from '../../../../services';
@@ -36,12 +36,12 @@ export class PreviewSidePanel extends React.Component {
 
     refresh() {
         const iframe = document.getElementById(IFRAME_ID);
-        iframe.contentWindow.location.reload();
+        iframe.contentWindow.location.replace(getIframeSrc());
     }
 
     tryDownload() {
         // TODO: parameters should not be passed here, but obtained from redux app state
-        this.props.onTryDownload(previewService.hasExportableContent, previewService.projectItem.getEnvironment());
+        this.props.onTryDownload(previewService.hasExportableContent, this.props.selectedEnvironment);
     }
 
     toggleWeb3Accounts() {
@@ -100,7 +100,7 @@ export class PreviewSidePanel extends React.Component {
                     }
                     {this.props.showDownloadModal &&
                     <DownloadModal 
-                        environment={previewService.projectItem.getEnvironment()}
+                        environment={this.props.selectedEnvironment}
                         onClose={this.props.onHideModals}
                         onDownload={this.props.onDownload} />
                     }

@@ -17,7 +17,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-
 import Backend from '../projecteditor/control/backend';
 import Modal from '../modal';
 import ProjectEditor from '../projecteditor';
@@ -25,9 +24,10 @@ import { Wallet } from '../projecteditor/wallet';
 import Solc from '../solc';
 import EVM from '../evm';
 import Networks from '../../networks';
-import { previewService } from '../../services';
+import { previewService, ipfsService } from '../../services';
 import AnalyticsDialog from '../analyticsDialog';
 import OnlyIf from '../onlyIf';
+import ToastContainer from "../toasts/toastcontainer";
 
 export default class App extends Component {
 
@@ -39,16 +39,14 @@ export default class App extends Component {
     constructor(props) {
         super(props);
         this.idCounter = 0;
+        this.isImportedProject = false;
+        this.backend = new Backend();
 
         this.session = {
             start_time: Date.now(),
         };
 
-        // Used to communicate between components, events is probably a better way of doing this.
-        this.router = {
-            register: this.register,
-        };
-
+        this.router = this.props.router;
         this.router.register('app', this);
 
         this.functions = {
@@ -94,8 +92,7 @@ export default class App extends Component {
     }
 
     _convertProjects = cb => {
-        const backend = new Backend();
-        backend.convertProjects(status => {
+        this.backend.convertProjects(status => {
             if (status == 1) {
                 const modalData = {
                     title: 'Projects converted',
@@ -137,12 +134,8 @@ export default class App extends Component {
         this.forceUpdate();
     };
 
-    register = (name, obj) => {
-        this.router[name] = obj;
-    };
-
     _init = () => {
-        let { showSplash, appVersion } = this.props;
+        let { appVersion } = this.props;
         const modalData = {
             title: 'Loading Superblocks Lab',
             body:
@@ -162,6 +155,7 @@ export default class App extends Component {
         this.functions.EVM = new EVM({ id: this.generateId() });
 
         previewService.init(this.functions.wallet);
+        ipfsService.init(this.backend);
 
         const fn = () => {
             if (this.functions.compiler && this.functions.EVM) {
@@ -169,9 +163,7 @@ export default class App extends Component {
 
                 this.functions.modal.close();
 
-                if (showSplash) {
-                    this._showSplash();
-                }
+                this._checkIpfsOnUrl();
             } else {
                 setTimeout(fn, 500);
             }
@@ -179,53 +171,13 @@ export default class App extends Component {
         fn();
     };
 
-    _showSplash = () => {
-        let { showSplashNoMore } = this.props;
-
-        const body = (
-            <div className="splash">
-                <p className="splash_text">
-                    Let's watch a short video to help you get started.
-                </p>
-                <p className="splash_video">
-                    <iframe
-                        width="560"
-                        height="315"
-                        src="https://www.youtube-nocookie.com/embed/KSF24hkf0-o?rel=0"
-                        frameBorder="0"
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen
-                    />
-                </p>
-                <p className="splash_cancel">
-                    <a
-                        href="#"
-                        onClick={() => {
-                            // Idealy this should be inside the action and not here.
-                            this.functions.modal.cancel();
-                            showSplashNoMore();
-                        }}
-                    >
-                        No thanks
-                    </a>
-                </p>
-            </div>
-        );
-        const modalData = {
-            title: 'Welcome to Superblocks Lab!',
-            body: body,
-            style: {
-                width: '680px',
-                xbackgroundColor: '#73618b',
-                xcolor: '#fef7ff',
-            },
-        };
-        const modal = <Modal data={modalData} />;
-        this.functions.modal.show({
-            render: () => {
-                return modal;
-            },
-        });
+    _checkIpfsOnUrl = () => {
+        const a = document.location.href.match("^.*/ipfs/(.+)$");
+            if (a) {
+                // TODO: pop modal about importing being processed.
+                this.isImportedProject = true;
+                this.props.importProjectFromIpfs(a[1]);
+        }
     };
 
     session_start_time = () => {
@@ -314,10 +266,12 @@ export default class App extends Component {
                                 router={this.router}
                                 functions={this.functions}
                                 knownWalletSeed={this.knownWalletSeed}
+                                isImportedProject={this.isImportedProject}
                             />
                             <OnlyIf test={showTrackingAnalyticsDialog}>
                                 <AnalyticsDialog />
                             </OnlyIf>
+                            <ToastContainer />
                         </OnlyIf>
                     </div>
                 </div>
@@ -330,8 +284,7 @@ export default class App extends Component {
 }
 
 App.propTypes = {
-    showSplash: PropTypes.bool.isRequired,
+    router: PropTypes.object.isRequired,
     appVersion: PropTypes.string.isRequired,
-    notifyAppStart: PropTypes.func.isRequired,
-    showSplashNoMore: PropTypes.func.isRequired
+    notifyAppStart: PropTypes.func.isRequired
 }

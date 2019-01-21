@@ -107,7 +107,7 @@ export default class ProjectEditor extends Component {
 
     onPanesSizeChange() {
         if (this.props.router.panes) {
-            this.props.router.panes.redraw(true);
+            this.props.router.panes.redraw(false);
         }
     }
 
@@ -117,22 +117,8 @@ export default class ProjectEditor extends Component {
     };
 
     render() {
-        let endpoint = '';
-        let project;
-        if (this.props.router && this.props.router.control) {
-            project =
-                this.props.router.control &&
-                this.props.router.control.getActiveProject();
-            if (project) {
-                const network = project.getEnvironment();
-                endpoint = (
-                    this.props.functions.networks.endpoints[network] || {}
-                ).endpoint;
-            }
-        }
-
         const { displayTransactionsPanel, previewSidePanel, toggleTransactionsHistoryPanel,
-                previewSidePanelActions } = this.props;
+                previewSidePanelActions, selectedEnvironment } = this.props;
 
         return (
             <div className={style.projecteditor}>
@@ -149,7 +135,11 @@ export default class ProjectEditor extends Component {
                             secondaryInitialSize={280}
                             onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}>
                             <div className={style.control}>
-                                <Explorer />
+                                <Control
+                                    router={this.props.router}
+                                    functions={this.props.functions}
+                                    isImportedProject={this.props.isImportedProject}
+                                />
                                 <ContactContainer />
                             </div>
                             <div>
@@ -168,6 +158,7 @@ export default class ProjectEditor extends Component {
                                         dragging={this.state.sidePanelDragging}
                                         router={this.props.router}
                                         onClose={toggleTransactionsHistoryPanel}
+                                        selectedEnvironment={selectedEnvironment.name}
                                     /> }
 
                                     { previewSidePanel.open && 
@@ -175,11 +166,12 @@ export default class ProjectEditor extends Component {
                                         dragging={this.state.sidePanelDragging}
                                         {...previewSidePanel}
                                         {...previewSidePanelActions}
+                                        selectedEnvironment={selectedEnvironment.name}
                                     /> }
                                     
                                 </SplitterLayout>
                             
-                                <BottomBar endpoint={endpoint} />
+                                <BottomBar endpoint={selectedEnvironment.endpoint} />
                             </div>
                         </SplitterLayout>
                     </div>

@@ -23,7 +23,7 @@ import {
     IconImportFile
 } from '../../../../icons';
 import style from '../../style.less';
-import { DropdownContainer } from '../../../../dropdown';
+import { DropdownContainer } from '../../../../common';
 import { FadeInComponent } from './fadeInComponent';
 import { ShowActions } from './showActions';
 import Tooltip from '../../../../tooltip';
@@ -40,7 +40,7 @@ export class DirectoryEntry extends Component {
             clickRenameFile,
             clickDeleteFile,
             fullPath,
-            icons
+            icons,
         } = this.props;
 
         const alwaysVisible = fullPath === "/";
@@ -129,4 +129,3 @@ export class DirectoryEntry extends Component {
         );
     }
 }
-

@@ -1,3 +1,19 @@
+// Copyright 2018 Superblocks AB
+//
+// This file is part of Superblocks Lab.
+//
+// Superblocks Lab is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation version 3 of the License.
+//
+// Superblocks Lab is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
+
 import { buildProjectHtml } from './utils/buildProjectHtml';
 import SuperProvider from '../components/superprovider';
 import Networks from '../networks';
@@ -6,6 +22,7 @@ let projectItem = null;
 let exportableDappHtml = null;
 let iframeId = null;
 let disableAccounts = false;
+let environment = null;
 
 export const previewService = {
     superProvider: null,
@@ -13,7 +30,7 @@ export const previewService = {
     init(wallet) {
         window.addEventListener('message', async (e) => {
             if (e.data.type === 'window-ready' && this.projectItem) {
-                const builtProject = await buildProjectHtml(this.projectItem, wallet, this.disableAccounts);
+                const builtProject = await buildProjectHtml(this.projectItem, wallet, this.disableAccounts, environment);
                 exportableDappHtml = builtProject.exportableContent;
                 if (e.source) {
                     e.source.postMessage({ type: 'set-content', payload: builtProject.content }, '*');
@@ -32,13 +49,17 @@ export const previewService = {
                 context: 'Contract interaction',
                 network
             });
-        });
+        }, () => environment.name);
     },
 
     get projectItem() { return projectItem; },
-    set projectItem(value) { 
+    set projectItem(value) {
         projectItem = value;
         exportableDappHtml = null;
+    },
+
+    setEnvironment(value) {
+        environment = value
     },
 
     get disableAccounts() { return disableAccounts; },
