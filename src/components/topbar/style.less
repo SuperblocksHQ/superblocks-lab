@@ -51,14 +51,24 @@
         margin-left: 30px;
     }
     .openLab {
-        margin-left: 30px;
-        transition: .2s opacity;
+        margin-left: 15px;
+        display: flex;
+        align-items: center;
+        background-color: #8641f2;
+        border-radius: 4px;
+        padding: 2px 10px;
+        transition: .2s background;
         span {
             margin-left: 10px;
         }
         &:hover {
-            opacity: .6;
+            background-color: #7237CF;
         }
+    }
+    .projectName {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
     }
     .tools {
         margin-left: 45px;

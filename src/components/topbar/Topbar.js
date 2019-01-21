@@ -25,6 +25,7 @@ import Tooltip from '../tooltip';
 import PreferencessModal from '../preferences';
 import UploadDialog from './upload';
 import Note from '../note';
+import * as embedUtils from '../../utils/embed';
 import {
     IconDownload,
     IconTrash,
@@ -35,7 +36,8 @@ import {
     IconDiscord,
     IconCheck,
     IconUpload,
-    IconFork
+    IconFork,
+    IconAlphabetA
 } from '../icons';
 import Dappfile from '../projecteditor/control/item/dappfileItem';
 import OnlyIf from '../onlyIf';
@@ -44,7 +46,9 @@ const PreferencesAction = () => (
     <div className={style.action}>
         <button className={classNames([style.container, "btnNoBg"])}>
             <IconConfigure />
-            <span>Preferences</span>
+            <OnlyIf test={!embedUtils.isIframe()}>
+                <span>Preferences</span>
+            </OnlyIf>
         </button>
     </div>
 );
@@ -53,7 +57,9 @@ const HelpDropdownAction = () => (
     <div className={style.action}>
         <button className={classNames([style.container, 'btnNoBg'])}>
             <IconHelp />
-            <span>Help</span>
+            <OnlyIf test={!embedUtils.isIframe()}>
+                <span>Help</span>
+            </OnlyIf>
         </button>
     </div>
 );
@@ -90,11 +96,38 @@ const HelpDropdownDialog = () => (
         <ul>
             <li>
                 <a
+                    href="https://help.superblocks.com/hc/en-us/categories/360000486714-Using-Superblocks-Lab"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Guide to Superblocks Lab
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://www.youtube.com/playlist?list=PLjnjthhtIABuzW2MTsPGkihZtvvepy-n4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Video tutorials
+                </a>
+            </li>
+            <li>
+                <a
                     href="https://help.superblocks.com"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
                     Help Center
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://help.superblocks.com/hc/en-us/requests/new"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Ask a question
                 </a>
             </li>
             <li>
@@ -507,15 +540,31 @@ export default class TopBar extends Component {
     render() {
         const { showUploadDialog, showUploadButton, showForkButton } = this.state.ipfsActions;
         const { selectedProjectName } = this.state;
+        const isIframe = embedUtils.isIframe();
 
         return (
             <div className={style.topbar}>
-                <img
-                    className={style.logo}
-                    src="/static/img/img-lab-logo.svg"
-                    alt="Superblocks Lab logo"
-                />
-                <OnlyIf test={showUploadButton}>
+                <OnlyIf test={!isIframe || (isIframe && !selectedProjectName)}>
+                    <img
+                        className={style.logo}
+                        src="/static/img/img-lab-logo.svg"
+                        alt="Superblocks Lab logo"
+                    />
+                </OnlyIf>
+                <OnlyIf test={isIframe && selectedProjectName}>
+                    <a 
+                        className={style.openLab}
+                        href={window.location}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Open in Lab"
+                    >
+                        <IconAlphabetA style={{width: 17, height: 17}} />
+                        <span>Open in Lab</span>
+                    </a>
+                    <span className={style.projectName}>{selectedProjectName}</span>
+                </OnlyIf>
+                <OnlyIf test={showUploadButton && !isIframe}>
                     <DropdownContainer
                         className={style.actionHelp}
                         dropdownContent={<UploadDialog />}
@@ -526,23 +575,25 @@ export default class TopBar extends Component {
                         <UploadDrowdownAction />
                     </DropdownContainer>
                 </OnlyIf>
-                <OnlyIf test={showForkButton}>
+                <OnlyIf test={showForkButton && !isIframe}>
                     <ForkDropdownAction
                         onForkClicked={this.onForkClicked}
                     />
                 </OnlyIf>
-                <DropdownContainer
-                    className={style.projectButton}
-                    dropdownContent={
-                        <ProjectDialog
-                            functions={this.props.functions}
-                            router={this.props.router}
-                            onProjectSelected={this.props.onProjectSelected}
-                        />
-                    }
-                >
-                    <ProjectSelector title={selectedProjectName} />
-                </DropdownContainer>
+                <OnlyIf test={!isIframe || (isIframe && !selectedProjectName)}>
+                    <DropdownContainer
+                        className={style.projectButton}
+                        dropdownContent={
+                            <ProjectDialog
+                                functions={this.props.functions}
+                                router={this.props.router}
+                                onProjectSelected={this.props.onProjectSelected}
+                            />
+                        }
+                    >
+                        <ProjectSelector title={selectedProjectName} />
+                    </DropdownContainer>
+                </OnlyIf>
 
                 <div className={style.actionsRight}>
                     <div onClick={this.showPreferencesModal}>
