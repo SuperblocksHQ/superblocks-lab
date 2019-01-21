@@ -18,6 +18,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import style from './style.less';
 import Note from '../note';
+import * as embedUtils from '../../utils/embed';
+import OnlyIf from '../onlyIf';
 
 export default class BottomBar extends Component {
 
@@ -29,14 +31,17 @@ export default class BottomBar extends Component {
     render() {
         const { networkPreferences, endpoint } = this.props;
         const gasPrice = this.web3.fromWei(networkPreferences.gasPrice, 'Gwei');
+        const isIframe = embedUtils.isIframe();
         return (
-            <div className={style.bottomStatusBar}>
-                <span className={style.left}>
-                    <Note
-                        title="Note"
-                        text="All files are stored in the browser only, download to backup"
-                    />
-                </span>
+            <div className={style.bottomStatusBar} id={"bottom_bar"}>
+                <OnlyIf test={!isIframe}>
+                    <span className={style.left}>
+                        <Note
+                            title="Note"
+                            text="All files are stored in the browser only, download to backup"
+                        />
+                    </span>
+                </OnlyIf>
                 <div className={style.right}>
                 <span>Gas Limit: {networkPreferences.gasLimit}</span>
                 <span>Gas Price: {gasPrice} Gwei</span>

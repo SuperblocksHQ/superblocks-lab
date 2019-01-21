@@ -28,6 +28,7 @@ import {
     IconCube,
 } from '../../icons';
 import Networks from '../../../networks';
+import OnlyIf from '../../onlyIf';
 
 export default class Control extends Component {
 
@@ -618,11 +619,15 @@ export default class Control extends Component {
 
     render() {
         const item = this.state.menu.render();
+        const isProjectActive = this.state.activeProject;
+
         return (
             <div className="full">
                 <div className={style.treemenu}>
                     {item}
-                    <LearnAndResources className="mt-3" />
+                    <OnlyIf test={!isProjectActive}>
+                        <LearnAndResources className="mt-3" />
+                    </OnlyIf>
                 </div>
             </div>
         );

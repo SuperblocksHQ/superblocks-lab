@@ -261,7 +261,8 @@ class Panes extends Component {
     getPaneHeight = () => {
         const a = document.getElementById('panes');
         const b = document.getElementById('panes_header');
-        return a.offsetHeight - b.offsetHeight;
+        const c = document.getElementById('bottom_bar')
+        return a.offsetHeight - b.offsetHeight - c.offsetHeight;
     };
 
     renderPanes = () => {
@@ -310,9 +311,6 @@ class Panes extends Component {
             <div
                 id="panes"
                 className={classnames(style.panescontainer, { dragging: this.props.dragging })}
-                style={{
-                    width: isActionPanelShowing && window.innerWidth > 1300 ? 'calc(100% - 450px)' : '100%',
-                }}
             >
                 <div key="header" id="panes_header" className={style.header}>
                     <PanesHeader

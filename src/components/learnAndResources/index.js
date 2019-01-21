@@ -23,7 +23,7 @@ const LinkItem = ({ icon, title, link }) => (
 
 export default class LearnAndResources extends Component {
     state = {
-        expanded: true && window.innerWidth > 1000,
+        expanded: true,
     };
 
     toogle = () => {
