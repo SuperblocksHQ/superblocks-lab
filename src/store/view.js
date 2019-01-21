@@ -16,6 +16,7 @@
 
 export default {
     panel: {
-        showTransactionsHistory: false
+        showTransactionsHistory: false,
+        showFileSystem: true
     }
 };
