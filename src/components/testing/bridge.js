@@ -501,11 +501,6 @@ class TestRunnerBridge {
     }
 
     setTestData(data) {
-        if(safeRun) {
-            console.error("Data format has changed! Data is ready: ", data);
-            return;
-        }
-
         // TODO: FIXME: add support to "Suites" (describe)
         // TODO: FIXME: automatically iterate over all tests
         this.testData = [];
@@ -523,117 +518,116 @@ class TestRunnerBridge {
             return;
         }
 
-        for(var name in data) {
-            const contractName = name;
-            const tests = data[contractName].tests;
+        if(safeRun) {
+            for(var currentData in data) {
+                currentData = data[currentData].reportOutput;
 
-            var contractTotalTime = 0;
-            var testEntries = [];
-            for(var i=0; i<tests.length; i++) {
+                for(var name in currentData) {
+                    const contractName = name;
+                    const tests = currentData[contractName].tests;
 
-                //
-                // Considers duration to be a condition that is only
-                // present for tests (not suites or describe)
-                if(tests[i] && tests[i].duration !== undefined) {
-                    const testId = i;
-                    const testName = tests[testId].title;
-                    const testTime = tests[testId].duration;
-                    const testTimeString = testTime + " ms";
-                    const testState = tests[testId].state;
+                    var contractTotalTime = 0;
+                    var testEntries = [];
+                    for(var i=0; i<tests.length; i++) {
 
-                    const testEntry = {
+                        //
+                        // Considers duration to be a condition that is only
+                        // present for tests (not suites or describe)
+                        if(tests[i] && tests[i].duration !== undefined) {
+                            const testId = i;
+                            const testName = tests[testId].title;
+                            const testTime = tests[testId].duration;
+                            const testTimeString = testTime + " ms";
+                            const testState = tests[testId].state;
+
+                            const testEntry = {
+                                uiCounter: uiCounter++,
+                                id: uiCounter,
+                                name: testName,
+                                time: testTimeString,
+                                state: testState
+                            };
+
+                            //
+                            // Update data
+                            contractTotalTime += testTime;
+                            testEntries.push(testEntry);
+                        }
+
+                    }
+
+                    this.totalTestDataTime += contractTotalTime;
+
+                    const contractTotalTimeString = contractTotalTime + " ms";
+
+                    const testTotalTime = contractTotalTime;
+                    const testTotalTimeString = contractTotalTime + " ms";
+                    const testFileName = "/tests/"+contractName;
+
+                    const newTest = {
                         uiCounter: uiCounter++,
-                        id: uiCounter,
-                        name: testName,
-                        time: testTimeString,
-                        state: testState
+                        id: -100 + uiCounter,
+                        name: testFileName,
+                        time: testTotalTimeString,
+                        children: testEntries
                     };
-
-                    //
-                    // Update data
-                    contractTotalTime += testTime;
-                    testEntries.push(testEntry);
+                    this.testData.push(newTest);
                 }
-
             }
 
-            this.totalTestDataTime += contractTotalTime;
+        } else {
+            for(var name in data) {
+                const contractName = name;
+                const tests = data[contractName].tests;
 
-            const contractTotalTimeString = contractTotalTime + " ms";
+                var contractTotalTime = 0;
+                var testEntries = [];
+                for(var i=0; i<tests.length; i++) {
 
-            const testTotalTime = contractTotalTime;
-            const testTotalTimeString = contractTotalTime + " ms";
-            const testFileName = "/tests/"+contractName;
+                    //
+                    // Considers duration to be a condition that is only
+                    // present for tests (not suites or describe)
+                    if(tests[i] && tests[i].duration !== undefined) {
+                        const testId = i;
+                        const testName = tests[testId].title;
+                        const testTime = tests[testId].duration;
+                        const testTimeString = testTime + " ms";
+                        const testState = tests[testId].state;
 
-            const newTest = {
-                uiCounter: uiCounter++,
-                id: -100 + uiCounter,
-                name: testFileName,
-                time: testTotalTimeString,
-                children: testEntries
-            };
-            this.testData.push(newTest);
+                        const testEntry = {
+                            uiCounter: uiCounter++,
+                            id: uiCounter,
+                            name: testName,
+                            time: testTimeString,
+                            state: testState
+                        };
+
+                        //
+                        // Update data
+                        contractTotalTime += testTime;
+                        testEntries.push(testEntry);
+                    }
+
+                }
+
+                this.totalTestDataTime += contractTotalTime;
+
+                const contractTotalTimeString = contractTotalTime + " ms";
+
+                const testTotalTime = contractTotalTime;
+                const testTotalTimeString = contractTotalTime + " ms";
+                const testFileName = "/tests/"+contractName;
+
+                const newTest = {
+                    uiCounter: uiCounter++,
+                    id: -100 + uiCounter,
+                    name: testFileName,
+                    time: testTotalTimeString,
+                    children: testEntries
+                };
+                this.testData.push(newTest);
+            }
         }
-
-    /*    const totalDummyTestTime = 5*4;
-        this.totalTestDataTime += totalDummyTestTime;
-
-        const totalDummyTestTimeString = totalDummyTestTime + " ms";
-        const dummyTest = {
-            uiCounter: 100,
-            id: 1,
-            name: "/tests/a_reference_dummy_test.js",
-            time: totalDummyTestTimeString,
-            children: [
-                [{
-                    uiCounter: 101,
-                    id: 3,
-                    name: "HardcodedExampleResults",
-                    time: totalDummyTestTimeString,
-                    children: [
-                        {
-                            uiCounter: 102,
-                            id: 4,
-                            name: "has an Owner",
-                            time:"4ms",
-                            state: "passed"
-                        },
-                        {
-                            uiCounter: 103,
-                            id: 5,
-                            name: "has an Owner",
-                            time:"4ms",
-                            state: "failed"
-                        },
-                        {
-                            uiCounter: 104,
-                            id: 6,
-                            name: "accepts fund",
-                            time:"4ms",
-                            state: "passed"
-                        },
-                        {
-                            uiCounter: 105,
-                            id: 7,
-                            name: "Is able to pause or unpause",
-                            time:"4ms",
-                            state: "failed"
-                        },
-                        {
-                            uiCounter: 106,
-                            id: 8,
-                            name: "permits owner to receive funds",
-                            time:"4ms",
-                            state: "passed"
-                        },
-                    ]
-                }]
-            ],
-        };
-
-        //
-        // Update data
-        this.testData.push(dummyTest);*/
     }
 }
 

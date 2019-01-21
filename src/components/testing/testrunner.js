@@ -62,6 +62,9 @@ export default class TestRunner {
         };
         fn();
 
+        // TODO: FIXME: provide accounts (possibly reusing existing set)
+        this.accounts = ["0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd"];
+
         // TODO: FIXME: revisit bridge code to remove data declaration
         this.endpoint="http://superblocks-browser";
     }
@@ -90,11 +93,8 @@ export default class TestRunner {
         const thisReference = this;
 
 
-        // TODO: FIXME: provide accounts (possibly reusing existing set)
-        const accounts = ["0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd"];
-
         //TODO: FIXME: security / external source
-        const web3Provider=thisReference._getProvider(thisReference.endpoint, accounts);
+        const web3Provider=thisReference._getProvider(thisReference.endpoint, this.accounts);
         const content = `
             <script type="text/javascript" src="https://unpkg.com/web3@0.20.5/dist/web3.min.js"></script>
             ` + web3Provider + `
@@ -110,6 +110,7 @@ export default class TestRunner {
                 var ABI = ethereumjsABI.ABI;
                 var Buffer = ethereumjsTx.Buffer.Buffer;
                 var Tx = ethereumjsTx.Tx;
+                var web3 = new Web3(window.web3 && window.web3.currentProvider);
 
                 /*====================
                   Test data
@@ -289,10 +290,8 @@ export default class TestRunner {
                     });
                 }
 
-                function run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, callerSourceReference, callerOriginReference) {
+                function run(testName, contracts, testCode, contractsData, accountAddress, accountKey, callerSourceReference, callerOriginReference) {
 
-                    // TODO: FIXME: provide access to web3 object
-                    //var web3=new Web3(web3);
                     // TODO: Consider create or none instead ?
                     //var suiteInstance = mocha.suite.create(mochaInstance.suite, 'Test Suite');
                     mocha.suite = mocha.suite.clone();
@@ -369,10 +368,9 @@ export default class TestRunner {
                         const contractsData = JSON.parse(data.contractsData);
                         const accountAddress = JSON.parse(data.accountAddress);
                         const accountKey = JSON.parse(data.accountKey);
-                        const web3 = JSON.parse(data.web3);
 
                         console.log("[TestRunner] Invoke run for test name: " + testName);
-                        run(testName, contracts, testCode, contractsData, accountAddress, accountKey, web3, messageEvent.source, messageEvent.origin);
+                        run(testName, contracts, testCode, contractsData, accountAddress, accountKey, messageEvent.source, messageEvent.origin);
                     }
                 });
 
@@ -607,28 +605,44 @@ export default class TestRunner {
         const thisReference = this;
 
         var aggregateCounter = 0;
+        var lastExecutedTestName = null;
         var aggregateData = {};
+        var summaryStats = {
+            passed: 0,
+            failed: 0,
+            total: 0
+        };
+        var doneStats = {
+            count: 0,
+            total: 0
+        };
 
         //
         // Data aggregator processor for executing before the callback
         function aggregate() {
             const testFilesLen = Object.keys(testFiles).length;
-
             //
             // Append last results
-            var nameCounter = 0;
-            for(var testName in testFiles) {
-                if(nameCounter !== (aggregateCounter-1)) {
-                    nameCounter++;
-                } else {
-                    console.log("[TestRunner] Aggregate counter = " + aggregateCounter + " | test files length: " + testFilesLen + " | Data: " , aggregateData);
-                    aggregateData[testName] = thisReference.readData();
-                }
+            if(lastExecutedTestName !== null) {
+                console.log("[TestRunner] Aggregate test: " + lastExecutedTestName + " | counter: " + aggregateCounter + " | test files length: " + testFilesLen + " | Data: " , aggregateData);
+                aggregateData[lastExecutedTestName] = thisReference.readData();
+
+                //
+                // Add to statistics
+                var entry = aggregateData[lastExecutedTestName];
+                doneStats.count += entry.done.count;
+                doneStats.total += entry.done.total;
+                summaryStats.passed += entry.summary.passed;
+                summaryStats.failed += entry.summary.failed;
+                summaryStats.total += entry.summary.total;
             }
 
             //
             // Exit condition: callback after all items completed
             if( (aggregateCounter + 1) > testFilesLen) {
+                aggregateData["summary"] = summaryStats;
+                aggregateData["done"] = doneStats;
+
                 console.log("[TestRunner] Safe run all has finished. Calling back with data: ", aggregateData);
                 callback(aggregateData);
                 return;
@@ -644,6 +658,7 @@ export default class TestRunner {
                     //
                     // Proceed to the next test
                     const testCode = testFiles[testName];
+                    lastExecutedTestName = testName;
                     aggregateCounter++;
                     thisReference._safeRun(testName, testCode, contractsData, accountAddress, accountKey, web3, aggregate);
                     break;
@@ -655,6 +670,7 @@ export default class TestRunner {
         // Select and run the first test
         for(var testName in testFiles) {
             const testCode = testFiles[testName];
+            lastExecutedTestName = testName;
             aggregateCounter++;
             this._safeRun(testName, testCode, contractsData, accountAddress, accountKey, web3, aggregate);
             return;
