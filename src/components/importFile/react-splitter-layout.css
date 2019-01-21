@@ -22,13 +22,12 @@
     background-color: #2d2d2d;
 }
 
-
-
 .hideFileSystemPanel > div:nth-child(1) {
     display: none;
 }
 
-.hideFileSystemPanel > .layout-splitter:nth-child(1) {
+.hideFileSystemPanel >.layout-splitter {
     display: none;
 }
+
 
