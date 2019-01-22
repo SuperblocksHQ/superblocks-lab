@@ -704,4 +704,83 @@ export default class TestRunner {
             }
         }
     };
+
+    safeRunSingle(file, title, testFiles, contractsData, accountAddress, accountKey, web3, callback) {
+        if(!file || file === null) {
+            console.error("[TestRunner] Unable to target empty file when running single tests");
+            return;
+        }
+
+        if(!title || title === null) {
+            console.error("[TestRunner] Unable to target empty title when running single tests");
+            return;
+        }
+
+        const thisReference = this;
+        var aggregateCounter = 0;
+        var lastExecutedTestName = null;
+        var aggregateData = {};
+        var summaryStats = {
+            passed: 0,
+            failed: 0,
+            total: 0
+        };
+        var doneStats = {
+            count: 0,
+            total: 0
+        };
+
+        //
+        // Data aggregator processor for executing before the callback
+        function aggregate() {
+
+            const testFilesLen = Object.keys(testFiles).length;
+            //
+            // Append last results
+            if(lastExecutedTestName !== null) {
+                console.log("[TestRunner] Single aggregate test: " + lastExecutedTestName + " | counter: " + aggregateCounter + " | test files length: " + testFilesLen + " | Data: " , aggregateData);
+                aggregateData[lastExecutedTestName] = thisReference.readData();
+
+                //
+                // Add to statistics
+                var entry = aggregateData[lastExecutedTestName];
+                doneStats.count += entry.done.count;
+                doneStats.total += entry.done.total;
+                summaryStats.passed += entry.summary.passed;
+                summaryStats.failed += entry.summary.failed;
+                summaryStats.total += entry.summary.total;
+            }
+
+            //
+            // Exit condition: callback after the first item
+            // TODO: FIXME: consider collecting all previous results as part of the new output
+            aggregateData["summary"] = summaryStats;
+            aggregateData["done"] = doneStats;
+
+            console.log("[TestRunner] Single safe run has finished. Calling back with data: ", aggregateData);
+            callback(aggregateData);
+            return;
+        }
+
+
+        // TODO: Consider multiple occurrences;
+        //       Consider case (in)sensitive;
+        //       Consider single and double quotes.
+        for(var testName in testFiles) {
+            if(testName === file) {
+                const testCode = testFiles[testName];
+                const regex = new RegExp("it*.\'" + title + "\'*.,{1}");
+                const replaceWith = 'it.only("' + title + '",';
+                const singleTestCode = testCode.replace(regex, replaceWith);
+
+                lastExecutedTestName = testName;
+                aggregateCounter++;
+
+                this._safeRun(testName, singleTestCode, contractsData, accountAddress, accountKey, web3, aggregate);
+
+                return;
+            }
+        }
+    };
+
 }

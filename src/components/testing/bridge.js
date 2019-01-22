@@ -53,6 +53,8 @@ class TestRunnerBridge {
         this.testData = [];
         this.totalTestDataTime = 0;
         this.selectedTestId = null;
+
+        this.lastTestData = null;
     }
 
     setCompiler(compiler) {
@@ -371,22 +373,44 @@ class TestRunnerBridge {
             callback("No tests available in /tests");
         }
 
-        const data = this.readData().reportOutput;
-
         var counter = 0;
         var file = null;
         var testTitle = null;
-        for(var test in data) {
-            counter++;
+        if(!safeRun) {
+            const data = this.readData().reportOutput;
+            for(var test in data) {
+                counter++;
 
-            if(file === null && testTitle === null) {
-                for(var i=0; i<data[test].tests.length; i++) {
-                    if(counter !== index) {
+                if(file === null && testTitle === null) {
+                    for(var i=0; i<data[test].tests.length; i++) {
+                        if(counter !== index) {
+                            counter++;
+                        } else {
+                            file = test;
+                            testTitle = data[test].tests[i].title;
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            const data = this.lastTestData;
+            for(var currentFile in data) {
+                const entryReportOutput = data[currentFile].reportOutput;
+                if(entryReportOutput) {
+                    for(var test in entryReportOutput) {
                         counter++;
-                    } else {
-                        file = test;
-                        testTitle = data[test].tests[i].title;
-                        break;
+                        if(file === null && testTitle === null) {
+                            for(var i=0; i<entryReportOutput[test].tests.length; i++) {
+                                if(counter !== index) {
+                                    counter++;
+                                } else {
+                                    file = test;
+                                    testTitle = entryReportOutput[test].tests[i].title;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -394,15 +418,28 @@ class TestRunnerBridge {
         const web3Object = this._getWeb3(evmProvider);
 
         if(web3Object !== null) {
-            this.testRunner.runSingle(
-                file,
-                testTitle,
-                this.testFiles,
-                this.contractsData,
-                this.testAccountAddress,
-                this.testAccountKey,
-                web3Object,
-                callback);
+            // TODO: FIXME: remove switch
+            if(safeRun) {
+                this.testRunner.safeRunSingle(
+                    file,
+                    testTitle,
+                    this.testFiles,
+                    this.contractsData,
+                    this.testAccountAddress,
+                    this.testAccountKey,
+                    evmProvider,
+                    callback);
+            } else {
+                this.testRunner.runSingle(
+                    file,
+                    testTitle,
+                    this.testFiles,
+                    this.contractsData,
+                    this.testAccountAddress,
+                    this.testAccountKey,
+                    web3Object,
+                    callback);
+            }
         }
     }
 
@@ -468,6 +505,7 @@ class TestRunnerBridge {
             if(!safeRun) {
                 data = thisReference.readData();
             }
+            thisReference.lastTestData = data;
             callback(data);
         }
         this.runAll(evmProvider, setDataCallback);
@@ -477,8 +515,11 @@ class TestRunnerBridge {
         callback("Loading...");
 
         const thisReference=this;
-        function setDataCallback() {
-            const data = thisReference.readData();
+        function setDataCallback(data) {
+            // TODO: FIXME: remove alternate code path
+            if(!safeRun) {
+                data = thisReference.readData();
+            }
             callback(data);
         }
         this.runSingle(evmProvider, index, setDataCallback);
