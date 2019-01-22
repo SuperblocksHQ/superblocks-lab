@@ -1,4 +1,4 @@
-// Copyright 2018 Superblocks AB
+// Copyright 2019 Superblocks AB
 // 
 // This file is part of Superblocks Lab.
 // 
@@ -61,7 +61,14 @@ export class ConstructorArgument extends React.Component<IProps> {
                     <input value={data.value} onChange={e => this.onValueChange(e.target.value)} />
                     { data.type === ContractArgTypes.array &&
                     <button className='btnNoBg'>
-                        <Tooltip title='Comma separated list'><IconHelp /></Tooltip>
+                        <Tooltip html={
+                            <div className='arrayInfoTooltip'>
+                                <div>Comma separated list</div>
+                                <div className='example'>for data type uint256[]: 1,2,3,1337</div>
+                                <div className='example'>for data type bytes8[]: Hello,World</div>
+                                <div className='example'>bytes32[] allows 32 bytes per string: LongStringHere,String With Spaces, Initial space counts</div>
+                            </div>
+                        }><IconHelp /></Tooltip>
                     </button>
                     }
                 </div>
