@@ -18,8 +18,7 @@ import React from 'react';
 import classNames from 'classnames';
 import style from '../style-editor-contract.less';
 import { IconTrash, IconHelp } from '../../../icons';
-import { Select } from '../../../common';
-import Tooltip from '../../../tooltip';
+import { Select, Tooltip } from '../../../common';
 import { ContractArgTypes, IContractArgData } from '../../../../models';
 
 interface IProps {
