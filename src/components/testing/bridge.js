@@ -47,8 +47,9 @@ class TestRunnerBridge {
         this.testFiles = {};
         this.isLoadingTestFiles = false;
 
-        // TODO: consider reading currently selected network address from "Select a Network"
-        this.endpoint="http://superblocks-browser";
+        if(!safeRun) {
+            this.endpoint="http://superblocks-browser";
+        }
 
         this.testData = [];
         this.totalTestDataTime = 0;
@@ -342,19 +343,19 @@ class TestRunnerBridge {
             callback("No tests available in /tests");
         }
 
-        const web3Object = this._getWeb3(evmProvider);
 
-        if(web3Object !== null) {
-            // TODO: FIXME: remove switch
-            if(safeRun) {
-                this.testRunner.safeRunAll(
-                    this.testFiles,
-                    this.contractsData,
-                    this.testAccountAddress,
-                    this.testAccountKey,
-                    evmProvider,
-                    callback);
-            } else {
+        // TODO: FIXME: remove switch
+        if(safeRun) {
+            this.testRunner.safeRunAll(
+                this.testFiles,
+                this.contractsData,
+                this.testAccountAddress,
+                this.testAccountKey,
+                evmProvider,
+                callback);
+        } else {
+            const web3Object = this._getWeb3(evmProvider);
+            if(web3Object !== null) {
                 this.testRunner.runAll(
                     this.testFiles,
                     this.contractsData,
@@ -415,21 +416,21 @@ class TestRunnerBridge {
                 }
             }
         }
-        const web3Object = this._getWeb3(evmProvider);
 
-        if(web3Object !== null) {
-            // TODO: FIXME: remove switch
-            if(safeRun) {
-                this.testRunner.safeRunSingle(
-                    file,
-                    testTitle,
-                    this.testFiles,
-                    this.contractsData,
-                    this.testAccountAddress,
-                    this.testAccountKey,
-                    evmProvider,
-                    callback);
-            } else {
+        // TODO: FIXME: remove switch
+        if(safeRun) {
+            this.testRunner.safeRunSingle(
+                file,
+                testTitle,
+                this.testFiles,
+                this.contractsData,
+                this.testAccountAddress,
+                this.testAccountKey,
+                evmProvider,
+                callback);
+        } else {
+            const web3Object = this._getWeb3(evmProvider);
+            if(web3Object !== null) {
                 this.testRunner.runSingle(
                     file,
                     testTitle,

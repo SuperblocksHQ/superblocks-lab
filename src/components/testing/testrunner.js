@@ -65,7 +65,7 @@ export default class TestRunner {
         // TODO: FIXME: provide accounts (possibly reusing existing set)
         this.accounts = ["0xa48f2e0be8ab5a04a5eb1f86ead1923f03a207fd"];
 
-        // TODO: FIXME: revisit bridge code to remove data declaration
+        // TODO: consider reading currently selected network address from "Select a Network"
         this.endpoint="http://superblocks-browser";
     }
 
