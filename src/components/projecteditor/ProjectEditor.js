@@ -23,7 +23,7 @@ import BottomBar from '../bottomBar';
 import ContactContainer from '../contactContainer';
 import SplitterLayoutBase from 'react-splitter-layout';
 import { PreviewSidePanel, TransactionLogPanel } from './sidePanels';
-import { IconTransactions, IconShowPreview, IconMosaic } from '../icons';
+import { IconTransactions, IconShowPreview, IconFileAlt } from '../icons';
 import { SideButton } from './sideButton';
 import classnames from 'classnames';
 
@@ -130,7 +130,7 @@ export default class ProjectEditor extends Component {
                 <div className={style.mainWrapper}>
                     <div className={classnames([style.sideButtonsContainer, style.sideButtonsContainerLeft])}>
                         <SideButton name="Explorer"
-                            icon={<IconMosaic style={{width: 12, marginLeft: 2}} />}
+                            icon={<IconFileAlt style={{width: 12}} />}
                             onClick={() => { 
                                     toggleFileSystemPanel(); 
                                     this.onPanesSizeChange();
@@ -151,6 +151,7 @@ export default class ProjectEditor extends Component {
                                     router={this.props.router}
                                     functions={this.props.functions}
                                     isImportedProject={this.props.isImportedProject}
+                                    toggleFileSystemPanel={toggleFileSystemPanel}
                                 />
                                 <ContactContainer />
                             </div>

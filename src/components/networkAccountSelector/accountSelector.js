@@ -246,8 +246,7 @@ export class AccountSelector extends Component {
                             <IconDropdown height="8" width="10" />
                         </div>
                     </div>
-                </div>
-                <span className={style.accountBalance}>{accountBalance}</span>
+                </div>  
             </DropdownContainer>
         );
     }
