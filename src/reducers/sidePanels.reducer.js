@@ -64,18 +64,6 @@ export default function sidePanelsReducer(state = initialState, action) {
                 showFileSystem: !state.showFileSystem
             };
         }
-        case sidePanelsActions.OPEN_FILESYSTEM_PANEL: {
-            return {
-                ...state,
-                showFileSystem: true
-            };
-        }
-        case sidePanelsActions.CLOSE_FILESYSTEM_PANEL: {
-            return {
-                ...state,
-                showFileSystem: false
-            };
-        }
         case sidePanelsActions.preview.TOGGLE_PANEL:
             return {
                 ...state,
