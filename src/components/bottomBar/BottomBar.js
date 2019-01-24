@@ -30,7 +30,9 @@ export default class BottomBar extends Component {
     render() {
         const { networkPreferences, endpoint, selectedAccount } = this.props;
         const gasPrice = this.web3.fromWei(networkPreferences.gasPrice, 'Gwei');
-        const accountBalance = shortenBalance(selectedAccount.balance);
+        let accountBalance = 0;
+        if(selectedAccount)
+            accountBalance = shortenBalance(selectedAccount.balance);
 
         return (
             <div className={style.bottomStatusBar}>
