@@ -398,6 +398,11 @@ class Panes extends Component {
         if(!data) {
             console.error("Unable to read data from completed test");
             return;
+        } else if(data === "Waiting" && typeof this.state.resultData !== "string") {
+            // Early quit in case Waiting
+            // Note: this can be done more adequately after removing the usage of timers
+            //       and after organizing the GUI events
+            return;
         }
         this.setState({resultData: data});
 

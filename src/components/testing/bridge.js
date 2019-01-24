@@ -290,6 +290,9 @@ class TestRunnerBridge {
                     }
                 }
 
+                const errorMessage = "Waiting";
+                callback(errorMessage);
+
             } else {
                 const errorMessage = "No tests available in " + testsPath;
                 callback(errorMessage);
