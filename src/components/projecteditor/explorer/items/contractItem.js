@@ -35,6 +35,7 @@ export function ContractItem(props) {
     return (
         <BaseItem
             { ...props }
+            togglable={true}
             toolbar={ toolbar }
             contextMenu={ contextMenu }
             icon={ <IconContract /> }>

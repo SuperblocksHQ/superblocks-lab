@@ -135,11 +135,12 @@ export default class ProjectEditor extends Component {
                             secondaryInitialSize={280}
                             onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}>
                             <div className={style.control}>
-                                <Control
+                                <Explorer />
+                                {/* <Control
                                     router={this.props.router}
                                     functions={this.props.functions}
                                     isImportedProject={this.props.isImportedProject}
-                                />
+                                /> */}
                                 <ContactContainer />
                             </div>
                             <div>

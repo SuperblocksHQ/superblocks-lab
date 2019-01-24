@@ -13,7 +13,7 @@ export function BaseItem(props) {
         props.onToggle(props.data.id);
     }
 
-    if (props.data.togglable) {
+    if (props.togglable) {
         if (props.data.opened) {
             icon = props.iconOpen || props.icon;
         }

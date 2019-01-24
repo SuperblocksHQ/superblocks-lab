@@ -15,8 +15,11 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { projectsActions } from '../actions/projects.actions';
+import Networks from '../networks';
 
+const DAPP_FILE_NAME = 'dappfile.json';
 export const initialState = {
+    isProjectSelected: false,
     selectedProject: {
         id: 0,
         name: '',
@@ -34,15 +37,29 @@ function getEnvOrNull(environment) {
 export default function projectsReducer(state = initialState, action) {
     switch (action.type) {
         case projectsActions.SELECT_PROJECT: {
+            let selectedProject = initialState.selectedProject;
+            let isProjectSelected = false;
+            
+            if (action.data) {
+                const dappData = JSON.parse(action.data.tree.children.find(c => c.name === DAPP_FILE_NAME).code);
+                const environments = dappData.environments.map(e => ({ name: e.name, endpoint: Networks[e.name].endpoint }))
+                
+                selectedProject = {
+                    id: action.data.id,
+                    name: dappData.project.info.name,
+                    environments,
+                    selectedEnvironment: getEnvOrNull(state.selectedProject.selectedEnvironment)
+                            || environments[0]
+                            || initialState.selectedProject.selectedEnvironment
+                };
+
+                isProjectSelected = true;
+            }
+            
             return {
                 ...state,
-                selectedProject: action.data 
-                    ? { 
-                        ...action.data,
-                        selectedEnvironment: getEnvOrNull(state.selectedProject.selectedEnvironment)
-                            || action.data.environments[0]
-                            || initialState.selectedProject.selectedEnvironment
-                    } : initialState.selectedProject,
+                selectedProject,
+                isProjectSelected
             };
         }
         case projectsActions.SET_ENVIRONMENT:

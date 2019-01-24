@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconFile, IconHtml, IconCss, IconJS, IconMd, IconContract, IconJSON, IconBinary, IconEdit, IconTrash } from '../../../icons';
-import Tooltip from '../../../tooltip';
+import { Tooltip } from '../../../common';
 import { BaseItem } from './baseItem';
 import style from './style.less';
 
@@ -70,6 +70,7 @@ export function FileItem(props) {
     return (
         <BaseItem
             { ...props }
+            togglable={false}
             toolbar={ toolbar }
             contextMenu={ contextMenu }
             icon={ getFileIcon(props.data.name) } />

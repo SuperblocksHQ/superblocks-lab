@@ -1,20 +1,21 @@
 import React from 'react';
 import classnames from 'classnames';
 import { IconFolder, IconFolderOpen, IconAddFile, IconImportFile, IconAddFolder, IconEdit, IconTrash } from '../../../icons';
-import Tooltip from '../../../tooltip';
+import { Tooltip } from '../../../common';
 import { BaseItem } from './baseItem';
 import style from './style.less';
+import { ProjectItemTypes } from '../../../../models';
 
 function getToolbar(props) {
     return (
         <div className={classnames(style.buttonsWrapper, { [style.alwaysOn]: props.data.isRoot })}>
             <div className={style.buttons} onClick={e => e.stopPropagation()}>
-                <a href="#" title="New File" onClick={() => props.onCreateFileClick(props.data.id) }>
+                <a href="#" title="New File" onClick={() => props.onCreateItemClick(props.data.id, ProjectItemTypes.File) }>
                     <Tooltip title="New File">
                         <IconAddFile />
                     </Tooltip>
                 </a>
-                <a href="#" title="New Folder" onClick={() => props.onCreateFolderClick(props.data.id)}>
+                <a href="#" title="New Folder" onClick={() => props.onCreateItemClick(props.data.id, ProjectItemTypes.Folder)}>
                     <Tooltip title="New Folder">
                         <IconAddFolder />
                     </Tooltip>
@@ -42,7 +43,7 @@ export function FolderItem(props) {
 
     const contextMenu=(
         <div className={ style.contextMenu }>
-            <div onClick={ () => props.onCreateFileClick(props.data.id) }>
+            <div onClick={ () => props.onCreateItemClick(props.data.id, ProjectItemTypes.File) }>
                 <div className={style.icon} >
                     <IconAddFile />
                 </div>
@@ -54,7 +55,7 @@ export function FolderItem(props) {
                 </div>
                 Import File
             </div>
-            <div onClick={ () => props.onCreateFolderClick(props.data.id) }>
+            <div onClick={ () => props.onCreateItemClick(props.data.id, ProjectItemTypes.Folder) }>
                 <div className={style.icon} >
                     <IconAddFolder />
                 </div>
@@ -82,6 +83,7 @@ export function FolderItem(props) {
     return (
         <BaseItem
             { ...props }
+            togglable={true}
             toolbar={ toolbar }
             icon={ <IconFolder /> }
             iconOpen={ <IconFolderOpen /> }
