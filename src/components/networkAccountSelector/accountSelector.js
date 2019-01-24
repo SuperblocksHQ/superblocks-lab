@@ -146,16 +146,18 @@ export class AccountSelector extends Component {
         this.updateBalanceBusy = true;
 
         const { network, address } = this.accountType();
+        const accountName = project.getAccount();
 
         if (!address || address.length < 5) {
             // a 0x00 address...
             this.updateBalanceBusy = false;
             return;
         }
-        this.fetchBalance(network, address, res => {
+        this.fetchBalance(network, address, balance => {
             const a = (this.state.balances[network] =
                 this.state.balances[network] || {});
-            a[address] = res;
+            a[address] = balance;
+            this.props.onAccountSelected(accountName, balance, address);
             this.forceUpdate();
             this.updateBalanceBusy = false;
         });
@@ -196,7 +198,6 @@ export class AccountSelector extends Component {
         const account = project.getAccount();
         const { accountType, isLocked, network, address } = this.accountType();
         if (!network) { return (<div/>); }
-        const accountBalance = this.accountBalance();
         var accountIcon;
 
         if (accountType === 'metamask') {
