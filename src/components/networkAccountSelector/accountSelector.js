@@ -116,13 +116,6 @@ export class AccountSelector extends Component {
         return accountUtils.getAccountInfo(project, accountItem, this.props.functions.wallet, this.props.selectedEnvironment);
     };
 
-    accountBalance = () => {
-        // Return cached balance of account
-        const { network, address } = this.accountType();
-        const balance = ((this.state.balances[network] || {})[address] || '0');
-        return balance.substring(0, balance.toString().indexOf(".") + 8) + ' eth';
-    };
-
     getWeb3 = endpoint => {
         var provider;
         if (endpoint.toLowerCase() === Networks.browser.endpoint) {
@@ -150,6 +143,7 @@ export class AccountSelector extends Component {
 
         if (!address || address.length < 5) {
             // a 0x00 address...
+            this.props.onAccountSelected(accountName, 0, address);
             this.updateBalanceBusy = false;
             return;
         }
