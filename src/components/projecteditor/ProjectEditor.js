@@ -148,12 +148,7 @@ export default class ProjectEditor extends Component {
                             onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}
                             customClassName={!displayFileSystemPanel ? "hideFileSystemPanel" : null}>
                             <div className={style.control}>
-                                <Control
-                                    router={this.props.router}
-                                    functions={this.props.functions}
-                                    isImportedProject={this.props.isImportedProject}
-                                    toggleFileSystemPanel={toggleFileSystemPanel}
-                                />
+                                <Explorer />
                                 <ContactContainer />
                             </div>
                             <div>
