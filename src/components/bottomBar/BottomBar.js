@@ -20,6 +20,7 @@ import style from './style.less';
 import Note from '../note';
 import * as embedUtils from '../../utils/embed';
 import OnlyIf from '../onlyIf';
+import { shortenBalance } from '../../utils/accounts';
 
 export default class BottomBar extends Component {
 
@@ -29,9 +30,13 @@ export default class BottomBar extends Component {
     }
 
     render() {
-        const { networkPreferences, endpoint } = this.props;
+        const { networkPreferences, endpoint, selectedAccount } = this.props;
         const gasPrice = this.web3.fromWei(networkPreferences.gasPrice, 'Gwei');
         const isIframe = embedUtils.isIframe();
+        let accountBalance = 0;
+        if(selectedAccount)
+            accountBalance = shortenBalance(selectedAccount.balance);
+
         return (
             <div className={style.bottomStatusBar} id={"bottom_bar"}>
                 <OnlyIf test={!isIframe}>
@@ -43,9 +48,10 @@ export default class BottomBar extends Component {
                     </span>
                 </OnlyIf>
                 <div className={style.right}>
-                <span>Gas Limit: {networkPreferences.gasLimit}</span>
-                <span>Gas Price: {gasPrice} Gwei</span>
-                <span>{endpoint}</span>
+                    <span>Account balance: {accountBalance}</span>
+                    <span>Gas Limit: {networkPreferences.gasLimit}</span>
+                    <span>Gas Price: {gasPrice} Gwei</span>
+                    <span>{endpoint}</span>
                 </div>
             </div>
         )
@@ -56,5 +62,5 @@ BottomBar.propType = {
     gasLimit: PropTypes.number.isRequired,
     gasLimit: PropTypes.number.isRequired,
     endpoint:  PropTypes.string.isRequired,
+    selectedAccount: PropTypes.object
 }
-

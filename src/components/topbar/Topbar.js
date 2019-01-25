@@ -21,10 +21,9 @@ import style from './style.less';
 import { DropdownContainer } from '../common/dropdown';
 import Backend from '../projecteditor/control/backend';
 import Modal from '../modal';
-import Tooltip from '../tooltip';
+import { Tooltip } from '../common';
 import PreferencessModal from '../preferences';
 import UploadDialog from './upload';
-import Note from '../note';
 import * as embedUtils from '../../utils/embed';
 import {
     IconDownload,
@@ -41,14 +40,12 @@ import {
 } from '../icons';
 import Dappfile from '../projecteditor/control/item/dappfileItem';
 import OnlyIf from '../onlyIf';
+import NetworkAccountSelector from '../networkAccountSelector';
 
 const PreferencesAction = () => (
     <div className={style.action}>
         <button className={classNames([style.container, "btnNoBg"])}>
             <IconConfigure />
-            <OnlyIf test={!embedUtils.isIframe()}>
-                <span>Preferences</span>
-            </OnlyIf>
         </button>
     </div>
 );
@@ -57,9 +54,6 @@ const HelpDropdownAction = () => (
     <div className={style.action}>
         <button className={classNames([style.container, 'btnNoBg'])}>
             <IconHelp />
-            <OnlyIf test={!embedUtils.isIframe()}>
-                <span>Help</span>
-            </OnlyIf>
         </button>
     </div>
 );
@@ -70,11 +64,6 @@ const UploadDrowdownAction = () => (
             <IconUpload />
             <span>Upload</span>
         </button>
-        <Note
-            title="Beta"
-            backgroundColor="#417505"
-            color="#fff"
-        />
     </div>
 );
 
@@ -544,13 +533,6 @@ export default class TopBar extends Component {
 
         return (
             <div className={style.topbar}>
-                <OnlyIf test={!isIframe || (isIframe && !selectedProjectName)}>
-                    <img
-                        className={style.logo}
-                        src="/static/img/img-lab-logo.svg"
-                        alt="Superblocks Lab logo"
-                    />
-                </OnlyIf>
                 <OnlyIf test={isIframe && selectedProjectName}>
                     <a 
                         className={style.openLab}
@@ -564,7 +546,14 @@ export default class TopBar extends Component {
                     </a>
                     <span className={style.projectName}>{selectedProjectName}</span>
                 </OnlyIf>
+                <OnlyIf test={this.props.router.control}>
+                    <NetworkAccountSelector
+                        router={this.props.router}
+                        functions={this.props.functions}
+                   />
+                </OnlyIf>
                 <OnlyIf test={showUploadButton && !isIframe}>
+
                     <DropdownContainer
                         className={style.actionHelp}
                         dropdownContent={<UploadDialog />}
