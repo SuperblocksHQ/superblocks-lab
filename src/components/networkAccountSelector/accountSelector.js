@@ -76,6 +76,7 @@ export class AccountSelector extends Component {
         const accountsItem = project.getHiddenItem('accounts');
 
         const account = accountsItem.getChildren()[index];
+        if(!account) { return; }
         const isCurrent = account.getName() === project.getAccount();
 
         if (isCurrent) {
@@ -189,7 +190,8 @@ export class AccountSelector extends Component {
     render() {
         const project = this.props.router.control.getActiveProject();
         if (!project) { return (<div/>); }
-        const account = project.getAccount();
+        const { selectedAccount } = this.props;
+        const account = selectedAccount ? selectedAccount.name : project.getAccount();
         const { accountType, isLocked, network, address } = this.accountType();
         if (!network) { return (<div/>); }
         var accountIcon;

@@ -37,7 +37,7 @@ class NetworkAccountSelector extends Component {
                     </div>
 
                     <div className={style.actionWrapper}>
-                        <AccountSelector {...this.props} onAccountSelected={onAccountSelected} selectedEnvironment={selectedProject.selectedEnvironment.name} />
+                        <AccountSelector {...this.props} selectedAccount={selectedAccount} onAccountSelected={onAccountSelected} selectedEnvironment={selectedProject.selectedEnvironment.name} />
                     </div>
                 </div>
             </OnlyIf>
