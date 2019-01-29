@@ -261,8 +261,7 @@ class Panes extends Component {
     getPaneHeight = () => {
         const a = document.getElementById('panes');
         const b = document.getElementById('panes_header');
-        const c = document.getElementById('bottom_bar')
-        return a.offsetHeight - b.offsetHeight - c.offsetHeight;
+        return a.offsetHeight - b.offsetHeight;
     };
 
     renderPanes = () => {
