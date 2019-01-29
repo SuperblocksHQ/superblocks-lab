@@ -544,7 +544,6 @@ export default class TopBar extends Component {
                         <IconAlphabetA style={{width: 17, height: 17}} />
                         <span>Open in Lab</span>
                     </a>
-                    <span className={style.projectName}>{selectedProjectName}</span>
                 </OnlyIf>
                 <OnlyIf test={this.props.router.control}>
                     <NetworkAccountSelector
