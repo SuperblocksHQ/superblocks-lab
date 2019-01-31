@@ -528,13 +528,13 @@ export default class TopBar extends Component {
 
     render() {
         const { showUploadDialog, showUploadButton, showForkButton } = this.state.ipfsActions;
+        const { showSelectedProjectName, showOpenInLab } = this.props.view;
         const { selectedProjectName } = this.state;
-        const isIframe = embedUtils.isIframe();
 
         return (
             <div className={style.topbar}>
-                <OnlyIf test={isIframe && selectedProjectName}>
-                    <a 
+                <OnlyIf test={showOpenInLab}>
+                    <a
                         className={style.openLab}
                         href={window.location}
                         target="_blank"
@@ -551,7 +551,7 @@ export default class TopBar extends Component {
                         functions={this.props.functions}
                    />
                 </OnlyIf>
-                <OnlyIf test={showUploadButton && !isIframe}>
+                <OnlyIf test={showUploadButton}>
 
                     <DropdownContainer
                         className={style.actionHelp}
@@ -563,12 +563,12 @@ export default class TopBar extends Component {
                         <UploadDrowdownAction />
                     </DropdownContainer>
                 </OnlyIf>
-                <OnlyIf test={showForkButton && !isIframe}>
+                <OnlyIf test={showForkButton}>
                     <ForkDropdownAction
                         onForkClicked={this.onForkClicked}
                     />
                 </OnlyIf>
-                <OnlyIf test={!isIframe || (isIframe && !selectedProjectName)}>
+                <OnlyIf test={showSelectedProjectName}>
                     <DropdownContainer
                         className={style.projectButton}
                         dropdownContent={
@@ -608,5 +608,9 @@ TopBar.propTypes = {
         showUploadDialog: PropTypes.bool.isRequired,
         showUploadButton: PropTypes.bool.isRequired,
         showForkButton: PropTypes.bool.isRequired,
+    }),
+    view: PropTypes.shape({
+        showSelectedProjectName: PropTypes.bool,
+        showOpenInLab: PropTypes.bool,
     }),
 };

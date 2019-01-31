@@ -18,7 +18,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import style from './style.less';
 import Note from '../note';
-import * as embedUtils from '../../utils/embed';
 import OnlyIf from '../onlyIf';
 import { shortenBalance } from '../../utils/accounts';
 
@@ -30,16 +29,15 @@ export default class BottomBar extends Component {
     }
 
     render() {
-        const { networkPreferences, endpoint, selectedAccount } = this.props;
+        const { networkPreferences, endpoint, selectedAccount, showBottomBarNote } = this.props;
         const gasPrice = this.web3.fromWei(networkPreferences.gasPrice, 'Gwei');
-        const isIframe = embedUtils.isIframe();
         let accountBalance = 0;
         if(selectedAccount)
             accountBalance = shortenBalance(selectedAccount.balance);
 
         return (
             <div className={style.bottomStatusBar} id={"bottom_bar"}>
-                <OnlyIf test={!isIframe}>
+                <OnlyIf test={showBottomBarNote}>
                     <span className={style.left}>
                         <Note
                             title="Note"
@@ -62,5 +60,6 @@ BottomBar.propType = {
     gasLimit: PropTypes.number.isRequired,
     gasLimit: PropTypes.number.isRequired,
     endpoint:  PropTypes.string.isRequired,
-    selectedAccount: PropTypes.object
+    selectedAccount: PropTypes.object,
+    showBottomBarNote: PropTypes.boolean
 }

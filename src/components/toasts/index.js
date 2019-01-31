@@ -17,7 +17,6 @@
 import React from 'react';
 import classNames from 'classnames';
 import { ipfsActions, projectsActions } from '../../actions';
-import * as embedUtils from '../../utils/embed';
 import {
     IconInformation,
     IconWarning,
@@ -53,15 +52,13 @@ const error = (text) => ({
 });
 
 export const getToastComponent = (type) => {
-    const isIframe = embedUtils.isIframe();
-
     switch(type) {
         case ipfsActions.FORK_PROJECT_SUCCESS:
             return info('Project Forked!');
         case ipfsActions.FORK_PROJECT_FAIL:
             return error('Error while forking!');
         case ipfsActions.IMPORT_PROJECT_FROM_IPFS_SUCCESS:
-            return isIframe ? info('Project Loaded!') : info('Project Downloaded!');
+            return info('Project Loaded!');
         case ipfsActions.IMPORT_PROJECT_FROM_IPFS_FAIL:
             return error('Error importing project!');
         case projectsActions.UPDATE_PROJECT_SETTINGS_FAIL:
