@@ -64,7 +64,7 @@
             -ms-user-select: none;
             user-select: none;
             background-color: #252525;
-            min-height: 38px;
+            min-height: 35px;
             width: 100%;
             overflow-y: hidden;
             overflow-x: auto;
@@ -73,6 +73,8 @@
                 background-color: #2D2D2D;
                 cursor: pointer;
                 color: #969696;
+                border-right: 1px solid #121516;
+                padding-right: 24px;
                 .tabContainer {
                     padding: 10px 12px 10px 12px;
                     display: flex;
@@ -88,7 +90,6 @@
                         }
                     }
                     .close {
-                        margin-left: 10px;
                         display: none;
                         font-size: 0.85em;
                     }
@@ -96,8 +97,33 @@
                 &.selected {
                     background-color: #1e1e1e;
                     color: #FFFFFF;
+                    padding-right: 10px;
                     .close {
                         display: block;
+                        opacity: 1;
+                        color: #fff;
+                        opacity: 0.8;
+                        &:hover {
+                            opacity: 1;
+                        }
+                        button {
+                            padding: 0 0;
+                        }
+                    }
+                }
+                &:hover{
+                    padding-right: 10px;
+                    .close {
+                        display: block;
+                        opacity: 1;
+                        color: #fff;
+                        opacity: 0.8;
+                        &:hover {
+                            opacity: 1;
+                        }
+                        button {
+                            padding: 0 0;
+                        }
                     }
                 }
             }
@@ -170,7 +196,7 @@
     .sidePanelContainer {
         position: relative;
     }
-    
+
     .sideButtonsContainer {
         position: absolute;
         top: 0;

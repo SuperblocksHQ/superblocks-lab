@@ -44,17 +44,21 @@ import NetworkAccountSelector from '../networkAccountSelector';
 
 const PreferencesAction = () => (
     <div className={style.action}>
-        <button className={classNames([style.container, "btnNoBg"])}>
-            <IconConfigure />
-        </button>
+        <Tooltip title="Preferences">
+            <button className={classNames([style.container, "btnNoBg"])}>
+                <IconConfigure />
+            </button>
+        </Tooltip>
     </div>
 );
 
 const HelpDropdownAction = () => (
     <div className={style.action}>
-        <button className={classNames([style.container, 'btnNoBg'])}>
-            <IconHelp />
-        </button>
+        <Tooltip title="Help">
+            <button className={classNames([style.container, 'btnNoBg'])}>
+                <IconHelp />
+            </button>
+        </Tooltip>
     </div>
 );
 
