@@ -556,7 +556,6 @@ export default class TopBar extends Component {
                    />
                 </OnlyIf>
                 <OnlyIf test={showUploadButton}>
-
                     <DropdownContainer
                         className={style.actionHelp}
                         dropdownContent={<UploadDialog />}
@@ -574,7 +573,7 @@ export default class TopBar extends Component {
                 </OnlyIf>
                 <OnlyIf test={showSelectedProjectName}>
                     <DropdownContainer
-                        className={style.projectButton}
+                        className={classNames([style.projectButton, !selectedProjectName ? style.projectButtonCenter : null])}
                         dropdownContent={
                             <ProjectDialog
                                 functions={this.props.functions}
