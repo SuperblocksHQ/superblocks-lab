@@ -1,6 +1,6 @@
 import React from 'react';
 import style from '../style.less';
-import { IconShowPreview, IconRefresh, IconDownloadDApp, IconMore } from '../../../icons';
+import { IconShowPreview, IconRefresh, IconDownloadDApp, IconMore, IconFullscreen } from '../../../icons';
 import { DropdownContainer, Tooltip } from '../../../common';
 import OnlyIf from '../../../onlyIf';
 import { BaseSidePanel } from '../baseSidePanel';
@@ -8,6 +8,7 @@ import { previewService } from '../../../../services';
 import { CannotExportModal } from './cannotExportModal';
 import { DownloadModal } from './downloadModal';
 import { NoExportableContentModal } from './noExportableContentModal';
+import classNames from 'classnames';
 
 function getIframeSrc() {
     if (window.location.hostname === 'localhost') {
@@ -22,6 +23,10 @@ const IFRAME_ID = 'appViewIframe';
 export class PreviewSidePanel extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isFullscreen: false
+        };
+
         previewService.initSuperProvider(IFRAME_ID);
     }
 
@@ -48,6 +53,12 @@ export class PreviewSidePanel extends React.Component {
         this.refresh();
     }
 
+    toggleFullscreen() {
+        this.setState({
+            isFullscreen: !this.state.isFullscreen
+        });
+    }
+
     renderMoreDropdown() {
         return (
             <div className={style.moreContainer} onClick={ e => e.stopPropagation() }>
@@ -64,11 +75,12 @@ export class PreviewSidePanel extends React.Component {
 
     render() {
         const isProjectOpen = Boolean(previewService.projectItem);
+        const { isFullscreen } = this.state; 
 
         return (
             <BaseSidePanel icon={<IconShowPreview />} name="Preview" onClose={this.props.onClose} dragging={this.props.dragging}>
                 <OnlyIf test={isProjectOpen}>
-                    <div className={style.appview}>
+                    <div className={classNames([style.appview], isFullscreen ? style.fullscreen : null)}>
                         <div className={style.toolbar}>
       
                             <button className="btnNoBg" title="Refresh" onClick={() => this.refresh()}>
@@ -77,6 +89,10 @@ export class PreviewSidePanel extends React.Component {
 
                             <button className="btnNoBg" title="Download" onClick={() => this.tryDownload()}>
                                 <Tooltip title="Download DApp"><IconDownloadDApp /></Tooltip>
+                            </button>
+
+                            <button className="btnNoBg" title="Fullscreen" onClick={() => this.toggleFullscreen()}>
+                                <Tooltip title="Toggle Fullscreen"><IconFullscreen /></Tooltip>
                             </button>
 
                             <div className={style.urlBar}>{getIframeSrc()}</div>
