@@ -16,7 +16,7 @@
 
 import { connect } from 'react-redux';
 import { getNetworkPreferences } from '../../selectors/settings';
-import { projectSelectors } from '../../selectors/project.selectors';
+import { projectSelectors, viewSelectors } from '../../selectors';
 import BottomBar from './BottomBar';
 
 const mapStateToProps = state => ({

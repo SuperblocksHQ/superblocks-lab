@@ -18,20 +18,16 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { explorerActions } from '../../actions';
 import { projectSelectors } from '../../selectors';
-import { projectsService } from '../../services';
 import { empty } from 'rxjs';
 
 export const createItemEpic: Epic = (action$, state$) => action$.pipe(
     ofType(explorerActions.CREATE_ITEM),
     switchMap(() => {
-        const projectId = projectSelectors.getSelectedProjectId(state$.value);
+        const projectId = projectSelectors.getProjectId(state$.value);
         const explorerState = state$.value.explorer;
 
         if (explorerState.itemNameValidation.isValid) {
-            return projectsService.updateProject({ id: projectId, tree: explorerState.tree }).pipe(
-                switchMap(() => empty()),
-                catchError(() => [ explorerActions.createItemFail(explorerState.itemNameValidation.itemId) ])
-            );
+            return empty();
         } else {
             alert('Invalid file or folder name.');
             return empty();

@@ -18,18 +18,15 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { explorerActions } from '../../actions';
 import { projectSelectors } from '../../selectors';
-import { projectsService } from '../../services';
+import { projectService } from '../../services';
 import { empty } from 'rxjs';
 
 export const deleteItemEpic: Epic = (action$, state$) => action$.pipe(
     ofType(explorerActions.DELETE_ITEM),
     switchMap(() => {
-        const projectId = projectSelectors.getSelectedProjectId(state$.value);
+        const projectId = projectSelectors.getProjectId(state$.value);
         const explorerState = state$.value.explorer;
 
-        return projectsService.updateProject({ id: projectId, tree: explorerState.tree }).pipe(
-            map(() => explorerActions.deleteItemSuccess(explorerState.lastDeletedId)),
-            catchError(() => [ explorerActions.deleteItemFail(explorerState.lastDeletedId) ])
-        );
+        return empty();
     })
 );

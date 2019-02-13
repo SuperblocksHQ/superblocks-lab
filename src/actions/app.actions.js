@@ -1,8 +1,22 @@
 export const appActions = {
     APP_START: 'APP_START',
-    notifyAppStart() {
+    notifyAppStart(isEmbeddedMode) {
         return {
-            type: appActions.APP_START
+            type: appActions.APP_START,
+            data: { isEmbeddedMode }
         }
-    }
+    },
+    APP_STARTED: 'APP_STARTED',
+    notifyAppStarted() {
+        return {
+            type: appActions.APP_STARTED,
+        }
+    },
+    UPDATE_VIEW_PARAMETERS: 'UPDATE_VIEW_PARAMETERS',
+    updateViewParameters(parameters) {
+        return {
+            type: appActions.UPDATE_VIEW_PARAMETERS,
+            data: { parameters }
+        }
+    },
 };

@@ -21,7 +21,10 @@ import sidePanels from './sidePanels.reducer';
 import panes from './panes.reducer';
 import explorer from './explorer.reducer';
 import ipfs from './ipfs.reducer';
+import auth from './auth.reducer';
 import toast from './toast.reducer';
+import user from './user.reducer';
+import view from './view.reducer';
 
 const rehydrated = (state = false, action) => {
     switch (action.type) {
@@ -39,7 +42,10 @@ export default {
     projects,
     panes,
     ipfs,
+    auth,
     toast,
     sidePanels,
-    explorer
+    explorer,
+    user,
+    view
 };

@@ -19,6 +19,6 @@ import { ofType, Epic } from 'redux-observable';
 import { projectsActions, explorerActions } from '../../actions';
 
 export const initExplorerEpic: Epic = (action$, state$) => action$.pipe(
-    ofType(projectsActions.SELECT_PROJECT),
-    map(action => explorerActions.initExplorer( action.data.tree ))
+    ofType(projectsActions.LOAD_PROJECT_SUCCESS),
+    map(action => explorerActions.initExplorer( action.data.project.files ))
 );

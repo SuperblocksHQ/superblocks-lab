@@ -19,7 +19,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Backend from '../projecteditor/control/backend';
 import Modal from '../modal';
-import ProjectEditor from '../projecteditor';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Wallet } from '../projecteditor/wallet';
 import Solc from '../solc';
 import EVM from '../evm';
@@ -28,6 +28,9 @@ import { previewService, ipfsService } from '../../services';
 import AnalyticsDialog from '../analyticsDialog';
 import OnlyIf from '../onlyIf';
 import ToastContainer from "../toasts/toastcontainer";
+import Dashboard from '../dashboard';
+import LoadProject from '../loadProject';
+import * as embedUtils from '../../utils/embed';
 
 export default class App extends Component {
 
@@ -83,52 +86,55 @@ export default class App extends Component {
 
         // Make sure we fire this event in order to let other parst of the app configure depending
         // on the initial state (per example turning on/off analytics)
-        notifyAppStart();
+        notifyAppStart(embedUtils.isIframe());
 
-        this._convertProjects(status => {
-            this.setState({ isReady: true })
-            this._init();
-        });
+        // TODO - Make sure all this is working correctly
+        this._init();
+
+        // this._convertProjects(status => {
+        //     this.setState({ isReady: true })
+        //
+        // });
     }
 
-    _convertProjects = cb => {
-        this.backend.convertProjects(status => {
-            if (status == 1) {
-                const modalData = {
-                    title: 'Projects converted',
-                    body: (
-                        <div>
-                            <div>
-                                Your projects have been converted to the new
-                                Superblocks Lab format.
-                                <br />
-                                You might need to reconfigure your accounts and
-                                contract arguments due to these changes. We are
-                                sorry for any inconvenience.
-                            </div>
-                            <div>
-                                Please see the Superblocks Lab help center for
-                                more information on this topic.
-                            </div>
-                        </div>
-                    ),
-                    style: { width: '680px' },
-                };
-                const modal = <Modal data={modalData} />;
-                this.functions.modal.show({
-                    cancel: () => {
-                        cb(0);
-                        return true;
-                    },
-                    render: () => {
-                        return modal;
-                    },
-                });
-            } else {
-                cb(0);
-            }
-        });
-    };
+    // _convertProjects = cb => {
+    //     this.backend.convertProjects(status => {
+    //         if (status == 1) {
+    //             const modalData = {
+    //                 title: 'Projects converted',
+    //                 body: (
+    //                     <div>
+    //                         <div>
+    //                             Your projects have been converted to the new
+    //                             Superblocks Lab format.
+    //                             <br />
+    //                             You might need to reconfigure your accounts and
+    //                             contract arguments due to these changes. We are
+    //                             sorry for any inconvenience.
+    //                         </div>
+    //                         <div>
+    //                             Please see the Superblocks Lab help center for
+    //                             more information on this topic.
+    //                         </div>
+    //                     </div>
+    //                 ),
+    //                 style: { width: '680px' },
+    //             };
+    //             const modal = <Modal data={modalData} />;
+    //             this.functions.modal.show({
+    //                 cancel: () => {
+    //                     cb(0);
+    //                     return true;
+    //                 },
+    //                 render: () => {
+    //                     return modal;
+    //                 },
+    //             });
+    //         } else {
+    //             cb(0);
+    //         }
+    //     });
+    // };
 
     redraw = all => {
         this.forceUpdate();
@@ -160,9 +166,7 @@ export default class App extends Component {
         const fn = () => {
             if (this.functions.compiler && this.functions.EVM) {
                 console.log('Superblocks Lab ' + appVersion + ' Ready.');
-
                 this.functions.modal.close();
-
                 this._checkIpfsOnUrl();
             } else {
                 setTimeout(fn, 500);
@@ -172,11 +176,11 @@ export default class App extends Component {
     };
 
     _checkIpfsOnUrl = () => {
-        const a = document.location.href.match("^.*/ipfs/(.+)$");
-            if (a) {
-                // TODO: pop modal about importing being processed.
-                this.isImportedProject = true;
-                this.props.importProjectFromIpfs(a[1]);
+        const a = document.location.href.match("^.*/ipfs/([a-zA-Z0-9]+)");
+        if (a) {
+            // TODO: pop modal about importing being processed.
+            this.isImportedProject = true;
+            this.props.importProjectFromIpfs(a[1]);
         }
     };
 
@@ -251,34 +255,41 @@ export default class App extends Component {
         }
     };
 
+    renderProject = ({match}) => (
+        <LoadProject
+            match={match}
+            router={this.router}
+            functions={this.functions}
+            knownWalletSeed={this.knownWalletSeed}
+            isImportedProject={this.isImportedProject}
+        />
+    )
+
     render() {
-        const { isReady } = this.state;
         const { showTrackingAnalyticsDialog } = this.props;
         const modalContent = this.getModal();
 
         return (
-            <div id="app" className={this.getClassNames()}>
-                <div id="app_content">
-                    <div className="maincontent">
-                        <OnlyIf test={isReady}>
-                            <ProjectEditor
-                                key="projedit"
-                                router={this.router}
-                                functions={this.functions}
-                                knownWalletSeed={this.knownWalletSeed}
-                                isImportedProject={this.isImportedProject}
-                            />
-                            <OnlyIf test={showTrackingAnalyticsDialog}>
-                                <AnalyticsDialog />
-                            </OnlyIf>
-                            <ToastContainer />
-                        </OnlyIf>
+            <Router>
+                <div id="app" className={this.getClassNames()}>
+                    <div id="app_content">
+                        <div className="maincontent">
+                            <Route path="/" exact component={Dashboard} />
+                            <Switch>
+                                <Route path="/dashboard" exact component={Dashboard} />
+                                <Route path="/:projectId" exact component={this.renderProject} />
+                            </Switch>
+                        </div>
+                    </div>
+                    <OnlyIf test={showTrackingAnalyticsDialog}>
+                        <AnalyticsDialog />
+                    </OnlyIf>
+                    <ToastContainer />
+                    <div id="app_modal" onClick={this.modalOutside}>
+                        {modalContent}
                     </div>
                 </div>
-                <div id="app_modal" onClick={this.modalOutside}>
-                    {modalContent}
-                </div>
-            </div>
+            </Router>
         );
     }
 }

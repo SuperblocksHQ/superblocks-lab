@@ -62,7 +62,7 @@ export default class ProjectEditor extends Component {
 
     componentDidUpdate(prevProps) {
         // if project is present, init EVM if not already initialized
-        if(this.props.router.control.getActiveProject() && !this.state.EVMInit){
+        if (!this.state.EVMInit) {
             this.initEVM()
         }
 
@@ -83,6 +83,7 @@ export default class ProjectEditor extends Component {
                 'development',
                 this.props.knownWalletSeed,
                 () => {
+                    console.log(this.props.functions.EVM);
                     this.props.functions.EVM.init();
                 }
             );
@@ -118,30 +119,41 @@ export default class ProjectEditor extends Component {
     };
 
     render() {
-        const { displayTransactionsPanel, displayFileSystemPanel, previewSidePanel, toggleTransactionsHistoryPanel, toggleFileSystemPanel,
-                previewSidePanelActions, selectedEnvironment } = this.props;
+        const { project,
+                router,
+                functions,
+                isImportedProject,
+                displayTransactionsPanel,
+                displayFileSystemPanel,
+                previewSidePanel,
+                toggleTransactionsHistoryPanel,
+                toggleFileSystemPanel,
+                previewSidePanelActions,
+                selectedEnvironment } = this.props;
+
+        const { sidePanelDragging } = this.state;
 
         return (
             <div className={style.projecteditor}>
                 <TopBar
-                    router={this.props.router}
-                    functions={this.props.functions}
+                    router={router}
+                    functions={functions}
                     onProjectSelected={this.onProjectSelectedHandle}
                 />
                 <div className={style.mainWrapper}>
                     <div className={classnames([style.sideButtonsContainer, style.sideButtonsContainerLeft])}>
                         <SideButton name="Explorer"
                             icon={<IconFileAlt style={{width: 12}} />}
-                            onClick={() => { 
-                                    toggleFileSystemPanel(); 
+                            onClick={() => {
+                                    toggleFileSystemPanel();
                                     this.onPanesSizeChange();
                                 }
-                            }  
+                            }
                         />
                     </div>
 
                     <div className={style.mainLayout}>
-                        <SplitterLayout 
+                        <SplitterLayout
                             primaryIndex={1}
                             secondaryMinSize={0}
                             secondaryInitialSize={280}
@@ -160,30 +172,33 @@ export default class ProjectEditor extends Component {
                                     onDragEnd={() => this.toggleSidePanelDragging()}
                                     onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}>
 
-                                    <Panes dragging={this.state.sidePanelDragging} />
-                    
+                                    <Panes
+                                        dragging={sidePanelDragging}
+                                        router={router}
+                                        functions={functions}
+                                    />
+
                                     { displayTransactionsPanel &&
                                     <TransactionLogPanel
-                                        dragging={this.state.sidePanelDragging}
-                                        router={this.props.router}
+                                        dragging={sidePanelDragging}
+                                        router={router}
                                         onClose={toggleTransactionsHistoryPanel}
                                         selectedEnvironment={selectedEnvironment.name}
                                     /> }
 
-                                    { previewSidePanel.open && 
+                                    { previewSidePanel.open &&
                                     <PreviewSidePanel
-                                        dragging={this.state.sidePanelDragging}
+                                        dragging={sidePanelDragging}
                                         {...previewSidePanel}
                                         {...previewSidePanelActions}
                                         selectedEnvironment={selectedEnvironment.name}
                                     /> }
-                                    
+
                                 </SplitterLayout>
-                            
-                                <BottomBar endpoint={selectedEnvironment.endpoint} />
                             </div>
                         </SplitterLayout>
                     </div>
+                    <BottomBar endpoint={selectedEnvironment.endpoint} />
 
                     <div className={classnames([style.sideButtonsContainer, style.sideButtonsContainerRight])}>
                         <SideButton name="Transactions"

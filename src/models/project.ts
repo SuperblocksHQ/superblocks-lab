@@ -40,7 +40,3 @@ export interface IProjectInfo {
     title: string;
 }
 
-export interface IProject {
-    id: string;
-    tree: IProjectItem;
-}

@@ -32,6 +32,8 @@ export default class TextInput extends PureComponent {
             defaultValue,
             disabled,
             error,
+            readOnly,
+            onBlur,
             ...props
         } = this.props;
 
@@ -46,7 +48,9 @@ export default class TextInput extends PureComponent {
                             onKeyUp={onChangeText}
                             defaultValue={defaultValue}
                             disabled={disabled}
+                            readOnly={readOnly}
                             className={classNames({[style.error]: error != null})}
+                            onBlur={onBlur}
                             {...props}
                         />
                         {tip != null && <div className={style.tip}>{tip}</div>}
@@ -66,5 +70,6 @@ TextInput.propTypes = {
     label: PropTypes.string,
     defaultValue: PropTypes.any,
     disabled: PropTypes.bool,
-    error: PropTypes.string
+    error: PropTypes.string,
+    readOnly: PropTypes.bool
 }

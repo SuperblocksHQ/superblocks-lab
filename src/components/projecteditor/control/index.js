@@ -1,18 +1,17 @@
 import { connect } from 'react-redux';
 import Control from './control';
-import { getAppVersion } from '../../../selectors/app';
-import { projectSelectors } from '../../../selectors';
+import { projectSelectors, appSelectors } from '../../../selectors';
 import { projectsActions, explorerActions, sidePanelsActions } from '../../../actions';
 
 const mapStateToProps = state => ({
-    appVersion: getAppVersion(state),
-    selectedProjectId: projectSelectors.getSelectedProjectId(state)
+    appVersion: appSelectors.getAppVersion(state),
+    selectedProjectId: projectSelectors.getProjectId(state)
 });
 
 const mapDispatchToProps = dispatch => {
     return {
-        selectProject: (project) => {
-            dispatch(projectsActions.selectProject(project));
+        setAllEnvironments: (data) => {
+            dispatch(projectsActions.setAllEnvironments(data));
         },
         closeAllPanels: () => {
             dispatch(sidePanelsActions.closeAllPanels())

@@ -20,6 +20,9 @@ import { sidePanelsEpics } from './sidePanels';
 import { projectsEpics } from './projects';
 import { appEpics } from './app';
 import { explorerEpics } from './explorer';
+import { userEpics } from './user';
+import { urlParametersEpics } from './urlParameters';
+import { loginEpics } from "./login";
 
 export const epics = [
     ...ipfsEpics,
@@ -27,5 +30,9 @@ export const epics = [
     ...sidePanelsEpics,
     ...projectsEpics,
     ...appEpics,
-    ...explorerEpics
+    ...explorerEpics,
+    ...urlParametersEpics,
+    ...userEpics,
+    ...projectsEpics,
+    ...loginEpics
 ];

@@ -17,7 +17,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import style from './style.less';
-import Note from '../note';
 import { shortenBalance } from '../../utils/accounts';
 
 export default class BottomBar extends Component {
@@ -35,13 +34,7 @@ export default class BottomBar extends Component {
             accountBalance = shortenBalance(selectedAccount.balance);
 
         return (
-            <div className={style.bottomStatusBar}>
-                <span className={style.left}>
-                    <Note
-                        title="Note"
-                        text="All files are stored in the browser only, download to backup"
-                    />
-                </span>
+            <div className={style.bottomStatusBar} id={"bottom_bar"}>
                 <div className={style.right}>
                     <span>Account balance: {accountBalance}</span>
                     <span>Gas Limit: {networkPreferences.gasLimit}</span>
@@ -55,8 +48,6 @@ export default class BottomBar extends Component {
 
 BottomBar.propType = {
     gasLimit: PropTypes.number.isRequired,
-    gasLimit: PropTypes.number.isRequired,
     endpoint:  PropTypes.string.isRequired,
     selectedAccount: PropTypes.object
 }
-
