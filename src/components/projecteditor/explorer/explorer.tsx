@@ -90,7 +90,7 @@ export class Explorer extends React.Component<IProps> {
             return (
                 <FolderItem key={ itemData.id }
                         data={ itemData }
-                        onClick={ actions.onToggleTreeItem }
+                        onClick={ (i: IProjectItem) => actions.onToggleTreeItem(i.id) }
                         onToggle={ actions.onToggleTreeItem }
 
                         onCreateItemClick={ this.onCreateItem }

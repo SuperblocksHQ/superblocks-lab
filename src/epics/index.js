@@ -33,6 +33,5 @@ export const epics = [
     ...explorerEpics,
     ...urlParametersEpics,
     ...userEpics,
-    ...projectsEpics,
     ...loginEpics
 ];

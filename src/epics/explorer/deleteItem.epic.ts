@@ -23,10 +23,18 @@ import { empty } from 'rxjs';
 
 export const deleteItemEpic: Epic = (action$, state$) => action$.pipe(
     ofType(explorerActions.DELETE_ITEM),
-    switchMap(() => {
-        const projectId = projectSelectors.getProjectId(state$.value);
+    switchMap((action) => {
+        const project = projectSelectors.getProject(state$.value);
         const explorerState = state$.value.explorer;
 
-        return empty();
+        return projectService.putProjectById(project.id, {
+            name: project.name,
+            description: project.description,
+            files: explorerState.tree
+        })
+        .pipe(
+            map(() => explorerActions.deleteItemSuccess(action.data.id)),
+            // TODO: error handling
+        );
     })
 );

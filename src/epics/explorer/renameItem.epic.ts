@@ -24,11 +24,18 @@ import { empty } from 'rxjs';
 export const renameItemEpic: Epic = (action$, state$) => action$.pipe(
     ofType(explorerActions.RENAME_ITEM),
     switchMap(() => {
-        const projectId = projectSelectors.getProjectId(state$.value);
+        const project = projectSelectors.getProject(state$.value);
         const explorerState = state$.value.explorer;
 
         if (explorerState.itemNameValidation.isValid) {
-            return empty();
+            return projectService.putProjectById(project.id, {
+                name: project.name,
+                description: project.description,
+                files: explorerState.tree
+            })
+            .pipe(
+                switchMap(() => empty())
+            );
         } else {
             alert('Invalid file or folder name.');
             return empty();

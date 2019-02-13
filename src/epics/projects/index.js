@@ -26,7 +26,7 @@ import { forkProjectEpic } from './forkProject.epic';
 // import { importProject } from './importProject.epic';
 
 import { loadProject } from './loadProject.epic';
-import { renameProject } from './renameProject.epic';
+import { renameProjectEpic } from './renameProject.epic';
 import { createEmptyProject } from './createEmptyProject.epic';
 
 export const projectsEpics = [
@@ -35,7 +35,7 @@ export const projectsEpics = [
     initExplorerEpic,
     loadProject,
     deleteProject,
-    renameProject,
+    renameProjectEpic,
     forkProjectEpic,
     createEmptyProject
 ];

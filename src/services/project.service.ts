@@ -54,7 +54,6 @@ export const projectService = {
     },
 
     putProjectById(id: string, data: any) {
-        data.files = JSON.stringify(data.files);
         return fetchJSON(process.env.REACT_APP_PROJECT_API_BASE_URL + '/projects/' + id, {
             method: 'PUT',
             body: data
