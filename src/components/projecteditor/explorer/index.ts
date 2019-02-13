@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { connect } from 'react-redux';
-import { explorerActions } from '../../../actions';
+import { explorerActions, panesActions } from '../../../actions';
 import { Explorer } from './explorer';
 import { Dispatch } from 'redux';
 import { ProjectItemTypes } from '../../../models';
@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
             dispatch(explorerActions.toggleTreeItem(id));
         },
         onOpenFile: (id: string) => {
-            dispatch(explorerActions.openFile(id));
+            dispatch(panesActions.openFile(id));
         },
         onConfigureContract: (id: string, name: string) => {
             dispatch(explorerActions.configureContract(id, name));

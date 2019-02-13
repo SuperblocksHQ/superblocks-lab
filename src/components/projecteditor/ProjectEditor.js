@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import style from './style.less';
 import Control from './control';
-import Panes from './panes';
+import Panes from './panes1';
 import Explorer from './explorer';
 import TopBar from '../topbar';
 import BottomBar from '../bottomBar';
@@ -160,7 +160,7 @@ export default class ProjectEditor extends Component {
                                     onDragEnd={() => this.toggleSidePanelDragging()}
                                     onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}>
 
-                                    <Panes dragging={this.state.sidePanelDragging} router={this.props.router} functions={this.props.functions} />
+                                    <Panes dragging={this.state.sidePanelDragging} />
                     
                                     { displayTransactionsPanel &&
                                     <TransactionLogPanel

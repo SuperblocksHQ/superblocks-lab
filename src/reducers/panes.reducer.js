@@ -23,11 +23,20 @@ export const initialState = {
 
 export default function panesReducer(state = initialState, action) {
     switch (action.type) {
-        case panesActions.ADD_PANE:
+
+        case panesActions.OPEN_FILE: {
+            const panes = replaceInArray(state.panes, p => p.active, p => ({ ...p, active: false }));
+            panes.unshift({ id: action.data.id, active: true });
             return {
                 ...state,
-                panes: [ { ...action.data } ].concat(state.panes)
+                panes: panes
             };
+        }
+        // case panesActions.ADD_PANE:
+        //     return {
+        //         ...state,
+        //         panes: [ { ...action.data } ].concat(state.panes)
+        //     };
         case panesActions.REMOVE_PANE:
             return {
                 ...state,
@@ -40,12 +49,12 @@ export default function panesReducer(state = initialState, action) {
                 panes: replaceInArray(deactivatedPanes, p => p.id === action.data.id, p => ({ ...p, active: true }))
             };
         }
-        case explorerActions.RENAME_FILE: {
-            return {
-                ...state,
-                panes: replaceInArray(state.panes, p => p.fileId === action.data.id, p => ({ ...p, name: action.data.name }))
-            };
-        }
+        // case explorerActions.RENAME_FILE: {
+        //     return {
+        //         ...state,
+        //         panes: replaceInArray(state.panes, p => p.fileId === action.data.id, p => ({ ...p, name: action.data.name }))
+        //     };
+        // }
         default:
             return state;
     }

@@ -42,14 +42,6 @@ export const explorerActions = {
         };
     },
 
-    OPEN_FILE: 'OPEN_FILE',
-    openFile(id: string) {
-        return {
-            type: explorerActions.OPEN_FILE,
-            data: { id }
-        };
-    },
-
     // --------- Contract specific
 
     CONFIGURE_CONTRACT: 'CONFIGURE_CONTRACT',

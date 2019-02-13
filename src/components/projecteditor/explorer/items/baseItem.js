@@ -32,7 +32,7 @@ export function BaseItem(props) {
     return (
         <div className={ style.item }>
             <DropdownContainer dropdownContent={ props.contextMenu } useRightClick={ true }>
-                <div className={ style.header } onClick={ () => props.onClick(props.data.id) } onContextMenu={ e => e.preventDefault() }>
+                <div className={ style.header } onClick={ () => props.onClick(props.data) } onContextMenu={ e => e.preventDefault() }>
                     <div className={ style.overlay }></div>
                     <div className={ style.icons }>
                         { caret }
