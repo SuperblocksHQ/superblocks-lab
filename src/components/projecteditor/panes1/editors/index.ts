@@ -14,6 +14,4 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './explorer.model';
-export * from './project-state.model';
-export * from './panes-state.model';
+export * from './fileEditor';

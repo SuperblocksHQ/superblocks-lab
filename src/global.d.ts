@@ -19,4 +19,9 @@ declare module '*.less' {
     export default content;
 }
 
+declare module 'react-monaco-editor' {
+    const content: any;
+    export default content;
+}
+
 type Nullable<T> = T | null;

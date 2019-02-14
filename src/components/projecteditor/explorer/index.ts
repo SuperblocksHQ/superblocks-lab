@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import { explorerActions, panesActions } from '../../../actions';
 import { Explorer } from './explorer';
 import { Dispatch } from 'redux';
-import { ProjectItemTypes } from '../../../models';
+import { ProjectItemTypes, IProjectItem } from '../../../models';
 
 const mapStateToProps = (state: any) => ({
     ...state.explorer
@@ -29,8 +29,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         onToggleTreeItem: (id: string) => {
             dispatch(explorerActions.toggleTreeItem(id));
         },
-        onOpenFile: (id: string) => {
-            dispatch(panesActions.openFile(id));
+        onOpenFile: (file: IProjectItem) => {
+            dispatch(panesActions.openFile(file));
         },
         onConfigureContract: (id: string, name: string) => {
             dispatch(explorerActions.configureContract(id, name));

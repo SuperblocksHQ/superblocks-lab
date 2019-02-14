@@ -172,11 +172,7 @@ export default class ProjectEditor extends Component {
                                     onDragEnd={() => this.toggleSidePanelDragging()}
                                     onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}>
 
-                                    <Panes
-                                        dragging={sidePanelDragging}
-                                        router={router}
-                                        functions={functions}
-                                    />
+                                    <Panes dragging={sidePanelDragging} />
 
                                     { displayTransactionsPanel &&
                                     <TransactionLogPanel

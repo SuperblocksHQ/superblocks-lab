@@ -18,6 +18,7 @@ import { Dispatch } from 'redux';
 import { IProjectItem } from '../../../models';
 import { connect } from 'react-redux';
 import { Panes } from './panes';
+import { panesActions } from '../../../actions';
 
 function traverseTree(item: IProjectItem, callback: (item: IProjectItem) => boolean): boolean {
     if (callback(item)) {
@@ -47,20 +48,26 @@ function getPanesAndItems(state: any) {
 }
 
 const mapStateToProps = (state: any) => ({
-    panes: getPanesAndItems(state),
+    panes: state.panes.items,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        // addPane: (id, name, fileId) => {
-        //     // dispatch(panesActions.addPane(id, name, fileId))
-        // },
-        // removePane: (id) => {
-        //     dispatch(panesActions.removePane(id))
-        // },
-        // setActivePane: (id) => {
-        //     dispatch(panesActions.setActivePane(id));
-        // }
+        onFileChange(fileId: string, code: string) {
+            // dispatch(panesActions.addPane(id, name, fileId))
+        },
+        onOpenFile(fileItem: IProjectItem) {
+            dispatch(panesActions.openFile(fileItem));
+        },
+        onClosePane(fileId: string) {
+            dispatch(panesActions.closePane(fileId));
+        },
+        onCloseAllOtherPanes(fileId: string) {
+            dispatch(panesActions.closeAllOtherPanes(fileId));
+        },
+        onCloseAllPanes() {
+            dispatch(panesActions.closeAllPanes());
+        }
     };
 };
 

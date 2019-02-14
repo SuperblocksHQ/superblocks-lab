@@ -1,25 +1,34 @@
+import { IProjectItem } from '../models';
+
 export const panesActions = {
     OPEN_FILE: 'OPEN_FILE',
-    openFile(id: string) {
+    openFile(file: IProjectItem) {
         return {
             type: panesActions.OPEN_FILE,
-            data: { id }
+            data: file
         };
     },
 
-    ADD_PANE: 'ADD_PANE',
-    addPane(id: string, name: string, fileId: string) {
+    CLOSE_PANE: 'CLOSE_PANE',
+    closePane(fileId: string) {
         return {
-            type: panesActions.ADD_PANE,
-            data: { id, name, fileId }
+            type: panesActions.CLOSE_PANE,
+            data: { id: fileId }
         };
     },
 
-    REMOVE_PANE: 'REMOVE_PANE',
-    removePane(id: string) {
+    CLOSE_ALL_OTHER_PANES: 'CLOSE_ALL_OTHER_PANES',
+    closeAllOtherPanes(fileId: string) {
         return {
-            type: panesActions.REMOVE_PANE,
-            data: { id }
+            type: panesActions.CLOSE_ALL_OTHER_PANES,
+            data: { id: fileId }
+        };
+    },
+
+    CLOSE_ALL_PANES: 'CLOSE_ALL_PANES',
+    closeAllPanes() {
+        return {
+            type: panesActions.CLOSE_ALL_PANES
         };
     },
 
