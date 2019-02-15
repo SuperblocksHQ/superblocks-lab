@@ -27,9 +27,11 @@ interface IProps {
     onRenameItem(id: string, name: string): void;
     onCreateItem(parentId: string, type: ProjectItemTypes, name: string): void;
     onDeleteItem(id: string): void;
-    // onOpenFile: (id: string) => void;
-    // onConfigureContract: (id: string, name: string) => void;
-    // TODO: add all callbacks
+
+    onConfigureContract(file: IProjectItem): void;
+    onCompileContract(file: IProjectItem): void;
+    onDeployContract(file: IProjectItem): void;
+    onInteractContract(file: IProjectItem): void;
 }
 
 export class Explorer extends React.Component<IProps> {

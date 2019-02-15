@@ -33,7 +33,8 @@ export const createItemEpic: Epic = (action$, state$) => action$.pipe(
                 description: project.description,
                 files: state$.value.explorer.tree
             }).pipe(
-                switchMap(() => empty())
+                switchMap(() => empty()),
+                catchError(() => [ explorerActions.createItemFail(explorerState.itemNameValidation.itemId) ])
             );
         } else {
             alert('Invalid file or folder name.');

@@ -19,7 +19,7 @@ import { ofType, Epic } from 'redux-observable';
 import { explorerActions } from '../../actions';
 import { projectSelectors } from '../../selectors';
 import { projectService } from '../../services';
-import { empty } from 'rxjs';
+import { updateItemInTree } from '../../reducers/explorerLib';
 
 export const deleteItemEpic: Epic = (action$, state$) => action$.pipe(
     ofType(explorerActions.DELETE_ITEM),
@@ -30,7 +30,8 @@ export const deleteItemEpic: Epic = (action$, state$) => action$.pipe(
         return projectService.putProjectById(project.id, {
             name: project.name,
             description: project.description,
-            files: explorerState.tree
+            // TODO: remove usage of updateItemInTree. This is done only temporary.
+            files: updateItemInTree(explorerState.tree, explorerState.lastDeletedId, () => null)[0]
         })
         .pipe(
             map(() => explorerActions.deleteItemSuccess(action.data.id)),

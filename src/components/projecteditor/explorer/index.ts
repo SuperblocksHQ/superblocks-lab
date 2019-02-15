@@ -32,18 +32,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         onOpenFile: (file: IProjectItem) => {
             dispatch(panesActions.openFile(file));
         },
-        onConfigureContract: (id: string, name: string) => {
-            dispatch(explorerActions.configureContract(id, name));
-        },
-        onCompileContract: (id: string, name: string) => {
-            dispatch(explorerActions.compileContract(id, name));
-        },
-        onDeployContract: (id: string, name: string) => {
-            dispatch(explorerActions.deployContract(id, name));
-        },
-        onInteractContract: (id: string, name: string) => {
-            dispatch(explorerActions.interactContract(id, name));
-        },
         onCreateItem: (parentId: string, type: ProjectItemTypes, name: string) => {
             dispatch(explorerActions.createItem(parentId, type, name));
         },
@@ -55,7 +43,21 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         },
         onDeleteItem: (id: string) => {
             dispatch(explorerActions.deleteItem(id));
-        }
+        },
+
+        // smart contract specific
+        onConfigureContract: (file: IProjectItem) => {
+            dispatch(explorerActions.configureContract(file));
+        },
+        onCompileContract: (file: IProjectItem) => {
+            dispatch(explorerActions.compileContract(file));
+        },
+        onDeployContract: (file: IProjectItem) => {
+            dispatch(explorerActions.deployContract(file));
+        },
+        onInteractContract: (file: IProjectItem) => {
+            dispatch(explorerActions.interactContract(file));
+        },
     };
 };
 

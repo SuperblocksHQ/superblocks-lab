@@ -18,34 +18,7 @@ import { Dispatch } from 'redux';
 import { IProjectItem } from '../../../models';
 import { connect } from 'react-redux';
 import { Panes } from './panes';
-import { panesActions } from '../../../actions';
-
-function traverseTree(item: IProjectItem, callback: (item: IProjectItem) => boolean): boolean {
-    if (callback(item)) {
-        return true;
-    }
-
-    for (const childItem of item.children) {
-        if (traverseTree(childItem, callback)) {
-            break;
-        }
-    }
-
-    return false;
-}
-
-function getPanesAndItems(state: any) {
-    const panes = state.panes.panes.slice();
-    let counter = 0;
-    traverseTree(state.explorer.tree, (item) => {
-       const index = panes.findIndex((p: IProjectItem) => p.id === item.id);
-       if (index >= 0) {
-           panes[index].item = item;
-           ++counter;
-       }
-       return counter === panes.length;
-    });
-}
+import { panesActions, explorerActions } from '../../../actions';
 
 const mapStateToProps = (state: any) => ({
     panes: state.panes.items,
@@ -53,8 +26,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        onFileChange(fileId: string, code: string) {
-            // dispatch(panesActions.addPane(id, name, fileId))
+        onSaveFile(fileId: string, code: string) {
+            dispatch(panesActions.saveFile(fileId, code));
         },
         onOpenFile(fileItem: IProjectItem) {
             dispatch(panesActions.openFile(fileItem));
@@ -67,7 +40,21 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         },
         onCloseAllPanes() {
             dispatch(panesActions.closeAllPanes());
-        }
+        },
+
+        // contract related
+        onConfigureContract: (file: IProjectItem) => {
+            dispatch(explorerActions.configureContract(file));
+        },
+        onCompileContract: (file: IProjectItem) => {
+            dispatch(explorerActions.compileContract(file));
+        },
+        onDeployContract: (file: IProjectItem) => {
+            dispatch(explorerActions.deployContract(file));
+        },
+        onInteractContract: (file: IProjectItem) => {
+            dispatch(explorerActions.interactContract(file));
+        },
     };
 };
 

@@ -1,32 +1,8 @@
 import React from 'react';
-import { IconFile, IconHtml, IconCss, IconJS, IconMd, IconContract, IconJSON, IconBinary, IconEdit, IconTrash } from '../../../icons';
-import { Tooltip } from '../../../common';
+import { IconEdit, IconTrash } from '../../../icons';
+import { Tooltip, FileIcon } from '../../../common';
 import { BaseItem } from './baseItem';
 import style from './style.less';
-
-// TODO: this funcion may be used in panes as well
-function getFileIcon(filename) {
-    const fileExtension = filename.toLowerCase().split('.').pop();
-    switch(fileExtension)
-    {
-        case 'sol':
-            return <IconContract />;
-        case 'html':
-            return <IconHtml />;
-        case 'css':
-            return <IconCss />;
-        case 'js':
-            return <IconJS />;
-        case 'md':
-            return <IconMd />;
-        case 'json':
-            return <IconJSON />;
-        case 'bin':
-            return <IconBinary />;
-        default:
-            return <IconFile />;
-    }
-}
 
 export function getToolbar(props) {
     return (
@@ -73,6 +49,6 @@ export function FileItem(props) {
             togglable={false}
             toolbar={ toolbar }
             contextMenu={ contextMenu }
-            icon={ getFileIcon(props.data.name) } />
+            icon={ <FileIcon filename={props.data.name} /> } />
     );
 }

@@ -18,7 +18,7 @@ import React from 'react';
 import classnames from 'classnames';
 import style from './style.less';
 import { IconClose } from '../../icons';
-import { DropdownContainer } from '../../common';
+import { DropdownContainer, FileIcon } from '../../common';
 import { IPane } from '../../../models/state';
 import { IProjectItem } from '../../../models';
 
@@ -57,7 +57,7 @@ export function PaneTabs(props: IProps) {
                         useRightClick={true}>
                         <div className={style.tabContainer}>
                             <div className={style.title}>
-                                <div className={style.icon}>{null}</div>
+                                <div className={style.icon}>{<FileIcon filename={paneData.file.name} />}</div>
                                 <div className={style.title2}>{paneData.file.name}</div>
                             </div>
                             <div className={style.close}>

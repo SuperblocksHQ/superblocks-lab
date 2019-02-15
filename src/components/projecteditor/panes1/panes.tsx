@@ -19,17 +19,22 @@ import classnames from 'classnames';
 import style from './style.less';
 import { PaneTabs } from './paneTabs';
 import { IPane } from '../../../models/state';
-import { FileEditor } from './editors';
+import { FileEditor } from './editor';
 import { IProjectItem } from '../../../models';
 
 interface IProps {
     panes: IPane[];
     dragging: boolean;
-    onFileChange: (fileId: string, code: string) => void;
+    onSaveFile: (fileId: string, code: string) => void;
     onOpenFile: (fileItem: IProjectItem) => void;
     onClosePane: (fileId: string) => void;
     onCloseAllOtherPanes: (fileId: string) => void;
     onCloseAllPanes: () => void;
+
+    onConfigureContract: (file: IProjectItem) => void;
+    onCompileContract: (file: IProjectItem) => void;
+    onDeployContract: (file: IProjectItem) => void;
+    onInteractContract: (file: IProjectItem) => void;
 }
 
 export function Panes(props: IProps) {
@@ -47,7 +52,12 @@ export function Panes(props: IProps) {
             {
                 props.panes.map((pane) =>
                     <div key={pane.file.id} className={classnames(style.pane, { [style.visible]: pane.active })}>
-                        <FileEditor file={pane.file} onFileChange={props.onFileChange} />
+                        <FileEditor file={pane.file}
+                            onSave={props.onSaveFile}
+                            onConfigure={ props.onConfigureContract }
+                            onCompile={ props.onCompileContract }
+                            onDeploy={ props.onDeployContract }
+                            onInteract={ props.onInteractContract } />
                     </div>
                 )
             }

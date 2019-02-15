@@ -34,7 +34,8 @@ export const renameItemEpic: Epic = (action$, state$) => action$.pipe(
                 files: explorerState.tree
             })
             .pipe(
-                switchMap(() => empty())
+                switchMap(() => empty()),
+                catchError(() => [ explorerActions.renameItemFail(explorerState.itemNameValidation.itemId, explorerState.itemNameValidation.oldName) ])
             );
         } else {
             alert('Invalid file or folder name.');

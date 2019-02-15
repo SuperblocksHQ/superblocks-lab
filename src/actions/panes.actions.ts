@@ -38,5 +38,13 @@ export const panesActions = {
             type: panesActions.SET_ACTIVE_PANE,
             data: { id }
         };
+    },
+
+    SAVE_FILE: 'SAVE_FILE',
+    saveFile(fileId: string, code: string) {
+        return {
+            type: panesActions.SAVE_FILE,
+            data: code
+        };
     }
 };

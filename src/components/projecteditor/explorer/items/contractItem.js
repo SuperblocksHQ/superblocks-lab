@@ -10,7 +10,7 @@ export function ContractItem(props) {
     function getActionButtonProps(name, onClick) {
         return { 
             data: { id: props.data.id, name, opened: false }, 
-            onClick: () => onClick(props.id, props.name),
+            onClick: () => onClick(props.data),
             nocaretStyle: style.reduced
         };
     }

@@ -45,34 +45,34 @@ export const explorerActions = {
     // --------- Contract specific
 
     CONFIGURE_CONTRACT: 'CONFIGURE_CONTRACT',
-    configureContract(id: string, name: string) {
+    configureContract(item: IProjectItem) {
         return {
             type: explorerActions.CONFIGURE_CONTRACT,
-            data: { id, name }
+            data: item
         };
     },
 
     COMPILE_CONTRACT: 'COMPILE_CONTRACT',
-    compileContract(id: string, name: string) {
+    compileContract(item: IProjectItem) {
         return {
             type: explorerActions.COMPILE_CONTRACT,
-            data: { id, name }
+            data: item
         };
     },
 
     DEPLOY_CONTRACT: 'DEPLOY_CONTRACT',
-    deployContract(id: string, name: string) {
+    deployContract(item: IProjectItem) {
         return {
             type: explorerActions.DEPLOY_CONTRACT,
-            data: { id, name }
+            data: item
         };
     },
 
     INTERACT_CONTRACT: 'INTERACT_CONTRACT',
-    interactContract(id: string, name: string) {
+    interactContract(item: IProjectItem) {
         return {
             type: explorerActions.INTERACT_CONTRACT,
-            data: { id, name }
+            data: item
         };
     },
 

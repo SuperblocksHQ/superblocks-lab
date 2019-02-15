@@ -18,10 +18,20 @@ import React from 'react';
 import style from './style-editor.less';
 import MonacoEditor from 'react-monaco-editor';
 import { IProjectItem } from '../../../../models';
+import { EditorToolbar } from './editorToolbar';
+import { isSmartContract, getFileExtension } from '../../../../utils/file';
 
 interface IProps {
     file: IProjectItem;
-    onFileChange: (fileId: string, code: string) => void;
+    onSave: (fileId: string, code: string) => void;
+    onCompile: (file: IProjectItem) => void;
+    onDeploy: (file: IProjectItem) => void;
+    onInteract: (file: IProjectItem) => void;
+    onConfigure: (file: IProjectItem) => void;
+}
+
+interface IState {
+    hasUnsavedChanges: boolean;
 }
 
 const langmap: any = {
@@ -37,16 +47,20 @@ const requireConfig = {
     baseUrl: '/'
 };
 
-export class FileEditor extends React.Component<IProps> {
+export class FileEditor extends React.Component<IProps, IState> {
     language: string = '';
     options: any = {};
+    code: string = '';
 
     constructor(props: IProps) {
         super(props);
 
-        const a = props.file.name.match('.*[.]([^.]+)$');
-        if (a) {
-            const suffix = a[1].toLowerCase();
+        this.state = {
+            hasUnsavedChanges: false
+        };
+
+        const suffix = getFileExtension(props.file.name);
+        if (suffix) {
             this.language = langmap[suffix] ? langmap[suffix] : suffix;
         }
 
@@ -56,35 +70,45 @@ export class FileEditor extends React.Component<IProps> {
             folding: 'true',
             foldingStrategy: 'indentation',
         };
+
+        this.code = props.file.code || '';
     }
 
-    // editorDidMount = (editorObj, monacoObj) => {
-    //     this.editorObj = editorObj;
-    //     this.monacoObj = monacoObj;
-    //     editorObj.addCommand(
-    //         monacoObj.KeyMod.CtrlCmd | monacoObj.KeyCode.KEY_S,
-    //         () => {
-    //             this.save();
-    //         }
-    //     );
-    //     this.focus();
-    // };
+    editorDidMount = (editor: any, monacoObj: any) => {
+        editor.addCommand(monacoObj.KeyMod.CtrlCmd | monacoObj.KeyCode.KEY_S, this.onSave);
+        editor.focus();
+    }
+
+    onFileChange = (value: string) => {
+        this.code = value;
+        this.setState({ hasUnsavedChanges: this.code !== this.props.file.code });
+    }
+
+    onSave = () => {
+        this.props.onSave(this.props.file.id,  this.code);
+    }
 
     render() {
         const { file } = this.props;
 
         return (
-            <div className='full'>
-                {/* {toolbar} */}
+            <div className={style.fileEditorContainer}>
+                <EditorToolbar
+                    isSmartContract={isSmartContract(file.name)}
+                    hasUnsavedChanges={this.state.hasUnsavedChanges}
+                    onSave={this.onSave}
+                    onCompile={ () => this.props.onCompile(file) }
+                    onDeploy={ () => this.props.onDeploy(file) }
+                    onConfigure={ () => this.props.onConfigure(file) }
+                    onInteract={ () => this.props.onInteract(file) }  />
+
                 <MonacoEditor
                     language={this.language}
                     theme='vs-dark'
                     value={file.code}
                     options={this.options}
-                    onChange={(value: string) => this.props.onFileChange(file.id, value)}
-                    // editorDidMount={(obj, monaco) =>
-                    //     this.editorDidMount(obj, monaco)
-                    // }
+                    onChange={this.onFileChange}
+                    editorDidMount={this.editorDidMount}
                     requireConfig={requireConfig}
                 />
             </div>
