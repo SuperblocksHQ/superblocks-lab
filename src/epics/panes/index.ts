@@ -14,14 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { IProjectItem } from '../project';
+import { saveFileEpic } from './saveFile.epic';
 
-export interface IPane {
-    file: IProjectItem;
-    active: boolean;
-    hasUnsavedChanges: boolean;
-}
-
-export interface IPanesState {
-    items: IPane[];
-}
+export const panesEpics = [
+    saveFileEpic
+];

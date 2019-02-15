@@ -36,7 +36,7 @@ export function EditorToolbar(props: IProps) {
         <div className={style.toolbar}>
             <div className={style.buttons}>
                 <button
-                    className={classNames('btnNoBg', '#ee1010')}
+                    className={classNames('btnNoBg', {[style.hasUnsavedChanges]: props.hasUnsavedChanges})}
                     title='Save'
                     onClick={props.onSave}
                 >

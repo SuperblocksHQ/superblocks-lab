@@ -125,37 +125,5 @@
         width: 100%;
         flex: 1;
         overflow: hidden;
-        
-        .pane {
-            display: none;
-            &.visible {
-                display: block;
-            }
-            width: 100%;
-            height: 100%;
-
-            .window {
-                float: left;
-                height: 100%;
-                width: 100%;
-                display: inherit;
-                overflow: hidden;
-                border-top: 1px solid #121516;
-                border-right: 1px solid #121516;
-                &:only-child {
-                    .close_btn {
-                        display: none;
-                    }
-                }
-                .close_btn {
-                    position: absolute;
-                    margin-top: 12px;
-                    margin-right: 12px;
-                    right: 0;
-                    z-index: 1;
-                    font-size: 0.85em;
-                }
-            }
-        }
     }
 }

@@ -41,6 +41,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         onCloseAllPanes() {
             dispatch(panesActions.closeAllPanes());
         },
+        onUnsavedChange(fileId: string, hasUnsavedChanges: boolean) {
+            dispatch(panesActions.setUnsavedChanges(fileId, hasUnsavedChanges));
+        },
 
         // contract related
         onConfigureContract: (file: IProjectItem) => {

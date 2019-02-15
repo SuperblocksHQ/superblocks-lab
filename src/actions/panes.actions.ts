@@ -44,7 +44,31 @@ export const panesActions = {
     saveFile(fileId: string, code: string) {
         return {
             type: panesActions.SAVE_FILE,
-            data: code
+            data: { fileId, code }
+        };
+    },
+
+    SAVE_FILE_SUCCESS: 'SAVE_FILE_SUCCESS',
+    saveFileSuccess(fileId: string, code: string) {
+        return {
+            type: panesActions.SAVE_FILE_SUCCESS,
+            data: { fileId, code }
+        };
+    },
+
+    SAVE_FILE_FAIL: 'SAVE_FILE_FAIL',
+    saveFileFail(fileId: string, code: string) {
+        return {
+            type: panesActions.SAVE_FILE_FAIL,
+            data: { fileId, code }
+        };
+    },
+
+    SET_UNSAVED_CHANGES: 'SET_UNSAVED_CHANGES',
+    setUnsavedChanges(fileId: string, hasUnsavedChanges: boolean) {
+        return {
+            type: panesActions.SET_UNSAVED_CHANGES,
+            data: { fileId, hasUnsavedChanges }
         };
     }
 };

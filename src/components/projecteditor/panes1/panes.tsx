@@ -35,6 +35,8 @@ interface IProps {
     onCompileContract: (file: IProjectItem) => void;
     onDeployContract: (file: IProjectItem) => void;
     onInteractContract: (file: IProjectItem) => void;
+
+    onUnsavedChange: (fileId: string, hasUnsavedChanges: boolean) => void;
 }
 
 export function Panes(props: IProps) {
@@ -51,14 +53,16 @@ export function Panes(props: IProps) {
             <div className={style.panes}>
             {
                 props.panes.map((pane) =>
-                    <div key={pane.file.id} className={classnames(style.pane, { [style.visible]: pane.active })}>
-                        <FileEditor file={pane.file}
-                            onSave={props.onSaveFile}
-                            onConfigure={ props.onConfigureContract }
-                            onCompile={ props.onCompileContract }
-                            onDeploy={ props.onDeployContract }
-                            onInteract={ props.onInteractContract } />
-                    </div>
+                    <FileEditor key={pane.file.id}
+                        file={pane.file}
+                        visible={pane.active}
+                        hasUnsavedChanges={pane.hasUnsavedChanges}
+                        onSave={props.onSaveFile}
+                        onConfigure={props.onConfigureContract}
+                        onCompile={props.onCompileContract}
+                        onDeploy={props.onDeployContract}
+                        onInteract={props.onInteractContract}
+                        onUnsavedChange={props.onUnsavedChange} />
                 )
             }
             </div>

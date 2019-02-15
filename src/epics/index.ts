@@ -22,7 +22,8 @@ import { appEpics } from './app';
 import { explorerEpics } from './explorer';
 import { userEpics } from './user';
 import { urlParametersEpics } from './urlParameters';
-import { loginEpics } from "./login";
+import { loginEpics } from './login';
+import { panesEpics } from './panes';
 
 export const epics = [
     ...ipfsEpics,
@@ -33,5 +34,6 @@ export const epics = [
     ...explorerEpics,
     ...urlParametersEpics,
     ...userEpics,
-    ...loginEpics
+    ...loginEpics,
+    ...panesEpics
 ];

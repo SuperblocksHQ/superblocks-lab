@@ -32,7 +32,7 @@ export default function panesReducer(state = initialState, action: AnyAction) {
             if (itemIndex >= 0) {
                 items[itemIndex] = { ...items[itemIndex], active: true };
             } else {
-                items.unshift({ file: action.data, active: true });
+                items.unshift({ file: action.data, active: true, hasUnsavedChanges: false });
             }
             return {
                 ...state,
@@ -80,6 +80,27 @@ export default function panesReducer(state = initialState, action: AnyAction) {
         case panesActions.CLOSE_ALL_PANES: {
             return initialState;
         }
+
+        case panesActions.SAVE_FILE_SUCCESS: {
+            return {
+                ...state,
+                items: replaceInArray(
+                    state.items,
+                    p => p.file.id === action.data.fileId,
+                    p => ({ ...p, hasUnsavedChanges: false, file: { ...p.file, code: action.data.code } })
+                )
+            };
+        }
+
+        case panesActions.SET_UNSAVED_CHANGES:
+            return {
+                ...state,
+                items: replaceInArray(
+                    state.items,
+                    p => p.file.id === action.data.fileId,
+                    p => ({ ...p, hasUnsavedChanges: action.data.hasUnsavedChanges })
+                )
+            };
 
         default:
             return state;

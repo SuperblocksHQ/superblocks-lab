@@ -16,6 +16,7 @@
 
 import React from 'react';
 import style from './style-editor.less';
+import classnames from 'classnames';
 import MonacoEditor from 'react-monaco-editor';
 import { IProjectItem } from '../../../../models';
 import { EditorToolbar } from './editorToolbar';
@@ -23,15 +24,14 @@ import { isSmartContract, getFileExtension } from '../../../../utils/file';
 
 interface IProps {
     file: IProjectItem;
+    visible: boolean;
+    hasUnsavedChanges: boolean;
     onSave: (fileId: string, code: string) => void;
     onCompile: (file: IProjectItem) => void;
     onDeploy: (file: IProjectItem) => void;
     onInteract: (file: IProjectItem) => void;
     onConfigure: (file: IProjectItem) => void;
-}
-
-interface IState {
-    hasUnsavedChanges: boolean;
+    onUnsavedChange: (fileId: string, hasUnsavedChanges: boolean) => void;
 }
 
 const langmap: any = {
@@ -47,7 +47,7 @@ const requireConfig = {
     baseUrl: '/'
 };
 
-export class FileEditor extends React.Component<IProps, IState> {
+export class FileEditor extends React.Component<IProps> {
     language: string = '';
     options: any = {};
     code: string = '';
@@ -68,10 +68,20 @@ export class FileEditor extends React.Component<IProps, IState> {
             selectOnLineNumbers: true,
             readOnly: !this.props.file.mutable,
             folding: 'true',
-            foldingStrategy: 'indentation',
+            foldingStrategyif: 'indentation',
         };
 
         this.code = props.file.code || '';
+    }
+
+    componentDidUpdate(prevProps: IProps) {
+        if (this.props.visible && !prevProps.visible) {
+            const monaco: any = this.refs.monaco;
+            // restore focus when editor is shown
+            if (monaco) {
+                setTimeout(() => monaco.editor.focus(), 100);
+            }
+        }
     }
 
     editorDidMount = (editor: any, monacoObj: any) => {
@@ -81,7 +91,10 @@ export class FileEditor extends React.Component<IProps, IState> {
 
     onFileChange = (value: string) => {
         this.code = value;
-        this.setState({ hasUnsavedChanges: this.code !== this.props.file.code });
+        const hasUnsavedChanges = this.code !== this.props.file.code;
+        if (hasUnsavedChanges !== this.props.hasUnsavedChanges) { // small optimization to have cleaner redux log
+            this.props.onUnsavedChange(this.props.file.id, hasUnsavedChanges);
+        }
     }
 
     onSave = () => {
@@ -89,13 +102,13 @@ export class FileEditor extends React.Component<IProps, IState> {
     }
 
     render() {
-        const { file } = this.props;
+        const { file, visible, hasUnsavedChanges } = this.props;
 
         return (
-            <div className={style.fileEditorContainer}>
+            <div className={classnames(style.fileEditorContainer, { [style.visible]: visible })}>
                 <EditorToolbar
                     isSmartContract={isSmartContract(file.name)}
-                    hasUnsavedChanges={this.state.hasUnsavedChanges}
+                    hasUnsavedChanges={hasUnsavedChanges}
                     onSave={this.onSave}
                     onCompile={ () => this.props.onCompile(file) }
                     onDeploy={ () => this.props.onDeploy(file) }
@@ -103,9 +116,10 @@ export class FileEditor extends React.Component<IProps, IState> {
                     onInteract={ () => this.props.onInteract(file) }  />
 
                 <MonacoEditor
+                    ref='monaco'
                     language={this.language}
                     theme='vs-dark'
-                    value={file.code}
+                    defaultValue={file.code}
                     options={this.options}
                     onChange={this.onFileChange}
                     editorDidMount={this.editorDidMount}
