@@ -36,7 +36,6 @@ class SplitterLayout extends SplitterLayoutBase {
 
 export default class ProjectEditor extends Component {
     state = {
-        EVMInit: false,
         sidePanelDragging: false
     };
 
@@ -60,69 +59,32 @@ export default class ProjectEditor extends Component {
         );
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         // if project is present, init EVM if not already initialized
         if (!this.state.EVMInit) {
             this.initEVM()
         }
-
-        // update the code editor panes when side panel opens or closes
-        const wasSidePanelOpen = prevProps.displayTransactionsPanel || prevProps.previewSidePanel.open;
-        const isSidePanelOpen = this.props.displayTransactionsPanel || this.props.previewSidePanel.open;
-        if (wasSidePanelOpen !== isSidePanelOpen) {
-            this.onPanesSizeChange();
-        }
     }
 
     initEVM = () => {
-        this.setState({
-            EVMInit: true
-        }, () => {
-            // open wallet & start EVM
-            this.props.functions.wallet.openWallet(
-                'development',
-                this.props.knownWalletSeed,
-                () => {
-                    console.log(this.props.functions.EVM);
-                    this.props.functions.EVM.init();
-                }
-            );
-        })
-    };
-
-    redraw = all => {
-        if (this.props.router.control) {
-            this.props.router.control.redraw();
-        }
-        if (this.props.router.app) {
-            this.props.router.app.redraw(all);
-        }
-        if (this.props.router.panes) {
-            this.props.router.panes.redraw(all);
-        }
-        this.forceUpdate();
+            // // open wallet & start EVM
+            // this.props.functions.wallet.openWallet(
+            //     'development',
+            //     this.props.knownWalletSeed,
+            //     () => {
+            //         console.log(this.props.functions.EVM);
+            //         this.props.functions.EVM.init();
+            //     }
+            // );
     };
 
     toggleSidePanelDragging() {
         this.setState({ sidePanelDragging: !this.state.sidePanelDragging });
     }
 
-    onPanesSizeChange() {
-        if (this.props.router.panes) {
-            this.props.router.panes.redraw(false);
-        }
-    }
-
-    onProjectSelectedHandle = () => {
-        const { closeTransactionsHistoryPanel } = this.props;
-        closeTransactionsHistoryPanel();
-    };
-
     render() {
-        const { project,
-                router,
+        const { router,
                 functions,
-                isImportedProject,
                 displayTransactionsPanel,
                 displayFileSystemPanel,
                 previewSidePanel,
@@ -135,18 +97,13 @@ export default class ProjectEditor extends Component {
 
         return (
             <div className={style.projecteditor}>
-                <TopBar
-                    router={router}
-                    functions={functions}
-                    onProjectSelected={this.onProjectSelectedHandle}
-                />
+                <TopBar functions={functions} />
                 <div className={style.mainWrapper}>
                     <div className={classnames([style.sideButtonsContainer, style.sideButtonsContainerLeft])}>
                         <SideButton name="Explorer"
                             icon={<IconFileAlt style={{width: 12}} />}
                             onClick={() => {
                                     toggleFileSystemPanel();
-                                    this.onPanesSizeChange();
                                 }
                             }
                         />
@@ -157,7 +114,7 @@ export default class ProjectEditor extends Component {
                             primaryIndex={1}
                             secondaryMinSize={0}
                             secondaryInitialSize={280}
-                            onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}
+                            onSecondaryPaneSizeChange={() => {}}
                             customClassName={!displayFileSystemPanel ? "hideFileSystemPanel" : null}>
                             <div className={style.control}>
                                 <Explorer />
@@ -170,7 +127,7 @@ export default class ProjectEditor extends Component {
                                     secondaryInitialSize={500}
                                     onDragStart={() => this.toggleSidePanelDragging()}
                                     onDragEnd={() => this.toggleSidePanelDragging()}
-                                    onSecondaryPaneSizeChange={() => this.onPanesSizeChange()}>
+                                    onSecondaryPaneSizeChange={() => {}}>
 
                                     <Panes dragging={sidePanelDragging} />
 

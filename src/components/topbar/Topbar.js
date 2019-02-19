@@ -175,12 +175,7 @@ export default class TopBar extends Component {
                         <span>Open in Lab</span>
                     </a>
                 </OnlyIf>
-                <OnlyIf test={this.props.router.control}>
-                    <NetworkAccountSelector
-                        router={this.props.router}
-                        functions={this.props.functions}
-                   />
-                </OnlyIf>
+                <NetworkAccountSelector />
                 <div className={style.projectActions}>
                     <OnlyIf test={showUploadButton}>
                         <DropdownContainer
@@ -227,8 +222,6 @@ export default class TopBar extends Component {
 }
 
 TopBar.propTypes = {
-    onProjectSelected: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired,
     functions: PropTypes.object.isRequired,
     selectedProjectName: PropTypes.string,
     ipfsActions: PropTypes.shape({

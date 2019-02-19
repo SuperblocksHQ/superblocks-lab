@@ -15,20 +15,26 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { connect } from 'react-redux';
-import { projectsActions } from '../../actions';
+import { projectsActions, appActions } from '../../actions';
 import { projectSelectors } from '../../selectors';
 import LoadProject from './LoadProject';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     loadingProject: projectSelectors.getLoadingProject(state),
     project: projectSelectors.getProject(state)
 });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
-        loadProject: (projectId) => {
+        openDevWallet(knownWalletSeed: string) {
+            dispatch(projectsActions.openWallet('development', knownWalletSeed));
+        },
+        initEvm() {
+            dispatch(appActions.initEvm());
+        },
+        loadProject(projectId: string) {
             dispatch(projectsActions.loadProject(projectId));
         },
     };

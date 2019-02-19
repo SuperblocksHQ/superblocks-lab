@@ -17,12 +17,17 @@
 import { projectsActions } from '../actions/projects.actions';
 import { IProjectState, IEnvironment } from '../models/state';
 import { AnyAction } from 'redux';
+import { IProjectItem } from '../models';
+import { getDappSettings } from './dappfileLib';
 
 export const initialState: IProjectState = {
     project: undefined,
     environments: [],
     selectedEnvironment: { name: null, endpoint: null },
-    selectedAccount: {name: null, balance: null, address: null}
+    accounts: [],
+    selectedAccount: { name: '', balance: null, address: null, isLocked: false, type: '' },
+    openWallets: {},
+    dappfileData: null
 };
 
 function getEnvOrNull(environment: IEnvironment) {
@@ -47,6 +52,11 @@ export default function projectsReducer(state = initialState, action: AnyAction)
                 selectedEnvironment: state.environments.find(e => e.name === action.data)
                                     || initialState.selectedEnvironment
             };
+        case projectsActions.SELECT_ACCOUNT:
+            return {
+                ...state,
+                selectedAccount: state.accounts.find(a => a.name === action.data) || initialState.selectedAccount
+            };
         case projectsActions.UPDATE_PROJECT_SETTINGS_SUCCESS: {
             return {
                 ...state,
@@ -62,10 +72,36 @@ export default function projectsReducer(state = initialState, action: AnyAction)
                 selectedAccount: action.data
             };
         }
-        case projectsActions.LOAD_PROJECT_SUCCESS: {
+        case projectsActions.OPEN_WALLET_SUCCESS:
             return {
                 ...state,
-                project: { ...action.data.project, files: undefined }
+                openWallets: {
+                    ...state.openWallets,
+                    [action.data.name]: action.data.addresses
+                }
+            };
+        case projectsActions.LOAD_PROJECT_SUCCESS: {
+            const files: IProjectItem = action.data.project.files;
+            let stateChange = {
+                environments: initialState.environments,
+                selectedEnvironment: initialState.selectedEnvironment,
+                dappfileData: null
+            };
+
+            // parse dappjson file to get environment
+            try {
+                const dappfile = files.children.find(f => f.name === 'dappfile.json');
+                if (dappfile) {
+                    stateChange = getDappSettings(dappfile.code || '', state.openWallets);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
+            return {
+                ...state,
+                project: { ...action.data.project, files: undefined },
+                ...stateChange
             };
         }
         case projectsActions.LOAD_PROJECT_FAIL: {

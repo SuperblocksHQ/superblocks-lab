@@ -16,11 +16,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { generateUniqueId } from '../utils/common';
 
-export default class EVM {
-    constructor(props) {
-        this.props = props;
-        this.id = props.id + '_evm';
+class EVM {
+    constructor() {
+        this.id = generateUniqueId() + '_evm';
         this._queue = [];
         this.ref = null;
         this._counter = 0;
@@ -112,7 +112,7 @@ export default class EVM {
     };
 
     _processQueue = () => {
-        if (this._processBusy) return;
+        if (this._processBusy) { return; }
         this._processBusy = true;
         if (this.isReady() && this._queue.length > 0) {
             this.ref.contentWindow.queueMessage(this._queue.pop());
@@ -120,3 +120,5 @@ export default class EVM {
         this._processBusy = false;
     };
 }
+
+export const evmService = new EVM();

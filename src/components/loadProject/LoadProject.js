@@ -29,15 +29,18 @@ import { IProject } from '../../models';
 //     isImportedProject: boolean;
 // }
 
+// TODO: refactor! rename or remove this component.
 export default class LoadProject extends Component {
 
     componentDidMount() {
-        const { loadProject, match } = this.props;
+        const { loadProject, match, openDevWallet, knownWalletSeed, initEvm } = this.props;
+        openDevWallet(knownWalletSeed);
+        initEvm();
         loadProject(match.params.projectId);
     }
 
     render() {
-        const { project, router, functions, knownWalletSeed, isImportedProject } = this.props;
+        const { project, router, functions, isImportedProject } = this.props;
 
         return (
             <OnlyIf test={project}>
@@ -45,7 +48,6 @@ export default class LoadProject extends Component {
                     project={project}
                     router={router}
                     functions={functions}
-                    knownWalletSeed={knownWalletSeed}
                     isImportedProject={isImportedProject}
                 />
             </OnlyIf>

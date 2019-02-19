@@ -19,3 +19,4 @@ export * from './contractAgrumentData';
 export * from './project';
 export * from './project.model';
 export * from './user.model';
+export * from './account-environment.model';

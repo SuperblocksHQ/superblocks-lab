@@ -15,7 +15,9 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { notifyAppStart } from './notifyAppStart.epic';
+import { initEvmEpic } from './initEvm.epic';
 
 export const appEpics = [
-    notifyAppStart
+    notifyAppStart,
+    initEvmEpic
 ];
