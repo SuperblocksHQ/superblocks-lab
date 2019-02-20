@@ -26,6 +26,7 @@ import ProjectMenuDropdownDialog from '../projectMenu';
 import classNames from 'classnames';
 
 interface IProps {
+    projectId: string;
     projectName: string;
     renameProject: (newName: string) => void;
 }
@@ -38,28 +39,33 @@ export default class ProjectTitle extends Component<IProps> {
     };
 
     handleProjectNameClick = () => {
+        const { projectName } = this.props;
+
         this.setState({
           projectNameUpdating: true,
+          newProjectName: projectName
         });
     }
 
     handleChangeName = () => {
         const { renameProject } = this.props;
+        const { newProjectName } = this.state;
 
         this.setState({
           projectNameUpdating: false
         });
-        this.props.renameProject(this.state.newProjectName);
+
+        renameProject(newProjectName);
     }
 
-    handleChange = (e: any) => {
+    handleInputChange = (e: any) => {
         this.setState({
             newProjectName: e.target.value
         });
     }
 
     render() {
-        const { projectName } = this.props;
+        const { projectName, projectId } = this.props;
         const { projectNameUpdating, newProjectName } = this.state;
 
         return(
@@ -71,7 +77,7 @@ export default class ProjectTitle extends Component<IProps> {
                     <DropdownContainer
                         showMenu={false}
                         className={style.projectMenuDropdown}
-                        dropdownContent={<ProjectMenuDropdownDialog renameProject={this.handleProjectNameClick} />}
+                        dropdownContent={<ProjectMenuDropdownDialog projectId={projectId} renameProject={this.handleProjectNameClick} />}
                     >
                         <IconDropdown className={classNames([style.dropDown, 'dropDown'])} />
                     </DropdownContainer>
@@ -82,9 +88,10 @@ export default class ProjectTitle extends Component<IProps> {
                             type='text'
                             value={newProjectName}
                             onBlur={this.handleChangeName}
-                            onChange={this.handleChange}
+                            onChange={this.handleInputChange}
                             spellCheck={false}
-                            autoFocus />
+                            autoFocus
+                        />
                     </form>
                 </OnlyIf>
             </div>

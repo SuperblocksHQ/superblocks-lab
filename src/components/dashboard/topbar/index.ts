@@ -15,11 +15,23 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { connect } from 'react-redux';
-import ShareDialog from './ShareDialog';
-import { ipfsSelectors } from '../../../selectors';
+import { authActions } from '../../../actions';
+import { userSelectors, authSelectors } from '../../../selectors';
+import Topbar from './Topbar';
+import { Dispatch } from 'react';
+import { AnyAction } from 'redux';
 
-const mapStateToProps = state => ({
-    ipfsUrl: ipfsSelectors.getShareURL(state),
+const mapStateToProps = (state: any) => ({
+    isAuthenticated: authSelectors.getIsAuthenticated(state),
+    userProfile: userSelectors.getUserProfile(state)
 });
 
-export default connect(mapStateToProps)(ShareDialog);
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+    return {
+        logout: () => {
+            dispatch(authActions.logout());
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Topbar);

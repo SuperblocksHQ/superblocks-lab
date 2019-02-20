@@ -20,14 +20,16 @@ import classNames from 'classnames';
 import style from './style.less';
 import {
     IconCopy
-} from '../../icons';
-import TextInput from '../../textInput';
-import TextAreaInput from '../../textAreaInput';
-import { Tooltip } from '../../common';
+} from '../icons';
+import TextInput from '../textInput';
+import TextAreaInput from '../textAreaInput';
+import { Tooltip } from '../common';
 import Switch from 'react-switch';
+import ModalHeader from '../modal/modalHeader';
 
 interface IProps {
-    ipfsUrl: string;
+    defaultUrl: string;
+    onCloseClick: () => void;
 }
 
 interface IState {
@@ -35,24 +37,26 @@ interface IState {
     options: {
         hideExplorer: boolean;
         showTransactions: boolean;
-        showAppview: boolean;
+        showPreview: boolean;
         [key: string]: boolean;
     };
 }
 
-export default class ShareDialog extends React.Component<IProps, IState> {
+export default class ShareModal extends React.Component<IProps, IState> {
 
     state: IState = {
-        shareUrl: this.props.ipfsUrl || String(window.location),
+        shareUrl: this.props.defaultUrl || String(window.location),
         options: {
             hideExplorer: false,
             showTransactions: false,
-            showAppview: false,
+            showPreview: false,
         }
     };
 
     updateUrl = () => {
+        const { defaultUrl } = this.props;
         const { options } = this.state;
+
         const params = Object.keys(options).map( async (key) => {
             if (options[key]) {
                 return key + '=' + Number(options[key]);
@@ -61,7 +65,7 @@ export default class ShareDialog extends React.Component<IProps, IState> {
 
         Promise.all(params).then((result) => {
             this.setState({
-                shareUrl: String(window.location) + '?' + result.filter(Boolean).join('&')
+                shareUrl: defaultUrl  + (result.filter(Boolean).length ? '?' : '') + result.filter(Boolean).join('&')
             });
         });
     }
@@ -79,10 +83,13 @@ export default class ShareDialog extends React.Component<IProps, IState> {
     }
 
     RenderOptions = () => {
-        const { hideExplorer, showTransactions, showAppview } = this.state.options;
+        const { hideExplorer, showTransactions, showPreview } = this.state.options;
 
         return(
             <div className={style.innerContent}>
+                <div className={style.title}>
+                    Options
+                </div>
                 <div className={classNames([style.inputContainer, style.optionInput])}>
                     <p>Hide Explorer</p>
                     <Switch
@@ -107,7 +114,7 @@ export default class ShareDialog extends React.Component<IProps, IState> {
                     <Switch
                         checked={showTransactions}
                         onChange={() => {
-                               this.setState({options: { ...this.state.options, showTransactions: !showTransactions, showAppview: false }}, () => {
+                               this.setState({options: { ...this.state.options, showTransactions: !showTransactions, showPreview: false }}, () => {
                                         this.updateUrl();
                                     }
                                );
@@ -123,11 +130,11 @@ export default class ShareDialog extends React.Component<IProps, IState> {
                     />
                 </div>
                 <div className={classNames([style.inputContainer, style.optionInput])}>
-                    <p>Show Appview</p>
+                    <p>Show Preview</p>
                     <Switch
-                        checked={showAppview}
+                        checked={showPreview}
                         onChange={() => {
-                                this.setState({options: { ...this.state.options, showAppview: !showAppview, showTransactions: false }}, () => {
+                                this.setState({options: { ...this.state.options, showPreview: !showPreview, showTransactions: false }}, () => {
                                         this.updateUrl();
                                     }
                                 );
@@ -146,7 +153,7 @@ export default class ShareDialog extends React.Component<IProps, IState> {
     }
 
     RenderInputs = () => {
-        const { hideExplorer, showTransactions, showAppview } = this.state.options;
+        const { hideExplorer, showTransactions, showPreview } = this.state.options;
         const { shareUrl } = this.state;
         const embedUrl = this.getEmbedUrl();
         const btnMdUrl = this.getBtnMdUrl();
@@ -155,6 +162,9 @@ export default class ShareDialog extends React.Component<IProps, IState> {
         return(
             <React.Fragment>
                 <div className={style.innerContent}>
+                    <div className={style.title}>
+                        Links
+                    </div>
                     <div className={style.inputContainer}>
                         <TextAreaInput
                             id='editor'
@@ -177,7 +187,7 @@ export default class ShareDialog extends React.Component<IProps, IState> {
                             value={embedUrl}
                             disabled={false}
                             readOnly={true}
-                            rows={6}
+                            rows={3}
                         />
                         <button className='btnNoBg' onClick={() => copy(embedUrl)}>
                             <Tooltip title='Copy URL'>
@@ -187,10 +197,13 @@ export default class ShareDialog extends React.Component<IProps, IState> {
                     </div>
                 </div>
                 <div className={style.innerContent}>
+                    <div className={style.title}>
+                        Button
+                    </div>
                     <div className={style.inputContainer}>
                         <TextAreaInput
                             id='button-md'
-                            label='Button Markdown'
+                            label='Markdown'
                             value={btnMdUrl}
                             disabled={false}
                             readOnly={true}
@@ -205,7 +218,7 @@ export default class ShareDialog extends React.Component<IProps, IState> {
                     <div className={style.inputContainer}>
                         <TextAreaInput
                             id='button-html'
-                            label='Button HTML'
+                            label='HTML'
                             value={btnHtmlUrl}
                             disabled={false}
                             readOnly={true}
@@ -225,7 +238,11 @@ export default class ShareDialog extends React.Component<IProps, IState> {
 
     render() {
         return (
-            <div className={style.shareDialogContainer}>
+            <div className={classNames([style.shareModal, 'modal'])}>
+                <ModalHeader
+                    title='Share your project'
+                    onCloseClick={this.props.onCloseClick}
+                />
                 <div className={style.content}>
                     {this.RenderOptions()}
                     {this.RenderInputs()}
