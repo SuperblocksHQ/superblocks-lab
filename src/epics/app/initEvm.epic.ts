@@ -29,7 +29,6 @@ export const initEvmEpic: Epic = (action$: any, state$: any) => action$.pipe(
         evmService.init();
 
         return interval(500).pipe(
-            tap(() => console.log( evmService.isReady())),
             first(() => evmService.isReady()),
             map(() => appActions.emvReady())
         );

@@ -62,19 +62,19 @@ export const githubLogin = (action$: AnyAction, state$: any) => action$.pipe(
             scope,
             redirect_uri: redirectUri,
         }))
-            .pipe(
-                switchMap((query: string) => from(PopupWindow.open(
-                    'github-oauth-authorize',
-                    `https://github.com/login/oauth/authorize?${query}`,
-                    { height: 1000, width: 600 })
-                )),
-                switchMap((data: any) => authService.githubAuth(data)),
-                switchMap(() => userService.getUser()),
-                map(authActions.loginSuccess)
-            );
-    }),
-    catchError((err: any) => {
-        console.log('Error: ', err);
-        return empty();
+        .pipe(
+            switchMap((query: string) => from(PopupWindow.open(
+                'github-oauth-authorize',
+                `https://github.com/login/oauth/authorize?${query}`,
+                { height: 1000, width: 600 })
+            )),
+            switchMap((data: any) => authService.githubAuth(data)),
+            switchMap(() => userService.getUser()),
+            map(authActions.loginSuccess),
+            catchError((err: any) => {
+                console.log('Error: ', err);
+                return empty();
+            })
+        );
     })
 );

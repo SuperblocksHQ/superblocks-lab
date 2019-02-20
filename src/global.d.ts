@@ -31,4 +31,4 @@ declare module 'eth-lightwallet/dist/lightwallet.min.js' {
 
 type Nullable<T> = T | null;
 
-declare interface Window { web3: any; }
+declare interface Window { web3: any; Web3: any; }

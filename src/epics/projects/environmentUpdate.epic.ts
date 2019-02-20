@@ -15,18 +15,18 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { switchMap, map, catchError } from 'rxjs/operators';
-import { ofType } from 'redux-observable';
+import { ofType, Epic } from 'redux-observable';
 import { projectsActions } from '../../actions';
 import { previewService } from '../../services';
 import { projectSelectors } from '../../selectors';
 import Networks from '../../networks';
 import { empty, from } from 'rxjs';
 
-function hasEnvironments(state) {
-    return state.projects.environments.length
+function hasEnvironments(state: any) {
+    return state.projects.environments.length;
 }
 
-export const environmentUpdateEpic = (action$, state$) => action$.pipe(
+export const environmentUpdateEpic: Epic = (action$, state$) => action$.pipe(
     ofType(projectsActions.SET_ENVIRONMENT, projectsActions.SET_ALL_ENVIRONMENTS),
     switchMap(() => {
         if (!hasEnvironments(state$.value)) {
@@ -38,12 +38,12 @@ export const environmentUpdateEpic = (action$, state$) => action$.pipe(
         previewService.setEnvironment(selectedEnvironment);
 
         // enable metamask
-        if (typeof web3 !== 'undefined' &&
+        if (typeof window.web3 !== 'undefined' &&
             selectedEnvironment.name !== Networks.browser.name &&
             selectedEnvironment.name !== Networks.custom.name) {
-            return from(web3.currentProvider.enable()).pipe(
+            return from(window.web3.currentProvider.enable()).pipe(
                 // do nothing if user gives access to metamask
-                switchMap(() => empty()),
+                map(() => projectsActions.setMetamaskAccounts(window.web3.eth.accounts)),
                 // set env back to browser in case user reject metamask access
                 catchError(() => [projectsActions.setEnvironment(Networks.browser.name)])
             );

@@ -7,7 +7,7 @@ export interface IEnvironment {
 
 export interface IAccount {
     name: string;
-    balance: Nullable<number>;
+    balance: Nullable<string>;
     address: Nullable<string>;
     type: string;
     isLocked: boolean;
@@ -22,5 +22,6 @@ export interface IProjectState {
     openWallets: {
         [key: string]: string[]
     };
+    metamaskAccounts: string[];
     dappfileData: any;
 }

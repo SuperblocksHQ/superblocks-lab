@@ -21,3 +21,4 @@ export * from './project.service';
 export * from './auth.service';
 export * from './wallet.service';
 export * from './evm';
+export * from './solc';

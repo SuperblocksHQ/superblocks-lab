@@ -41,9 +41,6 @@ export default class ProjectEditor extends Component {
 
     constructor(props) {
         super(props);
-
-        this.props.router.register('main', this);
-
         // Mute defalt ctrl-s behavior.
         window.addEventListener(
             'keydown',
@@ -58,25 +55,6 @@ export default class ProjectEditor extends Component {
             false
         );
     }
-
-    componentDidUpdate() {
-        // if project is present, init EVM if not already initialized
-        if (!this.state.EVMInit) {
-            this.initEVM()
-        }
-    }
-
-    initEVM = () => {
-            // // open wallet & start EVM
-            // this.props.functions.wallet.openWallet(
-            //     'development',
-            //     this.props.knownWalletSeed,
-            //     () => {
-            //         console.log(this.props.functions.EVM);
-            //         this.props.functions.EVM.init();
-            //     }
-            // );
-    };
 
     toggleSidePanelDragging() {
         this.setState({ sidePanelDragging: !this.state.sidePanelDragging });

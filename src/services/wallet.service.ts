@@ -15,6 +15,9 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import walletLight from 'eth-lightwallet/dist/lightwallet.min.js';
+import Networks from '../networks';
+import { evmService } from './evm';
+import { from, Observable } from 'rxjs';
 
 interface IEthWallet {
     name: string;
@@ -28,6 +31,17 @@ interface IEthWallet {
 }
 
 const openWallets: { wallet: IEthWallet, keyStore: any }[] = [];
+
+function getWeb3(environment: string) {
+    let provider;
+    if (environment.toLowerCase() === Networks.browser.name) {
+        provider = evmService.getProvider();
+    } else {
+        provider = new window.Web3.providers.HttpProvider(Networks[environment].endpoint);
+    }
+
+    return new window.Web3(provider);
+}
 
 export const walletService = {
 
@@ -73,6 +87,19 @@ export const walletService = {
                 }
             );
         });
+    },
+
+    fetchBalance(environment: string, address: string): Observable<string> {
+        return from(new Promise((resolve, reject) => {
+            const web3 = getWeb3(environment);
+            web3.eth.getBalance(address, (err: any, res: any) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(web3.fromWei(res.toNumber()));
+                }
+            });
+        }));
     }
 
 };

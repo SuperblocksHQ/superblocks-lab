@@ -39,11 +39,18 @@ export const projectsActions = {
             data: name
         };
     },
-    UPDATE_SELECTED_ACCOUNT: 'UPDATE_SELECTED_ACCOUNT',
-    updateSelectAccount(name: string, balance: string, address: string) {
+    UPDATE_ACCOUNT_BALANCE: 'UPDATE_ACCOUNT_BALANCE',
+    updateAccountBalance(balance: string) {
         return {
-            type: projectsActions.UPDATE_SELECTED_ACCOUNT,
-            data: {name, balance, address}
+            type: projectsActions.UPDATE_ACCOUNT_BALANCE,
+            data: {balance}
+        };
+    },
+    SET_METAMASK_ACCOUNTS: 'SET_METAMASK_ACCOUNTS',
+    setMetamaskAccounts(addresses: string[]) {
+        return {
+            type: projectsActions.SET_METAMASK_ACCOUNTS,
+            data: addresses
         };
     },
 

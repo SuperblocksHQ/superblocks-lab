@@ -29,6 +29,7 @@ import { loadProject } from './loadProject.epic';
 import { renameProjectEpic } from './renameProject.epic';
 import { createEmptyProject } from './createEmptyProject.epic';
 import { openWalletEpic } from './openWallet.epic';
+import { updateAccountBalanceEpic } from './updateAccountBalance.epic';
 
 export const projectsEpics = [
     environmentUpdateEpic,
@@ -39,5 +40,6 @@ export const projectsEpics = [
     renameProjectEpic,
     forkProjectEpic,
     createEmptyProject,
-    openWalletEpic
+    openWalletEpic,
+    updateAccountBalanceEpic
 ];

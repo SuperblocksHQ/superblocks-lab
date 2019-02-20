@@ -18,7 +18,7 @@ import { projectsActions } from '../actions/projects.actions';
 import { IProjectState, IEnvironment } from '../models/state';
 import { AnyAction } from 'redux';
 import { IProjectItem } from '../models';
-import { getDappSettings } from './dappfileLib';
+import { getDappSettings, resolveAccounts } from './dappfileLib';
 
 export const initialState: IProjectState = {
     project: undefined,
@@ -27,6 +27,7 @@ export const initialState: IProjectState = {
     accounts: [],
     selectedAccount: { name: '', balance: null, address: null, isLocked: false, type: '' },
     openWallets: {},
+    metamaskAccounts: [],
     dappfileData: null
 };
 
@@ -46,12 +47,38 @@ export default function projectsReducer(state = initialState, action: AnyAction)
                             || action.data[0]
                             || initialState.selectedEnvironment
             };
-        case projectsActions.SET_ENVIRONMENT:
+        case projectsActions.SET_ENVIRONMENT: {
+            const selectedEnvironment = state.environments.find(e => e.name === action.data) || initialState.selectedEnvironment;
+            let accounts = initialState.accounts;
+            let selectedAccount = state.selectedAccount;
+
+            if (selectedEnvironment.name) {
+                accounts = resolveAccounts(state.dappfileData, selectedEnvironment.name, state.openWallets, state.metamaskAccounts);
+                selectedAccount = accounts.find(a => a.name === state.selectedAccount.name) || initialState.selectedAccount;
+            }
             return {
                 ...state,
-                selectedEnvironment: state.environments.find(e => e.name === action.data)
-                                    || initialState.selectedEnvironment
+                selectedEnvironment,
+                accounts,
+                selectedAccount
             };
+        }
+        case projectsActions.SET_METAMASK_ACCOUNTS: {
+            let accounts = state.accounts;
+            let selectedAccount = state.selectedAccount;
+            const metamaskAccounts = action.data;
+
+            if (state.selectedEnvironment.name) {
+                accounts = resolveAccounts(state.dappfileData, state.selectedEnvironment.name, state.openWallets, metamaskAccounts);
+                selectedAccount = accounts.find(a => a.name === state.selectedAccount.name) || initialState.selectedAccount;
+            }
+            return {
+                ...state,
+                metamaskAccounts,
+                accounts,
+                selectedAccount
+            };
+        }
         case projectsActions.SELECT_ACCOUNT:
             return {
                 ...state,
@@ -66,10 +93,10 @@ export default function projectsReducer(state = initialState, action: AnyAction)
                 },
             };
         }
-        case projectsActions.UPDATE_SELECTED_ACCOUNT: {
+        case projectsActions.UPDATE_ACCOUNT_BALANCE: {
             return {
                 ...state,
-                selectedAccount: action.data
+                selectedAccount: {...state.selectedAccount, balance: action.data.balance}
             };
         }
         case projectsActions.OPEN_WALLET_SUCCESS:
@@ -92,7 +119,7 @@ export default function projectsReducer(state = initialState, action: AnyAction)
             try {
                 const dappfile = files.children.find(f => f.name === 'dappfile.json');
                 if (dappfile) {
-                    stateChange = getDappSettings(dappfile.code || '', state.openWallets);
+                    stateChange = getDappSettings(dappfile.code || '', state.openWallets, state.metamaskAccounts);
                 }
             } catch (e) {
                 console.log(e);

@@ -17,10 +17,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import Modal from '../modal';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Solc from '../solc';
-import Networks from '../../networks';
 import { previewService } from '../../services';
 import AnalyticsDialog from '../analyticsDialog';
 import OnlyIf from '../onlyIf';
@@ -32,8 +29,7 @@ import * as embedUtils from '../../utils/embed';
 export default class App extends Component {
 
     state = {
-        modals: [],
-        isReady: false
+        modals: []
     };
 
     constructor(props) {
@@ -57,20 +53,13 @@ export default class App extends Component {
             },
             session: {
                 start_time: this.session_start_time,
-            },
-            networks: {
-                endpoints: Networks,
-            },
-            generateId: this.generateId,
+            }
         };
-        this.knownWalletSeed =
-            'butter toward celery cupboard blind morning item night fatal theme display toy';
+        this.knownWalletSeed = 'butter toward celery cupboard blind morning item night fatal theme display toy';
 
         // The development wallets seed is well known and the first few addresses are seeded
         // with ether in the genesis block.
-        console.log(
-            'Known development Ethereum seed is: ' + this.knownWalletSeed
-        );
+        console.log('Known development Ethereum seed is: ' + this.knownWalletSeed);
     }
 
     componentDidMount() {
@@ -91,43 +80,11 @@ export default class App extends Component {
     };
 
     _init = () => {
-        const { appVersion } = this.props;
-        const modalData = {
-            title: 'Loading Superblocks Lab',
-            body:
-                'Initializing Wallet and Ethereum Virtual Machine...',
-            style: { textAlign: 'center' },
-        };
-        const modal = <Modal data={modalData} />;
-        this.functions.modal.show({
-            cancel: () => {
-                return false;
-            },
-            render: () => {
-                return modal;
-            },
-        });
-        this.functions.compiler = new Solc({ id: this.generateId() });
-
         previewService.init(null);
-
-        const fn = () => {
-            if (this.functions.compiler) {
-                console.log('Superblocks Lab ' + appVersion + ' Ready.');
-                this.functions.modal.close();
-            } else {
-                setTimeout(fn, 500);
-            }
-        };
-        fn();
     };
 
     session_start_time = () => {
         return this.session.start_time;
-    };
-
-    generateId = () => {
-        return ++this.idCounter;
     };
 
     getClassNames = () => {
@@ -195,7 +152,7 @@ export default class App extends Component {
 
     renderProject = ({match}) => (
         <LoadProject
-            match={match}
+            projectId={match.params.projectId}
             router={this.router}
             functions={this.functions}
             knownWalletSeed={this.knownWalletSeed}

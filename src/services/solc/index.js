@@ -16,12 +16,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { generateUniqueId } from '../utils/common';
 
-export default class Solc {
-
-    constructor(props) {
-        this.props = props;
-        this.id = props.id + "_solc";
+class Solc {
+    constructor() {
+        this.id = generateUniqueId() + "_solc";
         this._queue = [];
         this.ref = null;
         this._counter = 0;
@@ -92,3 +91,5 @@ export default class Solc {
         this._processBusy = false;
     };
 }
+
+export const compilerService = new Solc();

@@ -18,13 +18,13 @@ import Networks from '../../networks';
 import { IAccountEnvironment } from '../../models';
 import { IAccount } from '../../models/state';
 
-function getAccountInfo(dappfileAccount: any, dappfileWallets: any[], environmentName: string, openWallets: any): IAccount {
+function getAccountInfo(dappfileAccount: any, dappfileWallets: any[], environmentName: string, openWallets: any, metamaskAccounts: string[]): IAccount {
     const accountEnvironment = dappfileAccount._environments.find((e: IAccountEnvironment) => e.name === environmentName);
     const walletName = accountEnvironment ? accountEnvironment.data.wallet : null;
 
     const accountInfo: IAccount = {
         name: dappfileAccount.name,
-        address: accountEnvironment.data.address,
+        address: accountEnvironment ? accountEnvironment.data.address : '0x0',
         balance: null,
         type: 'pseudo',
         isLocked: false
@@ -38,12 +38,8 @@ function getAccountInfo(dappfileAccount: any, dappfileWallets: any[], environmen
     if (wallet) {
         if (wallet.type === 'external') {
             accountInfo.type = 'metamask';
-            if (window.web3) {
-                accountInfo.isLocked = true;
-                const extAccounts = window.web3.eth.accounts || [];
-                accountInfo.isLocked = extAccounts.length < 1;
-                accountInfo.address = extAccounts[0];
-            }
+            accountInfo.isLocked = metamaskAccounts.length < 1;
+            accountInfo.address = metamaskAccounts[0];
         } else {
             accountInfo.type = 'wallet';
             if (openWallets[walletName]) {
@@ -61,7 +57,11 @@ function getAccountInfo(dappfileAccount: any, dappfileWallets: any[], environmen
     return accountInfo;
 }
 
-export function getDappSettings(dappfileCode: string, openWallets: any) {
+export function resolveAccounts(dappfileData: any, environment: string, openWallets: any, metamaskAccounts: string[]) {
+    return dappfileData.accounts.map((a: any) => getAccountInfo(a, dappfileData.wallets, environment, openWallets, metamaskAccounts));
+}
+
+export function getDappSettings(dappfileCode: string, openWallets: any, metamaskAccounts: string[]) {
     const dappfileData: any = JSON.parse(dappfileCode);
 
     // environments
@@ -72,7 +72,7 @@ export function getDappSettings(dappfileCode: string, openWallets: any) {
     const selectedEnvironment = environments[0];
 
     // accounts
-    const accounts = dappfileData.accounts.map((a: any) => getAccountInfo(a, dappfileData.wallets, selectedEnvironment.name, openWallets));
+    const accounts = resolveAccounts(dappfileData, selectedEnvironment.name, openWallets, metamaskAccounts);
 
     return { environments, selectedEnvironment, accounts, selectedAccount: accounts[0], dappfileData };
 }

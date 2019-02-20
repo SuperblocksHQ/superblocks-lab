@@ -23,7 +23,8 @@ import { AnyAction } from 'redux';
 
 const mapStateToProps = (state: any) => ({
     loadingProject: projectSelectors.getLoadingProject(state),
-    project: projectSelectors.getProject(state)
+    project: projectSelectors.getProject(state),
+    isEvmReady: state.app.isEvmReady
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
