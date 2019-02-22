@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './sortProjectItems';
-export * from './updateItemInTree';
-export * from './findItemInTree';
-export * from './traverseTree';
-export * from './createProjectItem';
+import { compileContractsEpic } from './compileContract.epic';
+import { handleCompilerOutputEpic } from './handleCompilerOutput.epic';
 
+export const compilerEpics = [
+    compileContractsEpic,
+    handleCompilerOutputEpic
+];

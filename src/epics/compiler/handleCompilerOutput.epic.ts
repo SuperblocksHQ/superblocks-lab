@@ -14,9 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './sortProjectItems';
-export * from './updateItemInTree';
-export * from './findItemInTree';
-export * from './traverseTree';
-export * from './createProjectItem';
+import { of, empty } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { ofType, Epic } from 'redux-observable';
+import { compilerActions, explorerActions } from '../../actions';
 
+export const handleCompilerOutputEpic: Epic = (action$: any, state$: any) => action$.pipe(
+    ofType(compilerActions.HANDLE_COMPILE_OUTPUT),
+    switchMap(() => {
+        const compilerState = state$.value.compiler;
+        if (compilerState.outputFolderPath.length && compilerState.outputFiles.length) {
+            return of(explorerActions.createFolderWith(compilerState.outputFolderPath, compilerState.outputFiles));
+        } else {
+            return empty();
+        }
+    })
+);

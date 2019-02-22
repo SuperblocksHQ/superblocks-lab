@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import style from './style.less';
-import { shortenBalance } from '../../utils/accounts';
+import { shortenBalance } from '../../../utils/accounts';
 
 export default class BottomBar extends Component {
 
@@ -30,11 +30,11 @@ export default class BottomBar extends Component {
         const { networkPreferences, endpoint, selectedAccount } = this.props;
         const gasPrice = this.web3.fromWei(networkPreferences.gasPrice, 'Gwei');
         let accountBalance = 0;
-        if(selectedAccount)
+        if (selectedAccount) {
             accountBalance = shortenBalance(selectedAccount.balance);
-
+        }
         return (
-            <div className={style.bottomStatusBar} id={"bottom_bar"}>
+            <div className={style.bottomStatusBar}>
                 <div className={style.right}>
                     <span>Account balance: {accountBalance}</span>
                     <span>Gas Limit: {networkPreferences.gasLimit}</span>

@@ -23,6 +23,7 @@ import { userEpics } from './user';
 import { urlParametersEpics } from './urlParameters';
 import { loginEpics } from './login';
 import { panesEpics } from './panes';
+import { compilerEpics } from './compiler';
 
 export const epics = [
     ...settingsEpics,
@@ -33,5 +34,6 @@ export const epics = [
     ...urlParametersEpics,
     ...userEpics,
     ...loginEpics,
-    ...panesEpics
+    ...panesEpics,
+    ...compilerEpics
 ];

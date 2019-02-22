@@ -17,3 +17,4 @@
 export * from './explorer.model';
 export * from './project-state.model';
 export * from './panes-state.model';
+export * from './compilerState.model';

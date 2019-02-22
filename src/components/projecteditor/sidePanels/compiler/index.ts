@@ -14,9 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './sortProjectItems';
-export * from './updateItemInTree';
-export * from './findItemInTree';
-export * from './traverseTree';
-export * from './createProjectItem';
+import { CompilerPanel as CompilerPanelComponent } from './compilerPanel';
+import { connect } from 'react-redux';
+import { Dispatch } from 'react';
+import { AnyAction } from 'redux';
 
+const mapStateToProps = (state: any) => ({
+    consoleRows: state.compiler.consoleRows
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+    return {};
+};
+
+export const CompilerPanel = connect(mapStateToProps, mapDispatchToProps)(CompilerPanelComponent);

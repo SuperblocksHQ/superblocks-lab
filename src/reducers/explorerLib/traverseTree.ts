@@ -14,9 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './sortProjectItems';
-export * from './updateItemInTree';
-export * from './findItemInTree';
-export * from './traverseTree';
-export * from './createProjectItem';
+import { IProjectItem } from '../../models';
 
+function traverseTreeImpl(item: IProjectItem, currentPath: string[], callback: (item: IProjectItem, path: () => string[]) => void) {
+    currentPath.push(item.name);
+    // argument should always be copied, otherwise it is a reference which may be modified later
+    callback(item, () => currentPath.slice());
+
+    for (const childItem of item.children) {
+        traverseTreeImpl(childItem, currentPath, callback);
+    }
+    currentPath.pop();
+}
+
+export function traverseTree(item: IProjectItem, callback: (item: IProjectItem, path: () => string[]) => void) {
+    return traverseTreeImpl(item, [], callback);
+}

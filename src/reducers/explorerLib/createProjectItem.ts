@@ -14,9 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './sortProjectItems';
-export * from './updateItemInTree';
-export * from './findItemInTree';
-export * from './traverseTree';
-export * from './createProjectItem';
+import { generateUniqueId } from '../../services/utils';
+import { ProjectItemTypes } from '../../models';
 
+export function createFile(name: string, code: string) {
+    return {
+        id: generateUniqueId(),
+        name,
+        mutable: true,
+        type: ProjectItemTypes.File,
+        opened: false,
+        code,
+        children: []
+    };
+}

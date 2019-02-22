@@ -14,9 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './sortProjectItems';
-export * from './updateItemInTree';
-export * from './findItemInTree';
-export * from './traverseTree';
-export * from './createProjectItem';
+import { IProjectItem } from '../project';
 
+export interface IConsoleRow {
+    channel: number;
+    msg: string;
+}
+
+export interface ICompilerState {
+    input: any;
+    files: any;
+    consoleRows: IConsoleRow[];
+    targetContractPath: string[];
+    targetContractHash: string;
+
+    outputFolderPath: string[];
+    outputFiles: IProjectItem[];
+}

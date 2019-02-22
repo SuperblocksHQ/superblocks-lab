@@ -20,11 +20,11 @@ import Control from './control';
 import Panes from './panes1';
 import Explorer from './explorer';
 import TopBar from '../topbar';
-import BottomBar from '../bottomBar';
+import BottomBar from './bottomBar';
 import ContactContainer from '../contactContainer';
 import SplitterLayoutBase from 'react-splitter-layout';
-import { PreviewSidePanel, TransactionLogPanel } from './sidePanels';
-import { IconTransactions, IconShowPreview, IconFileAlt } from '../icons';
+import { PreviewSidePanel, TransactionLogPanel, CompilerPanel } from './sidePanels';
+import { IconTransactions, IconShowPreview, IconFileAlt, IconCompile } from '../icons';
 import { SideButton } from './sideButton';
 import classnames from 'classnames';
 
@@ -80,56 +80,64 @@ export default class ProjectEditor extends Component {
                     <div className={classnames([style.sideButtonsContainer, style.sideButtonsContainerLeft])}>
                         <SideButton name="Explorer"
                             icon={<IconFileAlt style={{width: 12}} />}
-                            onClick={() => {
-                                    toggleFileSystemPanel();
-                                }
-                            }
+                            onClick={toggleFileSystemPanel}
                         />
                     </div>
 
                     <div className={style.mainLayout}>
-                        <SplitterLayout
-                            primaryIndex={1}
-                            secondaryMinSize={0}
-                            secondaryInitialSize={280}
-                            onSecondaryPaneSizeChange={() => {}}
-                            customClassName={!displayFileSystemPanel ? "hideFileSystemPanel" : null}>
-                            <div className={style.control}>
-                                <Explorer />
-                                <ContactContainer />
+                        <div className={style.splitterContainer}>
+                            <SplitterLayout
+                                primaryIndex={1}
+                                secondaryMinSize={0}
+                                secondaryInitialSize={280}
+                                onSecondaryPaneSizeChange={() => {}}
+                                customClassName={!displayFileSystemPanel ? "hideFileSystemPanel" : null}>
+                                <div className={style.control}>
+                                    <Explorer />
+                                    <ContactContainer />
+                                </div>
+                                <div>
+                                    <SplitterLayout
+                                        primaryIndex={0}
+                                        secondaryMinSize={232}
+                                        secondaryInitialSize={500}
+                                        onDragStart={() => this.toggleSidePanelDragging()}
+                                        onDragEnd={() => this.toggleSidePanelDragging()}
+                                        onSecondaryPaneSizeChange={() => {}}>
+
+                                        <Panes dragging={sidePanelDragging} />
+
+                                        { displayTransactionsPanel &&
+                                        <TransactionLogPanel
+                                            dragging={sidePanelDragging}
+                                            router={router}
+                                            onClose={toggleTransactionsHistoryPanel}
+                                            selectedEnvironment={selectedEnvironment.name}
+                                        /> }
+
+                                        { previewSidePanel.open &&
+                                        <PreviewSidePanel
+                                            dragging={sidePanelDragging}
+                                            {...previewSidePanel}
+                                            {...previewSidePanelActions}
+                                            selectedEnvironment={selectedEnvironment.name}
+                                        /> }
+
+                                    </SplitterLayout>
+                                </div>
+                            </SplitterLayout>
+                        </div>
+
+                        <div className={style.bottomBarContainer}>
+                            <div className={style.bottomPanelContainer}>
+                                <CompilerPanel />
                             </div>
-                            <div>
-                                <SplitterLayout
-                                    primaryIndex={0}
-                                    secondaryMinSize={232}
-                                    secondaryInitialSize={500}
-                                    onDragStart={() => this.toggleSidePanelDragging()}
-                                    onDragEnd={() => this.toggleSidePanelDragging()}
-                                    onSecondaryPaneSizeChange={() => {}}>
-
-                                    <Panes dragging={sidePanelDragging} />
-
-                                    { displayTransactionsPanel &&
-                                    <TransactionLogPanel
-                                        dragging={sidePanelDragging}
-                                        router={router}
-                                        onClose={toggleTransactionsHistoryPanel}
-                                        selectedEnvironment={selectedEnvironment.name}
-                                    /> }
-
-                                    { previewSidePanel.open &&
-                                    <PreviewSidePanel
-                                        dragging={sidePanelDragging}
-                                        {...previewSidePanel}
-                                        {...previewSidePanelActions}
-                                        selectedEnvironment={selectedEnvironment.name}
-                                    /> }
-
-                                </SplitterLayout>
-                            </div>
-                        </SplitterLayout>
+                            <SideButton name="Compiler output"
+                                icon={<IconCompile />}
+                                onClick={toggleTransactionsHistoryPanel}  />
+                             <BottomBar endpoint={selectedEnvironment.endpoint} />
+                        </div>
                     </div>
-                    <BottomBar endpoint={selectedEnvironment.endpoint} />
 
                     <div className={classnames([style.sideButtonsContainer, style.sideButtonsContainerRight])}>
                         <SideButton name="Transactions"
@@ -140,7 +148,7 @@ export default class ProjectEditor extends Component {
                             icon={<IconShowPreview />}
                             onClick={previewSidePanelActions.onOpen}  />
                     </div>
-                </div>
+                </div>               
             </div>
         );
     }

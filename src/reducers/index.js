@@ -25,6 +25,7 @@ import auth from './auth.reducer';
 import toast from './toast.reducer';
 import user from './user.reducer';
 import view from './view.reducer';
+import compiler from './compiler.reducer';
 
 const rehydrated = (state = false, action) => {
     switch (action.type) {
@@ -47,5 +48,6 @@ export default {
     sidePanels,
     explorer,
     user,
-    view
+    view,
+    compiler
 };

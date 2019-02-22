@@ -42,6 +42,14 @@ export const explorerActions = {
         };
     },
 
+    CREATE_FOLDER_BY_PATH: 'CREATE_FOLDER_BY_PATH',
+    createFolderWith(path: string[], items: IProjectItem[]) {
+        return {
+            type: explorerActions.CREATE_FOLDER_BY_PATH,
+            data: { path, items }
+        };
+    },
+
     // --------- Contract specific
 
     CONFIGURE_CONTRACT: 'CONFIGURE_CONTRACT',

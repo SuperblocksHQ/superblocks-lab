@@ -33,7 +33,7 @@ export function findItemInTree(item: Nullable<IProjectItem>, id: string, parentI
 
     for (const childItem of item.children) {
         const result = findItemInTree(childItem, id, item);
-        if (result) {
+        if (result[0]) {
             return result;
         }
     }
