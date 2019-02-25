@@ -38,7 +38,7 @@ export const compileContractsEpic: Epic = (action$: any, state$: any) => action$
         compilerService.init();
 
         return interval(200).pipe(
-            first(() => compilerService.isReady()),
+            first(() => compilerService.isReady()), // compiler has to be ready to be able to do smth
             switchMap(() => concat(
                 of(compilerActions.compilerReady(compilerService.getVersion())),
                 compileContract(state$.value.compiler)

@@ -31,11 +31,6 @@ export function CompilerPanel(props: IProps) {
             <div className='scrollable-y'>
                 <div className={style.console}>
                     <div className={style.terminal}>
-                        { props.consoleRows.length === 0 &&
-                            <div className={style.loading}>
-                                <span>Loading...</span>
-                            </div>
-                        }
                         { props.consoleRows.map((row, index) => {
                             return row.msg.split('\n').map((line: string, lineIndex: number) => {
                                 let cl = style.std1;
