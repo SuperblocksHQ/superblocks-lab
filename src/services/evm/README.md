@@ -1,6 +1,6 @@
 # Updating the EVM version
 ```sh
-cp ~/studio-vm/src/vm.js src/components/evm/src/evm.js
+cp ~/studio-vm/src/vm.js src/services/evm/src/evm.js
 ```
 
 Follow the below instructions to recompile it.
@@ -9,7 +9,7 @@ Follow the below instructions to recompile it.
 
 When `src/evm-iframe.js` is updated or the `evm.js` is replaced then re-browserify with with:  
 ```sh
-./node_modules/browserify/bin/cmd.js src/components/evm/src/evm-iframe.js -o src/components/evm/dist/evm-iframe-version.js
+./node_modules/browserify/bin/cmd.js src/services/evm/src/evm-iframe.js -o src/services/evm/dist/evm-iframe-version.js
 ```
 
 Always use new names to prevent browser caching.
