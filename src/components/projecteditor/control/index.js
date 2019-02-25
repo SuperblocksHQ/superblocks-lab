@@ -5,13 +5,13 @@ import { projectsActions, explorerActions, sidePanelsActions } from '../../../ac
 
 const mapStateToProps = state => ({
     appVersion: appSelectors.getAppVersion(state),
-    selectedProjectId: projectSelectors.getSelectedProjectId(state)
+    selectedProjectId: projectSelectors.getProjectId(state)
 });
 
 const mapDispatchToProps = dispatch => {
     return {
-        selectProject: (project) => {
-            dispatch(projectsActions.selectProject(project));
+        setAllEnvironments: (data) => {
+            dispatch(projectsActions.setAllEnvironments(data));
         },
         closeAllPanels: () => {
             dispatch(sidePanelsActions.closeAllPanels())

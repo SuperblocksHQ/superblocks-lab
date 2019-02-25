@@ -16,20 +16,19 @@
 
 import { connect } from 'react-redux';
 import TopBar from './Topbar';
-import { ipfsSelectors, viewSelectors } from '../../selectors';
-import { projectSelectors } from '../../selectors';
-import { ipfsActions } from '../../actions';
-import * as embedUtils from '../../utils/embed';
+import { ipfsSelectors, viewSelectors, projectSelectors } from '../../selectors';
+import { ipfsActions, projectsActions } from '../../actions';
 
 const mapStateToProps = state => ({
-    selectedProjectName: projectSelectors.getSelectedProjectName(state),
+    selectedProjectName: projectSelectors.getProjectName(state),
     ipfsActions: {
         showUploadDialog: ipfsSelectors.getShowUploadDialog(state),
         showUploadButton: ipfsSelectors.getShowUploadButton(state),
         showForkButton: ipfsSelectors.getShowForkButton(state),
+        showShareButton: ipfsSelectors.getShowShareButton(state),
     },
     view: {
-        showSelectedProjectName: viewSelectors.getShowTopBarSelectedProjectName(state),
+        project: projectSelectors.getProject(state),
         showOpenInLab: viewSelectors.getShowTopBarOpenInLab(state),
     }
 });
@@ -39,8 +38,8 @@ function mapDispatchToProps(dispatch) {
         hideUploadDialog: () => {
             dispatch(ipfsActions.hideUploadDialog())
         },
-        forkProject: () => {
-            dispatch(ipfsActions.forkProject())
+        forkCurrentProject: () => {
+            dispatch(projectsActions.forkCurrentProject())
         },
     };
 }
