@@ -29,6 +29,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>) {
     return {
         deleteProject: (projectId: string) => {
             dispatch(projectsActions.deleteProject(projectId));
+        },
+        forkProjectById: (projectId: string) => {
+            dispatch(projectsActions.forkProjectById(projectId));
         }
     };
 }

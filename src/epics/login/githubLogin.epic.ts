@@ -16,13 +16,13 @@
 
 import {empty, of, from} from 'rxjs';
 import { ofType } from 'redux-observable';
-import { authActions } from '../../actions';
+import { authActions, userActions } from '../../actions';
 import {
     withLatestFrom,
     tap,
     switchMap,
     catchError,
-    map
+    map, concatMap, mergeMap
 } from 'rxjs/operators';
 import PopupWindow from '../../components/login/github/PopupWindow';
 import { AnyAction } from 'redux';
@@ -58,23 +58,23 @@ export const githubLogin = (action$: AnyAction, state$: any) => action$.pipe(
         const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID || '';
         const redirectUri = process.env.REACT_APP_GITHUB_REDIRECT_URI || '';
         return of(toQuery({
-            client_id: clientId,
-            scope,
-            redirect_uri: redirectUri,
-        }))
-        .pipe(
-            switchMap((query: string) => from(PopupWindow.open(
-                'github-oauth-authorize',
-                `https://github.com/login/oauth/authorize?${query}`,
-                { height: 1000, width: 600 })
-            )),
-            switchMap((data: any) => authService.githubAuth(data)),
-            switchMap(() => userService.getUser()),
-            map(authActions.loginSuccess),
-            catchError((err: any) => {
-                console.log('Error: ', err);
-                return empty();
-            })
-        );
+                client_id: clientId,
+                scope,
+                redirect_uri: redirectUri,
+            }))
+            .pipe(
+                switchMap((query: string) => from(PopupWindow.open(
+                    'github-oauth-authorize',
+                    `https://github.com/login/oauth/authorize?${query}`,
+                    { height: 1000, width: 600 })
+                )),
+                switchMap((data: any) => authService.githubAuth(data)),
+                switchMap(() => userService.getUser()),
+                mergeMap((data) => [authActions.loginSuccess(data), userActions.getProjectList()])
+            );
+    }),
+    catchError((err: any) => {
+        console.log('Error: ', err);
+        return empty();
     })
 );

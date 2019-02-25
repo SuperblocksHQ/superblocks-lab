@@ -34,19 +34,12 @@ interface IProps {
 
     isProjectListLoading: boolean;
 
+    isLoginInProgress: boolean;
+
     functions: any;
 }
 
-interface IState {
-    isAuthenticated: boolean;
-}
-
-export default class Dashboard extends Component<IProps, IState> {
-
-    state: IState = {
-        isAuthenticated: this.props.isAuthenticated
-    };
-
+export default class Dashboard extends Component<IProps> {
     componentDidMount() {
         this.props.getProjectList();
     }
@@ -56,7 +49,7 @@ export default class Dashboard extends Component<IProps, IState> {
     }
 
     render() {
-        const { projectList, isAuthenticated, githubLoginAction, isProjectListLoading, functions} = this.props;
+        const { projectList, isAuthenticated, githubLoginAction, isLoginInProgress, functions} = this.props;
 
         return(
             <div className={style.dashboard}>
@@ -76,11 +69,15 @@ export default class Dashboard extends Component<IProps, IState> {
                     </React.Fragment>
                 :
                     <div className={style.loginSection}>
-                        <LoginModal
-                            customClassName={style.loginModal}
-                            githubLogin={githubLoginAction}
-                            hideCloseButton={true}
-                        />
+                        { isLoginInProgress ?
+                            <React.Fragment />
+                            :
+                            <LoginModal
+                                customClassName={style.loginModal}
+                                githubLogin={githubLoginAction}
+                                hideCloseButton={true}
+                            />
+                        }
                     </div>
                 }
             </div>
