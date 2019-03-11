@@ -126,6 +126,7 @@
     "react-fetch": "^0.0.9",
     "react-monaco-editor": "0.13.0",
     "react-onclickoutside": "^6.7.1",
+    "react-particles-js": "^2.4.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-splitter-layout": "^3.0.1",

@@ -26,6 +26,7 @@ import Dashboard from '../dashboard';
 import LoadProject from '../loadProject';
 import * as embedUtils from '../../utils/embed';
 import ModalContainer  from '../common/modal/modalContainer';
+import PageNotFound from './../pageNotFound';
 
 export default class App extends Component {
 
@@ -99,6 +100,7 @@ export default class App extends Component {
                             <Switch>
                                 <Route path="/dashboard" exact render={(props) => <Dashboard {...props} functions={this.functions} />} />
                                 <Route path="/:projectId" exact component={this.renderProject} />
+                                <Route component={() => <PageNotFound />} status={404} />
                             </Switch>
                         </div>
                     </div>

@@ -10375,6 +10375,11 @@ react-onclickoutside@^6.7.1:
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.7.1.tgz#6a5b5b8b4eae6b776259712c89c8a2b36b17be93"
   integrity sha512-p84kBqGaMoa7VYT0vZ/aOYRfJB+gw34yjpda1Z5KeLflg70HipZOT+MXQenEhdkPAABuE2Astq4zEPdMqUQxcg==
 
+react-particles-js@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/react-particles-js/-/react-particles-js-2.4.2.tgz#34a4d1ea15eaebcbb068f7b6a7c43b18792fcf65"
+  integrity sha512-/rfpLRYUA4JFEBBM8cN3X+kEr9P7J2lXktJi81ugcK6B9H69xNlDFKXOUYe+YizW8E5NapxNgubAcKYt0Co7TQ==
+
 react-redux@^5.0.7:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.1.1.tgz#88e368682c7fa80e34e055cd7ac56f5936b0f52f"
