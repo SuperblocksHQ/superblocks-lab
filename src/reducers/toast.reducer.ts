@@ -39,7 +39,7 @@ export default function toastsReducer(state = initialState, action: AnyAction, r
         case projectsActions.UPDATE_PROJECT_SETTINGS_FAIL:
         case projectsActions.UPDATE_PROJECT_SUCCESS:
         case ipfsActions.IMPORT_PROJECT_FROM_IPFS_FAIL:
-        case projectsActions.FORK_PROJECT_SUCCESS:
+        case projectsActions.FORK_PROJECT:
         case projectsActions.CREATE_PROJECT_SUCCESS:
         case projectsActions.DELETE_PROJECT_SUCCESS:
         case projectsActions.FORK_PROJECT_FAIL: {
