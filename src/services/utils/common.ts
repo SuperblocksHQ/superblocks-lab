@@ -26,3 +26,7 @@ export function readLocalStorageJSON(key: string): any {
 export function saveLocalStorageJSON(key: string, data: any) {
     localStorage.setItem(key, JSON.stringify(data));
 }
+
+export function redirect404() {
+    window.location.href = `${window.location.origin}/404`;
+}

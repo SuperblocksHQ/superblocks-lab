@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 import { fetchJSON } from './utils/fetchJson';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, catchError } from 'rxjs/operators';
 import { IProject } from '../models';
-import { Observable } from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 
 export const projectService = {
 
@@ -42,7 +42,10 @@ export const projectService = {
     getProjectById(id: string) {
         return fetchJSON(process.env.REACT_APP_PROJECT_API_BASE_URL + '/projects/' + id, {})
             .pipe(
-                switchMap(response => response.json())
+                switchMap(r => (r.ok ? r.json() : throwError(r.statusText))),
+                catchError(err => {
+                    throw err;
+                })
             );
     },
 

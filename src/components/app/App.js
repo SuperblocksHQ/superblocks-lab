@@ -100,6 +100,7 @@ export default class App extends Component {
                                 {["/", "/dashboard"].map((path, index) => 
                                     <Route path={path} exact render={(props) => <Dashboard {...props} functions={this.functions} />} key={index} />
                                 )}
+                                <Route path="/404" component={() => <PageNotFound />} status={404} />
                                 <Route path="/:projectId" exact component={this.renderProject} />
                                 <Route component={() => <PageNotFound />} status={404} />
                             </Switch>

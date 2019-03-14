@@ -19,6 +19,7 @@ import { switchMap, withLatestFrom, map, catchError, skipUntil, tap, skipWhile, 
 import { ofType, Epic } from 'redux-observable';
 import { projectsActions } from '../../actions';
 import { projectService} from '../../services/project.service';
+import { redirect404 } from '../../services/utils';
 
 export function loadProjectById(projectId: string) {
     return projectService.getProjectById(projectId)
@@ -26,6 +27,7 @@ export function loadProjectById(projectId: string) {
             map(projectsActions.loadProjectSuccess),
             catchError((error) => {
                 console.log('There was an issue loading the project: ' + error);
+                redirect404();
                 return of(projectsActions.loadProjectFail(error));
             })
         );
