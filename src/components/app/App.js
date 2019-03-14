@@ -96,9 +96,10 @@ export default class App extends Component {
                 <div id="app">
                     <div id="app_content">
                         <div className="maincontent">
-                            <Route path="/" exact render={(props) => <Dashboard {...props} functions={this.functions} />} />
                             <Switch>
-                                <Route path="/dashboard" exact render={(props) => <Dashboard {...props} functions={this.functions} />} />
+                                {["/", "/dashboard"].map((path, index) => 
+                                    <Route path={path} exact render={(props) => <Dashboard {...props} functions={this.functions} />} key={index} />
+                                )}
                                 <Route path="/:projectId" exact component={this.renderProject} />
                                 <Route component={() => <PageNotFound />} status={404} />
                             </Switch>
