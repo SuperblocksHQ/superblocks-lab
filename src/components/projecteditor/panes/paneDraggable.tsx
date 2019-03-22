@@ -68,6 +68,12 @@ const entrySource: DragSourceSpec<IProps, {}> = {
 
         const targetId = monitor.getDropResult().index;
         props.onMovePane(props.index, targetId);
+    },
+    canDrag(props: any) {
+        if (props.isRoot) {
+            return false;
+        }
+        return true;
     }
 };
 
