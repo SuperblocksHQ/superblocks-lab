@@ -16,7 +16,7 @@
 import { fetchJSON } from './utils/fetchJson';
 import { switchMap, catchError } from 'rxjs/operators';
 import { IProject } from '../models';
-import {Observable, throwError} from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 export const projectService = {
 
@@ -60,7 +60,9 @@ export const projectService = {
         return fetchJSON(process.env.REACT_APP_PROJECT_API_BASE_URL + '/projects/' + id, {
             method: 'PUT',
             body: data
-        });
+        }).pipe(
+            switchMap(r => (r.ok ? r.statusText : throwError(r.statusText)))
+        );
     },
 
     deleteProjectById(id: string) {
