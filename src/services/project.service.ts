@@ -42,10 +42,7 @@ export const projectService = {
     getProjectById(id: string) {
         return fetchJSON(process.env.REACT_APP_PROJECT_API_BASE_URL + '/projects/' + id, {})
             .pipe(
-                switchMap(r => (r.ok ? r.json() : throwError(r.statusText))),
-                catchError(err => {
-                    throw err;
-                })
+                switchMap(r => (r.ok ? r.json() : throwError(r.statusText)))
             );
     },
 
@@ -70,4 +67,5 @@ export const projectService = {
             method: 'DELETE'
         });
     },
+
 };
