@@ -17,7 +17,7 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
-import ProjectBuild from './ProjectBuild';
+import ProjectBuildsPage from './ProjectBuildsPage';
 
 const mapStateToProps = (state: any) => ({
 
@@ -29,4 +29,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectBuild);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectBuildsPage);

@@ -19,7 +19,7 @@ import Topbar from '../topbar';
 import style from './style.less';
 import { SideMenu, SideMenuItem, SideMenuFooter } from '../sideMenu';
 import { LoginModal } from '../../modals';
-import { IconConfigure, IconDeploy } from '../../icons';
+import { IconConfigure, IconPlay } from '../../icons';
 
 interface IProps {
     isAuthenticated: boolean;
@@ -44,10 +44,10 @@ export default class ProjectDashboard extends Component<IProps> {
                         <div className={style.content}>
                             <SideMenu>
                                 <SideMenuItem
-                                        icon={<IconDeploy />}
-                                        title='Build'
-                                        active={pathname.includes('build')}
-                                        linkTo={`/dashboard/project/${this.props.match.params.projectId}/build`}
+                                        icon={<IconPlay />}
+                                        title='Builds'
+                                        active={pathname.includes('builds')}
+                                        linkTo={`/dashboard/project/${this.props.match.params.projectId}/builds`}
                                 />
                                 <SideMenuFooter>
                                     <SideMenuItem

@@ -41,8 +41,8 @@ const ProjectSettings = Loadable({
     loading: EmptyLoading,
 });
 
-const ProjectBuild = Loadable({
-    loader: () => import(/* webpackChunkName: "ProjectBuild" */"../dashboard/projectDashboard/projectBuild"),
+const ProjectBuildsPage = Loadable({
+    loader: () => import(/* webpackChunkName: "ProjectBuildsPage" */"../dashboard/projectDashboard/projectBuild"),
     loading: EmptyLoading,
 });
 
@@ -123,10 +123,10 @@ export default class App extends Component {
                                 <Route path="/" exact render={(props) => <Dashboard {...props} functions={this.functions} />} />
                                 <Route path="/dashboard" exact render={(props) => <Dashboard {...props} functions={this.functions} />} />
                                 <Route exact path="/dashboard/project/:projectId" render={(props) => (  
-                                    <ProjectDashboard content={<ProjectBuild />} {...props} />  
+                                    <ProjectDashboard content={<ProjectBuildsPage />} {...props} />  
                                 )} />
-                                <Route exact path="/dashboard/project/:projectId/build" render={(props) => (  
-                                    <ProjectDashboard content={<ProjectBuild />} {...props} />  
+                                <Route exact path="/dashboard/project/:projectId/builds" render={(props) => (  
+                                    <ProjectDashboard content={<ProjectBuildsPage />} {...props} />  
                                 )} />
                                 <Route exact path="/dashboard/project/:projectId/settings" render={(props) => (  
                                     <ProjectDashboard content={<ProjectSettings />} {...props} />  
