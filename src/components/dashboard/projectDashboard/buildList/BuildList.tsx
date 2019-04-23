@@ -94,7 +94,7 @@ export default class BuildList extends Component<IProps> {
                     <IconExternalLink width='10px' height='10px' />
                 </a>
                 <div className={style.hr}></div>
-                
+
                 <table className={style.buildList}>
                     <thead>
                         <tr>

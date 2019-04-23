@@ -87,7 +87,7 @@ export default class BuildPage extends Component<IProps> {
                     <a href='#' className={style.tabItem}>Logs</a>
                 </div>
                 <div className={style.hr}></div>
-                
+
                 <h2>Compile and Test</h2>
                 <p>
                     <span><b>Total duration:</b> {build.duration}</span>
