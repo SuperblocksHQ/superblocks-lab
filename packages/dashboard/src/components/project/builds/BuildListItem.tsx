@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom';
 interface IProps {
     build: any;
     projectId: string;
+    organizationId: string;
 }
 
 export default class BuildListItem extends Component<IProps> {
@@ -36,26 +37,28 @@ export default class BuildListItem extends Component<IProps> {
                     <BuildStatus status={build.status} />
                 </td>
                 <td>
-                    <Link to={{pathname: `/dashboard/project/${this.props.projectId}/builds/${build.commit.hash}`, state: {build}}}>
+                    <Link to={{pathname: `/${this.props.organizationId}/${this.props.projectId}/builds/${build.commit.hash}`, state: {build}}} className={style.linkPrimary}>
                         #{build.buildNumber}
                     </Link>
                 </td>
                 <td>
                     <span className={style.flexVerticalCenter}>
                         <IconBranch className={style['mr-2']} />
-                        {build.branch}
+                        <a href={build.commit.branchLink} target='_blank' rel='noopener noreferrer'>
+                            {build.branch}
+                        </a>
                     </span>
                 </td>
                 <td>
                     <div className={style.flexVerticalCenter}>
                         <img src={build.commit.ownerAvatar} className={style['mr-2']} alt={build.commit.ownerName} />
                         <div>
-                            <span>
+                            <span className={style['mb-1']}>
                                 {build.commit.description}
                             </span>
                             <span>
                                 <IconCommit className={style['mr-1']} />
-                                <a href='#' className={style.linkPrimary}>
+                                <a href={build.commit.commitLink} target='_blank' rel='noopener noreferrer'>
                                     {build.commit.hash}
                                 </a>
                             </span>

@@ -21,18 +21,15 @@ import { SideMenu, SideMenuItem, SideMenuFooter } from '../sideMenu';
 import { IconConfigure, IconPlay } from '../icons';
 
 interface IProps {
-    isAuthenticated: boolean;
-    isLoginInProgress: boolean;
     location: any;
     match: any;
     content: JSX.Element;
-    githubLoginAction: () => void;
 }
 
 export default class ProjectDashboard extends Component<IProps> {
 
     render() {
-        const { isAuthenticated, isLoginInProgress, githubLoginAction, content } = this.props;
+        const { content } = this.props;
         const { pathname } = this.props.location;
 
         return (
@@ -45,14 +42,14 @@ export default class ProjectDashboard extends Component<IProps> {
                                     icon={<IconPlay />}
                                     title='Builds'
                                     active={pathname.includes('builds')}
-                                    linkTo={`/dashboard/project/${this.props.match.params.projectId}/builds`}
+                                    linkTo={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}
                             />
                             <SideMenuFooter>
                                 <SideMenuItem
                                     icon={<IconConfigure />}
                                     title='Project Settings'
                                     active={pathname.includes('settings')}
-                                    linkTo={`/dashboard/project/${this.props.match.params.projectId}/settings`}
+                                    linkTo={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/settings`}
                                 />
                             </SideMenuFooter>
 

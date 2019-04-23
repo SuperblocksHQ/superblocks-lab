@@ -43,7 +43,9 @@ export default class BuildPage extends Component<IProps> {
                 ownerName: 'Javier Taragaza Gomez',
                 description: 'Initial commit',
                 hash: 'gf245df',
-                timestamp: '2019-04-15T12:47:45.090Z'
+                timestamp: '2019-04-15T12:47:45.090Z',
+                branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
+                commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
             }
         };
 
@@ -70,14 +72,14 @@ export default class BuildPage extends Component<IProps> {
                     <img src={build.commit.ownerAvatar} />
                     <b>{build.commit.ownerName}</b>
                     <span>
-                        <IconBranch width='10px' height='10px' />
-                        <a href='' className={classNames([style.linkPrimary, style['ml-1']])}>
+                        <IconBranch width='14px' height='14px' />
+                        <a href={build.commit.branchLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
                             {build.branch}
                         </a>
                     </span>
                     <span>
-                        <IconCommit width='10px' height='10px' />
-                        <a href='' className={classNames([style.linkPrimary, style['ml-1']])}>
+                        <IconCommit width='14px' height='14px' />
+                        <a href={build.commit.commitLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
                             {build.commit.hash}
                         </a>
                     </span>

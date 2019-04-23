@@ -45,7 +45,9 @@ export default class BuildList extends Component<IProps> {
                         ownerName: 'Krystof Viktora',
                         description: 'Update contract constructor',
                         hash: '26ed941',
-                        timestamp: '2019-04-15T12:47:45.090Z'
+                        timestamp: '2019-04-15T12:47:45.090Z',
+                        branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
+                        commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
                     }
                 },
                 {
@@ -58,7 +60,9 @@ export default class BuildList extends Component<IProps> {
                         ownerName: 'Javier Taragaza Gomez',
                         description: 'Mierda',
                         hash: 'df24adf',
-                        timestamp: '2019-04-15T12:47:45.090Z'
+                        timestamp: '2019-04-15T12:47:45.090Z',
+                        branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
+                        commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
                     }
                 },
                 {
@@ -71,7 +75,9 @@ export default class BuildList extends Component<IProps> {
                         ownerName: 'Krystof Viktora',
                         description: 'Initial commit',
                         hash: 'gf245df',
-                        timestamp: '2019-04-15T12:47:45.090Z'
+                        timestamp: '2019-04-15T12:47:45.090Z',
+                        branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
+                        commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
                     }
                 },
             ]
@@ -107,7 +113,7 @@ export default class BuildList extends Component<IProps> {
                     <tbody>
                         { project.builds.map(build =>
                             <tr className={style.buildItem} key={build.commit.hash}>
-                                <BuildListItem build={build} projectId={this.props.match.params.projectId} />
+                                <BuildListItem build={build} projectId={this.props.match.params.projectId} organizationId={this.props.match.params.organizationId} />
                             </tr>
                         )}
                     </tbody>
