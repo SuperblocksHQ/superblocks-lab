@@ -28,6 +28,7 @@ interface IProps {
 
 export default class BuildList extends Component<IProps> {
     render() {
+        console.log(window.location);
         // TODO: Get project from cloud
         const project = {
             repository: {
@@ -86,9 +87,9 @@ export default class BuildList extends Component<IProps> {
         return (
             <React.Fragment>
                 <BreadCrumbs>
-                    <Link to={`/dashboard`}>Organization Name</Link>
-                    <Link to='./'>Project Name</Link>
-                    <Link to={window.location.pathname}>Builds</Link>
+                    <Link to={'/'}>Organization Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}>Project Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}>Builds</Link>
                 </BreadCrumbs>
 
                 <h1>Builds</h1>

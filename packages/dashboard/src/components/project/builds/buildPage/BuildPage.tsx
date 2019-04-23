@@ -52,10 +52,10 @@ export default class BuildPage extends Component<IProps> {
         return (
             <div className={style.buildPage}>
                 <BreadCrumbs>
-                    <Link to={`/dashboard`}>Organization Name</Link>
-                    <Link to='./'>Project Name</Link>
-                    <Link to={'../'}>Builds</Link>
-                    <Link to={`/dashboard/project/${this.props.match.params.projectId}/builds/${this.props.match.params.buildId}`}>
+                    <Link to={'/'}>Organization Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}>Project Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}>Builds</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds/${this.props.match.params.buildId}`}>
                         #{build.buildNumber}
                     </Link>
                 </BreadCrumbs>
@@ -91,7 +91,7 @@ export default class BuildPage extends Component<IProps> {
                 <div className={style.hr}></div>
 
                 <h2>Compile and Test</h2>
-                <p>
+                <p className={style['mb-4']}>
                     <span><b>Total duration:</b> {build.duration}</span>
                     <span className={style['ml-3']}><b>Queued:</b> 00:01 waiting</span>
                 </p>
