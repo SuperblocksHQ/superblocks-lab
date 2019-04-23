@@ -14,19 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { connect } from 'react-redux';
-import { Dispatch } from 'react';
-import { AnyAction } from 'redux';
-import ProjectBuildsPage from './ProjectBuildsPage';
+import React, { Component } from 'react';
+import style from './style.less';
 
-const mapStateToProps = (state: any) => ({
-
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
-    return {
-
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectBuildsPage);
+export default class BuildConsole extends Component {
+    render() {
+        return (
+            <div className={style.buildConsole}>
+                {/* TODO: Use compilerPanel instead as it has same functionality */}
+            </div>
+        );
+    }
+}

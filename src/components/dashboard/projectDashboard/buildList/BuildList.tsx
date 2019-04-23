@@ -26,7 +26,7 @@ interface IProps {
     match: any;
 }
 
-export default class ProjectBuildsPage extends Component<IProps> {
+export default class BuildList extends Component<IProps> {
     render() {
         // TODO: Get project from cloud
         const project = {
@@ -42,6 +42,7 @@ export default class ProjectBuildsPage extends Component<IProps> {
                     buildTime: '00:02:56',
                     commit: {
                         ownerAvatar: 'https://avatars0.githubusercontent.com/u/17637244?v=4&s=24',
+                        ownerName: 'Krystof Viktora',
                         description: 'Update contract constructor',
                         hash: '26ed941',
                         timestamp: '2019-04-15T12:47:45.090Z'
@@ -54,6 +55,7 @@ export default class ProjectBuildsPage extends Component<IProps> {
                     buildTime: '00:02:56',
                     commit: {
                         ownerAvatar: 'https://avatars3.githubusercontent.com/u/7814134?v=4&s=24',
+                        ownerName: 'Javier Taragaza Gomez',
                         description: 'Mierda',
                         hash: 'df24adf',
                         timestamp: '2019-04-15T12:47:45.090Z'
@@ -66,6 +68,7 @@ export default class ProjectBuildsPage extends Component<IProps> {
                     buildTime: '00:02:56',
                     commit: {
                         ownerAvatar: 'https://avatars0.githubusercontent.com/u/17637244?v=4&s=24',
+                        ownerName: 'Krystof Viktora',
                         description: 'Initial commit',
                         hash: 'gf245df',
                         timestamp: '2019-04-15T12:47:45.090Z'
@@ -79,7 +82,7 @@ export default class ProjectBuildsPage extends Component<IProps> {
                 <BreadCrumbs>
                     <Link to={`/dashboard`}>Organization Name</Link>
                     <Link to='./'>Project Name</Link>
-                    <Link to={window.location.pathname}>Build</Link>
+                    <Link to={window.location.pathname}>Builds</Link>
                 </BreadCrumbs>
 
                 <h1>Builds</h1>
@@ -91,19 +94,23 @@ export default class ProjectBuildsPage extends Component<IProps> {
                     <IconExternalLink width='10px' height='10px' />
                 </a>
                 <div className={style.hr}></div>
+                
                 <table className={style.buildList}>
-                    <tr>
-                        <th>Status</th>
-                        <th>Build #</th>
-                        <th>Branch</th>
-                        <th>Commit</th>
-                    </tr>
-
-                    { project.builds.map(build =>
-                        <tr className={style.buildItem}>
-                            <BuildListItem build={build} key={build.commit.hash} />
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Build #</th>
+                            <th>Branch</th>
+                            <th>Commit</th>
                         </tr>
-                    )}
+                    </thead>
+                    <tbody>
+                        { project.builds.map(build =>
+                            <tr className={style.buildItem} key={build.commit.hash}>
+                                <BuildListItem build={build} projectId={this.props.match.params.projectId} />
+                            </tr>
+                        )}
+                    </tbody>
                 </table>
             </React.Fragment>
         );

@@ -1,4 +1,4 @@
-// Copyright 2018 Superblocks AB
+// Copyright 2019 Superblocks AB
 //
 // This file is part of Superblocks Lab.
 //
@@ -14,17 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+@import '../../../style/index.less';
+
 .sideMenuContainer {
     position: relative;
-    min-width: 247px;
+    min-width: 220px;
     box-sizing: border-box;
     z-index: 1;
-    background-color: #252525;
+    background-color: #262c30;
     color: white;
     display: flex;
     flex-direction: column;
     height: calc(100% - 45px);
-    padding-top: 10px;
     overflow-x: hidden;
     transition: width .2s ease-out, min-width .2s ease-out;
     
@@ -64,7 +65,7 @@
             &:hover .subMenu.visible {
                 position: fixed;
                 display: block;
-                background: #252525;
+                background: #262c30;
                 min-width: 150px;
                 margin-left: 36px;
                 margin-top: -34px;
@@ -106,9 +107,9 @@
             padding: 5px 0px;
             position: fixed;
             display: block;
-            background: #252525;
+            background: #262c30;
             min-width: 150px;
-            margin-left: 247px;
+            margin-left: 220px;
             margin-top: -34px;
             box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         }
@@ -126,7 +127,7 @@
         }
 
         .item {
-            background: #252525;
+            background: #262c30;
             justify-content: flex-start;
         }
 
@@ -186,8 +187,8 @@
         }
 
         &.active {
-            border-color: #7237CF;
-            background-color: rgba(128, 46, 255, 0.1);
+            border-color: @primary-color;
+            background-color: #283134;
         }
 
         &:hover {

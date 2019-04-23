@@ -1,0 +1,60 @@
+// Copyright 2019 Superblocks AB
+//
+// This file is part of Superblocks Lab.
+//
+// Superblocks Lab is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation version 3 of the License.
+//
+// Superblocks Lab is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
+
+@import '../style.less';
+
+.buildPage {
+    .title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    
+        h1 {
+            margin-left: 15px;
+            margin-bottom: 0px;
+        }
+    }
+    
+    .subtitle {
+        margin-bottom: 25px;
+    
+        img {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+    
+        span {
+            margin-left: 15px;
+        }
+    }
+    
+    .tabNavigation {
+        margin-bottom: -8px;
+    
+        .tabItem {
+            border-bottom: 1px solid @primary-color;
+            padding-bottom: 7px;
+        }
+    }
+    
+    .buildConsole {
+        width: 100%;
+        background: #151515;
+        color: white;
+        padding: 25px 35px;
+        min-height: 300px;
+    }
+}

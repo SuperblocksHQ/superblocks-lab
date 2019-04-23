@@ -17,7 +17,7 @@
 import React from 'react';
 import style from './style.less';
 import classNames from 'classnames';
-import { IconCheck, IconWatch, IconClose } from '../../../icons';
+import { IconCheck, IconClose, IconClock } from '../../../icons';
 
 interface IProps {
     status: number;
@@ -35,7 +35,7 @@ export function BuildStatus(props: IProps) {
         case 0:
             return (
                 <div className={classNames([style.buildStatus, style.pending])}>
-                    <IconWatch width='14px' height='14px' />
+                    <IconClock width='14px' height='14px' />
                     <span>pending</span>
                 </div>
             );

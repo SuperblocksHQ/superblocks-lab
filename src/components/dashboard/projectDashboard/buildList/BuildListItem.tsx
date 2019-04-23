@@ -19,13 +19,14 @@ import style from './style.less';
 import moment from 'moment';
 import { IconBranch, IconCommit, IconClock, IconCalendar } from '../../../icons';
 import { BuildStatus } from './BuildStatus';
+import { Link } from 'react-router-dom';
 
 interface IProps {
     build: any;
+    projectId: string;
 }
 
 export default class BuildListItem extends Component<IProps> {
-
     render() {
         const { build } = this.props;
 
@@ -34,30 +35,40 @@ export default class BuildListItem extends Component<IProps> {
                 <td>
                     <BuildStatus status={build.status} />
                 </td>
-                <td>#{build.buildNumber}</td>
                 <td>
-                    <div>
-                    <IconBranch />
-                    {build.branch}
+                    <Link to={{pathname: `/dashboard/project/${this.props.projectId}/builds/${build.commit.hash}`, state: {build}}}>
+                        #{build.buildNumber}
+                    </Link>
+                </td>
+                <td>
+                    <span className={style.flexVerticalCenter}>
+                        <IconBranch className={style['mr-2']} />
+                        {build.branch}
+                    </span>
+                </td>
+                <td>
+                    <div className={style.flexVerticalCenter}>
+                        <img src={build.commit.ownerAvatar} className={style['mr-2']} alt={build.commit.ownerName} />
+                        <div>
+                            <span>
+                                {build.commit.description}
+                            </span>
+                            <span>
+                                <IconCommit className={style['mr-1']} />
+                                <a href='#' className={style.linkPrimary}>
+                                    {build.commit.hash}
+                                </a>
+                            </span>
+                        </div>
                     </div>
                 </td>
-                <td>
-                    <img src={build.commit.ownerAvatar} />
-                        <span>
-                            {build.commit.description}
-                        </span>
-                        <span>
-                            <IconCommit />
-                            {build.commit.hash}
-                        </span>
-                </td>
                 <td className={style[`status-${build.status}`]}>
-                    <span>
-                        <IconClock />
+                    <span className={style['mb-2']}>
+                        <IconClock className={style['mr-2']} />
                         {build.buildTime}
                     </span>
                     <span>
-                        <IconCalendar />
+                        <IconCalendar className={style['mr-2']} />
                         {moment.utc(build.commit.timestamp).fromNow()}
                     </span>
                 </td>

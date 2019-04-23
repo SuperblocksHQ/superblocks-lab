@@ -41,8 +41,13 @@ const ProjectSettings = Loadable({
     loading: EmptyLoading,
 });
 
-const ProjectBuildsPage = Loadable({
-    loader: () => import(/* webpackChunkName: "ProjectBuildsPage" */"../dashboard/projectDashboard/projectBuild"),
+const BuildList = Loadable({
+    loader: () => import(/* webpackChunkName: "BuildList" */"../dashboard/projectDashboard/buildList"),
+    loading: EmptyLoading,
+});
+
+const BuildPage = Loadable({
+    loader: () => import(/* webpackChunkName: "BuildPage" */"../dashboard/projectDashboard/buildPage"),
     loading: EmptyLoading,
 });
 
@@ -123,13 +128,16 @@ export default class App extends Component {
                                 <Route path="/" exact render={(props) => <Dashboard {...props} functions={this.functions} />} />
                                 <Route path="/dashboard" exact render={(props) => <Dashboard {...props} functions={this.functions} />} />
                                 <Route exact path="/dashboard/project/:projectId" render={(props) => (  
-                                    <ProjectDashboard content={<ProjectBuildsPage />} {...props} />  
+                                    <ProjectDashboard content={<BuildList {...props} />} {...props} />  
                                 )} />
                                 <Route exact path="/dashboard/project/:projectId/builds" render={(props) => (  
-                                    <ProjectDashboard content={<ProjectBuildsPage />} {...props} />  
+                                    <ProjectDashboard content={<BuildList {...props} />} {...props} />  
+                                )} />
+                                <Route exact path="/dashboard/project/:projectId/builds/:buildId" render={(props) => (  
+                                    <ProjectDashboard content={<BuildPage {...props} />} {...props} />  
                                 )} />
                                 <Route exact path="/dashboard/project/:projectId/settings" render={(props) => (  
-                                    <ProjectDashboard content={<ProjectSettings />} {...props} />  
+                                    <ProjectDashboard content={<ProjectSettings {...props} />} {...props} />  
                                 )} />
                                 <Route path="/:projectId" exact component={this.renderProject} />
                             </Switch>

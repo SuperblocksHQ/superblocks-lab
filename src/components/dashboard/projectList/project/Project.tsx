@@ -59,7 +59,7 @@ export default class Project extends Component<IProps> {
 
         return (
             <div className={style.container}>
-                <Link to={`/dashboard/project/${project.id}`} className={style.innerWrapper}>
+                <Link to={`/dashboard/project/${project.id}/builds`} className={style.innerWrapper}>
                     <div className={style.name}>
                         {project.name}
                     </div>
