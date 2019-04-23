@@ -18,7 +18,7 @@ import React, { Component } from 'react';
 import style from './style.less';
 import { Link } from 'react-router-dom';
 import { BreadCrumbs } from '../../../common';
-import { IconBranch, IconCommit } from '../../../icons';
+import { IconBranch, IconCommit } from '../../../common/icons';
 import { BuildStatus } from '../BuildStatus';
 import moment from 'moment';
 import BuildConsole from './BuildConsole';

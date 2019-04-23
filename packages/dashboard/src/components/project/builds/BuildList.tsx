@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import style from './style.less';
 import { Link } from 'react-router-dom';
-import { IconGithub, IconExternalLink } from '../../icons';
+import { IconGithub, IconExternalLink } from '../../common/icons';
 import BuildListItem from './BuildListItem';
 import { BreadCrumbs } from '../../common';
 

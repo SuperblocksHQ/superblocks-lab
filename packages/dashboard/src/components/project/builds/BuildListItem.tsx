@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import style from './style.less';
 import moment from 'moment';
-import { IconBranch, IconCommit, IconClock, IconCalendar } from '../../icons';
+import { IconBranch, IconCommit, IconClock, IconCalendar } from '../../common/icons';
 import { BuildStatus } from './BuildStatus';
 import { Link } from 'react-router-dom';
 

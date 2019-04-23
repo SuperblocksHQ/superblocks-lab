@@ -17,7 +17,7 @@
 import React from 'react';
 import style from './style.less';
 import classNames from 'classnames';
-import { IconCheck, IconClose, IconClock } from '../../icons';
+import { IconCheck, IconClose, IconClock } from '../../common/icons';
 
 interface IProps {
     status: number;
