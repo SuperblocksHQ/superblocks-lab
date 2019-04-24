@@ -28,13 +28,14 @@
     height: calc(100% - 45px);
     overflow-x: hidden;
     transition: width .2s ease-out, min-width .2s ease-out;
+    border-right: 1px solid @border-color;
 
     &.collapsed {
         width: 50px;
         min-width: 50px;
 
         .collapseSidebar {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid @border-color;
             transform: rotate(180deg);
         }
 
@@ -152,7 +153,7 @@
     .collapseSidebar {
         margin-top: auto;
         height: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid @border-color;
 
         svg {
             max-height: 100%;
