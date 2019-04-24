@@ -37,7 +37,7 @@ export default class BuildListItem extends Component<IProps> {
                     <BuildStatus status={build.status} />
                 </td>
                 <td>
-                    <Link to={{pathname: `/${this.props.organizationId}/${this.props.projectId}/builds/${build.commit.hash}`, state: {build}}} className={style.linkPrimary}>
+                    <Link to={{pathname: `/${this.props.organizationId}/${this.props.projectId}/builds/${build.commit.hash}`, state: {build}}}>
                         #{build.buildNumber}
                     </Link>
                 </td>
@@ -58,7 +58,7 @@ export default class BuildListItem extends Component<IProps> {
                             </span>
                             <span>
                                 <IconCommit className={style['mr-1']} />
-                                <a href={build.commit.commitLink} target='_blank' rel='noopener noreferrer'>
+                                <a href={build.commit.commitLink} target='_blank' rel='noopener noreferrer' className={style.linkPrimary}>
                                     {build.commit.hash}
                                 </a>
                             </span>

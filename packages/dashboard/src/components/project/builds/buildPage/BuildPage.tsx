@@ -62,7 +62,7 @@ export default class BuildPage extends Component<IProps> {
 
                 <div className={style.title}>
                     <BuildStatus status={build.status} />
-                    <h1>{`Build #${build.buildNumber} - ${build.commit.description}`}</h1>
+                    <h1><span>{`Build #${build.buildNumber} - `}</span>{build.commit.description}</h1>
                 </div>
 
                 <p className={classNames([style.subtitle, style.flexVerticalCenter])}>
@@ -70,15 +70,15 @@ export default class BuildPage extends Component<IProps> {
                         `Triggered ${moment.utc(build.commit.timestamp).fromNow()} by `
                     }
                     <img src={build.commit.ownerAvatar} />
-                    <b>{build.commit.ownerName}</b>
+                    <span className={style.ownerName}>{build.commit.ownerName}</span>
                     <span>
-                        <IconBranch width='14px' height='14px' />
+                        <IconBranch />
                         <a href={build.commit.branchLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
                             {build.branch}
                         </a>
                     </span>
                     <span>
-                        <IconCommit width='14px' height='14px' />
+                        <IconCommit />
                         <a href={build.commit.commitLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
                             {build.commit.hash}
                         </a>
