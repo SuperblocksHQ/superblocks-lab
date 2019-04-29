@@ -114,7 +114,7 @@ export const projectsActions = {
     updateProjectDetails(newDetails: Partial<IProject>) {
        return {
             type: projectsActions.UPDATE_PROJECT_DETAILS,
-            data: { newDetails }
+            data: newDetails
        };
     },
     UPDATE_PROJECT_DETAILS_SUCCESS: 'UPDATE_PROJECT_DETAILS_SUCCESS',
