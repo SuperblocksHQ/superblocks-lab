@@ -16,13 +16,13 @@
 
 import React, { Component } from 'react';
 import Loadable from 'react-loadable';
+import { Switch } from 'react-router-dom';
 import Topbar from '../topbar';
 import style from './style.less';
 import { EmptyLoading } from '../common';
 import { SideMenu, SideMenuItem, SideMenuFooter } from '../sideMenu';
 import { IconConfigure, IconPlay } from '../common/icons';
-import { IProject } from '../../models';
-import { ProjectDashboardSection } from './ProjectDashboardSection.enum';
+import PrivateRoute from '../app/PrivateRoute';
 
 const ProjectSettingsDetails = Loadable({
     loader: () => import(/* webpackChunkName: "ProjectSettingsDetails" */'../project/settings/projectSettingsDetails'),
@@ -37,9 +37,10 @@ const BuildList = Loadable({
 interface IProps {
     location: any;
     match: any;
-    section: ProjectDashboardSection;
     loadProject: (projectId: string) => void;
     isProjectLoading: boolean;
+    isAuthenticated: boolean;
+    isAuthLoading: boolean;
 }
 
 export default class ProjectDashboard extends Component<IProps> {
@@ -47,30 +48,13 @@ export default class ProjectDashboard extends Component<IProps> {
     componentDidMount() {
         const { match, loadProject } = this.props;
 
-        console.log(this.props);
         loadProject(match.params.projectId);
     }
 
-    renderSection() {
-        const { section, location, match } = this.props;
-
-        console.log(section);
-
-        switch (section) {
-            case ProjectDashboardSection.BUILD:
-                return <BuildList location match />;
-            case ProjectDashboardSection.SETTINGS:
-                return <ProjectSettingsDetails {...this.props}/>;
-            default:
-                return <BuildList location match />;
-        }
-    }
-
     render() {
-        const { isProjectLoading } = this.props;
+        const { isAuthenticated, isAuthLoading, isProjectLoading } = this.props;
         const { pathname } = this.props.location;
 
-        console.log('here');
         return (
             <div className={style.projectDashboard}>
                 <React.Fragment>
@@ -93,9 +77,22 @@ export default class ProjectDashboard extends Component<IProps> {
                             </SideMenuFooter>
 
                         </SideMenu>
-                        <div className={style.pageContent}>
-                            {this.renderSection()}
-                        </div>
+                        { isProjectLoading ? <div>Loading</div>
+                        :
+                            <div className={style.pageContent}>
+                                <Switch>
+                                    <PrivateRoute exact path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                        <BuildList {...props} />
+                                    )}/>
+                                    <PrivateRoute exact path='/:organizationId/projects/:projectId/builds' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                        <BuildList {...props} />
+                                    )}/>
+                                    <PrivateRoute exact path='/:organizationId/projects/:projectId/settings/details' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                        <ProjectSettingsDetails {...props} />
+                                    )}/>
+                                </Switch>
+                            </div>
+                        }
                     </div>
                 </React.Fragment>
             </div>

@@ -37,10 +37,7 @@ export const loadProject: Epic = (action$: any, state$: any) => action$.pipe(
     withLatestFrom(state$),
     switchMap(([action, _state]) => {
         const projectId = action.data.projectId;
-        return action$.pipe(
-            withLatestFrom(state$),
-            switchMap(() => loadProjectById(projectId))
-        );
+        return loadProjectById(projectId);
     })
 );
 

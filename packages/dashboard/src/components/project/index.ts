@@ -18,11 +18,11 @@ import { connect } from 'react-redux';
 import ProjectDashboard from './ProjectDashboard';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
-import { authSelectors, projectSelectors } from '../../selectors';
+import { projectSelectors } from '../../selectors';
 import { projectsActions,  } from '../../actions';
 
 const mapStateToProps = (state: any) => ({
-    isProjectLoading: projectSelectors.getLoadingProject(state)
+    isProjectLoading: projectSelectors.getLoadingProject(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {

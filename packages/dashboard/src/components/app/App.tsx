@@ -21,8 +21,6 @@ import Loadable from 'react-loadable';
 import { EmptyLoading } from '../common';
 import PrivateRoute from './PrivateRoute';
 import ModalContainer from '../common/modal/modalContainer';
-import BuildPage from '../project/builds/buildPage/BuildPage';
-import { ProjectDashboardSection } from '../project/ProjectDashboardSection.enum';
 
 const LoginScreen = Loadable({
     loader: () => import(/* webpackChunkName: "LoginScreen" */'../login/loginScreen'),
@@ -40,7 +38,7 @@ const OrganizationSettings = Loadable({
 });
 
 const ProjectDashboard = Loadable({
-    loader: () => import(/* webpackChunkName: "ProjectDashboard" */'../project/ProjectDashboard'),
+    loader: () => import(/* webpackChunkName: "ProjectDashboard" */'../project'),
     loading: EmptyLoading,
 });
 
@@ -82,6 +80,7 @@ export default class App extends Component<IProps> {
                                 <Route path='/login' exact render={(props: any) => <LoginScreen {...props} />} />
                                 <PrivateRoute path='/' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <Dashboard {...props} />} />
                                 <PrivateRoute path='/:organizationId' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <Dashboard {...props} />} />
+                                <PrivateRoute path='/:organizationId/projects' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <Dashboard {...props} />} />
                                 <PrivateRoute path='/:organizationId/settings' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <OrganizationSettings {...props} />} />
                                 <PrivateRoute exact path='/:organizationId/settings/details' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
                                     <OrganizationSettings content={<Details {...props}/>} {...props} />
@@ -89,17 +88,8 @@ export default class App extends Component<IProps> {
                                 <PrivateRoute exact path='/:organizationId/settings/people' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
                                     <OrganizationSettings content={<PeopleList {...props}/>} {...props} />
                                 )} />
-                                <PrivateRoute exact path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <ProjectDashboard {...props} section={ProjectDashboardSection.BUILD}/>
-                                )} />
-                                <PrivateRoute exact path='/:organizationId/projects/:projectId/builds' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <ProjectDashboard {...props} section={ProjectDashboardSection.BUILD}/>
-                                )} />
-                               <PrivateRoute exact path='/:organizationId/projects/:projectId/builds/:buildId' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <ProjectDashboard {...props} section={ProjectDashboardSection.BUILD}/>
-                                )} />
-                                <PrivateRoute exact path='/:organizationId/projects/:projectId/settings/details' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <ProjectDashboard {...props} section={ProjectDashboardSection.SETTINGS}/>
+                                <PrivateRoute path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
+                                    <ProjectDashboard {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
                                 )} />
                             </Switch>
                         </div>
