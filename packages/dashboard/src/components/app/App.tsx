@@ -22,6 +22,7 @@ import { EmptyLoading } from '../common';
 import PrivateRoute from './PrivateRoute';
 import ModalContainer from '../common/modal/modalContainer';
 import BuildPage from '../project/builds/buildPage/BuildPage';
+import { ProjectDashboardSection } from '../project/ProjectDashboardSection.enum';
 
 const LoginScreen = Loadable({
     loader: () => import(/* webpackChunkName: "LoginScreen" */'../login/loginScreen'),
@@ -40,16 +41,6 @@ const OrganizationSettings = Loadable({
 
 const ProjectDashboard = Loadable({
     loader: () => import(/* webpackChunkName: "ProjectDashboard" */'../project/ProjectDashboard'),
-    loading: EmptyLoading,
-});
-
-const ProjectSettingsDetails = Loadable({
-    loader: () => import(/* webpackChunkName: "ProjectSettingsDetails" */'../project/settings/projectSettingsDetails'),
-    loading: EmptyLoading,
-});
-
-const BuildList = Loadable({
-    loader: () => import(/* webpackChunkName: "ProjectBuild" */'../project/builds/BuildList'),
     loading: EmptyLoading,
 });
 
@@ -99,16 +90,16 @@ export default class App extends Component<IProps> {
                                     <OrganizationSettings content={<PeopleList {...props}/>} {...props} />
                                 )} />
                                 <PrivateRoute exact path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <ProjectDashboard content={<BuildList {...props}/>} {...props} />
+                                    <ProjectDashboard {...props} section={ProjectDashboardSection.BUILD}/>
                                 )} />
                                 <PrivateRoute exact path='/:organizationId/projects/:projectId/builds' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <ProjectDashboard content={<BuildList {...props}/>} {...props} />
+                                    <ProjectDashboard {...props} section={ProjectDashboardSection.BUILD}/>
                                 )} />
                                <PrivateRoute exact path='/:organizationId/projects/:projectId/builds/:buildId' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <ProjectDashboard content={<BuildPage {...props}/>} {...props} />
+                                    <ProjectDashboard {...props} section={ProjectDashboardSection.BUILD}/>
                                 )} />
                                 <PrivateRoute exact path='/:organizationId/projects/:projectId/settings/details' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <ProjectDashboard content={<ProjectSettingsDetails {...props}/>} {...props} />
+                                    <ProjectDashboard {...props} section={ProjectDashboardSection.SETTINGS}/>
                                 )} />
                             </Switch>
                         </div>

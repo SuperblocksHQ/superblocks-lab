@@ -15,23 +15,62 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
+import Loadable from 'react-loadable';
 import Topbar from '../topbar';
 import style from './style.less';
+import { EmptyLoading } from '../common';
 import { SideMenu, SideMenuItem, SideMenuFooter } from '../sideMenu';
 import { IconConfigure, IconPlay } from '../common/icons';
+import { IProject } from '../../models';
+import { ProjectDashboardSection } from './ProjectDashboardSection.enum';
+
+const ProjectSettingsDetails = Loadable({
+    loader: () => import(/* webpackChunkName: "ProjectSettingsDetails" */'../project/settings/projectSettingsDetails'),
+    loading: EmptyLoading,
+});
+
+const BuildList = Loadable({
+    loader: () => import(/* webpackChunkName: "ProjectBuild" */'../project/builds/BuildList'),
+    loading: EmptyLoading,
+});
 
 interface IProps {
     location: any;
     match: any;
-    content: JSX.Element;
+    section: ProjectDashboardSection;
+    loadProject: (projectId: string) => void;
+    isProjectLoading: boolean;
 }
 
 export default class ProjectDashboard extends Component<IProps> {
 
+    componentDidMount() {
+        const { match, loadProject } = this.props;
+
+        console.log(this.props);
+        loadProject(match.params.projectId);
+    }
+
+    renderSection() {
+        const { section, location, match } = this.props;
+
+        console.log(section);
+
+        switch (section) {
+            case ProjectDashboardSection.BUILD:
+                return <BuildList location match />;
+            case ProjectDashboardSection.SETTINGS:
+                return <ProjectSettingsDetails {...this.props}/>;
+            default:
+                return <BuildList location match />;
+        }
+    }
+
     render() {
-        const { content } = this.props;
+        const { isProjectLoading } = this.props;
         const { pathname } = this.props.location;
 
+        console.log('here');
         return (
             <div className={style.projectDashboard}>
                 <React.Fragment>
@@ -55,7 +94,7 @@ export default class ProjectDashboard extends Component<IProps> {
 
                         </SideMenu>
                         <div className={style.pageContent}>
-                            {content}
+                            {this.renderSection()}
                         </div>
                     </div>
                 </React.Fragment>
