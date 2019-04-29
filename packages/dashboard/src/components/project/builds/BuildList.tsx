@@ -88,8 +88,8 @@ export default class BuildList extends Component<IProps> {
             <React.Fragment>
                 <BreadCrumbs>
                     <Link to={'/'}>Organization Name</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}>Project Name</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}>Builds</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Project Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
                 </BreadCrumbs>
 
                 <h1>Builds</h1>

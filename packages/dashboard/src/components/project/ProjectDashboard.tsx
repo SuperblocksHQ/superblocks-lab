@@ -42,14 +42,14 @@ export default class ProjectDashboard extends Component<IProps> {
                                     icon={<IconPlay />}
                                     title='Builds'
                                     active={pathname.includes('builds')}
-                                    linkTo={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}
+                                    linkTo={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}
                             />
                             <SideMenuFooter>
                                 <SideMenuItem
                                     icon={<IconConfigure />}
                                     title='Project Settings'
                                     active={pathname.includes('settings')}
-                                    linkTo={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/settings/details`}
+                                    linkTo={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/settings/details`}
                                 />
                             </SideMenuFooter>
 

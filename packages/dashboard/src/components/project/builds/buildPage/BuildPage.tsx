@@ -53,9 +53,9 @@ export default class BuildPage extends Component<IProps> {
             <div className={style.buildPage}>
                 <BreadCrumbs>
                     <Link to={'/'}>Organization Name</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}>Project Name</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds`}>Builds</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/${this.props.match.params.projectId}/builds/${this.props.match.params.buildId}`}>
+                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Project Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds/${this.props.match.params.buildId}`}>
                         #{build.buildNumber}
                     </Link>
                 </BreadCrumbs>
