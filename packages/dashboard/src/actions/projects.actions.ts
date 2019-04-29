@@ -54,10 +54,10 @@ export const projectsActions = {
         };
     },
     DELETE_PROJECT: 'DELETE_PROJECT',
-    deleteProject(projectId: string, redirect: boolean = false) {
+    deleteProject(projectId: string) {
        return {
             type: projectsActions.DELETE_PROJECT,
-            data: { projectId, redirect }
+            data: { projectId }
        };
     },
     DELETE_PROJECT_SUCCESS: 'DELETE_PROJECT_SUCCESS',
