@@ -30,7 +30,7 @@ const ProjectSettingsDetails = Loadable({
 });
 
 const BuildList = Loadable({
-    loader: () => import(/* webpackChunkName: "ProjectBuild" */'../project/builds/BuildList'),
+    loader: () => import(/* webpackChunkName: "ProjectBuild" */'../project/builds'),
     loading: EmptyLoading,
 });
 
