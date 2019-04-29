@@ -34,6 +34,11 @@ const BuildList = Loadable({
     loading: EmptyLoading,
 });
 
+const BuildPage = Loadable({
+    loader: () => import(/* webpackChunkName: "ProjectBuild" */'../project/builds/buildPage'),
+    loading: EmptyLoading,
+});
+
 interface IProps {
     location: any;
     match: any;
@@ -86,6 +91,9 @@ export default class ProjectDashboard extends Component<IProps> {
                                     )}/>
                                     <PrivateRoute exact path='/:organizationId/projects/:projectId/builds' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
                                         <BuildList {...props} />
+                                    )}/>
+                                    <PrivateRoute exact path='/:organizationId/projects/:projectId/builds/:buildId' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                        <BuildPage {...props} />
                                     )}/>
                                     <PrivateRoute exact path='/:organizationId/projects/:projectId/settings/details' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
                                         <ProjectSettingsDetails {...props} />
