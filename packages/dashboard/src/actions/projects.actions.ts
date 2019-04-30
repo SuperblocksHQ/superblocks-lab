@@ -121,7 +121,7 @@ export const projectsActions = {
     updateProjectDetailsSuccess(project: IProject) {
        return {
             type: projectsActions.UPDATE_PROJECT_DETAILS_SUCCESS,
-            data: { project}
+            data: { project }
        };
     },
     UPDATE_PROJECT_DETAILS_FAIL: 'UPDATE_PROJECT_DETAILS_FAIL',
