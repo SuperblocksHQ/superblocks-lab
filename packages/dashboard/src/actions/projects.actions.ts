@@ -73,10 +73,10 @@ export const projectsActions = {
             data: error
        };
     },
-    LOAD_PROJECT: 'LOAD_PROJECT',
+    LOAD_PROJECT_REQUEST: 'LOAD_PROJECT_REQUEST',
     loadProject(projectId: string) {
         return {
-            type: projectsActions.LOAD_PROJECT,
+            type: projectsActions.LOAD_PROJECT_REQUEST,
             data: { projectId }
         };
     },

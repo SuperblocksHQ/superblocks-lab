@@ -17,12 +17,14 @@
 import React, { Component } from 'react';
 import Loadable from 'react-loadable';
 import { Switch } from 'react-router-dom';
+import LoadingBar from 'react-redux-loading-bar';
 import Topbar from '../topbar';
 import style from './style.less';
 import { EmptyLoading } from '../common';
 import { SideMenu, SideMenuItem, SideMenuFooter } from '../sideMenu';
 import { IconConfigure, IconPlay } from '../common/icons';
 import PrivateRoute from '../app/PrivateRoute';
+import OnlyIf from '../common/onlyIf';
 
 const ProjectSettingsDetails = Loadable({
     loader: () => import(/* webpackChunkName: "ProjectSettingsDetails" */'../project/settings/projectSettingsDetails'),
@@ -64,6 +66,7 @@ export default class ProjectDashboard extends Component<IProps> {
             <div className={style.projectDashboard}>
                 <React.Fragment>
                     <Topbar />
+                    <LoadingBar className='loading' />
                     <div className={style.content}>
                         <SideMenu>
                             <SideMenuItem
@@ -82,25 +85,24 @@ export default class ProjectDashboard extends Component<IProps> {
                             </SideMenuFooter>
 
                         </SideMenu>
-                        { isProjectLoading ? <div>Loading</div>
-                        :
-                            <div className={style.pageContent}>
-                                <Switch>
-                                    <PrivateRoute exact path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
-                                        <BuildList {...props} />
-                                    )}/>
-                                    <PrivateRoute exact path='/:organizationId/projects/:projectId/builds' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
-                                        <BuildList {...props} />
-                                    )}/>
-                                    <PrivateRoute exact path='/:organizationId/projects/:projectId/builds/:buildId' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
-                                        <BuildPage {...props} />
-                                    )}/>
-                                    <PrivateRoute exact path='/:organizationId/projects/:projectId/settings/details' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
-                                        <ProjectSettingsDetails {...props} />
-                                    )}/>
-                                </Switch>
-                            </div>
-                        }
+                            <OnlyIf test={!isProjectLoading}>
+                                <div className={style.pageContent}>
+                                    <Switch>
+                                        <PrivateRoute exact path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                            <BuildList {...props} />
+                                        )}/>
+                                        <PrivateRoute exact path='/:organizationId/projects/:projectId/builds' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                            <BuildList {...props} />
+                                        )}/>
+                                        <PrivateRoute exact path='/:organizationId/projects/:projectId/builds/:buildId' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                            <BuildPage {...props} />
+                                        )}/>
+                                        <PrivateRoute exact path='/:organizationId/projects/:projectId/settings/details' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                            <ProjectSettingsDetails {...props} />
+                                        )}/>
+                                    </Switch>
+                                </div>
+                            </OnlyIf>
                     </div>
                 </React.Fragment>
             </div>

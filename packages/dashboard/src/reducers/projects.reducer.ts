@@ -49,7 +49,7 @@ export default function projectsReducer(state = initialState, action: AnyAction)
                 loadingProjectList: false
             };
         }
-        case projectsActions.LOAD_PROJECT: {
+        case projectsActions.LOAD_PROJECT_REQUEST: {
             return {
                 ...state,
                 loadingProject: true
