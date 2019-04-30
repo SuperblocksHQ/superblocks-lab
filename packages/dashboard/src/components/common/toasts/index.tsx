@@ -69,6 +69,8 @@ export const getToastComponent = (type: string) => {
             return info('Project created!');
         case projectsActions.UPDATE_PROJECT_DETAILS_SUCCESS:
             return success('Sweet! Your project was updated successfully.');
+        case projectsActions.UPDATE_PROJECT_DETAILS_FAIL:
+            return error('Ups! Sorry there was an error. Try again.');
         case projectsActions.DELETE_PROJECT_FAIL:
             return error('Error deleting project!');
         default:
