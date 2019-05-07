@@ -22,6 +22,8 @@ export interface IProject {
     lastModifiedAt: string;
     files: any;
     anonymousToken?: string;
+    ownerId: string;
+    ownerType: string;
     [key: string]: any;
 }
 

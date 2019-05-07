@@ -20,7 +20,7 @@ import { AnyAction } from 'redux';
 
 export const initialState: IOrganizationState = {
     organizationList: [],
-    loadingOrganizationList: false,
+    loadingOrganizationList: true,
     organization: undefined,
     showCreateOrganizationModal: false,
     showDeleteOrganizationModal: false,
@@ -58,7 +58,7 @@ export default function organizationsReducer(state = initialState, action: AnyAc
             };
         }
         case organizationActions.LOAD_ORGANIZATION_FAIL: {
-            console.log('project load failed', action.data);
+            console.log('organization load failed', action.data);
 
             return {
                 ...state,
@@ -74,6 +74,12 @@ export default function organizationsReducer(state = initialState, action: AnyAc
             return {
                 ...state,
                 organization: { ...action.data.organization }
+            };
+        }
+        case organizationActions.CREATE_ORGANIZATION_SUCCESS: {
+            return {
+                ...state,
+                organizationList: [...state.organizationList, action.data.organization]
             };
         }
         case organizationActions.TOGGLE_CREATE_ORGANIZATION_MODAL: {

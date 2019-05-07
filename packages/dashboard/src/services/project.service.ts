@@ -46,8 +46,8 @@ export const projectService = {
             );
     },
 
-    getProjectsList() {
-        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projectsInfo', {})
+    getProjectsList(ownerId: string) {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/owner/' + ownerId + '/projects', {})
             .pipe(
                 switchMap(response => response.json())
             );

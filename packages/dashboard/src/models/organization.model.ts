@@ -17,7 +17,7 @@
 import { IOrganizationMember } from './organizationMember.model';
 
 export interface IOrganization {
-    id: string;
+    _id: string;
     name: string;
     description: string;
     members: [Partial<IOrganizationMember>];

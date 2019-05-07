@@ -91,9 +91,10 @@ export const organizationActions = {
         };
     },
     CREATE_ORGANIZATION_SUCCESS: 'CREATE_ORGANIZATION_SUCCESS',
-    createOrganizationSuccess() {
+    createOrganizationSuccess(organization: IOrganization) {
         return {
             type: organizationActions.CREATE_ORGANIZATION_SUCCESS,
+            data: { organization }
         };
     },
     CREATE_ORGANIZATION_FAIL: 'CREATE_ORGANIZATION_FAIL',

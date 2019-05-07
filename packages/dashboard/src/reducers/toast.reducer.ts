@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { projectsActions, toastActions } from '../actions';
+import { projectsActions, toastActions, organizationActions } from '../actions';
 import { AnyAction } from 'redux';
 
 export const initialState = {
@@ -37,6 +37,7 @@ export default function toastsReducer(state = initialState, action: AnyAction, r
 
     switch (action.type) {
         // Return this when ever we need to display a toast for certain action being triggered
+        case organizationActions.CREATE_DEFAULT_ORGANIZATION_FAIL:
         case projectsActions.UPDATE_PROJECT_DETAILS_SUCCESS:
         case projectsActions.UPDATE_PROJECT_DETAILS_FAIL:
             return pushToastToState();

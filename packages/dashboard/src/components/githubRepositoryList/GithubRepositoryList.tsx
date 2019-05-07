@@ -102,7 +102,7 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
     }
 
     handleOnBuildClick = (repo: IGithubRepository) => {
-        this.props.createDefaultOrganization(repo.name, repo.owner.login);
+        this.props.createDefaultOrganization(repo.owner.login, repo.name);
     }
 
     render() {

@@ -17,8 +17,8 @@
 import { of } from 'rxjs';
 import { switchMap, withLatestFrom, catchError, map } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
-import { organizationActions } from '../../actions';
-import { organizationService } from '../../services';
+import { organizationActions, projectsActions } from '../../actions';
+import { organizationService, projectService } from '../../services';
 
 export const createDefaultOrganization: Epic = (action$, state$) => action$.pipe(
     ofType(organizationActions.CREATE_DEFAULT_ORGANIZATION),
@@ -27,19 +27,27 @@ export const createDefaultOrganization: Epic = (action$, state$) => action$.pipe
         return organizationService.createOrganization({
             name: action.data.organizationName
         }).pipe(
-                map((newOrganization) =>  {
-                    console.log(newOrganization);
-                    // redirect
-                    // window.location.href = `${window.location.origin}/${newOrganization.id}`;
-
-                    return organizationActions.createDefaultOrganizationSuccess;
-                }),
-                catchError((error) => {
-                    console.log('There was an issue creating the organization: ' + error);
-                    return of(organizationActions.createDefaultOrganizationFail(error.message));
-                })
-            );
-        }
-    )
+            switchMap((newOrganization) =>  {
+                return projectService.createProject({
+                    name: action.data.projectName,
+                    ownerId: newOrganization._id,
+                    ownerType: 'organization'
+                }).pipe(
+                    map((newProject) => {
+                        window.location.href = `${window.location.origin}/${newOrganization._id}/projects/${newProject.id}`;
+                        return projectsActions.createProjectSuccess(newProject);
+                    }),
+                    catchError((error) => {
+                        console.log('There was an issue creating the project: ' + error);
+                        return of(projectsActions.createProjectFail(error.message));
+                    })
+                );
+            }),
+            catchError((error) => {
+                console.log('There was an issue creating the organization: ' + error);
+                return of(organizationActions.createDefaultOrganizationFail(error.message));
+            })
+        );
+    })
 );
 
