@@ -32,6 +32,14 @@ export class SideMenu extends Component<IProps, IState> {
         collapsed: localStorage.getItem('sideMenuCollapsed') === 'true' ? true : false
     };
 
+    componentDidMount() {
+        window.addEventListener('resize', () => {
+            this.setState({
+                collapsed: window.innerWidth < 1000
+            });
+        }, false);
+    }
+
     toggleExpanded = () => {
         localStorage.setItem('sideMenuCollapsed', String(!this.state.collapsed));
 
