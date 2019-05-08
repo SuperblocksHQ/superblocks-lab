@@ -28,6 +28,7 @@ import CreateOrganizationModal from '../modals/createOrganizationModal';
 import CreateProject from '../organization/createProject';
 
 interface IProps {
+    match: any;
     organizationList: [IOrganization];
     isOrganizationListLoading: boolean;
     loadUserOrganizationList: () => void;
@@ -35,19 +36,20 @@ interface IProps {
     isProjectListLoading: boolean;
     showCreateOrganizationModal: boolean;
     toggleCreateOrganizationModal: () => void;
-    getProjectList: () => void;
+    getProjectList: (ownerId: string) => void;
     githubLoginAction: () => void;
 }
 
 export default class Dashboard extends Component<IProps> {
 
     componentDidMount() {
+        const { organizationId } = this.props.match.params;
         this.props.loadUserOrganizationList();
-        this.props.getProjectList();
+        this.props.getProjectList(organizationId);
     }
 
     render() {
-        const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading } = this.props;
+        const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading, match } = this.props;
 
         return (
             <Fragment>
@@ -56,33 +58,34 @@ export default class Dashboard extends Component<IProps> {
                     <div className={style.content}>
                         <SideMenu>
                             <SideMenuSubHeader title='My organizations' />
-                            {/* TODO: Remove placeholder items and fetch organizations instead, add corresponding link */}
-                            <SideMenuItem
-                                icon={<LetterAvatar title='Placeholder'/>}
-                                title='Placeholder organization'
-                                linkTo='TODO'
-                            />
+                            { organizationList.map(organization => (
+                                <SideMenuItem
+                                    key={organization._id}
+                                    icon={<LetterAvatar title={organization.name} />}
+                                    title={organization.name}
+                                    linkTo={`/${organization._id}`}
+                                />
+                            ))}
                             <SideMenuFooter>
                                 <SideMenuItem
                                     icon={<IconPlusTransparent />}
                                     title='New organization'
                                     onClick={toggleCreateOrganizationModal}
                                 />
-                                {/* TODO: Add :organizationId to linkTo */}
                                 <SideMenuItem
                                     icon={<IconConfigure />}
                                     title='Organization settings'
-                                    linkTo='12334/settings/details'
+                                    linkTo={`${match.params.organizationId}/settings/details`}
                                 />
                             </SideMenuFooter>
                         </SideMenu>
                         { projectList.length === 0 && !isProjectListLoading ?
-                            <CreateProject />
+                            <CreateProject organizationId={match.params.organizationId} />
                             :
                             <ProjectList
                                 list={projectList}
                                 organizationName={'Placeholder organization'}
-                                organizationId={'12334'}
+                                organizationId={match.params.organizationId}
                             />
                         }
                         <OnlyIf test={!isOrganizationListLoading && !organizationList.length}>
@@ -93,6 +96,9 @@ export default class Dashboard extends Component<IProps> {
                 <OnlyIf test={showCreateOrganizationModal}>
                     <CreateOrganizationModal hideModal={toggleCreateOrganizationModal} />
                 </OnlyIf>
+                { (organizationList[0] && !match.params.organizationId) &&
+                    <Redirect to={organizationList[0]._id} />
+                }
             </Fragment>
         );
     }

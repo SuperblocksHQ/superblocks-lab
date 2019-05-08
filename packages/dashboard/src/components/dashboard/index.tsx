@@ -40,8 +40,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
         toggleCreateOrganizationModal: () => {
             dispatch(organizationActions.toggleCreateOrganizationModal());
         },
-        getProjectList: () => {
-            dispatch(projectsActions.getProjectList());
+        getProjectList: (ownerId: string) => {
+            dispatch(projectsActions.getProjectList(ownerId));
         }
     };
 };
