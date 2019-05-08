@@ -29,10 +29,12 @@ interface IProps {
 
 export class SideMenu extends Component<IProps, IState> {
     state = {
-        collapsed: false
+        collapsed: localStorage.getItem('sideMenuCollapsed') === 'true' ? true : false
     };
 
     toggleExpanded = () => {
+        localStorage.setItem('sideMenuCollapsed', String(!this.state.collapsed));
+
         this.setState({
             collapsed: !this.state.collapsed
         });
