@@ -18,12 +18,18 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import OrganizationSettings from './OrganizationSettings';
+import { organizationActions } from '../../../actions';
+import { organizationSelectors } from '../../../selectors';
 
 const mapStateToProps = (state: any) => ({
+    organizationList: organizationSelectors.getOrganizationList(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
+        loadUserOrganizationList: () => {
+            dispatch(organizationActions.getOrganizationList());
+        }
     };
 };
 

@@ -21,23 +21,15 @@ import { organizationActions } from '../../actions';
 import { organizationService } from '../../services';
 
 export const updateOrganization: Epic = (action$: any, state$: any) => action$.pipe(
-    ofType(organizationActions.UPDATE_ORGANIZATION),
+    ofType(organizationActions.UPDATE_ORGANIZATION_DETAILS),
     withLatestFrom(state$),
     switchMap(([action]) => {
-        return organizationService.getOrganizationById(action.data.organization.id)
-        .pipe(
-            switchMap((selectedOrganization) => {
-                selectedOrganization.name = action.data.organization.name;
-                selectedOrganization.description = action.data.organization.description;
-
-                return from(organizationService.putOrganizationById(selectedOrganization.id, selectedOrganization))
-                    .pipe(
-                        switchMap(() => {
-                            return [organizationActions.updateOrganizationSuccess(selectedOrganization)];
-                        }
-                    )
-                );
-            }),
+        return from(organizationService.putOrganizationById(action.data._id, {name: action.data.name, description: action.data.description}))
+            .pipe(
+                switchMap((updatedOrganization) => {
+                    return [organizationActions.updateOrganizationSuccess(updatedOrganization)];
+                }
+            ),
             catchError((error) => {
                 console.log('There was an issue updating the organization: ' + error);
                 return of(organizationActions.updateOrganizationFail(error.message));

@@ -22,12 +22,13 @@ import { Link } from 'react-router-dom';
 import { validateOrganizationName } from '../../../../validations';
 import OnlyIf from '../../../common/onlyIf';
 import DeleteOrganizationModal from '../../../modals/deleteOrganizationModal';
+import { IOrganization } from '../../../../models';
 
 interface IProps {
     location: any;
     match: any;
-    organization: any; // TODO: Any organization model
-    updateOrganization: (name: string, description: string) => void; // TODO: Add organization model
+    organization: IOrganization;
+    updateOrganizationDetails: (newOrganizationDetails: Partial<IOrganization>) => void;
     showDeleteOrganizationModal: boolean;
     toggleDeleteOrganizationModal: () => void;
 }
@@ -43,8 +44,8 @@ export default class Details extends Component<IProps, IState> {
 
     state: IState = {
         errorName: null,
-        newName: 'Organization name placeholder', // TODO: Fetch from props
-        newDescription: 'Organization description placeholder', // TODO: Fetch from props
+        newName: this.props.organization.name, // TODO: Fetch from props
+        newDescription: this.props.organization.description, // TODO: Fetch from props
         canSave: true
     };
 
@@ -68,21 +69,15 @@ export default class Details extends Component<IProps, IState> {
     }
 
     onSave = () => {
-        const { updateOrganization } = this.props;
-        const { newName, newDescription} = this.state;
+        const { updateOrganizationDetails, organization } = this.props;
+        const { newName, newDescription } = this.state;
 
-        updateOrganization(newName, newDescription);
+        updateOrganizationDetails({_id: organization._id, name: newName, description: newDescription});
     }
 
     render() {
-        const { showDeleteOrganizationModal, toggleDeleteOrganizationModal } = this.props;
+        const { showDeleteOrganizationModal, toggleDeleteOrganizationModal, organization } = this.props;
         const { errorName, canSave } = this.state;
-
-        {/* TODO: Fetch organization from redux */}
-        const organization = {
-            name: 'Organization name placeholder',
-            description: 'Organization description placeholder'
-        };
 
         return (
             <React.Fragment>

@@ -73,6 +73,12 @@ export const getToastComponent = (type: string) => {
             return error('Ups! Sorry there was an error. Try again.');
         case projectsActions.DELETE_PROJECT_FAIL:
             return error('Error deleting project!');
+        case organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS:
+            return success('Sweet! Your organization was updated successfully.');
+        case organizationActions.UPDATE_ORGANIZATION_DETAILS_FAIL:
+            return error('Ups! Sorry there was an error. Try again.');
+        case organizationActions.DELETE_ORGANIZATION_FAIL:
+            return error('Error deleting organization!');
         case organizationActions.CREATE_DEFAULT_ORGANIZATION_FAIL:
             return error('Error creating default organization!');
         default:

@@ -20,10 +20,11 @@ import classNames from 'classnames';
 import { ModalHeader, Modal } from '../../common/modal';
 import { TextInput, StyledButton } from '../../common';
 import { StyledButtonType } from '../../../models/button.model';
+import { IOrganization } from '../../../models';
 
 interface IProps {
-    organization: any; // TODO: Add organization Model
-    deleteOrganization: (projectId: string) => void;
+    organization: IOrganization;
+    deleteOrganization: (organizationId: string) => void;
     hideModal: () => void;
 }
 
@@ -44,9 +45,10 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
     }
 
     onConfirmClick = () => {
-        const { id } = this.props.organization;
+        const { _id } = this.props.organization;
+
         if (this.state.isValid) {
-            this.props.deleteOrganization(id);
+            this.props.deleteOrganization(_id);
         }
     }
 

@@ -159,24 +159,24 @@ export const organizationActions = {
             data: error
         };
     },
-    UPDATE_ORGANIZATION: 'UPDATE_ORGANIZATION',
-    updateOrganization(organization: IOrganization) {
+    UPDATE_ORGANIZATION_DETAILS: 'UPDATE_ORGANIZATION_DETAILS',
+    updateOrganizationDetails(newDetails: Partial<IOrganization>) {
        return {
-            type: organizationActions.UPDATE_ORGANIZATION,
-            data: { organization }
+            type: organizationActions.UPDATE_ORGANIZATION_DETAILS,
+            data: newDetails
        };
     },
-    UPDATE_ORGANIZATION_SUCCESS: 'UPDATE_ORGANIZATION_SUCCESS',
+    UPDATE_ORGANIZATION_DETAILS_SUCCESS: 'UPDATE_ORGANIZATION_DETAILS_SUCCESS',
     updateOrganizationSuccess(organization: IOrganization) {
        return {
-            type: organizationActions.UPDATE_ORGANIZATION_SUCCESS,
+            type: organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS,
             data: { organization}
        };
     },
-    UPDATE_ORGANIZATION_FAIL: 'UPDATE_ORGANIZATION_FAIL',
+    UPDATE_ORGANIZATION_DETAILS_FAIL: 'UPDATE_ORGANIZATION_DETAILS_FAIL',
     updateOrganizationFail(error: string) {
        return {
-            type: organizationActions.UPDATE_ORGANIZATION_FAIL,
+            type: organizationActions.UPDATE_ORGANIZATION_DETAILS_FAIL,
             data: error
        };
     },

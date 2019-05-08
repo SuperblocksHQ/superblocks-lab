@@ -70,12 +70,6 @@ export default function organizationsReducer(state = initialState, action: AnyAc
                 organization: null
             };
         }
-        case organizationActions.UPDATE_ORGANIZATION_SUCCESS: {
-            return {
-                ...state,
-                organization: { ...action.data.organization }
-            };
-        }
         case organizationActions.CREATE_ORGANIZATION_SUCCESS: {
             return {
                 ...state,
