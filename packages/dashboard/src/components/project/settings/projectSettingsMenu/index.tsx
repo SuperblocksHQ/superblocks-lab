@@ -36,7 +36,6 @@ export const ProjectSettingsMenu = (props: IProps) => {
                 </p>
                 <SideMenuItem
                     title='Details'
-                    active={pathname.includes('details')}
                     linkTo={`/${props.organizationId}/projects/${props.projectId}/settings/details`}
                     className={style.item}
                 />

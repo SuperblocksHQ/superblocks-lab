@@ -180,6 +180,11 @@
     flex-direction: column;
 }
 
+.active .item {
+    border-color: @primary-color;
+    background-color: #31383B;
+}
+
 .item {
     display: flex;
     align-items: center;
@@ -196,11 +201,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-    }
-
-    &.active {
-        border-color: @primary-color;
-        background-color: #31383B;
     }
 
     &:hover {
