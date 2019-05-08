@@ -22,8 +22,9 @@ import { StyledButtonType } from '../../../models/button.model';
 import { validateProjectName } from '../../../validations';
 
 interface IProps {
+    organizationId: string;
     hideModal: () => void;
-    createProject: (name: string, description: string, redirect: boolean) => void;
+    createProject: (name: string, ownerId: string, ownerType: string, description: string, redirect: boolean) => void;
 }
 
 interface IState {
@@ -62,10 +63,10 @@ export default class CreateProjectModal extends React.Component<IProps, IState> 
     }
 
     onCreate = () => {
-        const { createProject, hideModal } = this.props;
+        const { createProject, hideModal, organizationId } = this.props;
         const { projectName, projectDescription} = this.state;
 
-        createProject(projectName, projectDescription, false);
+        createProject(projectName, organizationId, 'organization', projectDescription, false);
         hideModal();
     }
 

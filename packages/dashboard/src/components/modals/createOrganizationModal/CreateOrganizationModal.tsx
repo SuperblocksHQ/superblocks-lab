@@ -24,7 +24,7 @@ import { validateOrganizationName } from '../../../validations';
 
 interface IProps {
     hideModal: () => void;
-    createOrganization: (name: string, description: string, redirect: boolean) => void;
+    createOrganization: (name: string, redirect: boolean) => void;
 }
 
 interface IState {
@@ -53,10 +53,11 @@ export default class CreateOrganizationModal extends React.Component<IProps, ISt
     }
 
     onCreate = () => {
-        const { createOrganization } = this.props;
+        const { createOrganization, hideModal } = this.props;
         const { organizationName } = this.state;
 
-        createOrganization(organizationName, '', true);
+        createOrganization(organizationName, true);
+        hideModal();
     }
 
     render() {

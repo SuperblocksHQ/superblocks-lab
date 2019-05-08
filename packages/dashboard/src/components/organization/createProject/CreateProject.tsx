@@ -22,7 +22,8 @@ import { IconPlusTransparent } from '../../common/icons';
 import { validateProjectName } from '../../../validations';
 
 interface IProps {
-    createProject: (name: string, description: string, redirect: boolean) => void;
+    organizationId: string;
+    createProject: (name: string, ownerId: string, ownerType: string, description: string, redirect: boolean) => void;
 }
 
 interface IState {
@@ -61,10 +62,10 @@ export default class CreateProject extends Component<IProps, IState> {
     }
 
     onCreate = () => {
-        const { createProject } = this.props;
+        const { createProject, organizationId } = this.props;
         const { projectName, projectDescription} = this.state;
 
-        createProject(projectName, projectDescription, false);
+        createProject(projectName, organizationId, 'organization', projectDescription, false);
     }
 
     render() {
