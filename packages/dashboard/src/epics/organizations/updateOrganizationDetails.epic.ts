@@ -15,25 +15,22 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { from, of } from 'rxjs';
-import { switchMap, withLatestFrom, catchError } from 'rxjs/operators';
+import { switchMap, withLatestFrom, catchError, map } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { organizationActions } from '../../actions';
 import { organizationService } from '../../services';
 
-export const updateOrganization: Epic = (action$: any, state$: any) => action$.pipe(
+export const updateOrganizationDetails: Epic = (action$: any, state$: any) => action$.pipe(
     ofType(organizationActions.UPDATE_ORGANIZATION_DETAILS),
     withLatestFrom(state$),
     switchMap(([action]) => {
-        return from(organizationService.putOrganizationById(action.data._id, {name: action.data.name, description: action.data.description}))
+        return organizationService.putOrganizationById(action.data._id, {name: action.data.name, description: action.data.description})
             .pipe(
-                switchMap((updatedOrganization) => {
-                    return [organizationActions.updateOrganizationSuccess(updatedOrganization)];
-                }
-            ),
-            catchError((error) => {
-                console.log('There was an issue updating the organization: ' + error);
-                return of(organizationActions.updateOrganizationFail(error.message));
-            })
-        );
+                map((updatedOrganization) => organizationActions.updateOrganizationSuccess(updatedOrganization))
+            );
+    }),
+    catchError((error) => {
+        console.log('There was an issue updating the organization: ' + error);
+        return of(organizationActions.updateOrganizationFail(error.message));
     })
 );

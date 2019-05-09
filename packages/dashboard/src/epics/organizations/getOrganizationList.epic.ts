@@ -23,7 +23,6 @@ export const getOrganizationList: Epic = (action$: any, state$: any) => action$.
     ofType(organizationActions.GET_ORGANIZATION_LIST),
     withLatestFrom(state$),
     switchMap(([, ]) => {
-        console.log('helo');
         return from(organizationService.getOrganizationList()).pipe(
             map(organizationActions.getOrganizationListSuccess),
             catchError((error) => {

@@ -44,8 +44,8 @@ export default class Details extends Component<IProps, IState> {
 
     state: IState = {
         errorName: null,
-        newName: this.props.organization.name, // TODO: Fetch from props
-        newDescription: this.props.organization.description, // TODO: Fetch from props
+        newName: this.props.organization.name,
+        newDescription: this.props.organization.description,
         canSave: true
     };
 

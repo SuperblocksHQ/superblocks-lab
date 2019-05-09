@@ -44,8 +44,7 @@ export default class OrganizationSettings extends Component<IProps> {
     }
 
     render() {
-        const { content, isAuthenticated, isAuthLoading } = this.props;
-        const { pathname } = this.props.location;
+        const { isAuthenticated, isAuthLoading } = this.props;
         const organization = this.getOrganization();
 
         return (

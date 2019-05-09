@@ -16,7 +16,7 @@
 
 import { createOrganization } from './createOrganization.epic';
 import { deleteOrganization } from './deleteOrganization.epic';
-import { updateOrganization } from './updateOrganization.epic';
+import { updateOrganizationDetails } from './updateOrganizationDetails.epic';
 import { createDefaultOrganization } from './createDefaultOrganization.epic';
 import { getOrganizationList } from './getOrganizationList.epic';
 
@@ -29,7 +29,7 @@ export const organizationEpics = [
     createDefaultOrganization,
     createOrganization,
     deleteOrganization,
-    updateOrganization,
+    updateOrganizationDetails,
     inviteMemberToOrganization,
     addMemberToOrganization,
     changeMemberRoleInOrganization,

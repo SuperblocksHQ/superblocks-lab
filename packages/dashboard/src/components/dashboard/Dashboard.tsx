@@ -48,8 +48,27 @@ export default class Dashboard extends Component<IProps> {
         this.props.getProjectList(organizationId);
     }
 
+    componentWillReceiveProps(nextProps: any) {
+        // Update project list when changing organization
+        if (this.props.match.params.organizationId !== nextProps.match.params.organizationId) {
+            this.props.getProjectList(nextProps.match.params.organizationId);
+        }
+
+        // Update organizations when creating a new one
+        if (this.props.organizationList.length !== nextProps.organizationList.length) {
+            this.props.loadUserOrganizationList();
+        }
+    }
+
+    getOrganization() {
+        return this.props.organizationList.find((org) =>
+            org._id === this.props.match.params.organizationId
+        );
+    }
+
     render() {
         const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading, match } = this.props;
+        const selectedOrganization = this.getOrganization();
 
         return (
             <Fragment>
@@ -84,7 +103,7 @@ export default class Dashboard extends Component<IProps> {
                             :
                             <ProjectList
                                 list={projectList}
-                                organizationName={'Placeholder organization'}
+                                organizationName={selectedOrganization ? selectedOrganization.name : 'Organization'}
                                 organizationId={match.params.organizationId}
                             />
                         }
