@@ -63,7 +63,7 @@ export default class PeopleListItem extends Component<IProps> {
 
         return (
             <React.Fragment>
-                <td>
+                <div className={style.singleCell}>
                     <div className={style.flexVerticalCenter}>
                         <img src={user.imageUrl} className={style['mr-2']} alt={user.name} />
                         <div>
@@ -75,20 +75,23 @@ export default class PeopleListItem extends Component<IProps> {
                             </span>
                         </div>
                     </div>
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
+                    <span className={style.smallDeviceLabel}>Last seen: </span>
                     { user.lastLogin !== null ?
                         moment.utc(user.lastLogin).fromNow()
                     :
                         'never'
                     }
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
+                    <span className={style.smallDeviceLabel}>Role: </span>
                     {user.role}
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
+                    <span className={style.smallDeviceLabel}>Action: </span>
                     {this.renderAction()}
-                </td>
+                </div>
             </React.Fragment>
         );
     }
