@@ -35,7 +35,7 @@ export class SideMenu extends Component<IProps, IState> {
     componentDidMount() {
         window.addEventListener('resize', () => {
             this.setState({
-                collapsed: window.innerWidth < 1000
+                collapsed: window.innerWidth < 1100
             });
         }, false);
     }
