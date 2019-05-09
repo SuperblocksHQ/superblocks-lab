@@ -53,7 +53,7 @@ export default class BuildListItem extends Component<IProps> {
                 </div>
                 <div className={style.singleCell}>
                     <div className={style.flexVerticalCenter}>
-                        <img src={pipeline.commit.ownerAvatar} className={classNames('mr-2', style.avatarImg)} alt={pipeline.commit.ownerName} />
+                        <img src={`${pipeline.commit.ownerAvatar}&s=60`} className={classNames('mr-2', style.avatarImg)} alt={pipeline.commit.ownerName} />
                         <div>
                             <span className={style['mb-1']}>
                                 {pipeline.commit.description}
