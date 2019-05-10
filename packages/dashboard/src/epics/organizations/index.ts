@@ -25,6 +25,9 @@ import { addMemberToOrganization } from './members/addMemberToOrganization.epic'
 import { changeMemberRoleInOrganization } from './members/changeMemberRoleInOrganization.epic';
 import { removeMemberFromOrganization } from './members/removeMemberFromOrganization.epic';
 
+import { getInvitationById } from './invitation/getInvitation.epic';
+import { acceptInvitation } from './invitation/acceptInvitation.epic';
+
 export const organizationEpics = [
     createDefaultOrganization,
     createOrganization,
@@ -35,4 +38,6 @@ export const organizationEpics = [
     changeMemberRoleInOrganization,
     removeMemberFromOrganization,
     getOrganizationList,
+    getInvitationById,
+    acceptInvitation
 ];
