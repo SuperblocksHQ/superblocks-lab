@@ -72,7 +72,7 @@ export default class Details extends Component<IProps, IState> {
         const { updateOrganizationDetails, organization } = this.props;
         const { newName, newDescription } = this.state;
 
-        updateOrganizationDetails({_id: organization._id, name: newName, description: newDescription});
+        updateOrganizationDetails({id: organization.id, name: newName, description: newDescription});
     }
 
     render() {

@@ -24,7 +24,7 @@ export const updateOrganizationDetails: Epic = (action$: any, state$: any) => ac
     ofType(organizationActions.UPDATE_ORGANIZATION_DETAILS),
     withLatestFrom(state$),
     switchMap(([action]) => {
-        return organizationService.putOrganizationById(action.data._id, {name: action.data.name, description: action.data.description})
+        return organizationService.putOrganizationById(action.data.id, {name: action.data.name, description: action.data.description})
             .pipe(
                 map((updatedOrganization) => organizationActions.updateOrganizationSuccess(updatedOrganization))
             );

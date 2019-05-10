@@ -62,7 +62,7 @@ export default class Dashboard extends Component<IProps> {
 
     getOrganization() {
         return this.props.organizationList.find((org) =>
-            org._id === this.props.match.params.organizationId
+            org.id === this.props.match.params.organizationId
         );
     }
 
@@ -79,10 +79,10 @@ export default class Dashboard extends Component<IProps> {
                             <SideMenuSubHeader title='My organizations' />
                             { organizationList.map(organization => (
                                 <SideMenuItem
-                                    key={organization._id}
+                                    key={organization.id}
                                     icon={<LetterAvatar title={organization.name} />}
                                     title={organization.name}
-                                    linkTo={`/${organization._id}`}
+                                    linkTo={`/${organization.id}`}
                                 />
                             ))}
                             <SideMenuFooter>
@@ -116,7 +116,7 @@ export default class Dashboard extends Component<IProps> {
                     <CreateOrganizationModal hideModal={toggleCreateOrganizationModal} />
                 </OnlyIf>
                 { (organizationList[0] && !match.params.organizationId) &&
-                    <Redirect to={organizationList[0]._id} />
+                    <Redirect to={organizationList[0].id} />
                 }
             </Fragment>
         );

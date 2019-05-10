@@ -45,10 +45,10 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
     }
 
     onConfirmClick = () => {
-        const { _id } = this.props.organization;
+        const { id } = this.props.organization;
 
         if (this.state.isValid) {
-            this.props.deleteOrganization(_id);
+            this.props.deleteOrganization(id);
         }
     }
 

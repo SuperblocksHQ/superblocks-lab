@@ -39,7 +39,7 @@ export default class OrganizationSettings extends Component<IProps> {
 
     getOrganization() {
         return this.props.organizationList.find((org) =>
-            org._id === this.props.match.params.organizationId
+            org.id === this.props.match.params.organizationId
         );
     }
 
