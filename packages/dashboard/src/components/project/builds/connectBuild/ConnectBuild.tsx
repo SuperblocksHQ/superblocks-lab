@@ -48,7 +48,7 @@ export default class ConnectBuild extends Component<IProps> {
                     </a>
                 </div>
 
-                <GithubRepositoryList section={Section.ConnectToRepo}/>
+                <GithubRepositoryList projectId={project.id} section={Section.ConnectToRepo}/>
             </div>
         );
     }

@@ -27,7 +27,6 @@ export { Section } from './GithubRepositoryList';
 const mapStateToProps = (state: any) => ({
     repositoryList: userSelectors.getUserRepositoryList(state),
     isRepositoriesLoading: userSelectors.isRepositoriesLoading(state),
-    projectId: projectSelectors.getProjectId(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {

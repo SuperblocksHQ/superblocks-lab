@@ -32,7 +32,7 @@ interface IProps {
     className?: string;
     repositoryList: IGithubRepository[];
     isRepositoriesLoading: boolean;
-    projectId: string;
+    projectId?: string;
     section: Section;
     getUserRepositoryList: () => void;
     cancelGetUserRepositoryList: () => void;
