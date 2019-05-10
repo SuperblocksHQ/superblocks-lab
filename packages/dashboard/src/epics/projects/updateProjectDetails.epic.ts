@@ -29,8 +29,10 @@ export const updateProjectDetails: Epic = (action$: any, state$: any) => action$
             switchMap((selectedProject) => {
                 selectedProject.name = action.data.name ? action.data.name : selectedProject.name;
                 selectedProject.description = action.data.description ? action.data.description : selectedProject.name;
-                selectedProject.description = action.data.vcsUrl ? action.data.vcsUrl : selectedProject.vcsUrl;
-                selectedProject.description = action.data.vcsType ? action.data.vcsType : selectedProject.vcsType;
+                selectedProject.vcsUrl = action.data.vcsUrl ? action.data.vcsUrl : selectedProject.vcsUrl;
+                selectedProject.vcsType = action.data.vcsType ? action.data.vcsType : selectedProject.vcsType;
+
+                console.log(selectedProject);
 
                 return projectService.putProjectById(selectedProject.id, selectedProject)
                     .pipe(
