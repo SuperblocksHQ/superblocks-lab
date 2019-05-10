@@ -16,7 +16,7 @@
 import { fetchJSON } from './utils/fetchJson';
 import { switchMap } from 'rxjs/operators';
 import { IOrganization } from '../models';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IOrganizationMember, IRole } from '../models/organizationMember.model';
 
 export const organizationService = {
@@ -101,4 +101,19 @@ export const organizationService = {
             method: 'DELETE',
         });
     },
+
+    getInvitationById(invitationId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/invitation/${invitationId}`, {
+            method: 'GET',
+        }).pipe(
+            switchMap(response => response.json())
+        );
+    },
+
+    acceptInvitation(invitationId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/accept-invite`, {
+            method: 'POST',
+            body: { invitationId  }
+        });
+    }
 };
