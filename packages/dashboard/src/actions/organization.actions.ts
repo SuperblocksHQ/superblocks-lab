@@ -261,4 +261,48 @@ export const organizationActions = {
             data: error
        };
     },
+
+    // ---------- Invitation related actions ----------
+    GET_INVITATION_BY_ID: 'GET_INVITATION_BY_ID',
+    getInvitationById(invitationId: string) {
+        return {
+            type: organizationActions.GET_INVITATION_BY_ID,
+            data: { invitationId  }
+        };
+    },
+    GET_INVITATION_BY_ID_SUCCESS: 'GET_INVITATION_BY_ID_SUCCESS',
+    getInvitationByIdSuccess(organization: IOrganization) {
+        return {
+            type: organizationActions.GET_INVITATION_BY_ID_SUCCESS,
+            data: organization
+        };
+    },
+    GET_INVITATION_BY_ID_FAIL: 'GET_INVITATION_BY_ID_FAIL',
+    getInvitationByIdFail(error: string) {
+        return {
+            type: organizationActions.GET_INVITATION_BY_ID_FAIL,
+            data: error
+        };
+    },
+
+    ACCEPT_INVITATION: 'ACCEPT_INVITATION',
+    acceptInvitation(invitationId: string) {
+        return {
+            type: organizationActions.ACCEPT_INVITATION,
+            data: { invitationId }
+        };
+    },
+    ACCEPT_INVITATION_SUCCESS: 'ACCEPT_INVITATION_SUCCESS',
+    acceptInvitationSuccess() {
+        return {
+            type: organizationActions.ACCEPT_INVITATION_SUCCESS,
+        };
+    },
+    ACCEPT_INVITATION_FAIL: 'ACCEPT_INVITATION_FAIL',
+    acceptInvitationFail(error: string) {
+        return {
+            type: organizationActions.ACCEPT_INVITATION_FAIL,
+            data: error
+        };
+    },
 };
