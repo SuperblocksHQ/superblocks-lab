@@ -23,4 +23,5 @@ export interface IOrganizationState {
     showCreateOrganizationModal: boolean;
     showDeleteOrganizationModal: boolean;
     showInvitePeopleModal: boolean;
+    invitation?: Partial<IOrganization>;
 }
