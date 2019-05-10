@@ -92,6 +92,7 @@
     "@types/jwt-decode": "^2.2.1",
     "@types/react-loadable": "^5.5.1",
     "amplitude-js": "^4.6.0",
+    "ansi-to-react": "^5.0.0",
     "bfj": "6.1.1",
     "classnames": "^2.2.5",
     "jwt-decode": "^2.2.0",

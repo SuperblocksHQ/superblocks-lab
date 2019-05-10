@@ -53,6 +53,12 @@ export default class BuildPage extends Component<IProps> {
             }
         };
 
+        const job = {
+            id: 209694351,
+            status: 'success',
+            log: 'test'
+        };
+
         return (
             <div className={style.buildPage}>
                 <BreadCrumbs>
@@ -100,7 +106,7 @@ export default class BuildPage extends Component<IProps> {
                     <span className={style['ml-3']}><b>Queued:</b> 00:01 waiting</span>
                 </p>
 
-                <BuildConsole />
+                <BuildConsole consoleOutput={job.log} />
             </div>
         );
     }
