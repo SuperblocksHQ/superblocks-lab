@@ -56,6 +56,11 @@ const PeopleList = Loadable({
     loading: EmptyLoading,
 });
 
+const Invitation = Loadable({
+    loader: () => import(/* webpackChunkName: "Invitation" */'../organization/invitation'),
+    loading: EmptyLoading,
+});
+
 interface IProps {
     notifyAppStart: () => void;
     isAuthenticated: boolean;
@@ -82,6 +87,7 @@ export default class App extends Component<IProps> {
                         <div className='maincontent'>
                             <Switch>
                                 <Route path='/login' exact render={(props: any) => <LoginScreen {...props} />} />
+                                <Route path='/accept-invite/:id' exact render={(props: any) => < Invitation {...props} />} />
                                 <PrivateRoute path='/' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <Dashboard {...props} />} />
                                 <PrivateRoute path='/welcome' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <WelcomePage {...props} />} />
                                 <PrivateRoute path='/:organizationId' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <Dashboard {...props} />} />
