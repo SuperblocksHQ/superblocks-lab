@@ -23,42 +23,27 @@ import { BuildStatus } from '../BuildStatus';
 import moment from 'moment';
 import BuildConsole from './BuildConsole';
 import classNames from 'classnames';
-import { IProject, IOrganization } from '../../../../models';
+import { IProject, IOrganization, IJob } from '../../../../models';
 
 interface IProps {
     build: any;
     location: any;
     match: any;
     project: IProject;
+    job: IJob;
     organization: IOrganization;
+    jobId: string;
+    getJob: (jobId: string) => void;
 }
 
 export default class BuildPage extends Component<IProps> {
+
+    componentWillMount() {
+        const { jobId, getJob } = this.props;
+        getJob(jobId);
+    }
     render() {
-        const { project, organization } = this.props;
-
-        const build = {
-            status: 'queued',
-            buildNumber: 3,
-            branch: 'fork-branch',
-            buildTime: '00:02:56',
-            duration: '1 min and 43 seconds',
-            commit: {
-                ownerAvatar: 'https://avatars3.githubusercontent.com/u/7814134?v=4&s=24',
-                ownerName: 'Javier Taragaza Gomez',
-                description: 'Initial commit',
-                hash: 'gf245df',
-                timestamp: '2019-04-15T12:47:45.090Z',
-                branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
-                commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
-            }
-        };
-
-        const job = {
-            id: 209694351,
-            status: 'success',
-            log: 'test'
-        };
+        const { project, job, organization } = this.props;
 
         return (
             <div className={style.buildPage}>
@@ -67,31 +52,31 @@ export default class BuildPage extends Component<IProps> {
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds/${this.props.match.params.buildId}`}>
-                        #{build.buildNumber}
+                        #{job.id}
                     </Link>
                 </BreadCrumbs>
 
                 <div className={style.title}>
-                    <BuildStatus status={build.status} />
-                    <h1><span>{`Build #${build.buildNumber} - `}</span>{build.commit.description}</h1>
+                    <BuildStatus status={job.status} />
+                    <h1><span>{`Build #${job.id} - `}</span>{job.commit.description}</h1>
                 </div>
 
                 <p className={classNames([style.subtitle, style.flexVerticalCenter])}>
                     {
-                        `Triggered ${moment.utc(build.commit.timestamp).fromNow()} by `
+                        `Triggered ${moment.utc(job.createdAt).fromNow()} by `
                     }
-                    <img src={build.commit.ownerAvatar} />
-                    <span className={style.ownerName}>{build.commit.ownerName}</span>
+                    <img src={job.commit.ownerAvatar} />
+                    <span className={style.ownerName}>{job.commit.ownerName}</span>
                     <span>
                         <IconBranch />
-                        <a href={build.commit.branchLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
-                            {build.branch}
+                        <a href={job.commit.branchUrl} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
+                            {job.commit.branch}
                         </a>
                     </span>
                     <span>
                         <IconCommit />
-                        <a href={build.commit.commitLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
-                            {build.commit.hash}
+                        <a href={job.commit.commitUrl} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
+                            {job.commit.hash}
                         </a>
                     </span>
                 </p>
@@ -103,7 +88,7 @@ export default class BuildPage extends Component<IProps> {
 
                 <h2>Compile and Test</h2>
                 <p className={style['mb-4']}>
-                    <span><b>Total duration:</b> {build.duration}</span>
+                    <span><b>Total duration:</b> {job.duration}</span>
                     <span className={style['ml-3']}><b>Queued:</b> 00:01 waiting</span>
                 </p>
 

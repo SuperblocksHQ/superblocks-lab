@@ -18,19 +18,19 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import BuildList from './BuildList';
-import { pipelinesSelectors, projectSelectors } from '../../../selectors';
-import { pipelinesActions } from '../../../actions';
+import { pipelineSelectors, projectSelectors } from '../../../selectors';
+import { pipelinesActions, jobsActions } from '../../../actions';
 
 const mapStateToProps = (state: any) => ({
-    projectPipelineList: pipelinesSelectors.getProjectPipelinesList(state),
-    isProjectPipelineListLoading: pipelinesSelectors.isProjectPipelineListLoading(state),
+    projectPipelineList: pipelineSelectors.getProjectPipelinesList(state),
+    isProjectPipelineListLoading: pipelineSelectors.isProjectPipelineListLoading(state),
     project: projectSelectors.getProject(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
-        getProjectPipelineList: (projectId: string) => {
-            dispatch(pipelinesActions.getProjectPipelineList(projectId));
+        getJob: (jobId: string) => {
+            dispatch(jobsActions.getJob(jobId));
         },
     };
 };

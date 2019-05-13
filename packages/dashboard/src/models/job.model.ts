@@ -14,22 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export enum PipelineStatus {
-    Queued = 'queued',
-    Running = 'running',
-    Success = 'success',
-    Failed = 'failed',
+export interface IRepositoryModel {
+    name: string;
+    url: string;
 }
 
-export interface IJobStatus {
-    id: string;
-    status: string;
-}
-
-export interface IPipelineCommit {
+export interface ICommitModel {
     ownerAvatar: string;
     ownerName: string;
-    repository: string;
+    repository: IRepositoryModel;
     description: string;
     hash: string;
     branch: string;
@@ -37,13 +30,14 @@ export interface IPipelineCommit {
     commitUrl: string;
 }
 
-export interface IPipeline {
+export interface IJob {
     id: string;
     projectId: string;
-    commit: IPipelineCommit;
-    jobs: IJobStatus[];
-    status: PipelineStatus;
+    commit: ICommitModel;
+    status: string;
     createdAt: Date;
     startedAt: Date;
     finishedAt: Date;
+    duration: number;
+    log: string;
 }

@@ -14,36 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export enum PipelineStatus {
-    Queued = 'queued',
-    Running = 'running',
-    Success = 'success',
-    Failed = 'failed',
-}
+import { IPipeline } from '../models';
 
-export interface IJobStatus {
-    id: string;
-    status: string;
-}
-
-export interface IPipelineCommit {
-    ownerAvatar: string;
-    ownerName: string;
-    repository: string;
-    description: string;
-    hash: string;
-    branch: string;
-    branchUrl: string;
-    commitUrl: string;
-}
-
-export interface IPipeline {
-    id: string;
-    projectId: string;
-    commit: IPipelineCommit;
-    jobs: IJobStatus[];
-    status: PipelineStatus;
-    createdAt: Date;
-    startedAt: Date;
-    finishedAt: Date;
-}
+export const jobsActions = {
+    GET_JOB: 'GET_JOB',
+    getJob(jobId: string) {
+        return {
+            type: jobsActions.GET_JOB,
+            data: { jobId }
+        };
+    },
+    GET_JOB_SUCCESS: 'GET_JOB_SUCCESS',
+    getJobSuccess(pipeline: IPipeline) {
+        return {
+            type: jobsActions.GET_JOB_SUCCESS,
+            data: { pipeline }
+        };
+    },
+    GET_JOB_FAIL: 'GET_JOB_FAIL',
+    getJobFail(error: any) {
+        return {
+            type: jobsActions.GET_JOB_FAIL,
+            data: error
+        };
+    },
+};
