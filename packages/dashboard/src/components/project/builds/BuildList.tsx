@@ -22,12 +22,14 @@ import BuildListItem from './BuildListItem';
 import { BreadCrumbs } from '../../common';
 import { SetupBuild } from './SetupBuild';
 import OnlyIf from '../../common/onlyIf';
-import { IProject, IPipeline } from '../../../models';
+import { IProject, IPipeline, IOrganization } from '../../../models';
+import { EmptyRepository } from './emptyRepository';
 
 interface IProps {
     location: any;
     match: any;
     project: IProject;
+    organization: IOrganization;
     projectPipelineList: IPipeline[];
     getProjectPipelineList: (projectId: string) => void;
     isProjectPipelineListLoading: boolean;
@@ -41,7 +43,7 @@ export default class BuildList extends Component<IProps> {
     }
 
     render() {
-        const { project, projectPipelineList, isProjectPipelineListLoading } = this.props;
+        const { project, organization, projectPipelineList, isProjectPipelineListLoading } = this.props;
 
         // TODO: Get project from cloud
         const projectA = {
@@ -105,7 +107,7 @@ export default class BuildList extends Component<IProps> {
         return (
             <React.Fragment>
                 <BreadCrumbs>
-                    <Link to={'/'}>Organization Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
                 </BreadCrumbs>
@@ -142,6 +144,11 @@ export default class BuildList extends Component<IProps> {
 
                 <OnlyIf test={!projectPipelineList.length && !isProjectPipelineListLoading}>
                     <SetupBuild projectId={projectId} organizationId={organizationId} />
+                </OnlyIf>
+
+                {/* TODO: Update test prop so it shows only when user doesn't have any commits in repo */}
+                <OnlyIf test={false}>
+                    <EmptyRepository />
                 </OnlyIf>
             </React.Fragment>
         );

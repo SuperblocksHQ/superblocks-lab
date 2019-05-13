@@ -18,13 +18,14 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import BuildList from './BuildList';
-import { pipelinesSelectors, projectSelectors } from '../../../selectors';
+import { pipelinesSelectors, projectSelectors, organizationSelectors } from '../../../selectors';
 import { pipelinesActions } from '../../../actions';
 
 const mapStateToProps = (state: any) => ({
     projectPipelineList: pipelinesSelectors.getProjectPipelinesList(state),
     isProjectPipelineListLoading: pipelinesSelectors.isProjectPipelineListLoading(state),
-    project: projectSelectors.getProject(state)
+    project: projectSelectors.getProject(state),
+    organization: organizationSelectors.getOrganization(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
