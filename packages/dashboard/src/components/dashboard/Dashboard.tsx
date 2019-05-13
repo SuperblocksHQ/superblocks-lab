@@ -69,7 +69,7 @@ export default class Dashboard extends Component<IProps> {
         return (
             <Fragment>
                 <div className={style.dashboard}>
-                    <Topbar />
+                    <Topbar organizationId={match.params.organizationId} />
                     <div className={style.content}>
                         <SideMenu>
                             <SideMenuSubHeader title='My organizations' />

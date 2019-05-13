@@ -19,7 +19,7 @@ import style from './style.less';
 import { Link } from 'react-router-dom';
 import PeopleListItem from './PeopleListItem';
 import { BreadCrumbs, StyledButton } from '../../../common';
-import { IUser } from '../../../../models';
+import { IUser, IOrganization } from '../../../../models';
 import { StyledButtonType } from '../../../../models/button.model';
 import InvitePeopleModal from '../../../modals/invitePeopleModal/InvitePeopleModal';
 import OnlyIf from '../../../common/onlyIf';
@@ -27,6 +27,7 @@ import OnlyIf from '../../../common/onlyIf';
 interface IProps {
     location: any;
     match: any;
+    organization: IOrganization;
     userProfile: IUser;
     showInvitePeopleModal: boolean;
     toggleInvitePeopleModal: () => void;
@@ -35,12 +36,10 @@ interface IProps {
 
 export default class PeopleList extends Component<IProps> {
     render() {
-        const { showInvitePeopleModal, toggleInvitePeopleModal } = this.props;
+        const { showInvitePeopleModal, toggleInvitePeopleModal, organization } = this.props;
 
         // TODO: Get users from redux
-        const organization = {
-            name: 'Organization name placeholder',
-            users: [
+        const users = [
                 {
                     id: '5cb47caf21a7140017e120c5',
                     imageUrl: 'https://avatars0.githubusercontent.com/u/17637244?v=4&s=24',
@@ -65,8 +64,7 @@ export default class PeopleList extends Component<IProps> {
                     lastLogin: '2019-04-15T12:47:45.090Z',
                     role: 'Basic'
                 },
-            ]
-        };
+        ];
 
         return (
             <React.Fragment>
@@ -97,7 +95,7 @@ export default class PeopleList extends Component<IProps> {
                         </tr>
                     </thead>
                     <tbody>
-                        { organization.users.map(user =>
+                        { users.map(user =>
                             <tr className={style.userItem} key={user.email}>
                                 <PeopleListItem user={user} currentUser={this.props.userProfile} />
                             </tr>
