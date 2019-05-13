@@ -16,7 +16,7 @@
 import { fetchJSON } from './utils/fetchJson';
 import { switchMap } from 'rxjs/operators';
 import { IOrganization } from '../models';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IOrganizationMember, IRole } from '../models/organizationMember.model';
 
 export const organizationService = {
@@ -56,9 +56,7 @@ export const organizationService = {
         return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/organization/v1/organizations/' + id, {
             method: 'PUT',
             body: data
-        }).pipe(
-            switchMap(response => response.json())
-        );
+        });
     },
 
     deleteOrganizationById(id: string) {
