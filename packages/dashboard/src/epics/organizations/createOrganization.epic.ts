@@ -32,7 +32,7 @@ export const createOrganization: Epic = (action$, state$) => action$.pipe(
                 }),
                 catchError((error) => {
                     console.log('There was an issue creating the organization: ' + error);
-                    return of(organizationActions.createOrganizationFail(error.message));
+                    return of(organizationActions.createOrganizationFail(error));
                 })
             );
         }

@@ -63,7 +63,7 @@ const error = (text: string) => ({
     className: classNames(['body', 'error'])
 });
 
-export const getToastComponent = (type: string) => {
+export const getToastComponent = (type: string, data: string) => {
     switch (type) {
         case projectsActions.CREATE_PROJECT_SUCCESS:
             return info('Project created!');
@@ -72,15 +72,17 @@ export const getToastComponent = (type: string) => {
         case projectsActions.UPDATE_PROJECT_DETAILS_FAIL:
             return error('Ups! Sorry there was an error. Try again.');
         case projectsActions.DELETE_PROJECT_FAIL:
-            return error('Error deleting project!');
+            return error('Error deleting project: ' + data);
         case organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS:
             return success('Sweet! Your organization was updated successfully.');
         case organizationActions.UPDATE_ORGANIZATION_DETAILS_FAIL:
             return error('Ups! Sorry there was an error. Try again.');
         case organizationActions.DELETE_ORGANIZATION_FAIL:
-            return error('Error deleting organization!');
+            return error('Error deleting organization: ' + data);
         case organizationActions.CREATE_DEFAULT_ORGANIZATION_FAIL:
-            return error('Error creating default organization!');
+            return error('Error creating default organization: ' + data);
+        case organizationActions.CREATE_ORGANIZATION_FAIL:
+            return error('Error creating organization: ' + data);
         default:
             return null;
     }

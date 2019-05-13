@@ -17,4 +17,5 @@
 export interface IToast {
     id: string;
     type: string;
+    data: string;
 }

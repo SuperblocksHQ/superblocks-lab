@@ -39,13 +39,13 @@ export const createDefaultOrganization: Epic = (action$, state$) => action$.pipe
                     }),
                     catchError((error) => {
                         console.log('There was an issue creating the project: ' + error);
-                        return of(projectsActions.createProjectFail(error.message));
+                        return of(projectsActions.createProjectFail(error));
                     })
                 );
             }),
             catchError((error) => {
                 console.log('There was an issue creating the organization: ' + error);
-                return of(organizationActions.createDefaultOrganizationFail(error.message));
+                return of(organizationActions.createDefaultOrganizationFail(error));
             })
         );
     })

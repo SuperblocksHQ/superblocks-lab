@@ -27,7 +27,8 @@ export default function toastsReducer(state = initialState, action: AnyAction, r
         counter += 1;
         const toast = {
             id: counter,
-            type: action.type
+            type: action.type,
+            data: action.data
         };
         return {
             ...state,
@@ -38,6 +39,7 @@ export default function toastsReducer(state = initialState, action: AnyAction, r
     switch (action.type) {
         // Return this when ever we need to display a toast for certain action being triggered
         case organizationActions.CREATE_DEFAULT_ORGANIZATION_FAIL:
+        case organizationActions.CREATE_ORGANIZATION_FAIL:
         case organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS:
         case organizationActions.UPDATE_ORGANIZATION_DETAILS_FAIL:
         case organizationActions.DELETE_ORGANIZATION_FAIL:

@@ -35,7 +35,7 @@ export default class ToastContainer extends Component<IProps> {
         this.props.toasts.map(toastItem => {
             // New toast
             if (!(prevProps.toasts.some(item => item.id === toastItem.id))) {
-                const { ToastComponent, className }: any = getToastComponent(toastItem.type);
+                const { ToastComponent, className }: any = getToastComponent(toastItem.type, toastItem.data);
                 toast(<ToastComponent id={toastItem.id}/>, {
                     className,
                     onClose: () => this.props.toastDismissed(toastItem.id)
