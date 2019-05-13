@@ -22,13 +22,14 @@ import { organizationActions } from '../../../actions';
 import { organizationSelectors } from '../../../selectors';
 
 const mapStateToProps = (state: any) => ({
-    organizationList: organizationSelectors.getOrganizationList(state),
+    isOrganizationLoading: organizationSelectors.getLoadingOrganization(state),
+    organization: organizationSelectors.getOrganization(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
-        loadUserOrganizationList: () => {
-            dispatch(organizationActions.getOrganizationList());
+        loadOrganization: (organizationId: string) => {
+            dispatch(organizationActions.loadOrganization(organizationId));
         }
     };
 };

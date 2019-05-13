@@ -10,7 +10,6 @@ import { Switch } from 'react-router';
 import PrivateRoute from '../../app/PrivateRoute';
 import OnlyIf from '../../common/onlyIf';
 
-
 const Details = Loadable({
     loader: () => import(/* webpackChunkName: "Details" */'./details'),
     loading: EmptyLoading,
@@ -22,11 +21,11 @@ const PeopleList = Loadable({
 });
 
 interface IProps {
+    organization: IOrganization;
     location: any;
     match: any;
-    content: JSX.Element;
-    organizationList: [IOrganization];
-    loadUserOrganizationList: () => void;
+    loadOrganization: (organizationId: string) => void;
+    isOrganizationLoading: boolean;
     isAuthenticated: boolean;
     isAuthLoading: boolean;
 }
@@ -34,18 +33,13 @@ interface IProps {
 export default class OrganizationSettings extends Component<IProps> {
 
     componentDidMount() {
-        this.props.loadUserOrganizationList();
-    }
+        const { match, loadOrganization } = this.props;
 
-    getOrganization() {
-        return this.props.organizationList.find((org) =>
-            org.id === this.props.match.params.organizationId
-        );
+        loadOrganization(match.params.organizationId);
     }
 
     render() {
-        const { isAuthenticated, isAuthLoading } = this.props;
-        const organization = this.getOrganization();
+        const { isAuthenticated, isAuthLoading, isOrganizationLoading, organization } = this.props;
 
         return (
             <div className={style.organizationSettings}>
@@ -72,18 +66,18 @@ export default class OrganizationSettings extends Component<IProps> {
                             />
                         </SideMenuFooter>
                     </SideMenu>
-                    <div className={style.pageContent}>
-                        <OnlyIf test={!!organization}>
+                    <OnlyIf test={!isOrganizationLoading}>
+                        <div className={style.pageContent}>
                             <Switch>
                                 <PrivateRoute exact path='/:organizationId/settings/details' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
-                                    <Details {...props} organization={organization} />
+                                    <Details {...props} />
                                 )} />
                                 <PrivateRoute exact path='/:organizationId/settings/people' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
-                                    <PeopleList {...props} organization={organization} />
+                                    <PeopleList {...props} />
                                 )} />
                             </Switch>
-                        </OnlyIf>
-                    </div>
+                        </div>
+                    </OnlyIf>
                 </div>
             </div>
         );

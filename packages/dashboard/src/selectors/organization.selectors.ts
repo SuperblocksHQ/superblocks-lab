@@ -17,5 +17,6 @@
 export const organizationSelectors = {
     getOrganizationList: (state: any) => state.organizations.organizationList,
     isOrganizationListLoading: (state: any) => state.organizations.loadingOrganizationList,
-    getOrganization: (state: any) => state.organizations.organization
+    getOrganization: (state: any) => state.organizations.organization,
+    getLoadingOrganization: (state: any) => state.organizations.loadingOrganization
 };

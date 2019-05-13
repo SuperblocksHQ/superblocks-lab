@@ -18,12 +18,13 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import PeopleList from './PeopleList';
-import { userSelectors } from '../../../../selectors';
+import { userSelectors, organizationSelectors } from '../../../../selectors';
 import { organizationActions } from '../../../../actions';
 
 const mapStateToProps = (state: any) => ({
     userProfile: userSelectors.getUserProfile(state),
-    showInvitePeopleModal: state.organizations.showInvitePeopleModal
+    showInvitePeopleModal: state.organizations.showInvitePeopleModal,
+    organization: organizationSelectors.getOrganization(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {

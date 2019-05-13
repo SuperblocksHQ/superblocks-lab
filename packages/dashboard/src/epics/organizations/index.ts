@@ -24,6 +24,7 @@ import { inviteMemberToOrganization } from './members/inviteMemberToOrganization
 import { addMemberToOrganization } from './members/addMemberToOrganization.epic';
 import { changeMemberRoleInOrganization } from './members/changeMemberRoleInOrganization.epic';
 import { removeMemberFromOrganization } from './members/removeMemberFromOrganization.epic';
+import { loadOrganization } from './loadOrganization.epic';
 
 export const organizationEpics = [
     createDefaultOrganization,
@@ -35,4 +36,5 @@ export const organizationEpics = [
     changeMemberRoleInOrganization,
     removeMemberFromOrganization,
     getOrganizationList,
+    loadOrganization,
 ];

@@ -22,6 +22,7 @@ export const initialState: IOrganizationState = {
     organizationList: [],
     loadingOrganizationList: true,
     organization: undefined,
+    loadingOrganization: false,
     showCreateOrganizationModal: false,
     showDeleteOrganizationModal: false,
     showInvitePeopleModal: false,
@@ -51,10 +52,17 @@ export default function organizationsReducer(state = initialState, action: AnyAc
                 loadingOrganizationList: false
             };
         }
+        case organizationActions.LOAD_ORGANIZATION: {
+            return {
+                ...state,
+                loadingOrganization: true
+            };
+        }
         case organizationActions.LOAD_ORGANIZATION_SUCCESS: {
             return {
                 ...state,
                 organization: { ...action.data.organization },
+                loadingOrganization: false,
             };
         }
         case organizationActions.LOAD_ORGANIZATION_FAIL: {
@@ -62,6 +70,7 @@ export default function organizationsReducer(state = initialState, action: AnyAc
 
             return {
                 ...state,
+                loadingOrganization: false
             };
         }
         case organizationActions.DELETE_ORGANIZATION_FAIL: {

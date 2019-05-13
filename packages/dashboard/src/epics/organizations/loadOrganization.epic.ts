@@ -37,10 +37,7 @@ export const loadOrganization: Epic = (action$: any, state$: any) => action$.pip
     withLatestFrom(state$),
     switchMap(([action, _state]) => {
         const organizationId = action.data.organizationId;
-        return action$.pipe(
-            withLatestFrom(state$),
-            switchMap(() => loadOrganizationById(organizationId))
-        );
+        return loadOrganizationById(organizationId);
     })
 );
 

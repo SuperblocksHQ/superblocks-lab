@@ -20,9 +20,11 @@ import { AnyAction } from 'redux';
 import Details from './Details';
 import { organizationActions } from '../../../../actions';
 import { IOrganization } from '../../../../models';
+import { organizationSelectors } from '../../../../selectors';
 
 const mapStateToProps = (state: any) => ({
-    showDeleteOrganizationModal: state.organizations.showDeleteOrganizationModal
+    showDeleteOrganizationModal: state.organizations.showDeleteOrganizationModal,
+    organization: organizationSelectors.getOrganization(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
