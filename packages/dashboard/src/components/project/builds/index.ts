@@ -29,8 +29,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
-        getJob: (jobId: string) => {
-            dispatch(jobsActions.getJob(jobId));
+        getProjectPipelineList: (projectId: string) => {
+            dispatch(pipelinesActions.getProjectPipelineList(projectId));
         },
     };
 };
