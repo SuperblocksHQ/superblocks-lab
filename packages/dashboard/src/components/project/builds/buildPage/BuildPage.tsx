@@ -23,18 +23,19 @@ import { BuildStatus } from '../BuildStatus';
 import moment from 'moment';
 import BuildConsole from './BuildConsole';
 import classNames from 'classnames';
-import { IProject } from '../../../../models';
+import { IProject, IOrganization } from '../../../../models';
 
 interface IProps {
     build: any;
     location: any;
     match: any;
     project: IProject;
+    organization: IOrganization;
 }
 
 export default class BuildPage extends Component<IProps> {
     render() {
-        const { project } = this.props;
+        const { project, organization } = this.props;
 
         const build = {
             status: 'queued',
@@ -62,7 +63,7 @@ export default class BuildPage extends Component<IProps> {
         return (
             <div className={style.buildPage}>
                 <BreadCrumbs>
-                    <Link to={'/'}>Organization Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds/${this.props.match.params.buildId}`}>

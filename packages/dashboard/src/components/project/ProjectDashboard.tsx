@@ -52,6 +52,7 @@ interface IProps {
     location: any;
     match: any;
     loadProject: (projectId: string) => void;
+    loadOrganization: (organizationId: string) => void;
     isProjectLoading: boolean;
     isAuthenticated: boolean;
     isAuthLoading: boolean;
@@ -60,9 +61,10 @@ interface IProps {
 export default class ProjectDashboard extends Component<IProps> {
 
     componentDidMount() {
-        const { match, loadProject } = this.props;
+        const { match, loadProject, loadOrganization } = this.props;
 
         loadProject(match.params.projectId);
+        loadOrganization(match.params.organizationId);
     }
 
     render() {

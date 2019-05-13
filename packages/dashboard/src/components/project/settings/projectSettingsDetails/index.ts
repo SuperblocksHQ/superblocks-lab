@@ -18,12 +18,13 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import { projectsActions } from '../../../../actions';
-import { projectSelectors } from '../../../../selectors';
+import { projectSelectors, organizationSelectors } from '../../../../selectors';
 import ProjectSettingsDetails from './ProjectSettingsDetails';
 import { IProject } from '../../../../models';
 
 const mapStateToProps = (state: any) => ({
     project: projectSelectors.getProject(state),
+    organization: organizationSelectors.getOrganization(state),
     showDeleteProjectModal: state.projects.showDeleteProjectModal
 });
 

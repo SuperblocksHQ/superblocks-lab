@@ -19,7 +19,7 @@ import style from './style.less';
 import { BreadCrumbs, TextInput, TextAreaInput, StyledButton } from '../../../common';
 import { StyledButtonType } from '../../../../models/button.model';
 import { Link } from 'react-router-dom';
-import { IProject } from '../../../../models';
+import { IProject, IOrganization } from '../../../../models';
 import { validateProjectName } from '../../../../validations';
 import { ProjectSettingsMenu } from '../projectSettingsMenu';
 import OnlyIf from '../../../common/onlyIf';
@@ -29,6 +29,7 @@ interface IProps {
     location: any;
     match: any;
     project: IProject;
+    organization: IOrganization;
     updateProjectDetails: (newProjectDetails: Partial<IProject>) => void;
     showDeleteProjectModal: boolean;
     toggleDeleteProjectModal: () => void;
@@ -77,13 +78,13 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
     }
 
     render() {
-        const { toggleDeleteProjectModal, showDeleteProjectModal, project } = this.props;
+        const { toggleDeleteProjectModal, showDeleteProjectModal, project, organization } = this.props;
         const { errorName, canSave } = this.state;
 
         return (
             <React.Fragment>
                 <BreadCrumbs>
-                    <Link to={`/${this.props.match.params.organizationId}`}>Organization Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}`}>{project.name}</Link>
                     <Link to={window.location.pathname}>Settings</Link>
                 </BreadCrumbs>
