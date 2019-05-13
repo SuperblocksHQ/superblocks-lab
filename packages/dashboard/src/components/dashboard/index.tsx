@@ -24,6 +24,7 @@ import { organizationSelectors, projectSelectors } from '../../selectors';
 const mapStateToProps = (state: any) => ({
     organizationList: organizationSelectors.getOrganizationList(state),
     isOrganizationListLoading: organizationSelectors.isOrganizationListLoading(state),
+    selectedOrganization: organizationSelectors.getOrganization(state),
     projectList: projectSelectors.getProjectList(state),
     isProjectListLoading: projectSelectors.isProjectListLoading(state),
     showCreateOrganizationModal: state.organizations.showCreateOrganizationModal
@@ -33,6 +34,9 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
         loadUserOrganizationList: () => {
             dispatch(organizationActions.getOrganizationList());
+        },
+        loadOrganization: (organizationId: string) => {
+            dispatch(organizationActions.loadOrganization(organizationId));
         },
         LoginAction: () => {
             dispatch(authActions.githubLogin());

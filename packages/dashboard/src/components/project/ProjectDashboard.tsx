@@ -68,13 +68,13 @@ export default class ProjectDashboard extends Component<IProps> {
     }
 
     render() {
-        const { isAuthenticated, isAuthLoading, isProjectLoading, project } = this.props;
+        const { isAuthenticated, isAuthLoading, isProjectLoading, project, match } = this.props;
         const { pathname } = this.props.location;
 
         return (
             <div className={style.projectDashboard}>
                 <React.Fragment>
-                    <Topbar />
+                    <Topbar organizationId={match.params.organizationId} />
                     <LoadingBar className='loading' />
                     <div className={style.content}>
                         <SideMenu>

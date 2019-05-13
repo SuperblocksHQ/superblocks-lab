@@ -30,8 +30,10 @@ import CreateProject from '../organization/createProject';
 interface IProps {
     match: any;
     organizationList: [IOrganization];
+    selectedOrganization: IOrganization;
     isOrganizationListLoading: boolean;
     loadUserOrganizationList: () => void;
+    loadOrganization: (organizationId: string) => void;
     projectList: IProject[];
     isProjectListLoading: boolean;
     showCreateOrganizationModal: boolean;
@@ -46,6 +48,7 @@ export default class Dashboard extends Component<IProps> {
         const { organizationId } = this.props.match.params;
         this.props.loadUserOrganizationList();
         this.props.getProjectList(organizationId);
+        this.props.loadOrganization(organizationId);
     }
 
     componentWillReceiveProps(nextProps: any) {
@@ -60,20 +63,13 @@ export default class Dashboard extends Component<IProps> {
         }
     }
 
-    getOrganization() {
-        return this.props.organizationList.find((org) =>
-            org.id === this.props.match.params.organizationId
-        );
-    }
-
     render() {
-        const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading, match } = this.props;
-        const selectedOrganization = this.getOrganization();
+        const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading, match, selectedOrganization } = this.props;
 
         return (
             <Fragment>
                 <div className={style.dashboard}>
-                    <Topbar />
+                    <Topbar organizationId={match.params.organizationId} />
                     <div className={style.content}>
                         <SideMenu>
                             <SideMenuSubHeader title='My organizations' />
