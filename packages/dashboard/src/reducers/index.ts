@@ -22,6 +22,7 @@ import toast from './toast.reducer';
 import user from './user.reducer';
 import organizations from './organizations.reducer';
 import pipelines from './pipelines.reducer';
+import jobs from './jobs.reducer';
 import { AnyAction } from 'redux';
 
 const rehydrated = (state = false, action: AnyAction) => {
@@ -42,5 +43,6 @@ export default {
     toast,
     user,
     organizations,
-    pipelines
+    pipelines,
+    jobs,
 };

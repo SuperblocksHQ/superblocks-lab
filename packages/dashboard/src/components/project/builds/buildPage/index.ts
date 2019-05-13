@@ -19,6 +19,7 @@ import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import BuildPage from './BuildPage';
 import { projectSelectors, organizationSelectors, pipelineSelectors, jobSelectors } from '../../../../selectors';
+import { jobsActions } from '../../../../actions';
 
 const mapStateToProps = (state: any) => ({
     project: projectSelectors.getProject(state),
@@ -29,6 +30,9 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
+        getJob: (jobId: string) => {
+            dispatch(jobsActions.getJob(jobId));
+        },
     };
 };
 

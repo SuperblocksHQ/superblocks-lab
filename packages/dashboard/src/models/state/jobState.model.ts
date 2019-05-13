@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './projectState.model';
-export * from './organizationState.model';
-export * from './pipelineState.model';
-export * from './jobState.model';
+import { IJob } from '../job.model';
+
+export interface IJobState {
+
+    job?: IJob;
+    loadingJob: boolean;
+}

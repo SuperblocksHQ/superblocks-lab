@@ -14,60 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { pipelinesActions } from '../actions';
-import { IPipelineState } from '../models/state';
+import { jobsActions } from '../actions';
+import { IJobState } from '../models/state';
 import { AnyAction } from 'redux';
 
-export const initialState: IPipelineState = {
-    projectPipelineList: [],
-    loadingProjectPipelineList: false,
-    pipeline: undefined,
-    loadingPipeline: false,
+export const initialState: IJobState = {
+    job: undefined,
+    loadingJob: false,
 };
 
 export default function projectsReducer(state = initialState, action: AnyAction) {
     switch (action.type) {
-        case pipelinesActions.GET_PROJECT_PIPELINE_LIST: {
+        case jobsActions.GET_JOB: {
             return {
                 ...state,
-                loadingProjectPipelineList: true
+                loadingJob: true
             };
         }
-        case pipelinesActions.GET_PROJECT_PIPELINE_LIST_SUCCESS: {
+        case jobsActions.GET_JOB_SUCCESS: {
             return {
                 ...state,
-                projectPipelineList: action.data.pipelineList,
-                loadingProjectPipelineList: false
+                job: { ...action.data.job },
+                loadingJob: false
             };
         }
-        case pipelinesActions.GET_PROJECT_PIPELINE_LIST_FAIL: {
-            console.log('Error retrieving project pipeline list: ', action.data);
+        case jobsActions.GET_JOB_FAIL: {
+            console.log('job load failed', action.data);
 
             return {
                 ...state,
-                projectPipelineList: [],
-                loadingProjectPipelineList: false
-            };
-        }
-        case pipelinesActions.GET_PIPELINE: {
-            return {
-                ...state,
-                loadingPipeline: true
-            };
-        }
-        case pipelinesActions.GET_PIPELINE_SUCCESS: {
-            return {
-                ...state,
-                pipeline: { ...action.data.pipeline },
-                loadingPipeline: false
-            };
-        }
-        case pipelinesActions.GET_PIPELINE_FAIL: {
-            console.log('pipeline load failed', action.data);
-
-            return {
-                ...state,
-                loadingPipeline: false
+                loadingJob: false
             };
         }
         default:
