@@ -21,7 +21,7 @@ import { Observable, throwError, of } from 'rxjs';
 export const projectService = {
 
     createProject(data: Partial<IProject>): Observable<IProject> {
-        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects', {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/organizations/' + data.ownerId + '/projects', {
             method: 'POST',
             body: data
         })
@@ -47,7 +47,7 @@ export const projectService = {
     },
 
     getProjectsList(ownerId: string) {
-        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/owner/' + ownerId + '/projects', {})
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/organizations/' + ownerId + '/projects', {})
             .pipe(
                 switchMap(response => response.json())
             );
