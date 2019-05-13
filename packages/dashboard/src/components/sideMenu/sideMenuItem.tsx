@@ -25,6 +25,7 @@ interface IProps {
     title: string;
     onClick?: any;
     active?: boolean;
+    hideActiveClass?: boolean;
     linkTo?: string;
     children?: any;
     className?: any;
@@ -33,7 +34,7 @@ interface IProps {
 export function SideMenuItem(props: IProps) {
     return (
         <div className={classNames([style.posRelative, props.className, !props.active ? style.flyOut : style.itemWrapper])}>
-            <NavLink exact={true} activeClassName={style.active} to={props.linkTo || ''}>
+            <NavLink exact={true} activeClassName={props.hideActiveClass ? null : style.active} to={props.linkTo || ''}>
                 <div onClick={props.onClick} className={style.item}>
                     <OnlyIf test={!!props.icon}>
                         <div className={style.iconContainer}>

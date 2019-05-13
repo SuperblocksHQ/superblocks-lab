@@ -90,6 +90,8 @@ export default class Dashboard extends Component<IProps> {
                                     icon={<IconPlusTransparent />}
                                     title='New organization'
                                     onClick={toggleCreateOrganizationModal}
+                                    linkTo={window.location.pathname}
+                                    hideActiveClass={true}
                                 />
                                 <SideMenuItem
                                     icon={<IconConfigure />}
