@@ -23,6 +23,7 @@ import { IUser, IOrganization } from '../../../../models';
 import { StyledButtonType } from '../../../../models/button.model';
 import InvitePeopleModal from '../../../modals/invitePeopleModal/InvitePeopleModal';
 import OnlyIf from '../../../common/onlyIf';
+import classNames from 'classnames';
 
 interface IProps {
     location: any;
@@ -85,23 +86,19 @@ export default class PeopleList extends Component<IProps> {
 
                 <div className={style.hr}></div>
 
-                <table className={style.peopleList}>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Last seen</th>
-                            <th>Role</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { users.map(user =>
-                            <tr className={style.userItem} key={user.email}>
-                                <PeopleListItem user={user} currentUser={this.props.userProfile} />
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                <div className={style.peopleList}>
+                    <div className={classNames([style.userItem, style.header])}>
+                        <div className={style.singleCell}>Name</div>
+                        <div className={style.singleCell}>Last seen</div>
+                        <div className={style.singleCell}>Role</div>
+                        <div className={style.singleCell}>Actions</div>
+                    </div>
+                    { users.map(user =>
+                        <div className={style.userItem} key={user.email}>
+                            <PeopleListItem user={user} currentUser={this.props.userProfile} />
+                        </div>
+                    )}
+                </div>
             </React.Fragment>
         );
     }

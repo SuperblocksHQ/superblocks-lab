@@ -76,7 +76,7 @@ export default class CreateProject extends Component<IProps, IState> {
                 <div className={style.left}>
                     <img src='/static/img/illustration-new-project.svg' />
                 </div>
-                <div>
+                <div className={style.right}>
                     <h2 className={style['mb-4']}>Create a project to get started</h2>
 
                     <div className={style['mb-4']}>

@@ -36,34 +36,36 @@
 
 .buildList {
     width: 100%;
-    padding-right: 50px;
-    border-collapse: collapse;
 
     .buildItem {
         transition: background .15s;
+        display: flex;
+        border-bottom: 1px solid @border-color;
 
         &:hover {
             background: #262c30;
         }
     }
 
-    th {
+    .buildItem.header {
         font-weight: normal;
         padding-bottom: 15px;
+
+        .singleCell:last-of-type {
+            border: 0px;
+        }
+
+        &:hover {
+            background: transparent;
+        }
     }
 
-    td, th {
-        min-width: 75px;
-        padding-right: 75px;
+    .singleCell {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
         text-align: left;
         white-space: nowrap;
-    }
-
-    tr {
-        border-bottom: 1px solid @border-color;
-    }
-
-    td {
         padding-top: 10px;
         padding-bottom: 10px;
 
@@ -77,13 +79,45 @@
         }
     }
 
-    tr td:first-of-type {
+    .singleCell:nth-of-type(1) {
+        flex: 0 0 140px;
         padding-left: 5px;
     }
 
-    tr td:last-of-type {
-        width: 100%;
-        text-align: right;
+    .singleCell:nth-of-type(2) {
+        flex: 0 0 260px;
+    }
+
+    .singleCell:nth-of-type(3) {
+        flex: 0 0 260px;
+    }
+
+    .singleCell:nth-of-type(4) {
+        flex: 1 0;
+        min-width: 0px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        span {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 100%;
+            display: block;
+        }
+
+        div {
+            overflow: hidden;
+        }
+
+        .commitSmallDevice {
+            display: none;
+        }
+    }
+
+    .singleCell:nth-of-type(5) {
+        flex: 0 0 150px;
+        flex-direction: column;
         padding-right: 15px;
         border-right: 2px solid black;
 
@@ -101,6 +135,76 @@
 
         &.status--1 {
             border-right-color: #d9534f;
+        }
+    }
+
+    @media only screen and (max-width: 1000px) {
+        .buildItem {
+            flex-wrap: wrap;
+            border: 1px solid @border-color;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .buildItem.buildItem.header {
+            display: none;
+            border: 0px;
+        }
+
+        .singleCell {
+            display: block;
+            flex: unset;
+        }
+
+        .singleCell:nth-of-type(1) {
+            order: 1;
+            flex: 100%;
+            padding: 0px;
+        }
+
+        .singleCell:nth-of-type(2) {
+            order: 2;
+            position: absolute;
+            left: 6px;
+            top: 3px;
+            padding: 0px;
+        }
+
+        .singleCell:nth-of-type(3) {
+            order: 3;
+            display: none;
+        }
+
+        .singleCell:nth-of-type(4) {
+            order: 4;
+            flex: unset;
+            padding-left: 10px;
+            margin-right: auto;
+
+            span:first-of-type {
+                margin-left: 9px;
+            }
+
+            span {
+                margin-bottom: 8px !important;
+                width: 100%;
+            }
+
+            .commitSmallDevice {
+                display: flex;
+            }
+
+            svg {
+                min-width: 30px;
+                margin-right: 0px !important;
+            }
+        }
+
+        .singleCell:nth-of-type(5) {
+            order: 5;
+            border: 0px;
+            justify-content: center;
+            display: flex;
         }
     }
 }
@@ -153,7 +257,7 @@
 }
 
 .avatarImg {
-    height: 30px;
+    width: 30px;
 }
 
 .setupBuild {

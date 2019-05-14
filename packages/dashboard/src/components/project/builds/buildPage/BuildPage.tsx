@@ -43,6 +43,7 @@ export default class BuildPage extends Component<IProps> {
         const { match, getJob } = this.props;
         getJob(match.params.buildId);
     }
+
     render() {
         const { project, job, organization } = this.props;
 
@@ -67,10 +68,12 @@ export default class BuildPage extends Component<IProps> {
 
                             <p className={classNames([style.subtitle, style.flexVerticalCenter])}>
                                 {
-                                    `Triggered ${moment.utc(job.createdAt).fromNow()} by `
+                                    <span>Triggered {moment.utc(job.createdAt).fromNow()} by </span>
                                 }
-                                <img src={job.commit.ownerAvatar} />
-                                <span className={style.ownerName}>{job.commit.ownerName}</span>
+                                <span className={style.ownerName}>
+                                    <img src={`${job.commit.ownerAvatar}&s=48`} />
+                                    <span>{job.commit.ownerName}</span>
+                                </span>
                                 <span>
                                     <IconBranch />
                                     <a href={job.commit.branchUrl} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>

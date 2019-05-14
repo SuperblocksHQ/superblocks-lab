@@ -24,6 +24,7 @@ import { SetupBuild } from './SetupBuild';
 import OnlyIf from '../../common/onlyIf';
 import { IProject, IPipeline, IOrganization } from '../../../models';
 import { EmptyRepository } from './emptyRepository';
+import classNames from 'classnames';
 
 interface IProps {
     location: any;
@@ -65,23 +66,20 @@ export default class BuildList extends Component<IProps> {
                     </a>
                     <div className={style.hr}></div>
 
-                    <table className={style.buildList}>
-                        <thead>
-                            <tr>
-                                <th>Status</th>
-                                <th>Build #</th>
-                                <th>Branch</th>
-                                <th>Commit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { projectPipelineList.map((pipeline, index) =>
-                                <tr className={style.buildItem} key={index}>
-                                    <BuildListItem pipeline={pipeline} projectId={projectId} organizationId={organizationId} />
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                    <div className={style.buildList}>
+                        <div className={classNames([style.buildItem, style.header])}>
+                            <div className={style.singleCell}>Status</div>
+                            <div className={style.singleCell}>Build #</div>
+                            <div className={style.singleCell}>Branch</div>
+                            <div className={style.singleCell}>Commit</div>
+                            <div className={style.singleCell}></div>
+                        </div>
+                        { projectPipelineList.map((pipeline, index) =>
+                            <div className={style.buildItem} key={index}>
+                                <BuildListItem pipeline={pipeline} projectId={projectId} organizationId={organizationId} />
+                            </div>
+                        )}
+                    </div>
                 </OnlyIf>
 
                 <OnlyIf test={!projectPipelineList.length && !isProjectPipelineListLoading && !project.vcsUrl}>
