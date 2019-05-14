@@ -73,12 +73,6 @@ export default function organizationsReducer(state = initialState, action: AnyAc
                 loadingOrganization: false
             };
         }
-        case organizationActions.DELETE_ORGANIZATION_FAIL: {
-            return {
-                ...state,
-                organization: null
-            };
-        }
         case organizationActions.CREATE_ORGANIZATION_SUCCESS: {
             return {
                 ...state,
