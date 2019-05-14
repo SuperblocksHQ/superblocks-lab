@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { from, of } from 'rxjs';
+import { from, of, zip } from 'rxjs';
 import { switchMap, withLatestFrom, map, catchError, tap } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { jobsActions } from '../../actions';
@@ -25,7 +25,10 @@ export const getJob: Epic = (action$: any, state$: any) => action$.pipe(
     withLatestFrom(state$),
     switchMap(([action]) => {
         const jobId = action.data.jobId;
-        return from(jobService.getJob(jobId)).pipe(
+        return zip(jobService.getJob(jobId), jobService.getJobTrace(jobId), (job, trace) => {
+            job.log = trace.log;
+            return job;
+        }).pipe(
             map(jobsActions.getJobSuccess),
             catchError((error) => {
                 console.log('There was an issue fetching the job: ' + error);

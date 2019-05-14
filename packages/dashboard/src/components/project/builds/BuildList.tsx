@@ -46,8 +46,6 @@ export default class BuildList extends Component<IProps> {
         const { project, organization, projectPipelineList, isProjectPipelineListLoading } = this.props;
         const { organizationId, projectId } = this.props.match.params;
 
-        console.log(projectPipelineList);
-
         return (
             <React.Fragment>
                 <BreadCrumbs>
@@ -90,7 +88,7 @@ export default class BuildList extends Component<IProps> {
                     <SetupBuild projectId={projectId} organizationId={organizationId} />
                 </OnlyIf>
 
-                <OnlyIf test={!projectPipelineList.length && project.vcsUrl}>
+                <OnlyIf test={!projectPipelineList.length && project.vcsUrl && !isProjectPipelineListLoading}>
                     <EmptyRepository />
                 </OnlyIf>
             </React.Fragment>

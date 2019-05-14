@@ -24,4 +24,11 @@ export const jobService = {
             switchMap(response => response.json())
         );
     },
+
+    getJobTrace(jobId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/ci/v1/jobs/${jobId}/trace`, {})
+        .pipe(
+            switchMap(response => response.json())
+        );
+    },
 };
