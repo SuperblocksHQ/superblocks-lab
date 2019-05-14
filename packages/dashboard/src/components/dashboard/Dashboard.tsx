@@ -29,6 +29,7 @@ import CreateProject from '../organization/createProject';
 
 interface IProps {
     match: any;
+    history: any;
     organizationList: [IOrganization];
     selectedOrganization: IOrganization;
     isOrganizationListLoading: boolean;
@@ -60,6 +61,12 @@ export default class Dashboard extends Component<IProps> {
         // Update organizations when creating a new one
         if (this.props.organizationList.length !== nextProps.organizationList.length) {
             this.props.loadUserOrganizationList();
+        }
+
+        // Redirect to new organization when creating one
+        if (nextProps.organizationList.length === (this.props.organizationList.length + 1)) {
+            const { organizationList } = nextProps;
+            this.props.history.push(`/${organizationList[organizationList.length - 1].id}`);
         }
     }
 

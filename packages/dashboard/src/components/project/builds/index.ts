@@ -19,7 +19,8 @@ import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import BuildList from './BuildList';
 import { pipelineSelectors, projectSelectors, organizationSelectors } from '../../../selectors';
-import { pipelinesActions } from '../../../actions';
+import { pipelinesActions, projectsActions } from '../../../actions';
+import { IProject } from '../../../models';
 
 const mapStateToProps = (state: any) => ({
     projectPipelineList: pipelineSelectors.getProjectPipelinesList(state),
@@ -32,6 +33,9 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
         getProjectPipelineList: (projectId: string) => {
             dispatch(pipelinesActions.getProjectPipelineList(projectId));
+        },
+        disconnectProjectRepository: (projectId: string) => {
+            dispatch(projectsActions.disconnectProjectRepository(projectId));
         },
     };
 };

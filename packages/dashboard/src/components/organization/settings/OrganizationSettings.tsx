@@ -43,7 +43,7 @@ export default class OrganizationSettings extends Component<IProps> {
 
         return (
             <div className={style.organizationSettings}>
-                <Topbar organizationId={organization.id} />
+                <Topbar organizationId={organization ? organization.id : null} />
                 <div className={style.content}>
                     <SideMenu>
                         <SideMenuHeader title={'Organization Settings'} />

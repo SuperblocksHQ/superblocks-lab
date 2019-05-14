@@ -25,9 +25,23 @@
         h1 {
             margin-left: 15px;
             margin-bottom: 0px;
+            word-wrap: anywhere;
+            word-break: break-all;
 
             span {
                 color: #C4C4C4;
+            }
+        }
+    }
+
+    @media only screen and (max-width: 650px) {
+        .title {
+            flex-direction: column;
+            align-items: flex-start;
+
+            h1 {
+                margin-left: 0px;
+                margin-top: 8px;
             }
         }
     }
@@ -55,6 +69,7 @@
             margin-left: 15px;
             margin-bottom: 8px;
             display: inline-block;
+            word-break: break-all;
         }
 
         .ownerName {
@@ -81,5 +96,10 @@
         color: white;
         padding: 25px 35px;
         min-height: 300px;
+
+        pre {
+            white-space: pre-line;
+            word-wrap: break-word;
+        }
     }
 }

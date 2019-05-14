@@ -78,10 +78,10 @@ export const projectsActions = {
         };
     },
     DELETE_PROJECT: 'DELETE_PROJECT',
-    deleteProject(projectId: string) {
+    deleteProject(projectId: string, organizationId: string) {
        return {
             type: projectsActions.DELETE_PROJECT,
-            data: { projectId }
+            data: { projectId, organizationId }
        };
     },
     DELETE_PROJECT_SUCCESS: 'DELETE_PROJECT_SUCCESS',
@@ -152,6 +152,26 @@ export const projectsActions = {
     updateProjectDetailsFail(error: string) {
        return {
             type: projectsActions.UPDATE_PROJECT_DETAILS_FAIL,
+            data: error
+       };
+    },
+    DISCONNECT_PROJECT_REPOSITORY: 'DISCONNECT_PROJECT_REPOSITORY',
+    disconnectProjectRepository(id: string) {
+       return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY,
+            data: { id }
+       };
+    },
+    DISCONNECT_PROJECT_REPOSITORY_SUCCESS: 'DISCONNECT_PROJECT_REPOSITORY_SUCCESS',
+    disconnectProjectRepositorySuccess() {
+       return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS
+       };
+    },
+    DISCONNECT_PROJECT_REPOSITORY_FAIL: 'DISCONNECT_PROJECT_REPOSITORY_FAIL',
+    disconnectProjectRepositoryFail(error: string) {
+       return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_FAIL,
             data: error
        };
     },

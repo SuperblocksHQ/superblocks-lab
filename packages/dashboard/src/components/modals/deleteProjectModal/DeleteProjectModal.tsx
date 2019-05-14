@@ -24,7 +24,8 @@ import { Modal } from '../../common/modal';
 
 interface IProps {
     project: IProject;
-    deleteProject: (projectId: string) => void;
+    organizationId: string;
+    deleteProject: (projectId: string, organizationId: string) => void;
     hideModal: () => void;
 }
 
@@ -46,8 +47,10 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
 
     onConfirmClick = () => {
         const { id } = this.props.project;
+        const { organizationId } = this.props;
+
         if (this.state.isValid) {
-            this.props.deleteProject(id);
+            this.props.deleteProject(id, organizationId);
         }
     }
 
@@ -56,7 +59,7 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
         const { isValid } = this.state;
 
         return (
-            <Modal>
+            <Modal hideModal={hideModal}>
                 <div className={classNames([style.deleteProjectModal, 'modal'])}>
                     <ModalHeader
                         title='Delete this project'

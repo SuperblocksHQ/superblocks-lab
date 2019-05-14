@@ -75,7 +75,7 @@ export default class CreateProjectModal extends React.Component<IProps, IState> 
         const { errorName, canCreate } = this.state;
 
         return (
-            <Modal>
+            <Modal hideModal={hideModal}>
                 <div className={classNames([style.createProjectModal, 'modal'])}>
                     <ModalHeader
                         title='Create a project'

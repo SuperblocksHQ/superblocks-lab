@@ -123,7 +123,7 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
                         <StyledButton type={StyledButtonType.Danger} text={'Delete Project'} onClick={() => toggleDeleteProjectModal()} />
 
                         <OnlyIf test={showDeleteProjectModal}>
-                            <DeleteProjectModal hideModal={toggleDeleteProjectModal} project={project} />
+                            <DeleteProjectModal hideModal={toggleDeleteProjectModal} project={project} organizationId={organization.id} />
                         </OnlyIf>
                     </div>
                 </div>

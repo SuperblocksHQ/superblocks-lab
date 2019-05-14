@@ -45,7 +45,7 @@ export default class InvitePeopleModal extends React.Component<IProps, IState> {
         const { hideModal } = this.props;
 
         return (
-            <Modal>
+            <Modal hideModal={hideModal}>
                 <div className={classNames([style.invitePeopleModal, 'modal'])}>
                     <ModalHeader
                         title='Invite new members'
