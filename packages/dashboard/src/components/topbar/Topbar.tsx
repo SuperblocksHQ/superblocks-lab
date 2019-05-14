@@ -24,7 +24,7 @@ import { Link } from 'react-router-dom';
 interface IProps {
     logout: () => void;
     userProfile: IUser;
-    organizationId?: string;
+    organizationId?: string | null;
 }
 
 export default class Topbar extends Component<IProps> {
