@@ -25,6 +25,7 @@ import BuildConsole from './BuildConsole';
 import classNames from 'classnames';
 import { IProject, IOrganization, IJob } from '../../../../models';
 import OnlyIf from '../../../common/onlyIf';
+import { secondsToHms } from '../../../../utils/time';
 
 interface IProps {
     build: any;
@@ -95,7 +96,7 @@ export default class BuildPage extends Component<IProps> {
 
                             <h2>Compile and Test</h2>
                             <p className={style['mb-4']}>
-                                <span><b>Total duration:</b> {job.duration}</span>
+                                <span><b>Total duration:</b> {secondsToHms(job.duration)}</span>
                                 <span className={style['ml-3']}><b>Queued:</b> 00:01 waiting</span>
                             </p>
 
