@@ -86,12 +86,11 @@ export default class BuildList extends Component<IProps> {
                     </table>
                 </OnlyIf>
 
-                <OnlyIf test={!projectPipelineList.length && !isProjectPipelineListLoading}>
+                <OnlyIf test={!projectPipelineList.length && !isProjectPipelineListLoading && !project.vcsUrl}>
                     <SetupBuild projectId={projectId} organizationId={organizationId} />
                 </OnlyIf>
 
-                {/* TODO: Update test prop so it shows only when user doesn't have any commits in repo */}
-                <OnlyIf test={false}>
+                <OnlyIf test={!projectPipelineList.length && project.vcsUrl}>
                     <EmptyRepository />
                 </OnlyIf>
             </React.Fragment>
