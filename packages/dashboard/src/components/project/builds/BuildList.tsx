@@ -43,6 +43,10 @@ export default class BuildList extends Component<IProps> {
         this.props.getProjectPipelineList(projectId);
     }
 
+    decorateVcsUrl(vcsUrl: string) {
+        return vcsUrl.replace('https://github.com/', '').replace('.git', '');
+    }
+
     render() {
         const { project, organization, projectPipelineList, isProjectPipelineListLoading } = this.props;
         const { organizationId, projectId } = this.props.match.params;
@@ -58,9 +62,9 @@ export default class BuildList extends Component<IProps> {
                 <OnlyIf test={projectPipelineList.length > 0}>
                     <h1>Builds</h1>
                     <a className={style.repoLink} href={project.vcsUrl} target='_blank' rel='noopener noreferrer'>
-                        <IconGithub size='xs' className={style.colorGrey} />
+                        <IconGithub className={classNames([style.colorGrey, style.githubLogo])} />
                         <span>
-                            {project.vcsUrl}
+                            {this.decorateVcsUrl(project.vcsUrl)}
                         </span>
                         <IconExternalLink width='10px' height='10px' />
                     </a>
