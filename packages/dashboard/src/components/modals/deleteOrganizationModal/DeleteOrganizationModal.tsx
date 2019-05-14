@@ -24,7 +24,7 @@ import { IOrganization } from '../../../models';
 
 interface IProps {
     organization: IOrganization;
-    deleteOrganization: (organizationId: string) => void;
+    deleteOrganization: (organizationId: string, redirect: boolean) => void;
     hideModal: () => void;
 }
 
@@ -48,7 +48,7 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
         const { id } = this.props.organization;
 
         if (this.state.isValid) {
-            this.props.deleteOrganization(id);
+            this.props.deleteOrganization(id, true);
         }
     }
 

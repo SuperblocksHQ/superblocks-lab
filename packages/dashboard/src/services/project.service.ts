@@ -64,7 +64,10 @@ export const projectService = {
 
     deleteProjectById(id: string) {
         return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects/' + id, {
-            method: 'DELETE'
+            method: 'DELETE',
+            body: {
+                'x-organization-role': 'OWNER'
+            }
         });
     },
 };

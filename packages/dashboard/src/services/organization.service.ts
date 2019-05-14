@@ -61,7 +61,10 @@ export const organizationService = {
 
     deleteOrganizationById(id: string) {
         return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/organization/v1/organizations/' + id, {
-            method: 'DELETE'
+            method: 'DELETE',
+            body: {
+                'x-organization-role': 'OWNER'
+            }
         });
     },
 
