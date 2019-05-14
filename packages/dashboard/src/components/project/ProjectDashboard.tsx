@@ -16,7 +16,7 @@
 
 import React, { Component } from 'react';
 import Loadable from 'react-loadable';
-import { Switch } from 'react-router-dom';
+import { Switch, Link } from 'react-router-dom';
 import LoadingBar from 'react-redux-loading-bar';
 import Topbar from '../topbar';
 import style from './style.less';
@@ -79,11 +79,13 @@ export default class ProjectDashboard extends Component<IProps> {
                     <div className={style.content}>
                         <SideMenu>
                             { project &&
-                                <SideMenuHeader
-                                    icon={<LetterAvatar title={project.name} />}
-                                    className={style.projectName}
-                                    title={<span>{project.name}</span>}
-                                />
+                                <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>
+                                    <SideMenuHeader
+                                        icon={<LetterAvatar title={project.name} />}
+                                        className={style.projectName}
+                                        title={<span>{project.name}</span>}
+                                    />
+                                </Link>
                             }
                             <SideMenuItem
                                     icon={<IconPlay />}
