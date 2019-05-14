@@ -22,8 +22,8 @@ import { organizationActions } from '../../../actions';
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>) {
     return {
-        deleteOrganization: (organizationId: string) => {
-            dispatch(organizationActions.deleteOrganization(organizationId));
+        deleteOrganization: (organizationId: string, redirect: boolean) => {
+            dispatch(organizationActions.deleteOrganization(organizationId, redirect));
         }
     };
 }
