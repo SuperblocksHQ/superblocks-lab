@@ -17,7 +17,7 @@
 import React from 'react';
 import style from './style.less';
 import classNames from 'classnames';
-import { IconCheck, IconClose, IconClock } from '../../common/icons';
+import { IconCheck, IconClose, IconClock, IconRunning } from '../../common/icons';
 import { PipelineStatus } from '../../../models';
 
 interface IProps {
@@ -26,31 +26,32 @@ interface IProps {
 
 export function BuildStatus(props: IProps) {
     switch (props.status) {
+        case PipelineStatus.Pending:
         case PipelineStatus.Queued:
             return (
                 <div className={classNames([style.buildStatus, style.queue])}>
-                    <IconCheck width='14px' height='14px' />
+                    <IconClock width='14px' height='14px' />
                     <span>queue</span>
                 </div>
             );
         case PipelineStatus.Running:
             return (
                 <div className={classNames([style.buildStatus, style.running])}>
-                    <IconClock width='14px' height='14px' />
+                    <IconRunning width='14px' height='14px' />
                     <span>running</span>
                 </div>
             );
         case PipelineStatus.Success:
             return (
                 <div className={classNames([style.buildStatus, style.success])}>
-                    <IconClock width='14px' height='14px' />
+                    <IconCheck width='14px' height='14px' />
                     <span>success</span>
                 </div>
             );
         case PipelineStatus.Failed:
             return (
                 <div className={classNames([style.buildStatus, style.failed])}>
-                    <IconClock width='14px' height='14px' />
+                    <IconClose width='14px' height='14px' />
                     <span>failed</span>
                 </div>
             );

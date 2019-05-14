@@ -20,6 +20,9 @@
     color: #c4c4c4;
     margin-bottom: 15px;
     transition: opacity .15s;
+    display: flex;
+    align-content: center;
+    align-items: center;
 
     &:hover {
         opacity: .6;
@@ -41,6 +44,11 @@
     .disconnectBtn {
         margin-left: auto;
     }
+}
+
+.githubLogo {
+    color: #c4c4c4;
+    font-size: 12px;
 }
 
 .buildList {
@@ -250,9 +258,9 @@
     }
 
     &.queue {
-        border-color: #59a600;
+        border-color: #725BA4;
         color: #fff;
-        background-color: #59a600;
+        background-color: #725BA4;
     }
 
     &.success {
@@ -268,9 +276,9 @@
     }
 
     &.running {
-        border-color: #f0f0f0;
-        color: #000;
-        background-color: #f0f0f0;
+        border-color: #008FCC;
+        color: #fff;
+        background-color: #008FCC;
     }
 }
 

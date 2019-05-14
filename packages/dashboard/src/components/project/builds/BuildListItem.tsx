@@ -22,6 +22,7 @@ import { IconBranch, IconCommit, IconClock, IconCalendar } from '../../common/ic
 import { BuildStatus } from './BuildStatus';
 import { Link } from 'react-router-dom';
 import { IPipeline } from '../../../models';
+import { secondsToHms } from '../../../utils/time';
 
 interface IProps {
     pipeline: IPipeline;
@@ -77,8 +78,8 @@ export default class BuildListItem extends Component<IProps> {
                     <span className={style['mb-2']}>
                         <IconClock className={style['mr-2']} />
 
-                        {/* TODO - This needs to be calculated */}
-                        {moment.utc(pipeline.createdAt).fromNow()}
+                        {/* TODO - This needs to be calculated when not available */}
+                        {secondsToHms(pipeline.duration)}
                     </span>
                     <span>
                         <IconCalendar className={style['mr-2']} />

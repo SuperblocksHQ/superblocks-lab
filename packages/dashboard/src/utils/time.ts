@@ -14,38 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export enum PipelineStatus {
-    Queued = 'queued',
-    Pending = 'pending',
-    Running = 'running',
-    Success = 'success',
-    Failed = 'failed',
-}
+/**
+ * Function to transform seconds to the format hh:mm:ss
+ * @param d - Time represented in seconds to be converted
+ */
+export function secondsToHms(d: number) {
+    d = Number(d);
+    const h = Math.floor(d / 3600);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
 
-export interface IJobStatus {
-    id: string;
-    status: string;
-}
-
-export interface IPipelineCommit {
-    ownerAvatar: string;
-    ownerName: string;
-    repository: string;
-    description: string;
-    hash: string;
-    branch: string;
-    branchUrl: string;
-    commitUrl: string;
-}
-
-export interface IPipeline {
-    id: string;
-    projectId: string;
-    commit: IPipelineCommit;
-    jobs: IJobStatus[];
-    status: PipelineStatus;
-    createdAt: Date;
-    startedAt: Date;
-    finishedAt: Date;
-    duration: number;
+    const hDisplay = h > 0 ? h < 10 ? '0' + h : h : '00';
+    const mDisplay = m > 0 ? m < 10 ? '0' + m : m : '00';
+    const sDisplay = s > 0 ? s < 10 ? '0' + s : s : '00';
+    return `${hDisplay}:${mDisplay}:${sDisplay}`;
 }
