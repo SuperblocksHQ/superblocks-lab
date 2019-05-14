@@ -155,4 +155,24 @@ export const projectsActions = {
             data: error
        };
     },
+    DISCONNECT_PROJECT_REPOSITORY: 'DISCONNECT_PROJECT_REPOSITORY',
+    disconnectProjectRepository(id: string) {
+       return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY,
+            data: { id }
+       };
+    },
+    DISCONNECT_PROJECT_REPOSITORY_SUCCESS: 'DISCONNECT_PROJECT_REPOSITORY_SUCCESS',
+    disconnectProjectRepositorySuccess() {
+       return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS
+       };
+    },
+    DISCONNECT_PROJECT_REPOSITORY_FAIL: 'DISCONNECT_PROJECT_REPOSITORY_FAIL',
+    disconnectProjectRepositoryFail(error: string) {
+       return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_FAIL,
+            data: error
+       };
+    },
 };
