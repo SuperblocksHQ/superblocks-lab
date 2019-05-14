@@ -65,7 +65,7 @@ export default class CreateOrganizationModal extends React.Component<IProps, ISt
         const { errorName, canCreate } = this.state;
 
         return (
-            <Modal>
+            <Modal hideModal={hideModal}>
                 <div className={classNames([style.createOrganizationModal, 'modal'])}>
                     <ModalHeader
                         title='Create an organization'

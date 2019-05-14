@@ -57,7 +57,7 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
         const { isValid } = this.state;
 
         return (
-            <Modal>
+            <Modal hideModal={hideModal}>
                 <div className={classNames([style.deleteOrganizationModal, 'modal'])}>
                     <ModalHeader
                         title='Delete this organization'
