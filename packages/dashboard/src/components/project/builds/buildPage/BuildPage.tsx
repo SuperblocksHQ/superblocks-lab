@@ -43,7 +43,7 @@ export default class BuildPage extends Component<IProps> {
             buildTime: '00:02:56',
             duration: '1 min and 43 seconds',
             commit: {
-                ownerAvatar: 'https://avatars3.githubusercontent.com/u/7814134?v=4&s=24',
+                ownerAvatar: 'https://avatars3.githubusercontent.com/u/7814134?v=4',
                 ownerName: 'Javier Taragaza Gomez',
                 description: 'Initial commit',
                 hash: 'gf245df',
@@ -71,10 +71,12 @@ export default class BuildPage extends Component<IProps> {
 
                 <p className={classNames([style.subtitle, style.flexVerticalCenter])}>
                     {
-                        `Triggered ${moment.utc(build.commit.timestamp).fromNow()} by `
+                        <span>Triggered {moment.utc(build.commit.timestamp).fromNow()} by </span>
                     }
-                    <img src={build.commit.ownerAvatar} />
-                    <span className={style.ownerName}>{build.commit.ownerName}</span>
+                    <span className={style.ownerName}>
+                        <img src={`${build.commit.ownerAvatar}&s=48`} />
+                        <span>{build.commit.ownerName}</span>
+                    </span>
                     <span>
                         <IconBranch />
                         <a href={build.commit.branchLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>

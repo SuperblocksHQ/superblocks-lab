@@ -20,7 +20,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: calc(100% - 50px);
     height: calc(100% - 50px);
     padding: 20px;
 
@@ -34,5 +34,9 @@
         @media only screen and (max-width: 1300px) {
             display: none;
         }
+    }
+
+    .right {
+        max-width: 100%;
     }
 }

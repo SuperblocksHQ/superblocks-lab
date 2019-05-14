@@ -35,28 +35,34 @@ export default class BuildListItem extends Component<IProps> {
 
         return (
             <React.Fragment>
-                <td>
+                <div className={style.singleCell}>
                     <BuildStatus status={pipeline.status} />
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
                     <Link to={{pathname: `/${this.props.organizationId}/projects/${this.props.projectId}/builds/${pipeline.commit.hash}`, state: {pipeline}}}>
                         {/* #{pipeline.buildNumber} */}
                     </Link>
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
                     <span className={style.flexVerticalCenter}>
                         <IconBranch className={style['mr-2']} />
                         <a href={pipeline.commit.branchUrl} target='_blank' rel='noopener noreferrer'>
                             {pipeline.commit.branch}
                         </a>
                     </span>
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
                     <div className={style.flexVerticalCenter}>
-                        <img src={pipeline.commit.ownerAvatar} className={classNames('mr-2', style.avatarImg)} alt={pipeline.commit.ownerName} />
+                        <img src={`${pipeline.commit.ownerAvatar}&s=60`} className={classNames('mr-2', style.avatarImg)} alt={pipeline.commit.ownerName} />
                         <div>
                             <span className={style['mb-1']}>
                                 {pipeline.commit.description}
+                            </span>
+                            <span className={style.commitSmallDevice}>
+                                <IconBranch className={style['mr-2']} />
+                                <a href={pipeline.commit.branchUrl} className={style.linkPrimary} target='_blank' rel='noopener noreferrer'>
+                                    {pipeline.commit.branch}
+                                </a>
                             </span>
                             <span>
                                 <IconCommit className={style['mr-1']} />
@@ -66,8 +72,8 @@ export default class BuildListItem extends Component<IProps> {
                             </span>
                         </div>
                     </div>
-                </td>
-                <td className={style[`status-${pipeline.status}`]}>
+                </div>
+                <div className={classNames([style[`status-${pipeline.status}`], style.singleCell])}>
                     <span className={style['mb-2']}>
                         <IconClock className={style['mr-2']} />
 
@@ -78,7 +84,7 @@ export default class BuildListItem extends Component<IProps> {
                         <IconCalendar className={style['mr-2']} />
                         {moment.utc(pipeline.createdAt).fromNow()}
                     </span>
-                </td>
+                </div>
             </React.Fragment>
         );
     }
