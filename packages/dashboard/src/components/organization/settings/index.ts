@@ -22,7 +22,7 @@ import { organizationActions } from '../../../actions';
 import { organizationSelectors } from '../../../selectors';
 
 const mapStateToProps = (state: any) => ({
-    isOrganizationLoading: organizationSelectors.getLoadingOrganization(state),
+    isOrganizationLoading: organizationSelectors.isLoadingOrganization(state),
     organization: organizationSelectors.getOrganization(state)
 });
 

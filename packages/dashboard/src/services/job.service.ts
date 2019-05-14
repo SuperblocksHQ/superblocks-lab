@@ -19,7 +19,7 @@ import { switchMap } from 'rxjs/operators';
 export const jobService = {
 
     getJob(jobId: string) {
-        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/job/v1/jobs/${jobId}`, {})
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/ci/v1/jobs/${jobId}`, {})
         .pipe(
             switchMap(response => response.json())
         );

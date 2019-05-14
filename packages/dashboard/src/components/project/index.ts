@@ -18,12 +18,13 @@ import { connect } from 'react-redux';
 import ProjectDashboard from './ProjectDashboard';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
-import { projectSelectors } from '../../selectors';
+import { projectSelectors, organizationSelectors } from '../../selectors';
 import { projectsActions, organizationActions,  } from '../../actions';
 
 const mapStateToProps = (state: any) => ({
     isProjectLoading: projectSelectors.getLoadingProject(state),
-    project: projectSelectors.getProject(state)
+    project: projectSelectors.getProject(state),
+    isOrganizationLoading: organizationSelectors.isLoadingOrganization(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {

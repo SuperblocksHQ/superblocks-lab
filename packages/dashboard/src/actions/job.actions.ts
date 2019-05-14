@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { IPipeline } from '../models';
+import { IPipeline, IJob } from '../models';
 
 export const jobsActions = {
-    GET_JOB: 'GET_JOB',
+    GET_JOB_REQUEST: 'GET_JOB_REQUEST',
     getJob(jobId: string) {
         return {
-            type: jobsActions.GET_JOB,
+            type: jobsActions.GET_JOB_REQUEST,
             data: { jobId }
         };
     },
     GET_JOB_SUCCESS: 'GET_JOB_SUCCESS',
-    getJobSuccess(pipeline: IPipeline) {
+    getJobSuccess(job: IJob) {
         return {
             type: jobsActions.GET_JOB_SUCCESS,
-            data: { pipeline }
+            data: { job }
         };
     },
     GET_JOB_FAIL: 'GET_JOB_FAIL',

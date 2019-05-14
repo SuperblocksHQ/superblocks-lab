@@ -25,7 +25,7 @@ export const initialState: IJobState = {
 
 export default function projectsReducer(state = initialState, action: AnyAction) {
     switch (action.type) {
-        case jobsActions.GET_JOB: {
+        case jobsActions.GET_JOB_REQUEST: {
             return {
                 ...state,
                 loadingJob: true

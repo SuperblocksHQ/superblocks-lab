@@ -54,6 +54,7 @@ interface IProps {
     loadProject: (projectId: string) => void;
     loadOrganization: (organizationId: string) => void;
     isProjectLoading: boolean;
+    isOrganizationLoading: boolean;
     isAuthenticated: boolean;
     isAuthLoading: boolean;
 }
@@ -68,8 +69,7 @@ export default class ProjectDashboard extends Component<IProps> {
     }
 
     render() {
-        const { isAuthenticated, isAuthLoading, isProjectLoading, project, match } = this.props;
-        const { pathname } = this.props.location;
+        const { isAuthenticated, isAuthLoading, isProjectLoading, project, match, isOrganizationLoading } = this.props;
 
         return (
             <div className={style.projectDashboard}>
@@ -99,7 +99,7 @@ export default class ProjectDashboard extends Component<IProps> {
                             </SideMenuFooter>
 
                         </SideMenu>
-                            <OnlyIf test={!isProjectLoading}>
+                            <OnlyIf test={!isProjectLoading && !isOrganizationLoading}>
                                 <div className={style.pageContent}>
                                     <Switch>
                                         <PrivateRoute exact path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (

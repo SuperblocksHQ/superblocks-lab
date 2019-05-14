@@ -15,17 +15,16 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { from, of } from 'rxjs';
-import { switchMap, withLatestFrom, map, catchError } from 'rxjs/operators';
+import { switchMap, withLatestFrom, map, catchError, tap } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { jobsActions } from '../../actions';
 import { jobService } from '../../services';
 
 export const getJob: Epic = (action$: any, state$: any) => action$.pipe(
-    ofType(jobsActions.GET_JOB),
+    ofType(jobsActions.GET_JOB_REQUEST),
     withLatestFrom(state$),
     switchMap(([action]) => {
         const jobId = action.data.jobId;
-        console.log(jobId);
         return from(jobService.getJob(jobId)).pipe(
             map(jobsActions.getJobSuccess),
             catchError((error) => {
