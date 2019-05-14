@@ -22,8 +22,8 @@ import { projectsActions } from '../../../actions';
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>) {
     return {
-        deleteProject: (projectId: string) => {
-            dispatch(projectsActions.deleteProject(projectId));
+        deleteProject: (projectId: string, organizationId: string) => {
+            dispatch(projectsActions.deleteProject(projectId, organizationId));
         }
     };
 }

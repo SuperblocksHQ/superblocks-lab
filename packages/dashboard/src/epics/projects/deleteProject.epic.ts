@@ -26,8 +26,10 @@ export const deleteProject: Epic = (action$: any, state$: any) => action$.pipe(
     switchMap(([action]) => {
         return projectService.deleteProjectById(action.data.projectId)
             .pipe(
-                tap(() => document.location.href = '/'),
-                map(projectsActions.deleteProjectSuccess),
+                map(() => {
+                    document.location.href = `/${action.data.organizationId}`;
+                    return projectsActions.deleteProjectSuccess;
+                }),
                 catchError((error) => {
                     console.log('There was an issue deleting the project: ' + error);
                     return of(projectsActions.deleteProjectFail(error));

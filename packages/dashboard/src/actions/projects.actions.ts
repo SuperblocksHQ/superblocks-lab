@@ -78,10 +78,10 @@ export const projectsActions = {
         };
     },
     DELETE_PROJECT: 'DELETE_PROJECT',
-    deleteProject(projectId: string) {
+    deleteProject(projectId: string, organizationId: string) {
        return {
             type: projectsActions.DELETE_PROJECT,
-            data: { projectId }
+            data: { projectId, organizationId }
        };
     },
     DELETE_PROJECT_SUCCESS: 'DELETE_PROJECT_SUCCESS',
