@@ -46,8 +46,6 @@ export default class BuildPage extends Component<IProps> {
     render() {
         const { project, job, organization } = this.props;
 
-        console.log(job);
-
         return (
             <OnlyIf test={organization}>
                 <div className={style.buildPage}>
