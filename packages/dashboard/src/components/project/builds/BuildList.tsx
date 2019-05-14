@@ -44,7 +44,7 @@ export default class BuildList extends Component<IProps> {
     }
 
     decorateVcsUrl(vcsUrl: string) {
-        return vcsUrl.replace('https://github.com/', '').replace('.git', '');
+        return vcsUrl && vcsUrl.replace('https://github.com/', '').replace('.git', '');
     }
 
     render() {
