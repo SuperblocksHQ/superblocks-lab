@@ -33,6 +33,7 @@ interface IProps {
     updateProjectDetails: (newProjectDetails: Partial<IProject>) => void;
     showDeleteProjectModal: boolean;
     toggleDeleteProjectModal: () => void;
+    disconnectProjectRepository: (projectId: string) => void;
 }
 
 interface IState {
@@ -78,7 +79,7 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
     }
 
     render() {
-        const { toggleDeleteProjectModal, showDeleteProjectModal, project, organization } = this.props;
+        const { toggleDeleteProjectModal, showDeleteProjectModal, project, organization, disconnectProjectRepository } = this.props;
         const { errorName, canSave } = this.state;
 
         return (
@@ -117,6 +118,14 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
                         <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
 
                         <div className={style.sectionDivider}></div>
+
+                        <OnlyIf test={project.vcsUrl}>
+                            <h1>Disconnect repository</h1>
+                            <p className={style['mb-4']}>Once disconnected, all builds will be removed for given project. Please be certain.</p>
+                            <StyledButton type={StyledButtonType.Danger} text={'Disconnect repository'} onClick={() => disconnectProjectRepository(project.id)} />
+
+                            <div className={style.sectionDivider}></div>
+                        </OnlyIf>
 
                         <h1>Delete this project</h1>
                         <p className={style['mb-4']}>Once deleted, it will be gone forever. Please be certain.</p>

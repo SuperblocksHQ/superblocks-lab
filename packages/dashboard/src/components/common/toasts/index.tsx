@@ -73,6 +73,10 @@ export const getToastComponent = (type: string, data: string) => {
             return error('Ups! Sorry there was an error. Try again.');
         case projectsActions.DELETE_PROJECT_FAIL:
             return error('Error deleting project: ' + data);
+        case projectsActions.DISCONNECT_PROJECT_REPOSITORY_FAIL:
+            return error('Error disconnecting repository: ' + data);
+        case projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS:
+            return success('Repository was successfully disconnected.');
         case organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS:
             return success('Sweet! Your organization was updated successfully.');
         case organizationActions.UPDATE_ORGANIZATION_DETAILS_FAIL:

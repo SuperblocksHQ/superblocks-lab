@@ -163,9 +163,10 @@ export const projectsActions = {
        };
     },
     DISCONNECT_PROJECT_REPOSITORY_SUCCESS: 'DISCONNECT_PROJECT_REPOSITORY_SUCCESS',
-    disconnectProjectRepositorySuccess() {
+    disconnectProjectRepositorySuccess(project: IProject) {
        return {
-            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS,
+            data: { project }
        };
     },
     DISCONNECT_PROJECT_REPOSITORY_FAIL: 'DISCONNECT_PROJECT_REPOSITORY_FAIL',

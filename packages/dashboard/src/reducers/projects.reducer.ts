@@ -102,6 +102,12 @@ export default function projectsReducer(state = initialState, action: AnyAction)
                 project: { ...action.data.project }
             };
         }
+        case projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS: {
+            return {
+                ...state,
+                project: { ...action.data.project }
+            };
+        }
         default:
             return state;
     }

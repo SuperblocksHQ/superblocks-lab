@@ -35,7 +35,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
         },
         updateProjectDetails: (newProjectDetails: Partial<IProject>) => {
             dispatch(projectsActions.updateProjectDetails(newProjectDetails));
-        }
+        },
+        disconnectProjectRepository: (projectId: string) => {
+            dispatch(projectsActions.disconnectProjectRepository(projectId));
+        },
     };
 };
 

@@ -34,7 +34,6 @@ interface IProps {
     projectPipelineList: IPipeline[];
     getProjectPipelineList: (projectId: string) => void;
     isProjectPipelineListLoading: boolean;
-    disconnectProjectRepository: (projectId: string) => void;
 }
 
 export default class BuildList extends Component<IProps> {
@@ -49,7 +48,7 @@ export default class BuildList extends Component<IProps> {
     }
 
     render() {
-        const { project, organization, projectPipelineList, isProjectPipelineListLoading, disconnectProjectRepository } = this.props;
+        const { project, organization, projectPipelineList, isProjectPipelineListLoading } = this.props;
         const { organizationId, projectId } = this.props.match.params;
 
         return (
@@ -60,13 +59,8 @@ export default class BuildList extends Component<IProps> {
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
                 </BreadCrumbs>
 
-                <OnlyIf test={projectPipelineList.length > 0}>
-                    <div className={style.buildsTitle}>
-                        <h1>Builds</h1>
-                        <div className={style.disconnectBtn}>
-                            <StyledButton type={StyledButtonType.Danger} text={'Disconnect repository'} onClick={() => disconnectProjectRepository(project.id)} />
-                        </div>
-                    </div>
+                <OnlyIf test={projectPipelineList.length > 0 && project.vcsUrl}>
+                    <h1>Builds</h1>
                     <a className={style.repoLink} href={project.vcsUrl} target='_blank' rel='noopener noreferrer'>
                         <IconGithub className={classNames([style.colorGrey, style.githubLogo])} />
                         <span>
