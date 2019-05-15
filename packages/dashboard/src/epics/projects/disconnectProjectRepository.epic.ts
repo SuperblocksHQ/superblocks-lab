@@ -27,17 +27,13 @@ export const disconnectProjectRepository: Epic = (action$: any, state$: any) => 
         return projectService.getProjectById(action.data.id)
         .pipe(
             switchMap((selectedProject) => {
-                {/* TODO: Project doesn't get updated -_- */}
                 selectedProject.vcsUrl = null;
                 selectedProject.vcsType = null;
 
                 if (confirm('Are you sure you want to disconnect the repository?')) {
                     return projectService.putProjectById(selectedProject.id, selectedProject)
                     .pipe(
-                        map(() => {
-                            window.location.reload();
-                            return projectsActions.disconnectProjectRepositorySuccess;
-                        }),
+                        map(() => projectsActions.disconnectProjectRepositorySuccess(selectedProject)),
                     );
                 } else {
                     return empty();
