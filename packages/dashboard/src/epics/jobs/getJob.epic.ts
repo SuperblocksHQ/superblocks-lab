@@ -20,12 +20,20 @@ import { ofType, Epic } from 'redux-observable';
 import { jobsActions } from '../../actions';
 import { jobService } from '../../services';
 
+const getJobTrace$ = (jobId: string) => jobService.getJobTrace(jobId).pipe(
+    catchError(() => {
+        return of({
+            log: '[0KThis job has not started yet...\nThis job is in pending state and is waiting to be picked by a runner.'
+        });
+    })
+);
+
 export const getJob: Epic = (action$: any, state$: any) => action$.pipe(
     ofType(jobsActions.GET_JOB_REQUEST),
     withLatestFrom(state$),
     switchMap(([action]) => {
         const jobId = action.data.jobId;
-        return zip(jobService.getJob(jobId), jobService.getJobTrace(jobId), (job, trace) => {
+        return zip(jobService.getJob(jobId), getJobTrace$(jobId), (job, trace) => {
             job.log = trace.log;
             return job;
         }).pipe(

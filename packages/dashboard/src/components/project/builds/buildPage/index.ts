@@ -24,6 +24,7 @@ import { jobsActions } from '../../../../actions';
 const mapStateToProps = (state: any) => ({
     project: projectSelectors.getProject(state),
     job: jobSelectors.getJob(state),
+    isJobLoading: jobSelectors.isJobLoading(state),
     organization: organizationSelectors.getOrganization(state),
 });
 
