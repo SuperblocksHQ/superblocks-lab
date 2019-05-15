@@ -17,7 +17,7 @@
 import React, { Component, Fragment } from 'react';
 import style from './style.less';
 import { IconConfigure, IconPlusTransparent } from '../common/icons';
-import { LetterAvatar } from '../common';
+import { LetterAvatar, GenericLoading } from '../common';
 import Topbar from '../topbar';
 import { SideMenu, SideMenuItem, SideMenuSubHeader, SideMenuFooter } from '../sideMenu';
 import ProjectList from '../organization/projectList';
@@ -72,6 +72,19 @@ export default class Dashboard extends Component<IProps> {
 
     render() {
         const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading, match, selectedOrganization } = this.props;
+        let projectListContent;
+
+        if (isProjectListLoading) {
+            projectListContent = <GenericLoading />;
+        } else if (projectList.length > 0) {
+            projectListContent = <ProjectList
+                                    list={projectList}
+                                    organizationName={selectedOrganization ? selectedOrganization.name : 'Organization'}
+                                    organizationId={match.params.organizationId}
+                                 />;
+        } else {
+            projectListContent = <CreateProject organizationId={match.params.organizationId} />;
+        }
 
         return (
             <Fragment>
@@ -103,15 +116,7 @@ export default class Dashboard extends Component<IProps> {
                                 />
                             </SideMenuFooter>
                         </SideMenu>
-                        { projectList.length === 0 && !isProjectListLoading ?
-                            <CreateProject organizationId={match.params.organizationId} />
-                            :
-                            <ProjectList
-                                list={projectList}
-                                organizationName={selectedOrganization ? selectedOrganization.name : 'Organization'}
-                                organizationId={match.params.organizationId}
-                            />
-                        }
+                        {projectListContent}
                         <OnlyIf test={!isOrganizationListLoading && !organizationList.length}>
                             <Redirect to={'/welcome'} />
                         </OnlyIf>
