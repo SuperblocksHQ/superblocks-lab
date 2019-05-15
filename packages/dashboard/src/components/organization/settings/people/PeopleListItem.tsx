@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import style from './style.less';
 import moment from 'moment';
-import { IUser } from '../../../../models';
+import { IUser, IState } from '../../../../models';
 
 interface IProps {
     user: any; // TODO: Add model of user
@@ -37,13 +37,15 @@ export default class PeopleListItem extends Component<IProps> {
     renderAction = () => {
         const { user, currentUser } = this.props;
 
-        if (user.id === currentUser.id) {
+        console.log(user, currentUser);
+
+        if (user.userId === currentUser.id) {
             return (
                 <div>
                     -
                 </div>
             );
-        } else if (user.lastLogin === null) {
+        } else if (user.state === IState.invited) {
             return (
                 <div onClick={this.sendInvitation} className={style.linkPrimary}>
                     Resend invite
@@ -51,7 +53,7 @@ export default class PeopleListItem extends Component<IProps> {
             );
         } else {
             return (
-                <div onClick={() => this.removeUser(user.id)} className={style.linkPrimary}>
+                <div onClick={() => this.removeUser(user.userId)} className={style.linkPrimary}>
                     Remove
                 </div>
             );

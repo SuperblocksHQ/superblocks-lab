@@ -39,33 +39,7 @@ export default class PeopleList extends Component<IProps> {
     render() {
         const { showInvitePeopleModal, toggleInvitePeopleModal, organization } = this.props;
 
-        // TODO: Get users from redux
-        const users = [
-                {
-                    id: '5cb47caf21a7140017e120c5',
-                    imageUrl: 'https://avatars0.githubusercontent.com/u/17637244?v=4&s=24',
-                    name: 'Krystof Viktora',
-                    email: 'krystof@superblocks.com',
-                    lastLogin: '2019-04-15T12:47:45.090Z',
-                    role: 'Admin'
-                },
-                {
-                    id: '2151dsfds5f2sdf',
-                    imageUrl: 'https://avatars0.githubusercontent.com/u/17637244?v=4&s=24',
-                    name: 'John Doe',
-                    email: 'john@superblocks.com',
-                    lastLogin: null,
-                    role: 'Basic'
-                },
-                {
-                    id: '2151dsfds5f2sdf',
-                    imageUrl: 'https://avatars0.githubusercontent.com/u/17637244?v=4&s=24',
-                    name: 'Frodo Baggins',
-                    email: 'frodo@superblocks.com',
-                    lastLogin: '2019-04-15T12:47:45.090Z',
-                    role: 'Basic'
-                },
-        ];
+        const { members } = organization;
 
         return (
             <React.Fragment>
@@ -93,7 +67,7 @@ export default class PeopleList extends Component<IProps> {
                         <div className={style.singleCell}>Role</div>
                         <div className={style.singleCell}>Actions</div>
                     </div>
-                    { users.map(user =>
+                    { members.map(user =>
                         <div className={style.userItem} key={user.email}>
                             <PeopleListItem user={user} currentUser={this.props.userProfile} />
                         </div>
