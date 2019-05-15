@@ -19,7 +19,7 @@ import style from './style.less';
 import { IconConfigure, IconPlusTransparent } from '../common/icons';
 import { LetterAvatar, GenericLoading } from '../common';
 import Topbar from '../topbar';
-import { SideMenu, SideMenuItem, SideMenuSubHeader, SideMenuFooter } from '../sideMenu';
+import SideMenu, { SideMenuItem, SideMenuSubHeader, SideMenuFooter } from '../sideMenu';
 import ProjectList from '../organization/projectList';
 import { Redirect } from 'react-router';
 import OnlyIf from '../common/onlyIf';

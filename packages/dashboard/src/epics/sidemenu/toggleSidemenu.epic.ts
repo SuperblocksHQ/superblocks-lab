@@ -14,24 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Dispatch } from 'react';
-import { AnyAction } from 'redux';
+import { empty } from 'rxjs';
+import { switchMap, withLatestFrom } from 'rxjs/operators';
+import { ofType, Epic } from 'redux-observable';
 import { sidemenuActions } from '../../actions';
-import { connect } from 'react-redux';
-import SideMenu from './sideMenu';
 
-export * from './sideMenuItem';
-export * from './sideMenuHeader';
-export * from './sideMenuSubHeader';
-export * from './sideMenuFooter';
-export * from './subMenu';
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
-    return {
-        toggleSidemenuInLocalStorage: (collapsed: boolean) => {
-            dispatch(sidemenuActions.toggleSidemenuInLocalStorage(collapsed));
-        }
-    };
-};
-
-export default connect(null, mapDispatchToProps)(SideMenu);
+export const toggleSidemenu: Epic = (action$: any, state$: any) => action$.pipe(
+    ofType(sidemenuActions.TOGGLE_SIDEMENU_IN_LOCALSTORAGE),
+    withLatestFrom(state$),
+    switchMap(([action]) => {
+        localStorage.setItem('sideMenuCollapsed', String(action.data.collapsed));
+        return empty();
+    })
+);

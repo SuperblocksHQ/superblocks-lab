@@ -14,24 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Dispatch } from 'react';
-import { AnyAction } from 'redux';
-import { sidemenuActions } from '../../actions';
-import { connect } from 'react-redux';
-import SideMenu from './sideMenu';
+import { toggleSidemenu } from './toggleSidemenu.epic';
 
-export * from './sideMenuItem';
-export * from './sideMenuHeader';
-export * from './sideMenuSubHeader';
-export * from './sideMenuFooter';
-export * from './subMenu';
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
-    return {
-        toggleSidemenuInLocalStorage: (collapsed: boolean) => {
-            dispatch(sidemenuActions.toggleSidemenuInLocalStorage(collapsed));
-        }
-    };
-};
-
-export default connect(null, mapDispatchToProps)(SideMenu);
+export const sidemenuEpics = [
+    toggleSidemenu
+];

@@ -6,3 +6,4 @@ export * from './auth.actions';
 export * from './organization.actions';
 export * from './pipelines.actions';
 export * from './job.actions';
+export * from './sidemenu.actions';

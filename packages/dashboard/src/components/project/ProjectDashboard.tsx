@@ -21,7 +21,7 @@ import LoadingBar from 'react-redux-loading-bar';
 import Topbar from '../topbar';
 import style from './style.less';
 import { EmptyLoading, LetterAvatar } from '../common';
-import { SideMenu, SideMenuItem, SideMenuFooter, SideMenuHeader } from '../sideMenu';
+import SideMenu, { SideMenuItem, SideMenuFooter, SideMenuHeader } from '../sideMenu';
 import { IconConfigure, IconPlay } from '../common/icons';
 import PrivateRoute from '../app/PrivateRoute';
 import OnlyIf from '../common/onlyIf';

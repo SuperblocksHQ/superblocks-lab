@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Loadable from 'react-loadable';
 import Topbar from '../../topbar';
 import style from './style.less';
-import { SideMenu, SideMenuItem, SideMenuFooter, SideMenuHeader, SideMenuSubHeader } from '../../sideMenu';
+import SideMenu, { SideMenuItem, SideMenuFooter, SideMenuHeader, SideMenuSubHeader } from '../../sideMenu';
 import { IconBack, IconArchive, IconUsers } from '../../common/icons';
 import { IOrganization } from '../../../models';
 import { EmptyLoading } from '../../common';
