@@ -167,9 +167,10 @@ export const organizationActions = {
        };
     },
     UPDATE_ORGANIZATION_DETAILS_SUCCESS: 'UPDATE_ORGANIZATION_DETAILS_SUCCESS',
-    updateOrganizationSuccess() {
+    updateOrganizationSuccess(organization: IOrganization) {
        return {
-            type: organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS
+            type: organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS,
+            data: { organization }
        };
     },
     UPDATE_ORGANIZATION_DETAILS_FAIL: 'UPDATE_ORGANIZATION_DETAILS_FAIL',

@@ -24,13 +24,22 @@ export const updateOrganizationDetails: Epic = (action$: any, state$: any) => ac
     ofType(organizationActions.UPDATE_ORGANIZATION_DETAILS),
     withLatestFrom(state$),
     switchMap(([action]) => {
-        return organizationService.putOrganizationById(action.data.id, {name: action.data.name, description: action.data.description})
-            .pipe(
-                map(organizationActions.updateOrganizationSuccess),
-                catchError((error) => {
-                    console.log('There was an issue updating the organization: ' + error);
-                    return of(organizationActions.updateOrganizationFail(error.message));
-                })
-            );
+        return organizationService.getOrganizationById(action.data.id)
+        .pipe(
+            switchMap((selectedOrganization) => {
+                selectedOrganization.name = action.data.name ? action.data.name : selectedOrganization.name;
+                selectedOrganization.description = action.data.description ? action.data.description : selectedOrganization.description;
+
+                return organizationService.putOrganizationById(action.data.id, selectedOrganization)
+                    .pipe(
+                        map(() => organizationActions.updateOrganizationSuccess(selectedOrganization)),
+                        catchError((error) => {
+                            console.log('There was an issue updating the organization: ' + error);
+                            return of(organizationActions.updateOrganizationFail(error.message));
+                        })
+                    );
+            })
+        );
+
     })
 );

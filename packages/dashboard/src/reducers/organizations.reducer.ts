@@ -79,6 +79,12 @@ export default function organizationsReducer(state = initialState, action: AnyAc
                 organizationList: [...state.organizationList, action.data.organization]
             };
         }
+        case organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS: {
+            return {
+                ...state,
+                organization: { ...action.data.organization }
+            };
+        }
         case organizationActions.TOGGLE_CREATE_ORGANIZATION_MODAL: {
             return {
                 ...state,
