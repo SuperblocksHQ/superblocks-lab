@@ -60,22 +60,22 @@ export default class BuildList extends Component<IProps> {
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
                 </BreadCrumbs>
 
-                <OnlyIf test={projectPipelineList.length > 0}>
-                    <div className={style.buildsTitle}>
-                        <h1>Builds</h1>
-                        <div className={style.disconnectBtn}>
-                            <StyledButton type={StyledButtonType.Danger} text={'Disconnect repository'} onClick={() => disconnectProjectRepository(project.id)} />
-                        </div>
+                <div className={style.buildsTitle}>
+                    <h1>Builds</h1>
+                    <div className={style.disconnectBtn}>
+                        <StyledButton type={StyledButtonType.Danger} text={'Disconnect repository'} onClick={() => disconnectProjectRepository(project.id)} />
                     </div>
-                    <a className={style.repoLink} href={project.vcsUrl} target='_blank' rel='noopener noreferrer'>
-                        <IconGithub className={classNames([style.colorGrey, style.githubLogo])} />
-                        <span>
-                            {this.decorateVcsUrl(project.vcsUrl)}
-                        </span>
-                        <IconExternalLink width='10px' height='10px' />
-                    </a>
-                    <div className={style.hr}></div>
+                </div>
+                <a className={style.repoLink} href={project.vcsUrl} target='_blank' rel='noopener noreferrer'>
+                    <IconGithub className={classNames([style.colorGrey, style.githubLogo])} />
+                    <span>
+                        {this.decorateVcsUrl(project.vcsUrl)}
+                    </span>
+                    <IconExternalLink width='10px' height='10px' />
+                </a>
+                <div className={style.hr}></div>
 
+                <OnlyIf test={projectPipelineList.length > 0}>
                     <div className={style.buildList}>
                         <div className={classNames([style.buildItem, style.header])}>
                             <div className={style.singleCell}>Status</div>

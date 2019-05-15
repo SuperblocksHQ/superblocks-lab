@@ -33,6 +33,7 @@ interface IProps {
     match: any;
     project: IProject;
     job: IJob;
+    isJobLoading: boolean;
     organization: IOrganization;
     jobId: string;
     getJob: (jobId: string) => void;
@@ -46,7 +47,7 @@ export default class BuildPage extends Component<IProps> {
     }
 
     render() {
-        const { project, job, organization } = this.props;
+        const { project, job, isJobLoading, organization } = this.props;
 
         return (
             <OnlyIf test={organization}>
@@ -60,7 +61,7 @@ export default class BuildPage extends Component<IProps> {
                         </Link>
                     </BreadCrumbs>
 
-                    { job &&
+                    { job && !isJobLoading &&
                         <React.Fragment>
                             <div className={style.title}>
                                 <BuildStatus status={job.status} />
