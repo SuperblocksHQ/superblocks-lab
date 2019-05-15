@@ -84,6 +84,7 @@ export default class ProjectDashboard extends Component<IProps> {
                                         icon={<LetterAvatar title={project.name} />}
                                         className={style.projectName}
                                         title={<span>{project.name}</span>}
+                                        visibleCollapsed={true}
                                     />
                                 </Link>
                             }
