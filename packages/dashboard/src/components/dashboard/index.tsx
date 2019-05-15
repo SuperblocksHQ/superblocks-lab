@@ -25,6 +25,7 @@ const mapStateToProps = (state: any) => ({
     organizationList: organizationSelectors.getOrganizationList(state),
     isOrganizationListLoading: organizationSelectors.isOrganizationListLoading(state),
     selectedOrganization: organizationSelectors.getOrganization(state),
+    isOrganizationLoading: organizationSelectors.isLoadingOrganization(state),
     projectList: projectSelectors.getProjectList(state),
     isProjectListLoading: projectSelectors.isProjectListLoading(state),
     showCreateOrganizationModal: state.organizations.showCreateOrganizationModal

@@ -35,6 +35,7 @@ interface IProps {
     isOrganizationListLoading: boolean;
     loadUserOrganizationList: () => void;
     loadOrganization: (organizationId: string) => void;
+    isOrganizationLoading: boolean;
     projectList: IProject[];
     isProjectListLoading: boolean;
     showCreateOrganizationModal: boolean;
@@ -55,6 +56,7 @@ export default class Dashboard extends Component<IProps> {
     componentWillReceiveProps(nextProps: any) {
         // Update project list when changing organization
         if (this.props.match.params.organizationId !== nextProps.match.params.organizationId) {
+            this.props.loadOrganization(nextProps.match.params.organizationId);
             this.props.getProjectList(nextProps.match.params.organizationId);
         }
 
@@ -71,7 +73,7 @@ export default class Dashboard extends Component<IProps> {
     }
 
     render() {
-        const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading, match, selectedOrganization } = this.props;
+        const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading, match, selectedOrganization, isOrganizationLoading } = this.props;
         let projectListContent;
 
         if (isProjectListLoading) {
@@ -79,7 +81,7 @@ export default class Dashboard extends Component<IProps> {
         } else if (projectList.length > 0) {
             projectListContent = <ProjectList
                                     list={projectList}
-                                    organizationName={selectedOrganization ? selectedOrganization.name : 'Organization'}
+                                    organizationName={!isOrganizationLoading ? selectedOrganization.name : ''}
                                     organizationId={match.params.organizationId}
                                  />;
         } else {
