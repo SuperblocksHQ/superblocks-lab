@@ -86,7 +86,7 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
             <React.Fragment>
                 <BreadCrumbs>
                     <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}`}>{project.name}</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
                     <Link to={window.location.pathname}>Settings</Link>
                 </BreadCrumbs>
 

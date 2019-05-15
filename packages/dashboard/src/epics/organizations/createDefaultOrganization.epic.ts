@@ -34,7 +34,7 @@ export const createDefaultOrganization: Epic = (action$, state$) => action$.pipe
                     ownerType: 'organization'
                 }).pipe(
                     map((newProject) => {
-                        window.location.href = `${window.location.origin}/${newOrganization.id}/projects/${newProject.id}`;
+                        window.location.href = `${window.location.origin}/${newOrganization.id}/projects/${newProject.id}/builds`;
                         return projectsActions.createProjectSuccess(newProject);
                     }),
                     catchError((error) => {
