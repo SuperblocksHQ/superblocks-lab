@@ -52,12 +52,15 @@ export default class CreateOrganizationModal extends React.Component<IProps, ISt
         });
     }
 
-    onCreate = () => {
+    onCreate = (e?: any) => {
         const { createOrganization, hideModal } = this.props;
-        const { organizationName } = this.state;
+        const { organizationName, canCreate } = this.state;
+        e.preventDefault();
 
-        createOrganization(organizationName, true);
-        hideModal();
+        if (canCreate) {
+            createOrganization(organizationName, true);
+            hideModal();
+        }
     }
 
     render() {
@@ -71,7 +74,7 @@ export default class CreateOrganizationModal extends React.Component<IProps, ISt
                         title='Create an organization'
                         onCloseClick={hideModal}
                     />
-                    <div className={style.content}>
+                    <form className={style.content} onSubmit={(e) => this.onCreate(e)}>
                         <div className={style['mb-4']}>
                             <TextInput
                                 onChangeText={this.onNameChange}
@@ -92,7 +95,7 @@ export default class CreateOrganizationModal extends React.Component<IProps, ISt
                                 isDisabled={!canCreate}
                             />
                         </div>
-                    </div>
+                    </form>
                 </div>
             </Modal>
         );

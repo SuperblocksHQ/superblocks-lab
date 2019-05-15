@@ -36,8 +36,9 @@ export default class InvitePeopleModal extends React.Component<IProps, IState> {
         });
     }
 
-    onConfirmClick = () => {
+    onConfirmClick = (e?: any) => {
         const { email } = this.state;
+        e.preventDefault();
         // TODO: Send email with invitation
     }
 
@@ -51,7 +52,7 @@ export default class InvitePeopleModal extends React.Component<IProps, IState> {
                         title='Invite new members'
                         onCloseClick={hideModal}
                     />
-                    <div className={style.content}>
+                    <form className={style.content} onSubmit={(e) => this.onConfirmClick(e)}>
                         <p>
                             Invite new members to your organization
                         </p>
@@ -66,7 +67,7 @@ export default class InvitePeopleModal extends React.Component<IProps, IState> {
                             <div className={style.cancelBtn} onClick={hideModal}>Cancel</div>
                             <StyledButton type={StyledButtonType.Primary} text={'Invite member'} onClick={this.onConfirmClick} />
                         </div>
-                    </div>
+                    </form>
                 </div>
             </Modal>
         );

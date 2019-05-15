@@ -62,12 +62,15 @@ export default class CreateProjectModal extends React.Component<IProps, IState> 
         });
     }
 
-    onCreate = () => {
+    onCreate = (e?: any) => {
         const { createProject, hideModal, organizationId } = this.props;
-        const { projectName, projectDescription} = this.state;
+        const { projectName, projectDescription, canCreate} = this.state;
+        e.preventDefault();
 
-        createProject(projectName, organizationId, 'organization', projectDescription, false);
-        hideModal();
+        if (canCreate) {
+            createProject(projectName, organizationId, 'organization', projectDescription, false);
+            hideModal();
+        }
     }
 
     render() {
@@ -81,7 +84,7 @@ export default class CreateProjectModal extends React.Component<IProps, IState> 
                         title='Create a project'
                         onCloseClick={hideModal}
                     />
-                    <div className={style.content}>
+                    <form className={style.content} onSubmit={(e) => this.onCreate(e)}>
                         <div className={style['mb-4']}>
                             <TextInput
                                 onChangeText={this.onNameChange}
@@ -109,7 +112,7 @@ export default class CreateProjectModal extends React.Component<IProps, IState> 
                                 isDisabled={!canCreate}
                             />
                         </div>
-                    </div>
+                    </form>
                 </div>
             </Modal>
         );

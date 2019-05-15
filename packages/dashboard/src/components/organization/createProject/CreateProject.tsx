@@ -61,11 +61,14 @@ export default class CreateProject extends Component<IProps, IState> {
         });
     }
 
-    onCreate = () => {
+    onCreate = (e?: any) => {
         const { createProject, organizationId } = this.props;
-        const { projectName, projectDescription} = this.state;
+        const { projectName, projectDescription, canCreate } = this.state;
+        e.preventDefault();
 
-        createProject(projectName, organizationId, 'organization', projectDescription, false);
+        if (canCreate) {
+            createProject(projectName, organizationId, 'organization', projectDescription, false);
+        }
     }
 
     render() {
@@ -76,7 +79,7 @@ export default class CreateProject extends Component<IProps, IState> {
                 <div className={style.left}>
                     <img src='/static/img/illustration-new-project.svg' />
                 </div>
-                <div className={style.right}>
+                <form className={style.right} onSubmit={(e) => this.onCreate(e)}>
                     <h2 className={style['mb-4']}>Create a project to get started</h2>
 
                     <div className={style['mb-4']}>
@@ -104,7 +107,7 @@ export default class CreateProject extends Component<IProps, IState> {
                         onClick={this.onCreate}
                         isDisabled={!canCreate}
                     />
-                </div>
+                </form>
             </div>
         );
     }

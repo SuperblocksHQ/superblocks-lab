@@ -45,9 +45,10 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
         });
     }
 
-    onConfirmClick = () => {
+    onConfirmClick = (e?: any) => {
         const { id } = this.props.project;
         const { organizationId } = this.props;
+        e.preventDefault();
 
         if (this.state.isValid) {
             this.props.deleteProject(id, organizationId);
@@ -65,7 +66,7 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
                         title='Delete this project'
                         onCloseClick={hideModal}
                     />
-                    <div className={style.content}>
+                    <form className={style.content} onSubmit={(e) => this.onConfirmClick(e)}>
                         <p>
                             This action <b>cannot</b> be undone. This will permanently delete your project and its data, making it inaccessible for any of the members of the organization.
                         </p>
@@ -82,7 +83,7 @@ export default class DeleteProjectModal extends React.Component<IProps, IState> 
                             <div className={style.cancelBtn} onClick={hideModal}>Cancel</div>
                             <StyledButton type={StyledButtonType.Danger} text={'Delete Project'} onClick={this.onConfirmClick} isDisabled={!isValid} />
                         </div>
-                    </div>
+                    </form>
                 </div>
             </Modal>
         );

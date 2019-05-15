@@ -71,11 +71,14 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
         });
     }
 
-    onSave = () => {
+    onSave = (e?: any) => {
         const { project, updateProjectDetails } = this.props;
-        const { newName, newDescription} = this.state;
+        const { newName, newDescription, canSave } = this.state;
+        e.preventDefault();
 
-        updateProjectDetails({id: project.id, name: newName, description: newDescription});
+        if (canSave) {
+            updateProjectDetails({id: project.id, name: newName, description: newDescription});
+        }
     }
 
     render() {
@@ -95,28 +98,29 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
 
                     <div className={style.projectSettings}>
                         <h1>Details</h1>
-                        <div className={style['mb-5']}>
-                            <TextInput
-                                onChangeText={this.onNameChange}
-                                error={errorName}
-                                label={'Project name'}
-                                id={'projectName'}
-                                placeholder={'project-name'}
-                                defaultValue={project.name}
-                                required={true}
-                            />
-                        </div>
-                        <div className={style['mb-4']}>
-                            <TextAreaInput
-                                onChangeText={this.onDescChange}
-                                label={'Description'}
-                                id={'description'}
-                                placeholder={'Enter a short description (optional)'}
-                                defaultValue={project.description}
-                            />
-                        </div>
-                        <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
-
+                        <form onSubmit={(e) => this.onSave(e)}>
+                            <div className={style['mb-5']}>
+                                <TextInput
+                                    onChangeText={this.onNameChange}
+                                    error={errorName}
+                                    label={'Project name'}
+                                    id={'projectName'}
+                                    placeholder={'project-name'}
+                                    defaultValue={project.name}
+                                    required={true}
+                                />
+                            </div>
+                            <div className={style['mb-4']}>
+                                <TextAreaInput
+                                    onChangeText={this.onDescChange}
+                                    label={'Description'}
+                                    id={'description'}
+                                    placeholder={'Enter a short description (optional)'}
+                                    defaultValue={project.description}
+                                />
+                            </div>
+                            <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
+                        </form>
                         <div className={style.sectionDivider}></div>
 
                         <OnlyIf test={project.vcsUrl}>
