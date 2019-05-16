@@ -105,7 +105,7 @@ export default function projectsReducer(state = initialState, action: AnyAction)
         case projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS: {
             return {
                 ...state,
-                project: { ...action.data.project }
+                project: { ...state.project, vcsUrl: null, vcsType: null }
             };
         }
         default:

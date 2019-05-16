@@ -155,25 +155,47 @@ export const projectsActions = {
             data: error
        };
     },
+
+    // ---------- PROJECT REPOSITORY ----------
+    CONNECT_PROJECT_REPOSITORY: 'CONNECT_PROJECT_REPOSITORY',
+    connectProjectRepository(id: string, vcsUrl: string, vcsType: string) {
+        return {
+            type: projectsActions.CONNECT_PROJECT_REPOSITORY,
+            data: { id, vcsUrl, vcsType }
+        };
+    },
+    CONNECT_PROJECT_REPOSITORY_SUCCESS: 'CONNECT_PROJECT_REPOSITORY_SUCCESS',
+    connectProjectRepositorySuccess() {
+        return {
+            type: projectsActions.CONNECT_PROJECT_REPOSITORY_SUCCESS
+        };
+    },
+    CONNECT_PROJECT_REPOSITORY_FAIL: 'CONNECT_PROJECT_REPOSITORY_FAIL',
+    connectProjectRepositoryFail(error: string) {
+        return {
+            type: projectsActions.CONNECT_PROJECT_REPOSITORY_FAIL,
+            data: error
+        };
+    },
+
     DISCONNECT_PROJECT_REPOSITORY: 'DISCONNECT_PROJECT_REPOSITORY',
     disconnectProjectRepository(id: string) {
-       return {
+        return {
             type: projectsActions.DISCONNECT_PROJECT_REPOSITORY,
             data: { id }
-       };
+        };
     },
     DISCONNECT_PROJECT_REPOSITORY_SUCCESS: 'DISCONNECT_PROJECT_REPOSITORY_SUCCESS',
-    disconnectProjectRepositorySuccess(project: IProject) {
-       return {
-            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS,
-            data: { project }
-       };
+    disconnectProjectRepositorySuccess() {
+        return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS
+        };
     },
     DISCONNECT_PROJECT_REPOSITORY_FAIL: 'DISCONNECT_PROJECT_REPOSITORY_FAIL',
     disconnectProjectRepositoryFail(error: string) {
-       return {
+        return {
             type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_FAIL,
             data: error
-       };
+        };
     },
 };

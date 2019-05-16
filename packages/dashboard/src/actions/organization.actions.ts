@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { IOrganization } from '../models';
+import { IOrganization, VcsType } from '../models';
 import { IOrganizationMember, IRole } from '../models/organizationMember.model';
 
 export const organizationActions = {
@@ -42,10 +42,10 @@ export const organizationActions = {
 
     // ---------- Special case when the user does not have any organization available and we need to create a default one ---------- //
     CREATE_DEFAULT_ORGANIZATION: 'CREATE_DEFAULT_ORGANIZATION',
-    createDefaultOrganization(organizationName: string, projectName: string) {
+    createDefaultOrganization(organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) {
         return {
             type: organizationActions.CREATE_DEFAULT_ORGANIZATION,
-            data: { organizationName, projectName }
+            data: { organizationName, projectName, vcsUrl, vcsType }
         };
     },
     CREATE_DEFAULT_ORGANIZATION_SUCCESS: 'CREATE_DEFAULT_ORGANIZATION_SUCCESS',

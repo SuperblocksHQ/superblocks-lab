@@ -70,4 +70,23 @@ export const projectService = {
             }
         });
     },
+
+    createRepositoryConfigById(id: string, data: any) {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects/' + id + '/repo-config', {
+            method: 'POST',
+            body: data
+        }).pipe(
+            switchMap(r => (of(r.ok ? r.statusText : throwError(r.statusText))))
+        );
+    },
+
+    deleteRepositoryConfigById(id: string) {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects/' + id + '/repo-config', {
+            method: 'DELETE',
+            body: {
+                'x-organization-role': 'OWNER'
+            }
+        });
+    },
+
 };

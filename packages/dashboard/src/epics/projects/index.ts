@@ -20,6 +20,7 @@ import { updateProjectDetails } from './updateProjectDetails.epic';
 import { loadProject } from './loadProject.epic';
 import { createProject } from './createProject.epic';
 import { disconnectProjectRepository } from './disconnectProjectRepository.epic';
+import { connectProjectRepository } from './connectProjectRepository.epic';
 
 export const projectsEpics = [
     getProjectList,
@@ -28,4 +29,5 @@ export const projectsEpics = [
     updateProjectDetails,
     createProject,
     disconnectProjectRepository,
+    connectProjectRepository,
 ];

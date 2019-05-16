@@ -20,7 +20,7 @@ import { AnyAction } from 'redux';
 import { userActions, organizationActions, projectsActions } from '../../actions';
 import { userSelectors, projectSelectors } from '../../selectors';
 import GithubRepositoryList from './GithubRepositoryList';
-import { IProject } from '../../models';
+import { IProject, VcsType } from '../../models';
 
 export { Section } from './GithubRepositoryList';
 
@@ -37,11 +37,11 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
         cancelGetUserRepositoryList: () => {
             dispatch(userActions.cancelGetUserRepositoryList());
         },
-        createDefaultOrganization: (organizationName: string, projectName: string) => {
-            dispatch(organizationActions.createDefaultOrganization(organizationName, projectName));
+        createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) => {
+            dispatch(organizationActions.createDefaultOrganization(organizationName, projectName, vcsUrl, vcsType));
         },
-        updateProjectDetails: (newProjectDetails: Partial<IProject>) => {
-            dispatch(projectsActions.updateProjectDetails(newProjectDetails));
+        connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType) => {
+            dispatch(projectsActions.connectProjectRepository(id, vcsUrl, vcsType));
         }
     };
 };

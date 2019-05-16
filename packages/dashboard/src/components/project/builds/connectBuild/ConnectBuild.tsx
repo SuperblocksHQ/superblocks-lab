@@ -16,11 +16,12 @@
 
 import React, { Component } from 'react';
 import style from './style.less';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { BreadCrumbs, StyledButton } from '../../../common';
 import { StyledButtonType, IProject, IOrganization } from '../../../../models';
 import { IconGithub } from '../../../common/icons';
 import GithubRepositoryList, { Section } from '../../../githubRepositoryList';
+import OnlyIf from '../../../common/onlyIf';
 
 interface IProps {
     project: IProject;
@@ -48,6 +49,10 @@ export default class ConnectBuild extends Component<IProps> {
                         <StyledButton icon={<IconGithub />} type={StyledButtonType.Primary} text={'Configure Github App'} customClassName={style.btnConfigure} />
                     </a>
                 </div>
+
+                <OnlyIf test={project.vcsUrl && project.vcsType}>
+                    <Redirect to={`/${organization.id}/projects/${project.id}/builds`} />
+                </OnlyIf>
 
                 <GithubRepositoryList projectId={project.id} section={Section.ConnectToRepo}/>
             </div>

@@ -16,7 +16,6 @@
 
 export enum VcsType {
     Github = 'github',
-    Empty = ''
 }
 
 export interface IProject {
