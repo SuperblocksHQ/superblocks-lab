@@ -95,7 +95,7 @@ export default class ProjectList extends Component<IProps, IState> {
                 (projectFilter === '' ||
                 (
                     project.name.toLowerCase().includes(projectFilter.toLowerCase()) ||
-                    project.description.toLowerCase().includes(projectFilter.toLowerCase())
+                    project.description && project.description.toLowerCase().includes(projectFilter.toLowerCase())
                 )
         )).sort(this.dynamicSort(orderBy, order));
 
