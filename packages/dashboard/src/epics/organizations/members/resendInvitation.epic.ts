@@ -20,16 +20,18 @@ import { ofType, Epic } from 'redux-observable';
 import { organizationActions } from '../../../actions';
 import { organizationService } from '../../../services';
 
-export const inviteMemberToOrganization: Epic = (action$: any, state$: any) => action$.pipe(
-    ofType(organizationActions.INVITE_MEMBER_TO_ORGANIZATION),
+export const resendInvitation: Epic = (action$: any, state$: any) => action$.pipe(
+    ofType(organizationActions.RESEND_INVITATION),
     withLatestFrom(state$),
     switchMap(([action, state]) => {
-        return organizationService.inviteMemberToOrganization(action.data.organization.id, action.data.email)
+        const {organizationId, email} = action.data;
+
+        return organizationService.resendInvitation(organizationId, email)
             .pipe(
-                switchMap(() => organizationActions.inviteMemberToOrganizationSuccess),
+                switchMap(() => organizationActions.resendInvitationSuccess),
                 catchError((error) => {
                     console.log('There was an issue inviting the member to the organization: ' + error);
-                    return of(organizationActions.inviteMemberToOrganizationFail(error.message));
+                    return of(organizationActions.resendInvitationFail(error.message));
                 })
             );
         }
