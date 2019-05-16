@@ -182,31 +182,31 @@ export const organizationActions = {
     },
 
     // ---------- CRUD Organization Member actions ----------
-    INVITE_MEMBER_TO_ORGANIZATION: 'INVITE_MEMBER_TO_ORGANIZATION',
-    inviteMemberToOrganization(organization: IOrganization, email: string) {
+    RESEND_INVITATION: 'RESEND_INVITATION',
+    resendInvitation(organizationId: string, email: string) {
        return {
-            type: organizationActions.INVITE_MEMBER_TO_ORGANIZATION,
-            data: { organization, email }
+            type: organizationActions.RESEND_INVITATION,
+            data: { organizationId, email }
        };
     },
-    INVITE_MEMBER_TO_ORGANIZATION_SUCCESS: 'INVITE_MEMBER_TO_ORGANIZATION_SUCCESS',
-    inviteMemberToOrganizationSuccess() {
+    RESEND_INVITATION_SUCCESS: 'RESEND_INVITATION_SUCCESS',
+    resendInvitationSuccess() {
        return {
-            type: organizationActions.INVITE_MEMBER_TO_ORGANIZATION_SUCCESS
+            type: organizationActions.RESEND_INVITATION_SUCCESS
        };
     },
-    INVITE_MEMBER_TO_ORGANIZATION_FAIL: 'INVITE_MEMBER_TO_ORGANIZATION_FAIL',
-    inviteMemberToOrganizationFail(error: string) {
+    RESEND_INVITATION_FAIL: 'RESEND_INVITATION_FAIL',
+    resendInvitationFail(error: string) {
        return {
-            type: organizationActions.INVITE_MEMBER_TO_ORGANIZATION_FAIL,
+            type: organizationActions.RESEND_INVITATION_FAIL,
             data: error
        };
     },
     ADD_MEMBER_TO_ORGANIZATION: 'ADD_MEMBER_TO_ORGANIZATION',
-    addMemberToOrganization(organization: IOrganization, member: IOrganizationMember) {
+    addMemberToOrganization(organizationId: string, email: string) {
        return {
             type: organizationActions.ADD_MEMBER_TO_ORGANIZATION,
-            data: { organization, member }
+            data: { organizationId, email }
        };
     },
     ADD_MEMBER_TO_ORGANIZATION_SUCCESS: 'ADD_MEMBER_TO_ORGANIZATION_SUCCESS',
@@ -223,10 +223,10 @@ export const organizationActions = {
        };
     },
     REMOVE_MEMBER_FROM_ORGANIZATION: 'REMOVE_MEMBER_FROM_ORGANIZATION',
-    removeMemberFromOrganization(organization: IOrganization, member: IOrganizationMember) {
+    removeMemberFromOrganization(organizationId: string, userId?: string, email?: string) {
        return {
             type: organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION,
-            data: { organization, member }
+            data: { organizationId, userId, email }
        };
     },
     REMOVE_MEMBER_FROM_ORGANIZATION_SUCCESS: 'REMOVE_MEMBER_FROM_ORGANIZATION_SUCCESS',

@@ -20,7 +20,7 @@ import { updateOrganizationDetails } from './updateOrganizationDetails.epic';
 import { createDefaultOrganization } from './createDefaultOrganization.epic';
 import { getOrganizationList } from './getOrganizationList.epic';
 
-import { inviteMemberToOrganization } from './members/inviteMemberToOrganization.epic';
+import { resendInvitation } from './members/resendInvitation.epic';
 import { addMemberToOrganization } from './members/addMemberToOrganization.epic';
 import { changeMemberRoleInOrganization } from './members/changeMemberRoleInOrganization.epic';
 import { removeMemberFromOrganization } from './members/removeMemberFromOrganization.epic';
@@ -31,7 +31,7 @@ export const organizationEpics = [
     createOrganization,
     deleteOrganization,
     updateOrganizationDetails,
-    inviteMemberToOrganization,
+    resendInvitation,
     addMemberToOrganization,
     changeMemberRoleInOrganization,
     removeMemberFromOrganization,

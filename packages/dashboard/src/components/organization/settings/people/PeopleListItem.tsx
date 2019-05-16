@@ -17,21 +17,30 @@
 import React, { Component } from 'react';
 import style from './style.less';
 import moment from 'moment';
-import { IUser, IState } from '../../../../models';
+import { IUser, IState, IOrganization } from '../../../../models';
 
 interface IProps {
     user: any; // TODO: Add model of user
     currentUser: IUser;
+    resendInvitation: (organizationId: string, email: string) => void;
+    removeMemberFromOrganization: (organizationId: string, userId?: string, email?: string) => void;
+    organization: IOrganization;
 }
 
 export default class PeopleListItem extends Component<IProps> {
 
-    sendInvitation = () => {
-        // TODO: Handle invitation (send email to user)
+    resendInvitation = () => {
+       const organization = this.props.organization;
+       const { email } = this.props.user;
+
+       this.props.resendInvitation(organization.id, email);
     }
 
-    removeUser = (userId: string) => {
-        // TODO: Handle removing of user
+    removeUser = () => {
+        const organization = this.props.organization;
+        const { userId, email } = this.props.user;
+
+        this.props.removeMemberFromOrganization(organization.id, userId, email);
     }
 
     renderAction = () => {
@@ -47,13 +56,13 @@ export default class PeopleListItem extends Component<IProps> {
             );
         } else if (user.state === IState.invited) {
             return (
-                <div onClick={this.sendInvitation} className={style.linkPrimary}>
+                <div onClick={this.resendInvitation} className={style.linkPrimary}>
                     Resend invite
                 </div>
             );
         } else {
             return (
-                <div onClick={() => this.removeUser(user.userId)} className={style.linkPrimary}>
+                <div onClick={this.removeUser} className={style.linkPrimary}>
                     Remove
                 </div>
             );

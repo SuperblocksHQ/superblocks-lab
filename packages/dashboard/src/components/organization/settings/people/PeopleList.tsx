@@ -19,9 +19,8 @@ import style from './style.less';
 import { Link } from 'react-router-dom';
 import PeopleListItem from './PeopleListItem';
 import { BreadCrumbs, StyledButton } from '../../../common';
-import { IUser, IOrganization } from '../../../../models';
-import { StyledButtonType } from '../../../../models/button.model';
-import InvitePeopleModal from '../../../modals/invitePeopleModal/InvitePeopleModal';
+import { IUser, IOrganization, StyledButtonType } from '../../../../models';
+import InvitePeopleModal from '../../../modals/invitePeopleModal';
 import OnlyIf from '../../../common/onlyIf';
 import classNames from 'classnames';
 
@@ -32,12 +31,13 @@ interface IProps {
     userProfile: IUser;
     showInvitePeopleModal: boolean;
     toggleInvitePeopleModal: () => void;
-
+    resendInvitation: (organizationId: string, email: string) => void;
+    removeMemberFromOrganization: (organizationId: string, userId?: string, email?: string) => void;
 }
 
 export default class PeopleList extends Component<IProps> {
     render() {
-        const { showInvitePeopleModal, toggleInvitePeopleModal, organization } = this.props;
+        const { showInvitePeopleModal, toggleInvitePeopleModal, organization, resendInvitation, userProfile, removeMemberFromOrganization } = this.props;
 
         const { members } = organization;
 
@@ -69,7 +69,7 @@ export default class PeopleList extends Component<IProps> {
                     </div>
                     { members.map(user =>
                         <div className={style.userItem} key={user.email}>
-                            <PeopleListItem user={user} currentUser={this.props.userProfile} />
+                            <PeopleListItem user={user} currentUser={userProfile} resendInvitation={resendInvitation} removeMemberFromOrganization={removeMemberFromOrganization} organization={organization} />
                         </div>
                     )}
                 </div>

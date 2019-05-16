@@ -18,10 +18,12 @@ import React from 'react';
 import style from './style.less';
 import classNames from 'classnames';
 import { TextInput, StyledButton, Modal, ModalHeader } from '../../common';
-import { StyledButtonType } from '../../../models/button.model';
+import { IOrganization, StyledButtonType } from '../../../models';
 
 interface IProps {
     hideModal: () => void;
+    addMemberToOrganization: (organizationId: string, email: string) => void;
+    selectedOrganization: IOrganization;
 }
 
 interface IState {
@@ -39,7 +41,8 @@ export default class InvitePeopleModal extends React.Component<IProps, IState> {
     onConfirmClick = (e?: any) => {
         const { email } = this.state;
         e.preventDefault();
-        // TODO: Send email with invitation
+        const organization = this.props.selectedOrganization;
+        this.props.addMemberToOrganization(organization.id, email);
     }
 
     render() {

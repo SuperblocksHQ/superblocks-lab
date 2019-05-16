@@ -24,13 +24,13 @@ export const addMemberToOrganization: Epic = (action$: any, state$: any) => acti
     ofType(organizationActions.ADD_MEMBER_TO_ORGANIZATION),
     withLatestFrom(state$),
     switchMap(([action, state]) => {
-        return organizationService.addMemberToOrganization(action.data.organization.id, {
-            userId: action.data.member.userId,
-        }).pipe(
+        const {organizationId, email} = action.data;
+
+        return organizationService.addMemberToOrganization(organizationId, email).pipe(
                 switchMap(() => organizationActions.addMemberToOrganizationSuccess),
                 catchError((error) => {
                     console.log('There was an issue adding the member to the organization: ' + error);
-                    return of(organizationActions.addMemberToOrganizationFail(error.message));
+                    return of(organizationActions.addMemberToOrganizationFail(error));
                 })
             );
         }

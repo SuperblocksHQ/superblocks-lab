@@ -18,10 +18,19 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import InvitePeopleModal from './InvitePeopleModal';
+import { organizationActions } from '../../../actions';
+import { organizationSelectors } from '../../../selectors';
+
+const mapStateToProps = (state: any) => ({
+    selectedOrganization: organizationSelectors.getOrganization(state),
+});
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>) {
     return {
+        addMemberToOrganization: (organizationId: string, email: string) => {
+            dispatch(organizationActions.addMemberToOrganization(organizationId, email));
+        }
     };
 }
 
-export default connect(null, mapDispatchToProps)(InvitePeopleModal);
+export default connect(mapStateToProps, mapDispatchToProps)(InvitePeopleModal);
