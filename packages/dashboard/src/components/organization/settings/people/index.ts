@@ -32,6 +32,12 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
         toggleInvitePeopleModal: () => {
             dispatch(organizationActions.toggleInvitePeopleModal());
         },
+        resendInvitation: (organizationId: string, email: string) => {
+            dispatch(organizationActions.resendInvitation(organizationId, email));
+        },
+        removeMemberFromOrganization: (organizationId: string, userId?: string, email?: string) => {
+            dispatch(organizationActions.removeMemberFromOrganization(organizationId, userId, email));
+        },
     };
 };
 
