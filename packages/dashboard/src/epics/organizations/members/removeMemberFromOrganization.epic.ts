@@ -25,7 +25,9 @@ export const removeMemberFromOrganization: Epic = (action$: any, state$: any) =>
     withLatestFrom(state$),
     switchMap(([action, state]) => {
         if (confirm('Are you sure you want to remove the member from the organization?')) {
-            return organizationService.removeMemberFromOrganization(action.data.organization.id, action.data.member.id)
+            const {organizationId, userId, email} = action.data;
+
+            return organizationService.removeMemberFromOrganization(organizationId, userId, email)
                 .pipe(
                     switchMap(() => organizationActions.removeMemberFromOrganizationSuccess),
                     catchError((error) => {
