@@ -45,6 +45,15 @@
             display: none;
         }
 
+        .sideMenuHeader.visibleCollapsed {
+            display: flex;
+            justify-content: center;
+
+            span {
+                display: none;
+            }
+        }
+
         .item {
             padding: 5px 4px;
             justify-content: center;
@@ -180,6 +189,11 @@
     flex-direction: column;
 }
 
+.active .item {
+    border-color: @primary-color;
+    background-color: #31383B;
+}
+
 .item {
     display: flex;
     align-items: center;
@@ -198,11 +212,6 @@
         align-items: center;
     }
 
-    &.active {
-        border-color: @primary-color;
-        background-color: #31383B;
-    }
-
     &:hover {
         opacity: 1;
         background-color: #31383B;
@@ -211,6 +220,8 @@
 
     span {
         margin-left: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

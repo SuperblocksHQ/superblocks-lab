@@ -17,6 +17,6 @@
 export interface IUser {
     userName: string;
     email: string;
-    id: number;
+    id: string;
     imageUrl: string;
 }

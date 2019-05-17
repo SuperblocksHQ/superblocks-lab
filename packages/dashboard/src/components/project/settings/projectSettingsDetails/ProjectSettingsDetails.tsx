@@ -19,7 +19,7 @@ import style from './style.less';
 import { BreadCrumbs, TextInput, TextAreaInput, StyledButton } from '../../../common';
 import { StyledButtonType } from '../../../../models/button.model';
 import { Link } from 'react-router-dom';
-import { IProject } from '../../../../models';
+import { IProject, IOrganization } from '../../../../models';
 import { validateProjectName } from '../../../../validations';
 import { ProjectSettingsMenu } from '../projectSettingsMenu';
 import OnlyIf from '../../../common/onlyIf';
@@ -29,9 +29,11 @@ interface IProps {
     location: any;
     match: any;
     project: IProject;
+    organization: IOrganization;
     updateProjectDetails: (newProjectDetails: Partial<IProject>) => void;
     showDeleteProjectModal: boolean;
     toggleDeleteProjectModal: () => void;
+    disconnectProjectRepository: (projectId: string) => void;
 }
 
 interface IState {
@@ -69,22 +71,25 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
         });
     }
 
-    onSave = () => {
+    onSave = (e?: any) => {
         const { project, updateProjectDetails } = this.props;
-        const { newName, newDescription} = this.state;
+        const { newName, newDescription, canSave } = this.state;
+        e.preventDefault();
 
-        updateProjectDetails({id: project.id, name: newName, description: newDescription});
+        if (canSave) {
+            updateProjectDetails({id: project.id, name: newName, description: newDescription});
+        }
     }
 
     render() {
-        const { toggleDeleteProjectModal, showDeleteProjectModal, project } = this.props;
+        const { toggleDeleteProjectModal, showDeleteProjectModal, project, organization, disconnectProjectRepository } = this.props;
         const { errorName, canSave } = this.state;
 
         return (
             <React.Fragment>
                 <BreadCrumbs>
-                    <Link to={`/${this.props.match.params.organizationId}`}>Organization Name</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}`}>{project.name}</Link>
+                    <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
+                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
                     <Link to={window.location.pathname}>Settings</Link>
                 </BreadCrumbs>
 
@@ -93,36 +98,45 @@ export default class ProjectSettingsDetails extends Component<IProps, IState> {
 
                     <div className={style.projectSettings}>
                         <h1>Details</h1>
-                        <div className={style['mb-5']}>
-                            <TextInput
-                                onChangeText={this.onNameChange}
-                                error={errorName}
-                                label={'Project name'}
-                                id={'projectName'}
-                                placeholder={'project-name'}
-                                defaultValue={project.name}
-                                required={true}
-                            />
-                        </div>
-                        <div className={style['mb-4']}>
-                            <TextAreaInput
-                                onChangeText={this.onDescChange}
-                                label={'Description'}
-                                id={'description'}
-                                placeholder={'Enter a short description (optional)'}
-                                defaultValue={project.description}
-                            />
-                        </div>
-                        <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
-
+                        <form onSubmit={(e) => this.onSave(e)}>
+                            <div className={style['mb-5']}>
+                                <TextInput
+                                    onChangeText={this.onNameChange}
+                                    error={errorName}
+                                    label={'Project name'}
+                                    id={'projectName'}
+                                    placeholder={'project-name'}
+                                    defaultValue={project.name}
+                                    required={true}
+                                />
+                            </div>
+                            <div className={style['mb-4']}>
+                                <TextAreaInput
+                                    onChangeText={this.onDescChange}
+                                    label={'Description'}
+                                    id={'description'}
+                                    placeholder={'Enter a short description (optional)'}
+                                    defaultValue={project.description}
+                                />
+                            </div>
+                            <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
+                        </form>
                         <div className={style.sectionDivider}></div>
+
+                        <OnlyIf test={project.vcsUrl}>
+                            <h1>Disconnect repository</h1>
+                            <p className={style['mb-4']}>Once disconnected, all builds will be removed for given project. Please be certain.</p>
+                            <StyledButton type={StyledButtonType.Danger} text={'Disconnect repository'} onClick={() => disconnectProjectRepository(project.id)} />
+
+                            <div className={style.sectionDivider}></div>
+                        </OnlyIf>
 
                         <h1>Delete this project</h1>
                         <p className={style['mb-4']}>Once deleted, it will be gone forever. Please be certain.</p>
                         <StyledButton type={StyledButtonType.Danger} text={'Delete Project'} onClick={() => toggleDeleteProjectModal()} />
 
                         <OnlyIf test={showDeleteProjectModal}>
-                            <DeleteProjectModal hideModal={toggleDeleteProjectModal} project={project} />
+                            <DeleteProjectModal hideModal={toggleDeleteProjectModal} project={project} organizationId={organization.id} />
                         </OnlyIf>
                     </div>
                 </div>

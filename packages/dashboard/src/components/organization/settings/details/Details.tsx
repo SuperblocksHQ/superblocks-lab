@@ -22,12 +22,13 @@ import { Link } from 'react-router-dom';
 import { validateOrganizationName } from '../../../../validations';
 import OnlyIf from '../../../common/onlyIf';
 import DeleteOrganizationModal from '../../../modals/deleteOrganizationModal';
+import { IOrganization } from '../../../../models';
 
 interface IProps {
     location: any;
     match: any;
-    organization: any; // TODO: Any organization model
-    updateOrganization: (name: string, description: string) => void; // TODO: Add organization model
+    organization: IOrganization;
+    updateOrganizationDetails: (newOrganizationDetails: Partial<IOrganization>) => void;
     showDeleteOrganizationModal: boolean;
     toggleDeleteOrganizationModal: () => void;
 }
@@ -43,8 +44,8 @@ export default class Details extends Component<IProps, IState> {
 
     state: IState = {
         errorName: null,
-        newName: 'Organization name placeholder', // TODO: Fetch from props
-        newDescription: 'Organization description placeholder', // TODO: Fetch from props
+        newName: this.props.organization.name,
+        newDescription: this.props.organization.description,
         canSave: true
     };
 
@@ -67,22 +68,19 @@ export default class Details extends Component<IProps, IState> {
         });
     }
 
-    onSave = () => {
-        const { updateOrganization } = this.props;
-        const { newName, newDescription} = this.state;
+    onSave = (e?: any) => {
+        const { updateOrganizationDetails, organization } = this.props;
+        const { newName, newDescription, canSave } = this.state;
+        e.preventDefault();
 
-        updateOrganization(newName, newDescription);
+        if (canSave) {
+            updateOrganizationDetails({id: organization.id, name: newName, description: newDescription});
+        }
     }
 
     render() {
-        const { showDeleteOrganizationModal, toggleDeleteOrganizationModal } = this.props;
+        const { showDeleteOrganizationModal, toggleDeleteOrganizationModal, organization } = this.props;
         const { errorName, canSave } = this.state;
-
-        {/* TODO: Fetch organization from redux */}
-        const organization = {
-            name: 'Organization name placeholder',
-            description: 'Organization description placeholder'
-        };
 
         return (
             <React.Fragment>
@@ -94,28 +92,29 @@ export default class Details extends Component<IProps, IState> {
                     </BreadCrumbs>
 
                     <h1>Details</h1>
-                    <div className={style['mb-5']}>
-                        <TextInput
-                            onChangeText={this.onNameChange}
-                            error={errorName}
-                            label={'Organization name'}
-                            id={'organizationName'}
-                            placeholder={'organization-name'}
-                            defaultValue={organization.name}
-                            required={true}
-                        />
-                    </div>
-                    <div className={style['mb-4']}>
-                        <TextAreaInput
-                            onChangeText={this.onDescChange}
-                            label={'Description'}
-                            id={'description'}
-                            placeholder={'Enter a short description (optional)'}
-                            defaultValue={organization.description}
-                        />
-                    </div>
-                    <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
-
+                    <form onSubmit={(e) => this.onSave(e)}>
+                        <div className={style['mb-5']}>
+                            <TextInput
+                                onChangeText={this.onNameChange}
+                                error={errorName}
+                                label={'Organization name'}
+                                id={'organizationName'}
+                                placeholder={'organization-name'}
+                                defaultValue={organization.name}
+                                required={true}
+                            />
+                        </div>
+                        <div className={style['mb-4']}>
+                            <TextAreaInput
+                                onChangeText={this.onDescChange}
+                                label={'Description'}
+                                id={'description'}
+                                placeholder={'Enter a short description (optional)'}
+                                defaultValue={organization.description}
+                            />
+                        </div>
+                        <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
+                    </form>
                     <div className={style.sectionDivider}></div>
 
                     <h1>Delete this organization</h1>

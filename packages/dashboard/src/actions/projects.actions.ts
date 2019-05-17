@@ -19,9 +19,10 @@ import { IProject } from '../models';
 export const projectsActions = {
 
     GET_PROJECT_LIST: 'GET_PROJECT_LIST',
-    getProjectList() {
+    getProjectList(ownerId: string) {
         return {
             type: projectsActions.GET_PROJECT_LIST,
+            data: { ownerId }
         };
     },
     GET_PROJECT_LIST_SUCCESS: 'GET_PROJECT_LIST_SUCCESS',
@@ -56,10 +57,10 @@ export const projectsActions = {
 
     // ---------- CRUD Project actions ----------
     CREATE_PROJECT: 'CREATE_PROJECT',
-    createProject({ name, description }: any, redirect: boolean = false) {
+    createProject({ name, ownerId, ownerType, description }: any, redirect: boolean = false) {
         return {
             type: projectsActions.CREATE_PROJECT,
-            data: { name, description, redirect }
+            data: { name, description, ownerId, ownerType, redirect }
         };
     },
     CREATE_PROJECT_SUCCESS: 'CREATE_PROJECT_SUCCESS',
@@ -77,10 +78,10 @@ export const projectsActions = {
         };
     },
     DELETE_PROJECT: 'DELETE_PROJECT',
-    deleteProject(projectId: string) {
+    deleteProject(projectId: string, organizationId: string) {
        return {
             type: projectsActions.DELETE_PROJECT,
-            data: { projectId }
+            data: { projectId, organizationId }
        };
     },
     DELETE_PROJECT_SUCCESS: 'DELETE_PROJECT_SUCCESS',
@@ -153,5 +154,48 @@ export const projectsActions = {
             type: projectsActions.UPDATE_PROJECT_DETAILS_FAIL,
             data: error
        };
+    },
+
+    // ---------- PROJECT REPOSITORY ----------
+    CONNECT_PROJECT_REPOSITORY: 'CONNECT_PROJECT_REPOSITORY',
+    connectProjectRepository(id: string, vcsUrl: string, vcsType: string) {
+        return {
+            type: projectsActions.CONNECT_PROJECT_REPOSITORY,
+            data: { id, vcsUrl, vcsType }
+        };
+    },
+    CONNECT_PROJECT_REPOSITORY_SUCCESS: 'CONNECT_PROJECT_REPOSITORY_SUCCESS',
+    connectProjectRepositorySuccess() {
+        return {
+            type: projectsActions.CONNECT_PROJECT_REPOSITORY_SUCCESS
+        };
+    },
+    CONNECT_PROJECT_REPOSITORY_FAIL: 'CONNECT_PROJECT_REPOSITORY_FAIL',
+    connectProjectRepositoryFail(error: string) {
+        return {
+            type: projectsActions.CONNECT_PROJECT_REPOSITORY_FAIL,
+            data: error
+        };
+    },
+
+    DISCONNECT_PROJECT_REPOSITORY: 'DISCONNECT_PROJECT_REPOSITORY',
+    disconnectProjectRepository(id: string) {
+        return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY,
+            data: { id }
+        };
+    },
+    DISCONNECT_PROJECT_REPOSITORY_SUCCESS: 'DISCONNECT_PROJECT_REPOSITORY_SUCCESS',
+    disconnectProjectRepositorySuccess() {
+        return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS
+        };
+    },
+    DISCONNECT_PROJECT_REPOSITORY_FAIL: 'DISCONNECT_PROJECT_REPOSITORY_FAIL',
+    disconnectProjectRepositoryFail(error: string) {
+        return {
+            type: projectsActions.DISCONNECT_PROJECT_REPOSITORY_FAIL,
+            data: error
+        };
     },
 };

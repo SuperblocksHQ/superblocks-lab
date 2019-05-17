@@ -24,7 +24,7 @@ import { validateOrganizationName } from '../../../validations';
 
 interface IProps {
     hideModal: () => void;
-    createOrganization: (name: string, description: string, redirect: boolean) => void;
+    createOrganization: (name: string, redirect: boolean) => void;
 }
 
 interface IState {
@@ -52,11 +52,15 @@ export default class CreateOrganizationModal extends React.Component<IProps, ISt
         });
     }
 
-    onCreate = () => {
-        const { createOrganization } = this.props;
-        const { organizationName } = this.state;
+    onCreate = (e?: any) => {
+        const { createOrganization, hideModal } = this.props;
+        const { organizationName, canCreate } = this.state;
+        e.preventDefault();
 
-        createOrganization(organizationName, '', true);
+        if (canCreate) {
+            createOrganization(organizationName, true);
+            hideModal();
+        }
     }
 
     render() {
@@ -64,13 +68,13 @@ export default class CreateOrganizationModal extends React.Component<IProps, ISt
         const { errorName, canCreate } = this.state;
 
         return (
-            <Modal>
+            <Modal hideModal={hideModal}>
                 <div className={classNames([style.createOrganizationModal, 'modal'])}>
                     <ModalHeader
                         title='Create an organization'
                         onCloseClick={hideModal}
                     />
-                    <div className={style.content}>
+                    <form className={style.content} onSubmit={(e) => this.onCreate(e)}>
                         <div className={style['mb-4']}>
                             <TextInput
                                 onChangeText={this.onNameChange}
@@ -91,7 +95,7 @@ export default class CreateOrganizationModal extends React.Component<IProps, ISt
                                 isDisabled={!canCreate}
                             />
                         </div>
-                    </div>
+                    </form>
                 </div>
             </Modal>
         );

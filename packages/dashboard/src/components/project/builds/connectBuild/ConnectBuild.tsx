@@ -16,14 +16,16 @@
 
 import React, { Component } from 'react';
 import style from './style.less';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { BreadCrumbs, StyledButton } from '../../../common';
-import { StyledButtonType, IProject } from '../../../../models';
+import { StyledButtonType, IProject, IOrganization } from '../../../../models';
 import { IconGithub } from '../../../common/icons';
 import GithubRepositoryList, { Section } from '../../../githubRepositoryList';
+import OnlyIf from '../../../common/onlyIf';
 
 interface IProps {
     project: IProject;
+    organization: IOrganization;
     build: any;
     location: any;
     match: any;
@@ -31,11 +33,11 @@ interface IProps {
 
 export default class ConnectBuild extends Component<IProps> {
     render() {
-        const { project } = this.props;
+        const { project, organization } = this.props;
         return (
             <div className={style.connectBuild}>
                 <BreadCrumbs>
-                    <Link to={'/'}>Organization Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
                     <Link to={window.location.pathname}>Connect to repository</Link>
@@ -48,7 +50,11 @@ export default class ConnectBuild extends Component<IProps> {
                     </a>
                 </div>
 
-                <GithubRepositoryList section={Section.ConnectToRepo}/>
+                <OnlyIf test={project.vcsUrl && project.vcsType}>
+                    <Redirect to={`/${organization.id}/projects/${project.id}/builds`} />
+                </OnlyIf>
+
+                <GithubRepositoryList projectId={project.id} section={Section.ConnectToRepo}/>
             </div>
         );
     }

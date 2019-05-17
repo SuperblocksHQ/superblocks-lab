@@ -44,7 +44,7 @@ export default class Header extends Component<IProps> {
                     <div className={style.createProject}>
                         <StyledButton icon={<IconPlusTransparent width={'12px'} height={'12px'} />} type={StyledButtonType.Primary} text={'Create Project'} onClick={() => toggleCreateProjectModal()} />
                         <OnlyIf test={showCreateProjectModal}>
-                            <CreateProjectModal hideModal={toggleCreateProjectModal} />
+                            <CreateProjectModal organizationId={organizationId} hideModal={toggleCreateProjectModal} />
                         </OnlyIf>
                     </div>
                 </div>

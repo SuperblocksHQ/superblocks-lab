@@ -23,85 +23,89 @@ import { BuildStatus } from '../BuildStatus';
 import moment from 'moment';
 import BuildConsole from './BuildConsole';
 import classNames from 'classnames';
-import { IProject } from '../../../../models';
+import { IProject, IOrganization, IJob } from '../../../../models';
+import OnlyIf from '../../../common/onlyIf';
+import { secondsToHms } from '../../../../utils/time';
 
 interface IProps {
     build: any;
     location: any;
     match: any;
     project: IProject;
+    job: IJob;
+    isJobLoading: boolean;
+    organization: IOrganization;
+    jobId: string;
+    getJob: (jobId: string) => void;
 }
 
 export default class BuildPage extends Component<IProps> {
-    render() {
-        const { project } = this.props;
 
-        const build = {
-            status: 'queued',
-            buildNumber: 3,
-            branch: 'fork-branch',
-            buildTime: '00:02:56',
-            duration: '1 min and 43 seconds',
-            commit: {
-                ownerAvatar: 'https://avatars3.githubusercontent.com/u/7814134?v=4&s=24',
-                ownerName: 'Javier Taragaza Gomez',
-                description: 'Initial commit',
-                hash: 'gf245df',
-                timestamp: '2019-04-15T12:47:45.090Z',
-                branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
-                commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
-            }
-        };
+    componentWillMount() {
+        const { match, getJob } = this.props;
+        getJob(match.params.buildId);
+    }
+
+    render() {
+        const { project, job, isJobLoading, organization } = this.props;
 
         return (
-            <div className={style.buildPage}>
-                <BreadCrumbs>
-                    <Link to={'/'}>Organization Name</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
-                    <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds/${this.props.match.params.buildId}`}>
-                        #{build.buildNumber}
-                    </Link>
-                </BreadCrumbs>
+            <OnlyIf test={organization}>
+                <div className={style.buildPage}>
+                    <BreadCrumbs>
+                        <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
+                        <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
+                        <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
+                        <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds/${this.props.match.params.buildId}`}>
+                            #{this.props.match.params.buildId}
+                        </Link>
+                    </BreadCrumbs>
 
-                <div className={style.title}>
-                    <BuildStatus status={build.status} />
-                    <h1><span>{`Build #${build.buildNumber} - `}</span>{build.commit.description}</h1>
-                </div>
+                    { job && !isJobLoading &&
+                        <React.Fragment>
+                            <div className={style.title}>
+                                <BuildStatus status={job.status} />
+                                <h1><span>{`Build #${job.id} - `}</span>{job.commit.description}</h1>
+                            </div>
 
-                <p className={classNames([style.subtitle, style.flexVerticalCenter])}>
-                    {
-                        `Triggered ${moment.utc(build.commit.timestamp).fromNow()} by `
+                            <p className={classNames([style.subtitle, style.flexVerticalCenter])}>
+                                {
+                                    <span>Triggered {moment.utc(job.createdAt).fromNow()} by </span>
+                                }
+                                <span className={style.ownerName}>
+                                    <img src={`${job.commit.ownerAvatar}&s=48`} />
+                                    <span>{job.commit.ownerName}</span>
+                                </span>
+                                <span>
+                                    <IconBranch />
+                                    <a href={job.commit.branchUrl} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
+                                        {job.commit.branch}
+                                    </a>
+                                </span>
+                                <span>
+                                    <IconCommit />
+                                    <a href={job.commit.commitUrl} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
+                                        {job.commit.hash}
+                                    </a>
+                                </span>
+                            </p>
+
+                            <div className={style.tabNavigation}>
+                                <a href='#' className={style.tabItem}>Logs</a>
+                            </div>
+                            <div className={style.hr}></div>
+
+                            <h2>Compile and Test</h2>
+                            <p className={style['mb-4']}>
+                                <span><b>Total duration:</b> {secondsToHms(job.duration)}</span>
+                                <span className={style['ml-3']}><b>Queued:</b> 00:01 waiting</span>
+                            </p>
+
+                            <BuildConsole consoleOutput={job.log} />
+                        </React.Fragment>
                     }
-                    <img src={build.commit.ownerAvatar} />
-                    <span className={style.ownerName}>{build.commit.ownerName}</span>
-                    <span>
-                        <IconBranch />
-                        <a href={build.commit.branchLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
-                            {build.branch}
-                        </a>
-                    </span>
-                    <span>
-                        <IconCommit />
-                        <a href={build.commit.commitLink} className={classNames([style.linkPrimary, style['ml-1']])} target='_blank' rel='noopener noreferrer'>
-                            {build.commit.hash}
-                        </a>
-                    </span>
-                </p>
-
-                <div className={style.tabNavigation}>
-                    <a href='#' className={style.tabItem}>Logs</a>
                 </div>
-                <div className={style.hr}></div>
-
-                <h2>Compile and Test</h2>
-                <p className={style['mb-4']}>
-                    <span><b>Total duration:</b> {build.duration}</span>
-                    <span className={style['ml-3']}><b>Queued:</b> 00:01 waiting</span>
-                </p>
-
-                <BuildConsole />
-            </div>
+            </OnlyIf>
         );
     }
 }

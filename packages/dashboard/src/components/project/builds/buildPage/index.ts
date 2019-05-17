@@ -18,14 +18,21 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import BuildPage from './BuildPage';
-import { projectSelectors } from '../../../../selectors';
+import { projectSelectors, organizationSelectors, jobSelectors } from '../../../../selectors';
+import { jobsActions } from '../../../../actions';
 
 const mapStateToProps = (state: any) => ({
-    project: projectSelectors.getProject(state)
+    project: projectSelectors.getProject(state),
+    job: jobSelectors.getJob(state),
+    isJobLoading: jobSelectors.isJobLoading(state),
+    organization: organizationSelectors.getOrganization(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
+        getJob: (jobId: string) => {
+            dispatch(jobsActions.getJob(jobId));
+        },
     };
 };
 

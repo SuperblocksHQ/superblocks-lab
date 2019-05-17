@@ -15,33 +15,31 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { from, of } from 'rxjs';
-import { switchMap, withLatestFrom, catchError } from 'rxjs/operators';
+import { switchMap, withLatestFrom, catchError, map } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { organizationActions } from '../../actions';
 import { organizationService } from '../../services';
 
-export const updateOrganization: Epic = (action$: any, state$: any) => action$.pipe(
-    ofType(organizationActions.UPDATE_ORGANIZATION),
+export const updateOrganizationDetails: Epic = (action$: any, state$: any) => action$.pipe(
+    ofType(organizationActions.UPDATE_ORGANIZATION_DETAILS),
     withLatestFrom(state$),
     switchMap(([action]) => {
-        return organizationService.getOrganizationById(action.data.organization.id)
+        return organizationService.getOrganizationById(action.data.id)
         .pipe(
             switchMap((selectedOrganization) => {
-                selectedOrganization.name = action.data.organization.name;
-                selectedOrganization.description = action.data.organization.description;
+                selectedOrganization.name = action.data.name ? action.data.name : selectedOrganization.name;
+                selectedOrganization.description = action.data.description ? action.data.description : selectedOrganization.description;
 
-                return from(organizationService.putOrganizationById(selectedOrganization.id, selectedOrganization))
+                return organizationService.putOrganizationById(action.data.id, selectedOrganization)
                     .pipe(
-                        switchMap(() => {
-                            return [organizationActions.updateOrganizationSuccess(selectedOrganization)];
-                        }
-                    )
-                );
-            }),
-            catchError((error) => {
-                console.log('There was an issue updating the organization: ' + error);
-                return of(organizationActions.updateOrganizationFail(error.message));
+                        map(() => organizationActions.updateOrganizationSuccess(selectedOrganization)),
+                        catchError((error) => {
+                            console.log('There was an issue updating the organization: ' + error);
+                            return of(organizationActions.updateOrganizationFail(error.message));
+                        })
+                    );
             })
         );
+
     })
 );

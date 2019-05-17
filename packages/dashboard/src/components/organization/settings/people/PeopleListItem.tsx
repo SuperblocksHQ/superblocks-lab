@@ -17,41 +17,52 @@
 import React, { Component } from 'react';
 import style from './style.less';
 import moment from 'moment';
-import { IUser } from '../../../../models';
+import { IUser, IState, IOrganization } from '../../../../models';
 
 interface IProps {
     user: any; // TODO: Add model of user
     currentUser: IUser;
+    resendInvitation: (organizationId: string, email: string) => void;
+    removeMemberFromOrganization: (organizationId: string, userId?: string, email?: string) => void;
+    organization: IOrganization;
 }
 
 export default class PeopleListItem extends Component<IProps> {
 
-    sendInvitation = () => {
-        // TODO: Handle invitation (send email to user)
+    resendInvitation = () => {
+       const organization = this.props.organization;
+       const { email } = this.props.user;
+
+       this.props.resendInvitation(organization.id, email);
     }
 
-    removeUser = (userId: string) => {
-        // TODO: Handle removing of user
+    removeUser = () => {
+        const organization = this.props.organization;
+        const { userId, email } = this.props.user;
+
+        this.props.removeMemberFromOrganization(organization.id, userId, email);
     }
 
     renderAction = () => {
         const { user, currentUser } = this.props;
 
-        if (user.id === currentUser.id) {
+        console.log(user, currentUser);
+
+        if (user.userId === currentUser.id) {
             return (
                 <div>
                     -
                 </div>
             );
-        } else if (user.lastLogin === null) {
+        } else if (user.state === IState.invited) {
             return (
-                <div onClick={this.sendInvitation} className={style.linkPrimary}>
+                <div onClick={this.resendInvitation} className={style.linkPrimary}>
                     Resend invite
                 </div>
             );
         } else {
             return (
-                <div onClick={() => this.removeUser(user.id)} className={style.linkPrimary}>
+                <div onClick={this.removeUser} className={style.linkPrimary}>
                     Remove
                 </div>
             );
@@ -63,7 +74,7 @@ export default class PeopleListItem extends Component<IProps> {
 
         return (
             <React.Fragment>
-                <td>
+                <div className={style.singleCell}>
                     <div className={style.flexVerticalCenter}>
                         <img src={user.imageUrl} className={style['mr-2']} alt={user.name} />
                         <div>
@@ -75,20 +86,23 @@ export default class PeopleListItem extends Component<IProps> {
                             </span>
                         </div>
                     </div>
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
+                    <span className={style.smallDeviceLabel}>Last seen: </span>
                     { user.lastLogin !== null ?
                         moment.utc(user.lastLogin).fromNow()
                     :
                         'never'
                     }
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
+                    <span className={style.smallDeviceLabel}>Role: </span>
                     {user.role}
-                </td>
-                <td>
+                </div>
+                <div className={style.singleCell}>
+                    <span className={style.smallDeviceLabel}>Action: </span>
                     {this.renderAction()}
-                </td>
+                </div>
             </React.Fragment>
         );
     }

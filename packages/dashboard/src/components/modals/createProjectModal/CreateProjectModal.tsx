@@ -22,8 +22,9 @@ import { StyledButtonType } from '../../../models/button.model';
 import { validateProjectName } from '../../../validations';
 
 interface IProps {
+    organizationId: string;
     hideModal: () => void;
-    createProject: (name: string, description: string, redirect: boolean) => void;
+    createProject: (name: string, ownerId: string, ownerType: string, description: string, redirect: boolean) => void;
 }
 
 interface IState {
@@ -61,12 +62,15 @@ export default class CreateProjectModal extends React.Component<IProps, IState> 
         });
     }
 
-    onCreate = () => {
-        const { createProject, hideModal } = this.props;
-        const { projectName, projectDescription} = this.state;
+    onCreate = (e?: any) => {
+        const { createProject, hideModal, organizationId } = this.props;
+        const { projectName, projectDescription, canCreate} = this.state;
+        e.preventDefault();
 
-        createProject(projectName, projectDescription, false);
-        hideModal();
+        if (canCreate) {
+            createProject(projectName, organizationId, 'organization', projectDescription, false);
+            hideModal();
+        }
     }
 
     render() {
@@ -74,13 +78,13 @@ export default class CreateProjectModal extends React.Component<IProps, IState> 
         const { errorName, canCreate } = this.state;
 
         return (
-            <Modal>
+            <Modal hideModal={hideModal}>
                 <div className={classNames([style.createProjectModal, 'modal'])}>
                     <ModalHeader
                         title='Create a project'
                         onCloseClick={hideModal}
                     />
-                    <div className={style.content}>
+                    <form className={style.content} onSubmit={(e) => this.onCreate(e)}>
                         <div className={style['mb-4']}>
                             <TextInput
                                 onChangeText={this.onNameChange}
@@ -108,7 +112,7 @@ export default class CreateProjectModal extends React.Component<IProps, IState> 
                                 isDisabled={!canCreate}
                             />
                         </div>
-                    </div>
+                    </form>
                 </div>
             </Modal>
         );

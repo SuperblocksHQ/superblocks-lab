@@ -25,18 +25,14 @@ export const createOrganization: Epic = (action$, state$) => action$.pipe(
     withLatestFrom(state$),
     switchMap(([action, state]) => {
         return organizationService.createOrganization({
-            name: action.data.name,
-            description: action.data.description
+            name: action.data.name
         }).pipe(
                 map((newOrganization) =>  {
-                    // redirect
-                    window.location.href = `${window.location.origin}/${newOrganization.id}`;
-
-                    return organizationActions.createOrganizationSuccess;
+                    return organizationActions.createOrganizationSuccess(newOrganization);
                 }),
                 catchError((error) => {
-                    console.log('There was an issue forking the organization: ' + error);
-                    return of(organizationActions.createOrganizationFail(error.message));
+                    console.log('There was an issue creating the organization: ' + error);
+                    return of(organizationActions.createOrganizationFail(error));
                 })
             );
         }

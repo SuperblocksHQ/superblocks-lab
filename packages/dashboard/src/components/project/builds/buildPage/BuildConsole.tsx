@@ -16,12 +16,23 @@
 
 import React, { Component } from 'react';
 import style from './style.less';
+import Ansi from 'ansi-to-react';
 
-export default class BuildConsole extends Component {
+interface IProps {
+    consoleOutput: string;
+}
+
+export default class BuildConsole extends Component<IProps> {
     render() {
+        const { consoleOutput } = this.props;
+
         return (
             <div className={style.buildConsole}>
-                {/* TODO: Use compilerPanel instead as it has same functionality */}
+                <pre>
+                    <Ansi linkify={false}>
+                        {consoleOutput}
+                    </Ansi>
+                </pre>
             </div>
         );
     }

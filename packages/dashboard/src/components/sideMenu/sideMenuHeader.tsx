@@ -22,11 +22,12 @@ interface IProps {
     title: string | JSX.Element;
     icon?: JSX.Element | JSX.Element[];
     className?: string;
+    visibleCollapsed?: boolean;
 }
 
 export function SideMenuHeader(props: IProps) {
     return (
-        <div className={classNames([style.sideMenuHeader, props.className])}>
+        <div className={classNames([style.sideMenuHeader, props.className, props.visibleCollapsed ? style.visibleCollapsed : null])}>
             {props.icon}
             {props.title}
         </div>

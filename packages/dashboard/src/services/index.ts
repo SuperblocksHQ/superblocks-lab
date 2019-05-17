@@ -19,3 +19,4 @@ export * from './project.service';
 export * from './auth.service';
 export * from './organization.service';
 export * from './pipeline.service';
+export * from './job.service';

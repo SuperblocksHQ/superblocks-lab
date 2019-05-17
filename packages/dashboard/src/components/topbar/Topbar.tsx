@@ -24,16 +24,17 @@ import { Link } from 'react-router-dom';
 interface IProps {
     logout: () => void;
     userProfile: IUser;
+    organizationId?: string | null;
 }
 
 export default class Topbar extends Component<IProps> {
 
     render() {
-        const { userProfile, logout } = this.props;
+        const { userProfile, logout, organizationId } = this.props;
 
         return(
             <div className={style.topbar}>
-                <Link to='/' className={style.logo}>
+                <Link to={organizationId ? `/${organizationId}` : '/'} className={style.logo}>
                     <img
                         src='/static/img/img-logo-dashboard.svg'
                         alt='Superblocks logo'

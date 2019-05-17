@@ -32,12 +32,12 @@ interface IProps {
     className?: string;
     repositoryList: IGithubRepository[];
     isRepositoriesLoading: boolean;
-    projectId: string;
+    projectId?: string;
     section: Section;
     getUserRepositoryList: () => void;
     cancelGetUserRepositoryList: () => void;
-    createDefaultOrganization: (organizationName: string, projectName: string) => void;
-    updateProjectDetails: (newProjectDetails: Partial<IProject>) => void;
+    createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) => void;
+    connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType) => void;
 }
 
 interface IState {
@@ -110,11 +110,12 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
     }
 
     handleOnBuildClick = (repo: IGithubRepository) => {
-        const { section, projectId, updateProjectDetails, createDefaultOrganization } = this.props;
+        const { section, projectId, connectProjectRepository, createDefaultOrganization } = this.props;
+
         if (section === Section.Welcome) {
-            createDefaultOrganization(repo.name, repo.owner.login);
-        } else {
-            updateProjectDetails({ id: projectId, vcsUrl: repo.cloneUrl, vcsType: VcsType.Github });
+            createDefaultOrganization(repo.owner.login, repo.name, repo.cloneUrl, VcsType.Github);
+        } else if (projectId) {
+            connectProjectRepository(projectId, repo.cloneUrl, VcsType.Github);
         }
     }
 

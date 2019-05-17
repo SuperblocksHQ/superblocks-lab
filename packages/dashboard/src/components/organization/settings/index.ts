@@ -18,12 +18,19 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import OrganizationSettings from './OrganizationSettings';
+import { organizationActions } from '../../../actions';
+import { organizationSelectors } from '../../../selectors';
 
 const mapStateToProps = (state: any) => ({
+    isOrganizationLoading: organizationSelectors.isLoadingOrganization(state),
+    organization: organizationSelectors.getOrganization(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
+        loadOrganization: (organizationId: string) => {
+            dispatch(organizationActions.loadOrganization(organizationId));
+        }
     };
 };
 

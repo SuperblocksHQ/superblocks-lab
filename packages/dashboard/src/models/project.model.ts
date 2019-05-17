@@ -1,4 +1,4 @@
-// Copyright 2018 Superblocks AB
+// Copyright 2019 Superblocks AB
 //
 // This file is part of Superblocks Lab.
 //
@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 export enum VcsType {
-    Github = 'github'
+    Github = 'github',
 }
 
 export interface IProject {
@@ -24,7 +24,8 @@ export interface IProject {
     description: string;
     createdAt: string;
     lastModifiedAt: string;
+    ownerId: string;
+    ownerType: string;
     vcsUrl: string;
     vcsType: VcsType;
 }
-

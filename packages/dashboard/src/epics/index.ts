@@ -20,6 +20,8 @@ import { loginEpics } from './login';
 import { userEpics } from './user';
 import { organizationEpics } from './organizations';
 import { pipelinesEpics } from './pipelines';
+import { jobsEpics } from './jobs';
+import { sidemenuEpics } from './sidemenu';
 
 export const epics = [
     ...projectsEpics,
@@ -27,5 +29,7 @@ export const epics = [
     ...userEpics,
     ...loginEpics,
     ...organizationEpics,
-    ...pipelinesEpics
+    ...pipelinesEpics,
+    ...jobsEpics,
+    ...sidemenuEpics,
 ];

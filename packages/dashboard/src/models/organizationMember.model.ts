@@ -23,12 +23,12 @@ export interface IOrganizationMember {
     state: IState;
 }
 
-export interface IRole {
-    owner: 'owner';
-    basic: 'basic';
+export enum IRole {
+    Member = 'MEMBER',
+    Owner = 'OWNER'
 }
 
-export interface IState {
-    invited: 'invited';
-    added: 'added';
+export enum IState {
+    invited = 'INVITED',
+    added = 'ADDED'
 }

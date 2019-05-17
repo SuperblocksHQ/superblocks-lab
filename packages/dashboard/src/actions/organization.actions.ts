@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { IOrganization } from '../models';
+import { IOrganization, VcsType } from '../models';
 import { IOrganizationMember, IRole } from '../models/organizationMember.model';
 
 export const organizationActions = {
@@ -42,10 +42,10 @@ export const organizationActions = {
 
     // ---------- Special case when the user does not have any organization available and we need to create a default one ---------- //
     CREATE_DEFAULT_ORGANIZATION: 'CREATE_DEFAULT_ORGANIZATION',
-    createDefaultOrganization(organizationName: string, projectName: string) {
+    createDefaultOrganization(organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) {
         return {
             type: organizationActions.CREATE_DEFAULT_ORGANIZATION,
-            data: { organizationName, projectName }
+            data: { organizationName, projectName, vcsUrl, vcsType }
         };
     },
     CREATE_DEFAULT_ORGANIZATION_SUCCESS: 'CREATE_DEFAULT_ORGANIZATION_SUCCESS',
@@ -91,9 +91,10 @@ export const organizationActions = {
         };
     },
     CREATE_ORGANIZATION_SUCCESS: 'CREATE_ORGANIZATION_SUCCESS',
-    createOrganizationSuccess() {
+    createOrganizationSuccess(organization: IOrganization) {
         return {
             type: organizationActions.CREATE_ORGANIZATION_SUCCESS,
+            data: { organization }
         };
     },
     CREATE_ORGANIZATION_FAIL: 'CREATE_ORGANIZATION_FAIL',
@@ -158,54 +159,54 @@ export const organizationActions = {
             data: error
         };
     },
-    UPDATE_ORGANIZATION: 'UPDATE_ORGANIZATION',
-    updateOrganization(organization: IOrganization) {
+    UPDATE_ORGANIZATION_DETAILS: 'UPDATE_ORGANIZATION_DETAILS',
+    updateOrganizationDetails(newDetails: Partial<IOrganization>) {
        return {
-            type: organizationActions.UPDATE_ORGANIZATION,
+            type: organizationActions.UPDATE_ORGANIZATION_DETAILS,
+            data: newDetails
+       };
+    },
+    UPDATE_ORGANIZATION_DETAILS_SUCCESS: 'UPDATE_ORGANIZATION_DETAILS_SUCCESS',
+    updateOrganizationSuccess(organization: IOrganization) {
+       return {
+            type: organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS,
             data: { organization }
        };
     },
-    UPDATE_ORGANIZATION_SUCCESS: 'UPDATE_ORGANIZATION_SUCCESS',
-    updateOrganizationSuccess(organization: IOrganization) {
-       return {
-            type: organizationActions.UPDATE_ORGANIZATION_SUCCESS,
-            data: { organization}
-       };
-    },
-    UPDATE_ORGANIZATION_FAIL: 'UPDATE_ORGANIZATION_FAIL',
+    UPDATE_ORGANIZATION_DETAILS_FAIL: 'UPDATE_ORGANIZATION_DETAILS_FAIL',
     updateOrganizationFail(error: string) {
        return {
-            type: organizationActions.UPDATE_ORGANIZATION_FAIL,
+            type: organizationActions.UPDATE_ORGANIZATION_DETAILS_FAIL,
             data: error
        };
     },
 
     // ---------- CRUD Organization Member actions ----------
-    INVITE_MEMBER_TO_ORGANIZATION: 'INVITE_MEMBER_TO_ORGANIZATION',
-    inviteMemberToOrganization(organization: IOrganization, email: string) {
+    RESEND_INVITATION: 'RESEND_INVITATION',
+    resendInvitation(organizationId: string, email: string) {
        return {
-            type: organizationActions.INVITE_MEMBER_TO_ORGANIZATION,
-            data: { organization, email }
+            type: organizationActions.RESEND_INVITATION,
+            data: { organizationId, email }
        };
     },
-    INVITE_MEMBER_TO_ORGANIZATION_SUCCESS: 'INVITE_MEMBER_TO_ORGANIZATION_SUCCESS',
-    inviteMemberToOrganizationSuccess() {
+    RESEND_INVITATION_SUCCESS: 'RESEND_INVITATION_SUCCESS',
+    resendInvitationSuccess() {
        return {
-            type: organizationActions.INVITE_MEMBER_TO_ORGANIZATION_SUCCESS
+            type: organizationActions.RESEND_INVITATION_SUCCESS
        };
     },
-    INVITE_MEMBER_TO_ORGANIZATION_FAIL: 'INVITE_MEMBER_TO_ORGANIZATION_FAIL',
-    inviteMemberToOrganizationFail(error: string) {
+    RESEND_INVITATION_FAIL: 'RESEND_INVITATION_FAIL',
+    resendInvitationFail(error: string) {
        return {
-            type: organizationActions.INVITE_MEMBER_TO_ORGANIZATION_FAIL,
+            type: organizationActions.RESEND_INVITATION_FAIL,
             data: error
        };
     },
     ADD_MEMBER_TO_ORGANIZATION: 'ADD_MEMBER_TO_ORGANIZATION',
-    addMemberToOrganization(organization: IOrganization, member: IOrganizationMember) {
+    addMemberToOrganization(organizationId: string, email: string) {
        return {
             type: organizationActions.ADD_MEMBER_TO_ORGANIZATION,
-            data: { organization, member }
+            data: { organizationId, email }
        };
     },
     ADD_MEMBER_TO_ORGANIZATION_SUCCESS: 'ADD_MEMBER_TO_ORGANIZATION_SUCCESS',
@@ -222,10 +223,10 @@ export const organizationActions = {
        };
     },
     REMOVE_MEMBER_FROM_ORGANIZATION: 'REMOVE_MEMBER_FROM_ORGANIZATION',
-    removeMemberFromOrganization(organization: IOrganization, member: IOrganizationMember) {
+    removeMemberFromOrganization(organizationId: string, userId?: string, email?: string) {
        return {
             type: organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION,
-            data: { organization, member }
+            data: { organizationId, userId, email }
        };
     },
     REMOVE_MEMBER_FROM_ORGANIZATION_SUCCESS: 'REMOVE_MEMBER_FROM_ORGANIZATION_SUCCESS',

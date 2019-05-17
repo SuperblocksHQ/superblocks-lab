@@ -1,4 +1,4 @@
-// Copyright 2018 Superblocks AB
+// Copyright 2019 Superblocks AB
 //
 // This file is part of Superblocks Lab.
 //
@@ -15,10 +15,10 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { of } from 'rxjs';
-import { switchMap, withLatestFrom, catchError, map } from 'rxjs/operators';
+import { switchMap, withLatestFrom, catchError } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
-import { organizationActions } from '../../actions';
-import { organizationService } from '../../services';
+import { organizationActions, projectsActions } from '../../actions';
+import { organizationService, projectService } from '../../services';
 
 export const createDefaultOrganization: Epic = (action$, state$) => action$.pipe(
     ofType(organizationActions.CREATE_DEFAULT_ORGANIZATION),
@@ -27,19 +27,35 @@ export const createDefaultOrganization: Epic = (action$, state$) => action$.pipe
         return organizationService.createOrganization({
             name: action.data.organizationName
         }).pipe(
-                map((newOrganization) =>  {
-                    console.log(newOrganization);
-                    // redirect
-                    // window.location.href = `${window.location.origin}/${newOrganization.id}`;
-
-                    return organizationActions.createDefaultOrganizationSuccess;
-                }),
-                catchError((error) => {
-                    console.log('There was an issue creating the organization: ' + error);
-                    return of(organizationActions.createDefaultOrganizationFail(error.message));
-                })
-            );
-        }
-    )
+            switchMap((newOrganization) =>  {
+                return projectService.createProject({
+                    name: action.data.projectName,
+                    ownerId: newOrganization.id,
+                    ownerType: 'organization'
+                }).pipe(
+                    switchMap((newProject) => {
+                        return projectService.createRepositoryConfigById(newProject.id, { vcsUrl: action.data.vcsUrl, vcsType: action.data.vcsType })
+                        .pipe(
+                            switchMap(() => {
+                                window.location.href = `${window.location.origin}/${newOrganization.id}/projects/${newProject.id}/builds`;
+                                return [projectsActions.createProjectSuccess(newProject)];
+                            }),
+                            catchError((error) => {
+                                console.log('There was an issue creating repository config: ' + error);
+                                return of(projectsActions.connectProjectRepositoryFail(error));
+                            })
+                        );
+                    }),
+                    catchError((error) => {
+                        console.log('There was an issue creating the project: ' + error);
+                        return of(projectsActions.createProjectFail(error));
+                    })
+                );
+            }),
+            catchError((error) => {
+                console.log('There was an issue creating the organization: ' + error);
+                return of(organizationActions.createDefaultOrganizationFail(error));
+            })
+        );
+    })
 );
-

@@ -27,6 +27,8 @@ export const createProject: Epic = (action$: any, state$: any) => action$.pipe(
         return projectService.createProject({
             name: action.data.name,
             description: action.data.description,
+            ownerId: action.data.ownerId,
+            ownerType: action.data.ownerType
         }).pipe(
             switchMap((newProject) => {
                 if (action.data.redirect) {
