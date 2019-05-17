@@ -98,4 +98,19 @@ export const organizationService = {
             body: { email, userId }
         });
     },
+
+    getInvitationById(invitationId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/invitation/${invitationId}`, {
+            method: 'GET',
+        }).pipe(
+            switchMap(response => response.json())
+        );
+    },
+
+    acceptInvitation(invitationId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/accept-invite`, {
+            method: 'POST',
+            body: { invitationId  }
+        });
+    }
 };
