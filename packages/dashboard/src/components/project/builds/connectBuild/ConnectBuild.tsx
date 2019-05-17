@@ -46,7 +46,7 @@ export default class ConnectBuild extends Component<IProps> {
                 <div className={style.title}>
                     <h1>Connect to repository</h1>
                     <a href='https://github.com/apps/superblocks-devops' target='_blank' rel='noreferrer noopener'>
-                        <StyledButton icon={<IconGithub />} type={StyledButtonType.Primary} text={'Configure Github App'} customClassName={style.btnConfigure} />
+                        <StyledButton icon={<IconGithub />} type={StyledButtonType.Primary} text={'Configure Github App'} className={style.btnConfigure} />
                     </a>
                 </div>
 

@@ -51,7 +51,7 @@ export default class PeopleList extends Component<IProps> {
 
                 <div className={style.flexVerticalCenter}>
                     <h1>People</h1>
-                    <StyledButton type={StyledButtonType.Primary} text={'Invite People'} onClick={() => toggleInvitePeopleModal()} customClassName={style.inviteBtn} />
+                    <StyledButton type={StyledButtonType.Primary} text={'Invite People'} onClick={() => toggleInvitePeopleModal()} className={style.inviteBtn} />
                 </div>
 
                 <OnlyIf test={showInvitePeopleModal}>

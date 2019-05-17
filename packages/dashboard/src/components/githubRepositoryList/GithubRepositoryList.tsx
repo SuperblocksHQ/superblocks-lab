@@ -147,7 +147,7 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
                                 <OnlyIf test={repo.private}>
                                     <div className={style.repoPrivate}>Private</div>
                                 </OnlyIf>
-                                <StyledButton type={StyledButtonType.Primary} onClick={() => this.handleOnBuildClick(repo)} text='Build' customClassName={style.btnBuild}/>
+                                <StyledButton type={StyledButtonType.Primary} onClick={() => this.handleOnBuildClick(repo)} text='Build' className={style.btnBuild}/>
                             </div>
                         )}
 
