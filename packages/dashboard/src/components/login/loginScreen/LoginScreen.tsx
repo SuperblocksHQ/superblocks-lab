@@ -55,7 +55,9 @@ export default class LoginScreen extends Component<IProps> {
         return (
             <div className={style.screenWrapper}>
                 <div className={style.loginBlock}>
-                    <img src='/static/img/img-logo-dashboard.svg' />
+                    <div className={style.logo}>
+                        <img src='/static/img/img-logo-dashboard.svg' />
+                    </div>
                     <p>Log in to continue to Superblocks</p>
                     <StyledButton
                         onClick={this.onGithubLoginButtonClick}
