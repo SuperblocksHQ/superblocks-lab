@@ -20,6 +20,7 @@ import { AnyAction } from 'redux';
 import { authActions, organizationActions } from '../../../actions';
 import { authSelectors, organizationSelectors } from '../../../selectors';
 import Invitation from './Invitation';
+import { IInvitationModel } from '../../../models';
 
 const mapStateToProps = (state: any) => ({
     isAuthenticated: authSelectors.getIsAuthenticated(state),
@@ -35,8 +36,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
         getInvitationById: (invitationId: string) => {
             dispatch(organizationActions.getInvitationById(invitationId));
         },
-        acceptInvitation: (invitationId: string) => {
-            dispatch(organizationActions.acceptInvitation(invitationId));
+        acceptInvitation: (invitation: IInvitationModel) => {
+            dispatch(organizationActions.acceptInvitation(invitation));
         },
     };
 };
