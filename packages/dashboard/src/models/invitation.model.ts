@@ -14,14 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from './project';
-export * from './project.model';
-export * from './user.model';
-export * from './auth.model';
-export * from './githubRepository.model';
-export * from './button.model';
-export * from './organization.model';
-export * from './pipeline.model';
-export * from './job.model';
-export * from './organizationMember.model';
-export * from './invitation.model';
+export interface IInvitationModel {
+    organizationName: string;
+    organizationId: string;
+    invitationId: string;
+}
+
