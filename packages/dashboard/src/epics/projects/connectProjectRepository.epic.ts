@@ -14,25 +14,37 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { of } from 'rxjs';
+import { of, empty } from 'rxjs';
 import { switchMap, withLatestFrom, catchError } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { projectsActions } from '../../actions';
 import { projectService } from '../../services/project.service';
+import { checkInstallations, redirectToGithub } from '../utils/github.utils';
 
 export const connectProjectRepository: Epic = (action$: any, state$: any) => action$.pipe(
     ofType(projectsActions.CONNECT_PROJECT_REPOSITORY),
     withLatestFrom(state$),
-    switchMap(([action]) => {
-        return projectService.createRepositoryConfigById(action.data.id, { vcsUrl: action.data.vcsUrl, vcsType: action.data.vcsType })
-            .pipe(
-                switchMap(() => {
-                    return [projectsActions.connectProjectRepositorySuccess(), projectsActions.loadProject(action.data.id)];
-                }),
-                catchError((error) => {
-                    console.log('There was an issue connecting the repository: ' + error);
-                    return of(projectsActions.updateProjectDetailsFail(error.message));
-                })
-            );
+    switchMap(([action, state]) => {
+        return checkInstallations(state.user.profile.githubId, action.data.repositoryId)
+        .pipe(
+            switchMap((res) => {
+                if (res.id) {
+                    return projectService.createRepositoryConfigById(action.data.id, { vcsUrl: action.data.vcsUrl, vcsType: action.data.vcsType })
+                        .pipe(
+                            switchMap(() => {
+                                return [projectsActions.connectProjectRepositorySuccess(), projectsActions.loadProject(action.data.id)];
+                            }),
+                            catchError((error) => {
+                                console.log('There was an issue connecting the repository: ' + error);
+                                return of(projectsActions.connectProjectRepositoryFail(error.message));
+                            })
+                        );
+                } else {
+                    redirectToGithub();
+                    return empty();
+                }
+            })
+        );
+
     })
 );

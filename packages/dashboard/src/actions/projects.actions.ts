@@ -158,10 +158,10 @@ export const projectsActions = {
 
     // ---------- PROJECT REPOSITORY ----------
     CONNECT_PROJECT_REPOSITORY: 'CONNECT_PROJECT_REPOSITORY',
-    connectProjectRepository(id: string, vcsUrl: string, vcsType: string) {
+    connectProjectRepository(id: string, vcsUrl: string, vcsType: string, repositoryId: number) {
         return {
             type: projectsActions.CONNECT_PROJECT_REPOSITORY,
-            data: { id, vcsUrl, vcsType }
+            data: { id, vcsUrl, vcsType, repositoryId }
         };
     },
     CONNECT_PROJECT_REPOSITORY_SUCCESS: 'CONNECT_PROJECT_REPOSITORY_SUCCESS',

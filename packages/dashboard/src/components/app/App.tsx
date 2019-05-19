@@ -20,6 +20,7 @@ import ToastContainer from '../common/toasts/toastcontainer';
 import Loadable from 'react-loadable';
 import { EmptyLoading } from '../common';
 import PrivateRoute from './PrivateRoute';
+import { GithubAppRedirect } from '../githubRepositoryList/GithubAppRedirect';
 
 const LoginScreen = Loadable({
     loader: () => import(/* webpackChunkName: "LoginScreen" */'../login/loginScreen'),
@@ -82,6 +83,7 @@ export default class App extends Component<IProps> {
                                 <PrivateRoute path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
                                     <ProjectDashboard {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
                                 )} />
+                                <PrivateRoute path='/github/update' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={() => <GithubAppRedirect />} />
                             </Switch>
                         </div>
                     </div>

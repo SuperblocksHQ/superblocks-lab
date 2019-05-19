@@ -36,8 +36,8 @@ interface IProps {
     section: Section;
     getUserRepositoryList: () => void;
     cancelGetUserRepositoryList: () => void;
-    createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) => void;
-    connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType) => void;
+    createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => void;
+    connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => void;
 }
 
 interface IState {
@@ -113,9 +113,9 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
         const { section, projectId, connectProjectRepository, createDefaultOrganization } = this.props;
 
         if (section === Section.Welcome) {
-            createDefaultOrganization(repo.owner.login, repo.name, repo.cloneUrl, VcsType.Github);
+            createDefaultOrganization(repo.owner.login, repo.name, repo.cloneUrl, VcsType.Github, repo.id);
         } else if (projectId) {
-            connectProjectRepository(projectId, repo.cloneUrl, VcsType.Github);
+            connectProjectRepository(projectId, repo.cloneUrl, VcsType.Github, repo.id);
         }
     }
 

@@ -44,6 +44,18 @@ export const userService = {
                 switchMap(response => response.json())
             );
     },
+    getUserInstallations() {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/user/v1/github/installations', {})
+            .pipe(
+                switchMap(response => response.json()),
+            );
+    },
+    getUserInstallationRepositories(installationId: string) {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/user/v1/github/installations/' + installationId + '/repositories', {})
+            .pipe(
+                switchMap(response => response.json()),
+            );
+    },
     credentialsExist() {
         // Don't try to log in if we don't have any credentials
         if (getAuthToken() || getRefreshToken()) {
