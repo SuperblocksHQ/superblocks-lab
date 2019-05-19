@@ -26,6 +26,7 @@ export const initialState: IOrganizationState = {
     showCreateOrganizationModal: false,
     showDeleteOrganizationModal: false,
     showInvitePeopleModal: false,
+    invitation: undefined
 };
 
 export default function organizationsReducer(state = initialState, action: AnyAction) {
@@ -101,6 +102,12 @@ export default function organizationsReducer(state = initialState, action: AnyAc
             return {
                 ...state,
                 showInvitePeopleModal: !state.showInvitePeopleModal
+            };
+        }
+        case organizationActions.GET_INVITATION_BY_ID_SUCCESS: {
+            return {
+                ...state,
+                invitation: { ...action.data }
             };
         }
         default:
