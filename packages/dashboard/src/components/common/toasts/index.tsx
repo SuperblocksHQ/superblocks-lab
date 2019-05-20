@@ -87,6 +87,18 @@ export const getToastComponent = (type: string, data: string) => {
             return error('Error creating default organization: ' + data);
         case organizationActions.CREATE_ORGANIZATION_FAIL:
             return error('Error creating organization: ' + data);
+        case organizationActions.ADD_MEMBER_TO_ORGANIZATION_SUCCESS:
+            return success('Yay! User has been added to organization!');
+        case organizationActions.ADD_MEMBER_TO_ORGANIZATION_FAIL:
+            return success('Ups! Sorry there was an error. Try again.');
+        case organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION_SUCCESS:
+            return success('User has been removed from organization!');
+        case organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION_FAIL:
+            return success('Ups! Sorry there was an error. Try again.');
+        case organizationActions.RESEND_INVITATION_SUCCESS:
+            return success('Yay! The new invitation is on the way!');
+        case organizationActions.RESEND_INVITATION_FAIL:
+            return success('Ups! Sorry there was an error. Try again.');
         default:
             return null;
     }

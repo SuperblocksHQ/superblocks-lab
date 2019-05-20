@@ -48,6 +48,12 @@ export default function toastsReducer(state = initialState, action: AnyAction, r
         case projectsActions.DELETE_PROJECT_FAIL:
         case projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS:
         case projectsActions.DISCONNECT_PROJECT_REPOSITORY_FAIL:
+        case organizationActions.RESEND_INVITATION_SUCCESS:
+        case organizationActions.RESEND_INVITATION_FAIL:
+        case organizationActions.ADD_MEMBER_TO_ORGANIZATION_SUCCESS:
+        case organizationActions.ADD_MEMBER_TO_ORGANIZATION_FAIL:
+        case organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION_SUCCESS:
+        case organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION_FAIL:
             return pushToastToState();
         case toastActions.TOAST_DISMISSED:
             return {
