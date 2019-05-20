@@ -21,6 +21,7 @@ import Loadable from 'react-loadable';
 import { EmptyLoading } from '../common';
 import PrivateRoute from './PrivateRoute';
 import { GithubAppRedirect } from '../githubRepositoryList/GithubAppRedirect';
+import { ErrorPage } from '../errorPage';
 
 const LoginScreen = Loadable({
     loader: () => import(/* webpackChunkName: "LoginScreen" */'../login/loginScreen'),
@@ -100,6 +101,8 @@ export default class App extends Component<IProps> {
                                     <ProjectDashboard {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
                                 )} />
                                 <PrivateRoute path='/github/update' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={() => <GithubAppRedirect />} />
+                                <Route component={() => <ErrorPage />} status={404} />
+                                <Route exact path='/error/404' component={() => <ErrorPage />} status={404} />
                             </Switch>
                         </div>
                     </div>
