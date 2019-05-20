@@ -24,9 +24,10 @@ export const acceptInvitation: Epic = (action$: any, state$: any) => action$.pip
     ofType(organizationActions.ACCEPT_INVITATION),
     withLatestFrom(state$),
     switchMap(([action, state]) => {
-        return from(organizationService.acceptInvitation(action.data.invitationId))
+        const { invitationId, organizationId } = action.data.invitation;
+        return from(organizationService.acceptInvitation(invitationId))
             .pipe(
-                tap(() => window.location.href = '/welcome'),
+                tap(() => window.location.href = `/${organizationId}`),
                 map(organizationActions.acceptInvitationSuccess),
                 catchError((error) => [organizationActions.acceptInvitationFail(error.message)])
             );

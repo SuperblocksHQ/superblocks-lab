@@ -28,9 +28,9 @@ export const resendInvitation: Epic = (action$: any, state$: any) => action$.pip
 
         return organizationService.resendInvitation(organizationId, email)
             .pipe(
-                switchMap(() => organizationActions.resendInvitationSuccess),
+                switchMap(() => [organizationActions.resendInvitationSuccess()]),
                 catchError((error) => {
-                    console.log('There was an issue inviting the member to the organization: ' + error);
+                    console.log('There was an issue resending the invite: ' + error);
                     return of(organizationActions.resendInvitationFail(error.message));
                 })
             );

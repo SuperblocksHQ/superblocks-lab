@@ -17,19 +17,19 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import style from './style.less';
-import {StyledButtonType} from '../../../models';
-import {StyledButton} from '../../common/buttons';
+import { StyledButtonType, IInvitationModel } from '../../../models';
+import { StyledButton } from '../../common/buttons';
 
 interface IProps {
-    invitation: any;
-    acceptInvitation: (invitationId: string) => void;
+    invitation: IInvitationModel;
+    acceptInvitation: (invitation: IInvitationModel) => void;
     invitationId: string;
 }
 
 export default class AcceptInvitation extends Component<IProps> {
 
     render() {
-        const {invitation, acceptInvitation, invitationId } = this.props;
+        const {invitation, acceptInvitation } = this.props;
 
         return (
             <div className={classNames([style.loginModal, 'modal'])}>
@@ -44,7 +44,7 @@ export default class AcceptInvitation extends Component<IProps> {
                     </div>
                     <div className={style.footer}>
                         <div className={style.buttonsContainer}>
-                            <StyledButton type={StyledButtonType.Primary} onClick={() => acceptInvitation(invitationId)} text='Accept invitation' />
+                            <StyledButton type={StyledButtonType.Primary} onClick={() => acceptInvitation(invitation)} text='Accept invitation' />
                         </div>
                     </div>
                 </div>

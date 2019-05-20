@@ -18,12 +18,13 @@ import React, { Component } from 'react';
 import { GenericLoading } from '../../common/loadable';
 import AcceptInvitation from './acceptInvitation';
 import InvitationLogin from './invitationLogin';
+import { IInvitationModel } from '../../../models';
 
 interface IProps {
     githubLogin: () => void;
     getInvitationById: (organizationId: string) => void;
     invitation: any;
-    acceptInvitation: (invitationId: string) => void;
+    acceptInvitation: (invitation: IInvitationModel) => void;
     isLoginInProgress: boolean;
     location: any;
     isAuthenticated: boolean;

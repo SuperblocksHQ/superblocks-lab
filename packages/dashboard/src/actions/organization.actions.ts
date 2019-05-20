@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { IOrganization, VcsType } from '../models';
+import { IInvitationModel, IOrganization, VcsType } from '../models';
 import { IOrganizationMember, IRole } from '../models/organizationMember.model';
 
 export const organizationActions = {
@@ -287,10 +287,10 @@ export const organizationActions = {
     },
 
     ACCEPT_INVITATION: 'ACCEPT_INVITATION',
-    acceptInvitation(invitationId: string) {
+    acceptInvitation(invitation: IInvitationModel) {
         return {
             type: organizationActions.ACCEPT_INVITATION,
-            data: { invitationId }
+            data: { invitation }
         };
     },
     ACCEPT_INVITATION_SUCCESS: 'ACCEPT_INVITATION_SUCCESS',

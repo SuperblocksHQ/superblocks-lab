@@ -29,7 +29,7 @@ export const removeMemberFromOrganization: Epic = (action$: any, state$: any) =>
 
             return organizationService.removeMemberFromOrganization(organizationId, userId, email)
                 .pipe(
-                    switchMap(() => organizationActions.removeMemberFromOrganizationSuccess),
+                    switchMap(() => [organizationActions.removeMemberFromOrganizationSuccess(), organizationActions.loadOrganization(organizationId)]),
                     catchError((error) => {
                         console.log('There was an issue deleting the member from the organization: ' + error);
                         return of(organizationActions.removeMemberFromOrganizationFail(error));

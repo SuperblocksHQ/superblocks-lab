@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { empty, of } from 'rxjs';
-import { switchMap, withLatestFrom, tap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { switchMap, withLatestFrom, catchError } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { organizationActions } from '../../../actions';
 import { organizationService } from '../../../services';
@@ -27,7 +27,7 @@ export const addMemberToOrganization: Epic = (action$: any, state$: any) => acti
         const {organizationId, email} = action.data;
 
         return organizationService.addMemberToOrganization(organizationId, email).pipe(
-                switchMap(() => organizationActions.addMemberToOrganizationSuccess),
+                switchMap(() => [organizationActions.addMemberToOrganizationSuccess(), organizationActions.loadOrganization(organizationId), organizationActions.toggleInvitePeopleModal()]),
                 catchError((error) => {
                     console.log('There was an issue adding the member to the organization: ' + error);
                     return of(organizationActions.addMemberToOrganizationFail(error));
