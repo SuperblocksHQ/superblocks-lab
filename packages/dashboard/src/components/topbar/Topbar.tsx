@@ -20,6 +20,7 @@ import { HelpAction } from '../common';
 import LoggedInButton from './../login/LoggedInButton';
 import { IUser } from './../../models/user.model';
 import { Link } from 'react-router-dom';
+import { ThemeSwitcher } from '../common/topbar/themeSwitcher';
 
 interface IProps {
     logout: () => void;
@@ -43,6 +44,7 @@ export default class Topbar extends Component<IProps> {
                 </Link>
 
                 <div className={style.actionsRight}>
+                    <ThemeSwitcher />
                     <HelpAction />
                     <LoggedInButton
                         logout={logout}

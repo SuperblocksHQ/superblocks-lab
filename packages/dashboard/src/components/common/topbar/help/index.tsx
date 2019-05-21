@@ -79,7 +79,7 @@ const HelpDropdownDialog = () => (
 
 export const HelpAction = () => (
     <DropdownContainer
-            className={classNames([style.actionMenu, style.actionRight])}
+            className={classNames([style.actionMenu])}
             dropdownContent={<HelpDropdownDialog />}
     >
         <div className={style.action}>
