@@ -34,7 +34,12 @@ const Dashboard = Loadable({
 });
 
 const OrganizationSettings = Loadable({
-    loader: () => import(/* webpackChunkName: "Dashboard" */'../organization/settings'),
+    loader: () => import(/* webpackChunkName: "OrganizationSettings" */'../organization/settings'),
+    loading: EmptyLoading,
+});
+
+const AccountSettings = Loadable({
+    loader: () => import(/* webpackChunkName: "AccountSettings" */'../account/settings'),
     loading: EmptyLoading,
 });
 
@@ -45,16 +50,6 @@ const ProjectDashboard = Loadable({
 
 const WelcomePage = Loadable({
     loader: () => import(/* webpackChunkName: "WelcomePage" */'../welcomePage'),
-    loading: EmptyLoading,
-});
-
-const Details = Loadable({
-    loader: () => import(/* webpackChunkName: "Details" */'../organization/settings/details'),
-    loading: EmptyLoading,
-});
-
-const PeopleList = Loadable({
-    loader: () => import(/* webpackChunkName: "PeopleList" */'../organization/settings/people'),
     loading: EmptyLoading,
 });
 
@@ -102,6 +97,9 @@ export default class App extends Component<IProps> {
                                     <ProjectDashboard {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
                                 )} />
                                 <PrivateRoute path='/github/update' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={() => <GithubAppRedirect />} />
+                                <PrivateRoute path='/settings' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
+                                    <AccountSettings {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
+                                )} />
                                 <Route component={() => <ErrorPage />} status={404} />
                                 <Route exact path='/error/404' component={() => <ErrorPage />} status={404} />
                             </Switch>
