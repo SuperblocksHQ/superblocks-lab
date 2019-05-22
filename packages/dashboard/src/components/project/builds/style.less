@@ -15,10 +15,10 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 @import '../style.less';
+@import '../../../style/index.less';
 
 .repoLink {
     color: var(--colorGrey);
-    .themeTransition();
     margin-bottom: 15px;
     display: flex;
     align-content: center;
@@ -49,10 +49,9 @@
         transition: background .15s;
         display: flex;
         border-bottom: 1px solid var(--borderColor);
-        .themeTransition();
 
         &:hover {
-            background: #262c30;
+            background: var(--buildRowBackgroundHover);
         }
     }
 
@@ -166,7 +165,6 @@
         .buildItem {
             flex-wrap: wrap;
             border: 1px solid var(--borderColor);
-            .themeTransition();
             position: relative;
             margin-bottom: 30px;
         }

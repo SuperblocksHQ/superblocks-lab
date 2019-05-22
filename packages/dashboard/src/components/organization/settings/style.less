@@ -24,7 +24,6 @@
         height: 100%;
         display: flex;
         background-color: var(--primaryBackground);
-        .themeTransition();
         color: var(--primaryFontColor);
         overflow-y: auto;
         overflow-x: hidden;
@@ -50,8 +49,7 @@
     }
 
     a {
-        .themeTransition();
-        transition+: opacity .15s;
+        transition: opacity .15s;
 
         &:hover {
             opacity: .6;
@@ -66,7 +64,6 @@
 
 .hr {
     background: var(--borderColor);
-    .themeTransition();
     height: 1px;
     margin: 15px calc(50% - 50vw) 15px calc(50% - 50vw);
 }
