@@ -20,23 +20,19 @@ import { BreadCrumbs, TextInput, TextAreaInput, StyledButton } from '../../../co
 import { StyledButtonType } from '../../../../models/button.model';
 import { Link } from 'react-router-dom';
 import { validateOrganizationName } from '../../../../validations';
-import OnlyIf from '../../../common/onlyIf';
-import DeleteOrganizationModal from '../../../modals/deleteOrganizationModal';
-import { IOrganization } from '../../../../models';
+import { IUser } from '../../../../models';
 
 interface IProps {
     location: any;
     match: any;
-    organization: IOrganization;
-    updateOrganizationDetails: (newOrganizationDetails: Partial<IOrganization>) => void;
-    showDeleteOrganizationModal: boolean;
-    toggleDeleteOrganizationModal: () => void;
+    user: IUser;
+    updateUserProfile: (newUserProfile: Partial<IUser>) => void;
 }
 
 interface IState {
     errorName: string | null;
-    newName: string;
-    newDescription: string;
+    newUserName: string;
+    newEmail: string;
     canSave: boolean;
 }
 
@@ -44,87 +40,76 @@ export default class Profile extends Component<IProps, IState> {
 
     state: IState = {
         errorName: null,
-        newName: this.props.organization.name,
-        newDescription: this.props.organization.description,
+        newUserName: this.props.user.userName,
+        newEmail: this.props.user.email,
         canSave: true
     };
 
-    onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newName = e.target.value || ' ';
-        const errorName = newName ? validateOrganizationName(newName) : null;
+    onUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newUserName = e.target.value || ' ';
+        const errorName = newUserName ? validateOrganizationName(newUserName) : null;
 
         this.setState({
             errorName,
-            newName,
+            newUserName,
             canSave: !errorName
         });
     }
 
-    onDescChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newDescription = e.target.value;
+    onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newEmail = e.target.value;
 
         this.setState({
-            newDescription
+            newEmail
         });
     }
 
     onSave = (e?: any) => {
-        const { updateOrganizationDetails, organization } = this.props;
-        const { newName, newDescription, canSave } = this.state;
+        const { updateUserProfile, user } = this.props;
+        const { newUserName: newUserName, newEmail, canSave } = this.state;
         e.preventDefault();
 
         if (canSave) {
-            updateOrganizationDetails({id: organization.id, name: newName, description: newDescription});
+            updateUserProfile({id: user.id, userName: newUserName, email: newEmail});
         }
     }
 
     render() {
-        const { showDeleteOrganizationModal, toggleDeleteOrganizationModal, organization } = this.props;
+        const { user } = this.props;
         const { errorName, canSave } = this.state;
 
         return (
             <React.Fragment>
                 <div className={style.details}>
                     <BreadCrumbs>
-                        <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
-                        <Link to={`/${this.props.match.params.organizationId}/settings/details`}>Organization Settings</Link>
-                        <Link to={window.location.pathname}>Details</Link>
+                    <Link to={`/settings/profile`}>Account Settings</Link>
+                    <Link to={window.location.pathname}>Profile</Link>
                     </BreadCrumbs>
 
-                    <h1>Details</h1>
+                    <h1>Profile</h1>
                     <form onSubmit={(e) => this.onSave(e)}>
                         <div className={style['mb-5']}>
                             <TextInput
-                                onChangeText={this.onNameChange}
+                                onChangeText={this.onEmailChange}
                                 error={errorName}
-                                label={'Organization name'}
-                                id={'organizationName'}
-                                placeholder={'organization-name'}
-                                defaultValue={organization.name}
+                                label={'Email address'}
+                                id={'email'}
+                                defaultValue={user.email}
                                 required={true}
                             />
                         </div>
                         <div className={style['mb-4']}>
-                            <TextAreaInput
-                                onChangeText={this.onDescChange}
-                                label={'Description'}
-                                id={'description'}
-                                placeholder={'Enter a short description (optional)'}
-                                defaultValue={organization.description}
+                            <TextInput
+                                onChangeText={this.onUserNameChange}
+                                label={'Username'}
+                                id={'userName'}
+                                defaultValue={user.userName}
                             />
                         </div>
                         <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
                     </form>
                     <div className={style.sectionDivider}></div>
-
-                    <h1>Delete this organization</h1>
-                    <p className={style['mb-4']}>Once deleted, it will be gone forever. Please be certain.</p>
-                    <StyledButton type={StyledButtonType.Danger} text={'Delete Organization'} onClick={() => toggleDeleteOrganizationModal()} />
                 </div>
-
-                <OnlyIf test={showDeleteOrganizationModal}>
-                    <DeleteOrganizationModal hideModal={toggleDeleteOrganizationModal} organization={organization} />
-                </OnlyIf>
             </React.Fragment>
         );
     }

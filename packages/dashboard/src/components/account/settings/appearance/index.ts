@@ -17,22 +17,20 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
-import Profile from './Profile';
-import { userActions } from '../../../../actions';
-import { IUser } from '../../../../models';
+import Appearance from './Appearance';
 import { userSelectors } from '../../../../selectors';
+// import { userActions } from '../../../../actions';
 
 const mapStateToProps = (state: any) => ({
-    showDeleteOrganizationModal: state.organizations.showDeleteOrganizationModal,
-    user: userSelectors.getUserProfile(state)
+    userProfile: userSelectors.getUserProfile(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
-        updateUserProfile: (newUser: Partial<IUser>) => {
-            dispatch(userActions.updateUserProfile(newUser));
-        }
+        // saveSelectedTheme: () => {
+        //     dispatch(userActions.updateUserProfile());
+        // }
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Appearance);
