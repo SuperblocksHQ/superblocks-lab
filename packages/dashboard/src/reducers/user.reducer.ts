@@ -61,6 +61,11 @@ export default function userReducer(state = initialState, action: AnyAction) {
                 isRepositoriesLoading: false,
                 githubRepositoryList: []
             };
+        case userActions.UPDATE_USER_PROFILE_SUCCESS:
+            return {
+                ...state,
+                profile: { ...action.data.user }
+            };
         default:
             return state;
     }

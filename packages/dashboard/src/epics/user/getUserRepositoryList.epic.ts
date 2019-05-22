@@ -31,7 +31,7 @@ function getUserRepositories(action$: any) {
     );
 }
 
-const getUserRepositoryList: Epic = (action$: any, state$: any) => action$.pipe(
+export const getUserRepositoryList: Epic = (action$: any, state$: any) => action$.pipe(
     ofType(userActions.GET_USER_REPOSITORY_LIST),
     withLatestFrom(state$),
     switchMap(([, ]) => {
@@ -44,5 +44,3 @@ const getUserRepositoryList: Epic = (action$: any, state$: any) => action$.pipe(
             );
     })
 );
-
-export default getUserRepositoryList;
