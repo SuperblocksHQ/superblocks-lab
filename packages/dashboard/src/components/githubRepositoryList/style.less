@@ -26,7 +26,7 @@
         flex-grow: 2;
 
         p {
-            color: #c0c0c0;
+            color: var(--colorGrey);
         }
     }
 
@@ -61,7 +61,7 @@
 
         input {
             background: transparent;
-            color: white;
+            color: var(--primaryFontColor);
             border: 1px solid var(--inputBorderColor);
             border-radius: 4px;
             padding: 7px 15px 7px 30px;
@@ -114,7 +114,7 @@
             }
 
             &:hover {
-                background: #283134;
+                background: var(--repositoryRowBackgroundHover);
 
                 .btnBuild {
                     display: block;
@@ -152,11 +152,11 @@
 
             &.active {
                 border-color: @primary-color;
-                background: #283134;
+                background: var(--repositoryOwnerBackgroundActive);
             }
 
             &:hover {
-                background: #283134;
+                background: var(--repositoryOwnerBackgroundActive);
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
                 cursor: pointer;
 

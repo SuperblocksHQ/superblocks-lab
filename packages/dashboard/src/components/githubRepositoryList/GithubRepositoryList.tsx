@@ -163,7 +163,7 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
                                 <div className={classNames([style.organizationsList])}>
                                     <div onClick={() => this.onFilterOwnerChange(-1, '', '')} className={classNames([style.singleOrganization, ownerFilterId === -1 ? style.active : null])}>
                                         <div className={style.githubIcon}>
-                                            <IconGithub />
+                                            <IconGithub color={'white'} />
                                         </div>
                                         <div className={style.orgTitle}>All repositories</div>
                                     </div>

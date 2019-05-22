@@ -48,6 +48,9 @@
     --modalSeparatorColor: #3C3C3C;
     --modalOverlay: rgba(255, 255, 255, .15);
     --splashBackground: #1e2327;
+    --buildRowBackgroundHover: #262c30;
+    --repositoryRowBackgroundHover: #283134;
+    --repositoryOwnerBackgroundActive: #283134;
 }
 
 #app.lightTheme {
@@ -69,6 +72,9 @@
     --modalSeparatorColor: #dcdcdc;
     --modalOverlay: rgba(0, 0, 0, .75);
     --splashBackground: #f7f7f8;
+    --buildRowBackgroundHover: white;
+    --repositoryRowBackgroundHover: #ececec;
+    --repositoryOwnerBackgroundActive: #ececec;
 }
 
 #app.lightTheme {
@@ -392,8 +398,7 @@ a {
         padding: 5px;
         border-radius: 1px;
         border: 1px solid var(--inputBorderColor);
-        .themeTransition();
-        transition+: border linear .35s, box-shadow linear .2s;
+        transition: border linear .35s, box-shadow linear .2s;
         padding: 8px 16px !important;
         outline: none;
         color: var(--primaryFontColor);

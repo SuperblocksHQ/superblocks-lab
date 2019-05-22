@@ -22,8 +22,7 @@
     align-items: center;
     padding: 15px 15px;
     border-bottom: 1px solid var(--tableBorderColor);
-    .themeTransition();
-    transition+: background .15s;
+    transition: background .15s;
 
     &:hover {
         background: var(--projectRowBackgroundHover);
@@ -44,13 +43,11 @@
         .name {
             font-size: 18px;
             font-weight: 600;
-            .themeTransition();
         }
     
         .description {
             margin-top: 5px;
             opacity: .6;
-            .themeTransition();
         }
     }
 
@@ -58,6 +55,5 @@
         opacity: 0.6;
         margin-left: auto;
         white-space: nowrap;
-        .themeTransition();
     }
 }
