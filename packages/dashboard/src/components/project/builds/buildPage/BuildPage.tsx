@@ -36,14 +36,14 @@ interface IProps {
     isJobLoading: boolean;
     organization: IOrganization;
     jobId: string;
-    getJob: (jobId: string) => void;
+    getJob: (projectId: string, jobId: string) => void;
 }
 
 export default class BuildPage extends Component<IProps> {
 
     componentWillMount() {
         const { match, getJob } = this.props;
-        getJob(match.params.buildId);
+        getJob(match.params.projectId, match.params.buildId);
     }
 
     render() {
