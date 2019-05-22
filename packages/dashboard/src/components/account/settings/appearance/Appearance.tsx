@@ -14,25 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { connect } from 'react-redux';
-import { Dispatch } from 'react';
-import { AnyAction } from 'redux';
-import Profile from './Profile';
-import { userActions } from '../../../../actions';
+import React, { Component } from 'react';
+import style from './style.less';
+import { Link } from 'react-router-dom';
+import { BreadCrumbs } from '../../../common';
 import { IUser } from '../../../../models';
-import { userSelectors } from '../../../../selectors';
 
-const mapStateToProps = (state: any) => ({
-    showDeleteOrganizationModal: state.organizations.showDeleteOrganizationModal,
-    user: userSelectors.getUserProfile(state)
-});
+interface IProps {
+    location: any;
+    match: any;
+    userProfile: IUser;
+}
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
-    return {
-        updateUserProfile: (newUser: Partial<IUser>) => {
-            dispatch(userActions.updateUserProfile(newUser));
-        }
-    };
-};
+export default class Appearance extends Component<IProps> {
+    render() {
+        const { userProfile } = this.props;
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+        return (
+            <React.Fragment>
+                <BreadCrumbs>
+                    <Link to={`/settings/profile`}>Account Settings</Link>
+                    <Link to={window.location.pathname}>Appearance</Link>
+                </BreadCrumbs>
+            </React.Fragment>
+        );
+    }
+}

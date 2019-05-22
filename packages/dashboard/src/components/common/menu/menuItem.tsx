@@ -15,6 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import style from './style.less';
 import classNames from 'classnames';
 import { IconCheckThin } from '../icons';
@@ -22,8 +23,9 @@ import { IconCheckThin } from '../icons';
 interface IProps {
     title: string;
     description?: string;
-    onClick: () => void;
+    onClick?: () => void;
     isActive?: boolean;
+    linkTo?: string;
     disabled?: boolean;
     icon?: React.ReactNode;
 }
@@ -31,19 +33,21 @@ interface IProps {
 export class MenuItem extends React.Component<IProps> {
 
     render() {
-        const { title, description, isActive, disabled, onClick, icon } = this.props;
+        const { title, description, isActive, disabled, onClick, icon, linkTo } = this.props;
 
         return (
-            <div onClick={onClick} className={classNames([style.title, disabled ? style.disabled : null])}>
-                <div className={style.activeContainer}>
-                    { isActive &&
-                        <IconCheckThin />
-                    }
-                    {icon}
+            <NavLink exact={true} to={linkTo || ''}>
+                <div onClick={onClick} className={classNames([style.title, disabled ? style.disabled : null])}>
+                    <div className={style.activeContainer}>
+                        { isActive &&
+                            <IconCheckThin />
+                        }
+                        {icon}
+                    </div>
+                    <div>{title}</div>
+                    <div className={style.description}>{description}</div>
                 </div>
-                <div>{title}</div>
-                <div className={style.description}>{description}</div>
-            </div>
+            </NavLink>
         );
     }
 }

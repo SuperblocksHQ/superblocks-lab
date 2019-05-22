@@ -10,13 +10,13 @@ import { Switch } from 'react-router';
 import PrivateRoute from '../../app/PrivateRoute';
 import OnlyIf from '../../common/onlyIf';
 
-const Details = Loadable({
+const Profile = Loadable({
     loader: () => import(/* webpackChunkName: "Details" */'./profile'),
     loading: EmptyLoading,
 });
 
-const PeopleList = Loadable({
-    loader: () => import(/* webpackChunkName: "PeopleList" */'./themes'),
+const Appearance = Loadable({
+    loader: () => import(/* webpackChunkName: "PeopleList" */'./appearance'),
     loading: EmptyLoading,
 });
 
@@ -28,7 +28,7 @@ interface IProps {
     isAuthLoading: boolean;
 }
 
-export default class OrganizationSettings extends Component<IProps> {
+export default class AccountSettings extends Component<IProps> {
 
     render() {
         const { isAuthenticated, isAuthLoading, user } = this.props;
@@ -47,8 +47,8 @@ export default class OrganizationSettings extends Component<IProps> {
                         />
                         <SideMenuItem
                             icon={<IconUsers />}
-                            title='Themes'
-                            linkTo={'/settings/people'}
+                            title='Appearance'
+                            linkTo={'/settings/appearance'}
                         />
                         <SideMenuFooter>
                             <SideMenuItem
@@ -58,14 +58,14 @@ export default class OrganizationSettings extends Component<IProps> {
                             />
                         </SideMenuFooter>
                     </SideMenu>
-                    <OnlyIf test={!user}>
+                    <OnlyIf test={user}>
                         <div className={style.pageContent}>
                             <Switch>
                                 <PrivateRoute exact path='/settings/profile' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
-                                    <Details {...props} />
+                                    <Profile {...props} />
                                 )} />
-                                <PrivateRoute exact path='/settings/themes' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
-                                    <PeopleList {...props} />
+                                <PrivateRoute exact path='/settings/appearance' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (
+                                    <Appearance {...props} />
                                 )} />
                             </Switch>
                         </div>
