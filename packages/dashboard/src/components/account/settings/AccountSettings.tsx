@@ -3,7 +3,7 @@ import Loadable from 'react-loadable';
 import Topbar from '../../topbar';
 import style from './style.less';
 import SideMenu, { SideMenuItem, SideMenuFooter, SideMenuHeader, SideMenuSubHeader } from '../../sideMenu';
-import { IconBack, IconArchive, IconUsers } from '../../common/icons';
+import { IconBack, IconProfile, IconUsers } from '../../common/icons';
 import { IUser } from '../../../models';
 import { EmptyLoading } from '../../common';
 import { Switch } from 'react-router';
@@ -41,7 +41,7 @@ export default class AccountSettings extends Component<IProps> {
                         <SideMenuHeader title={'Personal Settings'} />
                         <SideMenuSubHeader title={'General'} />
                         <SideMenuItem
-                            icon={<IconArchive />}
+                            icon={<IconProfile />}
                             title='Profile'
                             linkTo={'/settings/profile'}
                         />

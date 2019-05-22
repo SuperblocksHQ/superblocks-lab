@@ -80,7 +80,7 @@ export default class Profile extends Component<IProps, IState> {
 
         return (
             <React.Fragment>
-                <div className={style.details}>
+                <div className={style.profile}>
                     <BreadCrumbs>
                     <Link to={`/settings/profile`}>Account Settings</Link>
                     <Link to={window.location.pathname}>Profile</Link>
@@ -108,7 +108,6 @@ export default class Profile extends Component<IProps, IState> {
                         </div>
                         <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
                     </form>
-                    <div className={style.sectionDivider}></div>
                 </div>
             </React.Fragment>
         );

@@ -36,6 +36,8 @@ export default class Appearance extends Component<IProps> {
                     <Link to={`/settings/profile`}>Account Settings</Link>
                     <Link to={window.location.pathname}>Appearance</Link>
                 </BreadCrumbs>
+
+                <h1>Appearance</h1>
             </React.Fragment>
         );
     }
