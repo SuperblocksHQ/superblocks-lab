@@ -19,6 +19,7 @@ import { appActions } from '../actions';
 
 export const initialState = {
     version: '1.6.1',
+    appTheme: localStorage.getItem('theme')
 };
 
 export default function appReducer(state = initialState, action: AnyAction) {
@@ -26,6 +27,11 @@ export default function appReducer(state = initialState, action: AnyAction) {
         case appActions.APP_START:
             return {
                 ...state,
+            };
+        case appActions.CHANGE_APP_THEME:
+            return {
+                ...state,
+                appTheme: action.data.appTheme
             };
         default:
             return state;

@@ -17,9 +17,9 @@
 @import '../style.less';
 
 .repoLink {
-    color: #c4c4c4;
+    color: var(--colorGrey);
+    .themeTransition();
     margin-bottom: 15px;
-    transition: opacity .15s;
     display: flex;
     align-content: center;
     align-items: center;
@@ -29,7 +29,7 @@
     }
 
     .colorGrey {
-        color: #c4c4c4;
+        color: var(--colorGrey);
     }
 
     span {
@@ -38,7 +38,7 @@
 }
 
 .githubLogo {
-    color: #c4c4c4;
+    color: var(--colorGrey);
     font-size: 12px;
 }
 
@@ -48,7 +48,8 @@
     .buildItem {
         transition: background .15s;
         display: flex;
-        border-bottom: 1px solid @border-color;
+        border-bottom: 1px solid var(--borderColor);
+        .themeTransition();
 
         &:hover {
             background: #262c30;
@@ -164,7 +165,8 @@
     @media only screen and (max-width: 1000px) {
         .buildItem {
             flex-wrap: wrap;
-            border: 1px solid @border-color;
+            border: 1px solid var(--borderColor);
+            .themeTransition();
             position: relative;
             margin-bottom: 30px;
         }
@@ -308,7 +310,7 @@
     }
 
     p:last-of-type {
-        color: #c4c4c4;
+        color: var(--colorGrey);
         margin-bottom: 40px;
     }
 }

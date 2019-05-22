@@ -14,64 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import React, { Component } from 'react';
-import { Tooltip } from '../../tooltip';
-import style from './style.less';
-import classNames from 'classnames';
-import { IconSun, IconMoon } from '../../icons';
+import { connect } from 'react-redux';
+import { Dispatch } from 'react';
+import { AnyAction } from 'redux';
+import { ThemeSwitcher } from './ThemeSwitcher';
+import { appSelectors } from '../../../../selectors';
+import { appActions } from '../../../../actions';
 
 export enum Theme {
-    Dark = 'dark',
-    Light = 'light'
+    Dark = 'darkTheme',
+    Light = 'lightTheme'
 }
 
-interface IState {
-    theme: string | null;
-}
+const mapStateToProps = (state: any) => ({
+    appTheme: appSelectors.getAppTheme(state),
+});
 
-export class ThemeSwitcher extends Component<{}, IState> {
-
-    state: IState = {
-        theme: localStorage.getItem('theme')
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+    return {
+        changeAppTheme: (appTheme: Theme) => {
+            dispatch(appActions.changeAppTheme(appTheme));
+        },
     };
+};
 
-    toggleLightMode = () => {
-        localStorage.setItem('theme', Theme.Light);
-        this.setState({
-            theme: Theme.Light
-        });
-    }
-
-    toggleDarkMode = () => {
-        localStorage.setItem('theme', Theme.Dark);
-        this.setState({
-            theme: Theme.Dark
-        });
-    }
-
-    render() {
-        const { theme } = this.state;
-
-        return (
-            <React.Fragment>
-            { theme === Theme.Light ?
-                    <div onClick={() => this.toggleDarkMode()} className={style.action}>
-                        <Tooltip title='Dark mode'>
-                            <button className={classNames([style.container, 'btnNoBg'])}>
-                                <IconMoon />
-                            </button>
-                        </Tooltip>
-                    </div>
-                 :
-                    <div onClick={() => this.toggleLightMode()} className={style.action}>
-                        <Tooltip title='Light mode'>
-                            <button className={classNames([style.container, 'btnNoBg'])}>
-                                <IconSun />
-                            </button>
-                        </Tooltip>
-                    </div>
-                }
-            </React.Fragment>
-        );
-    }
-}
+export default connect(mapStateToProps, mapDispatchToProps)(ThemeSwitcher);

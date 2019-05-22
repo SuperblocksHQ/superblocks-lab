@@ -66,6 +66,7 @@ interface IProps {
     notifyAppStart: () => void;
     isAuthenticated: boolean;
     isLoginInProgress: boolean;
+    appTheme: string;
 }
 
 export default class App extends Component<IProps> {
@@ -79,11 +80,11 @@ export default class App extends Component<IProps> {
     }
 
     render() {
-        const { isAuthenticated, isLoginInProgress } = this.props;
+        const { isAuthenticated, isLoginInProgress, appTheme } = this.props;
 
         return (
             <Router>
-                <div id='app'>
+                <div id='app' className={appTheme}>
                     <div id='app_content'>
                         <div className='maincontent'>
                             <Switch>

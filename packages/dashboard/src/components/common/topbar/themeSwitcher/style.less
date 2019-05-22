@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-@import '../../../../style/index';
+@import '../../../../style/index.less';
 
 .container {
     display: flex;
@@ -30,8 +30,9 @@
     cursor: pointer;
     padding: 0px 5px;
     &:hover {
-        color: #E0E0E0;
+        color: var(--actionColorHover);
         border-color: @primary-color;
-        background-color: @action-color-hover;
+        background-color: var(--actionBackgroundHover);
+        transition: background .35s;
     }
 }

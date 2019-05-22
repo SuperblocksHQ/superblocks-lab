@@ -33,10 +33,6 @@
                 background: transparent;
             }
         }
-
-        &:hover {
-            background: #262c30;
-        }
     }
 
     .singleCell {
@@ -85,7 +81,8 @@
         
         .userItem {
             display: block;
-            border: 1px solid @border-color;
+            border: 1px solid var(--borderColor);
+            .themeTransition();
             margin-bottom: 30px;
             padding: 10px;
         }
@@ -102,7 +99,7 @@
 }
 
 .colorGrey {
-    color: #c4c4c4;
+    color: var(--colorGrey);
 }
 
 .inviteBtn {

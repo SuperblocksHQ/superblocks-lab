@@ -16,6 +16,7 @@
 
 export const appSelectors = {
     getAppVersion: (state: any) => state.app.version || '',
+    getAppTheme: (state: any) => state.app.appTheme || '',
 };
 
 

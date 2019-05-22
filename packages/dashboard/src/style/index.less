@@ -26,15 +26,64 @@
 @primary-color: #03D2E5;
 @white-color-hover: #ecebeb;
 @action-color-hover: #333;
-@border-color: #383F41;
 @error-color: #d0021b;
-@primary-background-color: #1C2123;
+
+#app,
+#app.darkTheme {
+    --primaryBackground: #1C2123;
+    --secondaryBackground: #262c30;
+    --sideMenuBackground: #262c30;
+    --sideMenuBackgroundActive: #31383B;
+    --primaryFontColor: white;
+    --colorGrey: #c4c4c4;
+    --borderColor: #383F41;
+    --projectBlockBackground: #262c30;
+    --projectRowBackgroundHover: #262c30;
+    --topbarBackground: #1C2123;
+    --inputBorderColor: #383F41;
+    --tableBorderColor: #383F41;
+    --actionBackgroundHover: #333333;
+    --actionColorHover: #E0E0E0;
+    --modalBackground: #1e2327;
+    --modalSeparatorColor: #3C3C3C;
+    --modalOverlay: rgba(255, 255, 255, .15);
+    --splashBackground: #1e2327;
+}
+
+#app.lightTheme {
+    --primaryBackground: #f7f7f8;
+    --secondaryBackground: white;
+    --sideMenuBackground: white;
+    --sideMenuBackgroundActive: #f8f8f8;
+    --primaryFontColor: #2e2e2e;
+    --colorGrey: #707070;
+    --borderColor:#eeeeee;
+    --projectBlockBackground: white;
+    --projectRowBackgroundHover: white;
+    --topbarBackground: white;
+    --inputBorderColor: #dcdcdc;
+    --tableBorderColor: #dcdcdc;
+    --actionBackgroundHover: #f8f8f8;
+    --actionColorHover: #2e2e2e;
+    --modalBackground: white;
+    --modalSeparatorColor: #dcdcdc;
+    --modalOverlay: rgba(0, 0, 0, .75);
+    --splashBackground: #f7f7f8;
+}
+
+#app.lightTheme {
+    .colorInverted {
+        filter: invert(100%);
+    }
+}
+
+.themeTransition() {
+    transition+: background .35s, color .35s, border .35s, opacity .15s;
+    transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
 
 // modal
-@modal-background-color: #1e2327;
 @modal-color-hover: #353535;
-@modal-separator-color: #3C3C3C;
-@modal-selected-color: rgba(128, 46, 255, 0.5);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////// Generic //////////////////
@@ -90,6 +139,10 @@ html {
 
 a:active,a:focus {
     outline: none;
+}
+
+a, p, h1, h2, h3, h4, button, svg {
+    .themeTransition();
 }
 
 .full {
@@ -197,7 +250,7 @@ a:active,a:focus {
 }
 
 a {
-    color: #fff;
+    color: var(--primaryFontColor);
     text-decoration: none;
 }
 
@@ -270,9 +323,9 @@ a {
     border-radius: 3px;
     max-width: none;
     border: none;
-    color: #fff;
     cursor: pointer;
     transition: color .15s;
+    color: inherit;
     &:focus {
         outline: none;
     }
@@ -338,13 +391,12 @@ a {
         line-height: normal;
         padding: 5px;
         border-radius: 1px;
-        border: 1px solid #495556;
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        -webkit-transition: border linear .2s ,box-shadow linear .2s;
-        transition: border linear .2s, box-shadow linear .2s;
+        border: 1px solid var(--inputBorderColor);
+        .themeTransition();
+        transition+: border linear .35s, box-shadow linear .2s;
         padding: 8px 16px !important;
         outline: none;
-        color: white;
+        color: var(--primaryFontColor);
         &:focus {
             border-color: rgba(4, 210, 229, .5);
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(4, 210, 229, .6);

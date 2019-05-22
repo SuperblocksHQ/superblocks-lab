@@ -23,6 +23,7 @@ import App from './App';
 
 const mapStateToProps = (state: any) => ({
     appVersion: appSelectors.getAppVersion(state),
+    appTheme: appSelectors.getAppTheme(state),
     isAuthenticated: authSelectors.getIsAuthenticated(state),
     isLoginInProgress: authSelectors.getIsLoginInProgress(state),
 });

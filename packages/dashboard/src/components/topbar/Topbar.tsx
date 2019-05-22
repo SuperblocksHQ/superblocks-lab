@@ -20,7 +20,8 @@ import { HelpAction } from '../common';
 import LoggedInButton from './../login/LoggedInButton';
 import { IUser } from './../../models/user.model';
 import { Link } from 'react-router-dom';
-import { ThemeSwitcher } from '../common/topbar/themeSwitcher';
+import ThemeSwitcher from '../common/topbar/themeSwitcher';
+import { IconSuperblocks } from '../common/icons';
 
 interface IProps {
     logout: () => void;
@@ -40,6 +41,7 @@ export default class Topbar extends Component<IProps> {
                         src='/static/img/img-logo-dashboard.svg'
                         alt='Superblocks logo'
                         height='28px'
+                        className={'colorInverted'}
                     />
                 </Link>
 
