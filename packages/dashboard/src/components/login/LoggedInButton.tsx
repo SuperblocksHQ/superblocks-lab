@@ -24,6 +24,7 @@ import OnlyIf from '../common/onlyIf';
 import { MenuItem } from '../common';
 import { DropdownContainer } from '../common/dropdown';
 import { IUser } from '../../models';
+import { Route } from 'react-router-dom';
 
 interface IProps {
     logout: () => void;
@@ -44,6 +45,9 @@ export default class LoggedInButton extends Component<IProps> {
                         className={style.actionMenu}
                         dropdownContent={
                             <div className={style.menuDialog} >
+                                <Route render={({ history}) => (
+                                    <MenuItem onClick={() => history.push('/setting/profile')} title='Account Settings' />
+                                )} />
                                 <MenuItem onClick={this.logout} title='Logout' />
                             </div>
                         }>

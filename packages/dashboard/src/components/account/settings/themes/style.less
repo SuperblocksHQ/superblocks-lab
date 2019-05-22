@@ -1,0 +1,107 @@
+// Copyright 2019 Superblocks AB
+//
+// This file is part of Superblocks Lab.
+//
+// Superblocks Lab is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation version 3 of the License.
+//
+// Superblocks Lab is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
+
+@import '../style.less';
+
+.peopleList {
+    width: 100%;
+    border-collapse: collapse;
+
+    .userItem {
+        display: flex;
+        align-items: center;
+        padding-left: 5px;
+        transition: background .15s;
+
+        &:first-of-type {
+            padding-bottom: 15px;
+            
+            &:hover {
+                background: transparent;
+            }
+        }
+    }
+
+    .singleCell {
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        img {
+            float: left;
+        }
+
+        span {
+            display: flex;
+            align-items: center;
+        }
+
+        .smallDeviceLabel {
+            display: none;
+        }
+    }
+
+    .singleCell:nth-of-type(1) {
+        flex: 1 0;
+        flex-wrap: nowrap;
+    }
+
+    .singleCell:nth-of-type(2) {
+        flex: 0 0 150px;
+    }
+
+    .singleCell:nth-of-type(3) {
+        flex: 0 0 150px;
+    }
+
+    .singleCell:nth-of-type(4) {
+        flex: 0 0 150px;
+
+        .linkPrimary {
+            display: inline;
+        }
+    }
+
+    @media only screen and (max-width: 820px) {
+        .userItem.header {
+            display: none;
+        }
+        
+        .userItem {
+            display: block;
+            border: 1px solid var(--borderColor);
+            .themeTransition();
+            margin-bottom: 30px;
+            padding: 10px;
+        }
+
+        .singleCell {
+            padding-bottom: 5px;
+            padding-top: 5px;
+            
+            .smallDeviceLabel {
+                display: inline;
+            }
+        }
+    }
+}
+
+.colorGrey {
+    color: var(--colorGrey);
+}
+
+.inviteBtn {
+    margin-left: auto;
+}

@@ -14,10 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { IGithubRepository } from '../models';
+import { IGithubRepository, IUser } from '../models';
 
 export const userActions = {
 
+    // ---------- CRUD User actions ----------
+    UPDATE_USER_PROFILE: 'UPDATE_USER_PROFILE',
+    updateUserProfile(newUser: Partial<IUser>) {
+       return {
+            type: userActions.UPDATE_USER_PROFILE,
+            data: newUser
+       };
+    },
+    UPDATE_USER_PROFILE_SUCCESS: 'UPDATE_USER_PROFILE_SUCCESS',
+    updateUserProfileSuccess(user: IUser) {
+       return {
+            type: userActions.UPDATE_USER_PROFILE_SUCCESS,
+            data: { user }
+       };
+    },
+    UPDATE_USER_PROFILE_FAIL: 'UPDATE_USER_PROFILE_FAIL',
+    updateUserProfileFail(error: string) {
+       return {
+            type: userActions.UPDATE_USER_PROFILE_FAIL,
+            data: error
+       };
+    },
+
+
+    // ---------- Others ----------
     SET_PROFILE_PICTURE: 'SET_PROFILE_PICTURE',
     setProfilePicture(user: any) {
         return {

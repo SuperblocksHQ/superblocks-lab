@@ -1,0 +1,131 @@
+// Copyright 2019 Superblocks AB
+//
+// This file is part of Superblocks Lab.
+//
+// Superblocks Lab is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation version 3 of the License.
+//
+// Superblocks Lab is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
+
+import React, { Component } from 'react';
+import style from './style.less';
+import { BreadCrumbs, TextInput, TextAreaInput, StyledButton } from '../../../common';
+import { StyledButtonType } from '../../../../models/button.model';
+import { Link } from 'react-router-dom';
+import { validateOrganizationName } from '../../../../validations';
+import OnlyIf from '../../../common/onlyIf';
+import DeleteOrganizationModal from '../../../modals/deleteOrganizationModal';
+import { IOrganization } from '../../../../models';
+
+interface IProps {
+    location: any;
+    match: any;
+    organization: IOrganization;
+    updateOrganizationDetails: (newOrganizationDetails: Partial<IOrganization>) => void;
+    showDeleteOrganizationModal: boolean;
+    toggleDeleteOrganizationModal: () => void;
+}
+
+interface IState {
+    errorName: string | null;
+    newName: string;
+    newDescription: string;
+    canSave: boolean;
+}
+
+export default class Profile extends Component<IProps, IState> {
+
+    state: IState = {
+        errorName: null,
+        newName: this.props.organization.name,
+        newDescription: this.props.organization.description,
+        canSave: true
+    };
+
+    onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newName = e.target.value || ' ';
+        const errorName = newName ? validateOrganizationName(newName) : null;
+
+        this.setState({
+            errorName,
+            newName,
+            canSave: !errorName
+        });
+    }
+
+    onDescChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newDescription = e.target.value;
+
+        this.setState({
+            newDescription
+        });
+    }
+
+    onSave = (e?: any) => {
+        const { updateOrganizationDetails, organization } = this.props;
+        const { newName, newDescription, canSave } = this.state;
+        e.preventDefault();
+
+        if (canSave) {
+            updateOrganizationDetails({id: organization.id, name: newName, description: newDescription});
+        }
+    }
+
+    render() {
+        const { showDeleteOrganizationModal, toggleDeleteOrganizationModal, organization } = this.props;
+        const { errorName, canSave } = this.state;
+
+        return (
+            <React.Fragment>
+                <div className={style.details}>
+                    <BreadCrumbs>
+                        <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
+                        <Link to={`/${this.props.match.params.organizationId}/settings/details`}>Organization Settings</Link>
+                        <Link to={window.location.pathname}>Details</Link>
+                    </BreadCrumbs>
+
+                    <h1>Details</h1>
+                    <form onSubmit={(e) => this.onSave(e)}>
+                        <div className={style['mb-5']}>
+                            <TextInput
+                                onChangeText={this.onNameChange}
+                                error={errorName}
+                                label={'Organization name'}
+                                id={'organizationName'}
+                                placeholder={'organization-name'}
+                                defaultValue={organization.name}
+                                required={true}
+                            />
+                        </div>
+                        <div className={style['mb-4']}>
+                            <TextAreaInput
+                                onChangeText={this.onDescChange}
+                                label={'Description'}
+                                id={'description'}
+                                placeholder={'Enter a short description (optional)'}
+                                defaultValue={organization.description}
+                            />
+                        </div>
+                        <StyledButton type={StyledButtonType.Primary} text={'Save Details'} onClick={this.onSave} isDisabled={!canSave}/>
+                    </form>
+                    <div className={style.sectionDivider}></div>
+
+                    <h1>Delete this organization</h1>
+                    <p className={style['mb-4']}>Once deleted, it will be gone forever. Please be certain.</p>
+                    <StyledButton type={StyledButtonType.Danger} text={'Delete Organization'} onClick={() => toggleDeleteOrganizationModal()} />
+                </div>
+
+                <OnlyIf test={showDeleteOrganizationModal}>
+                    <DeleteOrganizationModal hideModal={toggleDeleteOrganizationModal} organization={organization} />
+                </OnlyIf>
+            </React.Fragment>
+        );
+    }
+}
