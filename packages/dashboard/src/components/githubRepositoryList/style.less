@@ -142,12 +142,7 @@
     .organizationsList {
         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
         overflow-y: auto;
-        max-height: 0px;
         transition: max-height .2s;
-
-        &.expanded {
-            max-height: 294px;
-        }
 
         .singleOrganization {
             display: flex;
@@ -170,9 +165,14 @@
                 }
             }
 
-            img {
-                max-width: 24px;
+            .avatarContainer {
+                height: 24px;
+                width: 24px;
                 margin-right: 15px;
+
+                img {
+                    max-height: 24px;
+                }
             }
 
             .icon {
