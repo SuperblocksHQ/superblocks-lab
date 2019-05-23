@@ -30,8 +30,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
-        getJob: (jobId: string) => {
-            dispatch(jobsActions.getJob(jobId));
+        getJob: (projectId: string, jobId: string) => {
+            dispatch(jobsActions.getJob(projectId, jobId));
         },
     };
 };

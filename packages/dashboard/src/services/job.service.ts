@@ -18,15 +18,15 @@ import { switchMap } from 'rxjs/operators';
 
 export const jobService = {
 
-    getJob(jobId: string) {
-        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/ci/v1/jobs/${jobId}`, {})
+    getJob(projectId: string, jobId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/ci/v1/projects/${projectId}/jobs/${jobId}`, {})
         .pipe(
             switchMap(response => response.json())
         );
     },
 
-    getJobTrace(jobId: string) {
-        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/ci/v1/jobs/${jobId}/trace`, {})
+    getJobTrace(projectId: string, jobId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/ci/v1/projects/${projectId}/jobs/${jobId}/trace`, {})
         .pipe(
             switchMap(response => response.json())
         );
