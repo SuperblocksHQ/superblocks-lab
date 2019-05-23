@@ -19,16 +19,18 @@ import style from './style.less';
 import { Link } from 'react-router-dom';
 import { IconGithub, IconExternalLink } from '../../common/icons';
 import BuildListItem from './BuildListItem';
-import { BreadCrumbs } from '../../common';
+import { BreadCrumbs, StyledButton, GenericLoading } from '../../common';
 import { SetupBuild } from './SetupBuild';
 import OnlyIf from '../../common/onlyIf';
-import { IProject, IPipeline } from '../../../models';
+import { IProject, IPipeline, IOrganization, StyledButtonType, VcsType } from '../../../models';
+import { EmptyRepository } from './emptyRepository';
 import classNames from 'classnames';
 
 interface IProps {
     location: any;
     match: any;
     project: IProject;
+    organization: IOrganization;
     projectPipelineList: IPipeline[];
     getProjectPipelineList: (projectId: string) => void;
     isProjectPipelineListLoading: boolean;
@@ -41,106 +43,61 @@ export default class BuildList extends Component<IProps> {
         this.props.getProjectPipelineList(projectId);
     }
 
+    decorateVcsUrl(vcsUrl: string) {
+        return vcsUrl && vcsUrl.replace('https://github.com/', '').replace('.git', '');
+    }
+
     render() {
-        const { project, projectPipelineList, isProjectPipelineListLoading } = this.props;
-
-        // TODO: Get project from cloud
-        const projectA = {
-            repository: {
-                fullName: 'superblocks/ethereum-react',
-                link: 'https://github.com/SuperblocksHQ/superblocks-lab'
-            },
-            // builds: [
-            //     {
-            //         status: 1,
-            //         buildNumber: 1,
-            //         branch: 'master',
-            //         buildTime: '00:02:56',
-            //         commit: {
-            //             ownerAvatar: 'https://avatars0.githubusercontent.com/u/17637244?v=4&s=24',
-            //             ownerName: 'Krystof Viktora',
-            //             description: 'Update contract constructor',
-            //             hash: '26ed941',
-            //             timestamp: '2019-04-15T12:47:45.090Z',
-            //             branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
-            //             commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
-            //         }
-            //     },
-            //     {
-            //         status: 0,
-            //         buildNumber: 2,
-            //         branch: 'my-branch',
-            //         buildTime: '00:02:56',
-            //         commit: {
-            //             ownerAvatar: 'https://avatars3.githubusercontent.com/u/7814134?v=4&s=24',
-            //             ownerName: 'Javier Taragaza Gomez',
-            //             description: 'Mierda',
-            //             hash: 'df24adf',
-            //             timestamp: '2019-04-15T12:47:45.090Z',
-            //             branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
-            //             commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
-            //         }
-            //     },
-            //     {
-            //         status: -1,
-            //         buildNumber: 3,
-            //         branch: 'fork-branch',
-            //         buildTime: '00:02:56',
-            //         commit: {
-            //             ownerAvatar: 'https://avatars0.githubusercontent.com/u/17637244?v=4&s=24',
-            //             ownerName: 'Krystof Viktora',
-            //             description: 'Initial commit',
-            //             hash: 'gf245df',
-            //             timestamp: '2019-04-15T12:47:45.090Z',
-            //             branchLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commits/master',
-            //             commitLink: 'https://github.com/SuperblocksHQ/superblocks-lab/commit/1553091f58d7a5328201b8ad4a94766e1babe80d'
-            //         }
-            //     },
-            // ]
-        };
-
+        const { project, organization, projectPipelineList, isProjectPipelineListLoading } = this.props;
         const { organizationId, projectId } = this.props.match.params;
+        let content;
 
-        console.log(projectPipelineList);
+        if (!project.vcsUrl) {
+            content = <SetupBuild projectId={projectId} organizationId={organizationId} />;
+        } else if (isProjectPipelineListLoading) {
+            content = <GenericLoading />;
+        } else if (projectPipelineList.length > 0) {
+            content = <React.Fragment>
+                        <div className={style.buildList}>
+                            <div className={classNames([style.buildItem, style.header])}>
+                                <div className={style.singleCell}>Status</div>
+                                <div className={style.singleCell}>Build #</div>
+                                <div className={style.singleCell}>Branch</div>
+                                <div className={style.singleCell}>Commit</div>
+                                <div className={style.singleCell}></div>
+                            </div>
+                            { projectPipelineList.map((pipeline, index) =>
+                                <div className={style.buildItem} key={index}>
+                                    <BuildListItem pipeline={pipeline} projectId={projectId} organizationId={organizationId} />
+                                </div>
+                              )
+                            }
+                        </div>
+                        </React.Fragment>;
+        } else if (!projectPipelineList.length) {
+            content = <EmptyRepository />;
+        }
 
         return (
             <React.Fragment>
                 <BreadCrumbs>
-                    <Link to={'/'}>Organization Name</Link>
+                    <Link to={`/${this.props.match.params.organizationId}`}>{organization.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>{project.name}</Link>
                     <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>Builds</Link>
                 </BreadCrumbs>
 
-                <OnlyIf test={projectPipelineList.length > 0}>
+                <OnlyIf test={project.vcsUrl}>
                     <h1>Builds</h1>
-                    <a className={style.repoLink} href={projectA.repository.link} target='_blank' rel='noopener noreferrer'>
-                        <IconGithub size='xs' className={style.colorGrey} />
+                    <a className={style.repoLink} href={project.vcsUrl} target='_blank' rel='noopener noreferrer'>
+                        <IconGithub className={classNames([style.colorGrey, style.githubLogo])} />
                         <span>
-                            {projectA.repository.fullName}
+                            {this.decorateVcsUrl(project.vcsUrl)}
                         </span>
                         <IconExternalLink width='10px' height='10px' />
                     </a>
-                    <div className={style.hr}></div>
-
-                    <div className={style.buildList}>
-                        <div className={classNames([style.buildItem, style.header])}>
-                            <div className={style.singleCell}>Status</div>
-                            <div className={style.singleCell}>Build #</div>
-                            <div className={style.singleCell}>Branch</div>
-                            <div className={style.singleCell}>Commit</div>
-                            <div className={style.singleCell}></div>
-                        </div>
-                        { projectPipelineList.map((pipeline, index) =>
-                            <div className={style.buildItem} key={index}>
-                                <BuildListItem pipeline={pipeline} projectId={projectId} organizationId={organizationId} />
-                            </div>
-                        )}
-                    </div>
+                    <div className={style.hr} />
                 </OnlyIf>
-
-                <OnlyIf test={!projectPipelineList.length && !isProjectPipelineListLoading}>
-                    <SetupBuild projectId={projectId} organizationId={organizationId} />
-                </OnlyIf>
+                {content}
             </React.Fragment>
         );
     }

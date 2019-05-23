@@ -18,13 +18,12 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import DeleteOrganizationModal from './DeleteOrganizationModal';
-import { projectsActions } from '../../../actions';
+import { organizationActions } from '../../../actions';
 
-// TODO: Change project actions to organization actions
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>) {
     return {
-        deleteOrganization: (projectId: string) => {
-            dispatch(projectsActions.deleteProject(projectId));
+        deleteOrganization: (organizationId: string, redirect: boolean) => {
+            dispatch(organizationActions.deleteOrganization(organizationId, redirect));
         }
     };
 }

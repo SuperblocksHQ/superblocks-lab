@@ -16,17 +16,16 @@
 
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import classNames from 'classnames';
 import style from './style.less';
-import { IconSuperblocks } from '../../common/icons';
-import GithubLoginButton from '../../common/buttons/githubLogin';
+import { IconGithub } from '../../common/icons';
+import { StyledButton } from '../../common';
+import { StyledButtonType } from '../../../models';
 
 interface IProps {
     githubLogin: () => void;
     location: any;
     isAuthenticated: boolean;
 }
-
 
 export default class LoginScreen extends Component<IProps> {
     state = {
@@ -54,25 +53,19 @@ export default class LoginScreen extends Component<IProps> {
         }
 
         return (
-            <div className={classNames([style.loginModal, 'modal'])}>
-                <div className={style.container}>
-                    <div className={style.area}>
-                        <img src='/static/img/vargavintern.png' className={style.background}></img>
-                        <div className={style.headerText}>
-                            <span>Login wih Github and sync all your projects</span>
-                        </div >
-                        <div className={style.superblocks}>
-                            <IconSuperblocks />
-                        </div>
-                        <div className={style.promoText}>
-                            <span>Discover the world's top blockchain companies and developers</span>
-                        </div>
+            <div className={style.screenWrapper}>
+                <div className={style.loginBlock}>
+                    <div className={style.logo}>
+                        <img src='/static/img/img-logo-dashboard.svg' />
                     </div>
-                    <div className={style.footer}>
-                        <div className={style.buttonsContainer}>
-                            <GithubLoginButton githubLogin={this.onGithubLoginButtonClick}/>
-                        </div>
-                    </div>
+                    <p>Log in to continue to Superblocks</p>
+                    <StyledButton
+                        onClick={this.onGithubLoginButtonClick}
+                        text={'Login with Github'}
+                        icon={<IconGithub className={style.githubIcon} />}
+                        type={StyledButtonType.Primary}
+                        className={style.loginBtn}
+                    />
                 </div>
             </div>
         );

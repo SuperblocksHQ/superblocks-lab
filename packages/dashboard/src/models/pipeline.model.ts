@@ -16,15 +16,15 @@
 
 export enum PipelineStatus {
     Queued = 'queued',
+    Pending = 'pending',
     Running = 'running',
     Success = 'success',
     Failed = 'failed',
 }
 
-export interface IJob {
+export interface IJobStatus {
     id: string;
     status: string;
-    log: string;
 }
 
 export interface IPipelineCommit {
@@ -42,9 +42,10 @@ export interface IPipeline {
     id: string;
     projectId: string;
     commit: IPipelineCommit;
-    jobs: IJob[];
+    jobs: IJobStatus[];
     status: PipelineStatus;
     createdAt: Date;
     startedAt: Date;
     finishedAt: Date;
+    duration: number;
 }

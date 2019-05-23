@@ -21,7 +21,7 @@ import { Observable, throwError, of } from 'rxjs';
 export const projectService = {
 
     createProject(data: Partial<IProject>): Observable<IProject> {
-        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects', {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/organizations/' + data.ownerId + '/projects', {
             method: 'POST',
             body: data
         })
@@ -46,8 +46,8 @@ export const projectService = {
             );
     },
 
-    getProjectsList() {
-        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects', {})
+    getProjectsList(ownerId: string) {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/organizations/' + ownerId + '/projects', {})
             .pipe(
                 switchMap(response => response.json())
             );
@@ -64,7 +64,29 @@ export const projectService = {
 
     deleteProjectById(id: string) {
         return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects/' + id, {
-            method: 'DELETE'
+            method: 'DELETE',
+            body: {
+                'x-organization-role': 'OWNER'
+            }
         });
     },
+
+    createRepositoryConfigById(id: string, data: any) {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects/' + id + '/repo-config', {
+            method: 'POST',
+            body: data
+        }).pipe(
+            switchMap(r => (of(r.ok ? r.statusText : throwError(r.statusText))))
+        );
+    },
+
+    deleteRepositoryConfigById(id: string) {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/project/v1/projects/' + id + '/repo-config', {
+            method: 'DELETE',
+            body: {
+                'x-organization-role': 'OWNER'
+            }
+        });
+    },
+
 };

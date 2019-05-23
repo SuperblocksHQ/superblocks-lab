@@ -20,11 +20,13 @@ import { AnyAction } from 'redux';
 
 export const initialState: IOrganizationState = {
     organizationList: [],
-    loadingOrganizationList: false,
+    loadingOrganizationList: true,
     organization: undefined,
+    loadingOrganization: false,
     showCreateOrganizationModal: false,
     showDeleteOrganizationModal: false,
     showInvitePeopleModal: false,
+    invitation: undefined
 };
 
 export default function organizationsReducer(state = initialState, action: AnyAction) {
@@ -51,26 +53,34 @@ export default function organizationsReducer(state = initialState, action: AnyAc
                 loadingOrganizationList: false
             };
         }
+        case organizationActions.LOAD_ORGANIZATION: {
+            return {
+                ...state,
+                loadingOrganization: true
+            };
+        }
         case organizationActions.LOAD_ORGANIZATION_SUCCESS: {
             return {
                 ...state,
                 organization: { ...action.data.organization },
+                loadingOrganization: false,
             };
         }
         case organizationActions.LOAD_ORGANIZATION_FAIL: {
-            console.log('project load failed', action.data);
+            console.log('organization load failed', action.data);
 
             return {
                 ...state,
+                loadingOrganization: false
             };
         }
-        case organizationActions.DELETE_ORGANIZATION_FAIL: {
+        case organizationActions.CREATE_ORGANIZATION_SUCCESS: {
             return {
                 ...state,
-                organization: null
+                organizationList: [...state.organizationList, action.data.organization]
             };
         }
-        case organizationActions.UPDATE_ORGANIZATION_SUCCESS: {
+        case organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS: {
             return {
                 ...state,
                 organization: { ...action.data.organization }
@@ -92,6 +102,12 @@ export default function organizationsReducer(state = initialState, action: AnyAc
             return {
                 ...state,
                 showInvitePeopleModal: !state.showInvitePeopleModal
+            };
+        }
+        case organizationActions.GET_INVITATION_BY_ID_SUCCESS: {
+            return {
+                ...state,
+                invitation: { ...action.data }
             };
         }
         default:

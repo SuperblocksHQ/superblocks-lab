@@ -17,7 +17,7 @@
 import React from 'react';
 import style from './style.less';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import OnlyIf from '../common/onlyIf';
 
 interface IProps {
@@ -25,6 +25,7 @@ interface IProps {
     title: string;
     onClick?: any;
     active?: boolean;
+    hideActiveClass?: boolean;
     linkTo?: string;
     children?: any;
     className?: any;
@@ -33,8 +34,8 @@ interface IProps {
 export function SideMenuItem(props: IProps) {
     return (
         <div className={classNames([style.posRelative, props.className, !props.active ? style.flyOut : style.itemWrapper])}>
-            <Link to={props.linkTo || ''}>
-                <div onClick={props.onClick} className={classNames([style.item, props.active ? style.active : null])}>
+            <NavLink exact={true} activeClassName={props.hideActiveClass ? null : style.active} to={props.linkTo || ''}>
+                <div onClick={props.onClick} className={style.item}>
                     <OnlyIf test={!!props.icon}>
                         <div className={style.iconContainer}>
                             {props.icon}
@@ -44,7 +45,7 @@ export function SideMenuItem(props: IProps) {
                         {props.title}
                     </span>
                 </div>
-            </Link>
+            </NavLink>
             {props.children}
         </div>
     );

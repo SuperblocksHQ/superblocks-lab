@@ -25,16 +25,18 @@ interface IState {
 
 interface IProps {
     className?: string | object;
+    toggleSidemenuInLocalStorage: (collapsed: boolean) => void;
 }
 
-export class SideMenu extends Component<IProps, IState> {
+export default class SideMenu extends Component<IProps, IState> {
     state = {
         collapsed: localStorage.getItem('sideMenuCollapsed') === 'true' ? true : false
     };
 
     componentDidMount() {
         window.addEventListener('resize', () => {
-            localStorage.setItem('sideMenuCollapsed', String(window.innerWidth < 1100));
+            this.props.toggleSidemenuInLocalStorage(window.innerWidth < 1100);
+
             this.setState({
                 collapsed: window.innerWidth < 1100
             });
@@ -42,7 +44,7 @@ export class SideMenu extends Component<IProps, IState> {
     }
 
     toggleExpanded = () => {
-        localStorage.setItem('sideMenuCollapsed', String(!this.state.collapsed));
+        this.props.toggleSidemenuInLocalStorage(!this.state.collapsed);
 
         this.setState({
             collapsed: !this.state.collapsed

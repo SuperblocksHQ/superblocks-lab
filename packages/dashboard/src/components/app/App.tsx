@@ -20,6 +20,8 @@ import ToastContainer from '../common/toasts/toastcontainer';
 import Loadable from 'react-loadable';
 import { EmptyLoading } from '../common';
 import PrivateRoute from './PrivateRoute';
+import { GithubAppRedirect } from '../githubRepositoryList/GithubAppRedirect';
+import { ErrorPage } from '../errorPage';
 
 const LoginScreen = Loadable({
     loader: () => import(/* webpackChunkName: "LoginScreen" */'../login/loginScreen'),
@@ -56,6 +58,11 @@ const PeopleList = Loadable({
     loading: EmptyLoading,
 });
 
+const Invitation = Loadable({
+    loader: () => import(/* webpackChunkName: "Invitation" */'../organization/invitation'),
+    loading: EmptyLoading,
+});
+
 interface IProps {
     notifyAppStart: () => void;
     isAuthenticated: boolean;
@@ -82,20 +89,20 @@ export default class App extends Component<IProps> {
                         <div className='maincontent'>
                             <Switch>
                                 <Route path='/login' exact render={(props: any) => <LoginScreen {...props} />} />
+                                <Route path='/accept-invite/:id' exact render={(props: any) => < Invitation {...props} />} />
                                 <PrivateRoute path='/' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <Dashboard {...props} />} />
                                 <PrivateRoute path='/welcome' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <WelcomePage {...props} />} />
                                 <PrivateRoute path='/:organizationId' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <Dashboard {...props} />} />
                                 <PrivateRoute path='/:organizationId/projects' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <Dashboard {...props} />} />
-                                <PrivateRoute path='/:organizationId/settings' exact isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => <OrganizationSettings {...props} />} />
-                                <PrivateRoute exact path='/:organizationId/settings/details' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <OrganizationSettings content={<Details {...props}/>} {...props} />
-                                )} />
-                                <PrivateRoute exact path='/:organizationId/settings/people' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
-                                    <OrganizationSettings content={<PeopleList {...props}/>} {...props} />
+                                <PrivateRoute path='/:organizationId/settings' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
+                                    <OrganizationSettings {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
                                 )} />
                                 <PrivateRoute path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
                                     <ProjectDashboard {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
                                 )} />
+                                <PrivateRoute path='/github/update' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={() => <GithubAppRedirect />} />
+                                <Route component={() => <ErrorPage />} status={404} />
+                                <Route exact path='/error/404' component={() => <ErrorPage />} status={404} />
                             </Switch>
                         </div>
                     </div>

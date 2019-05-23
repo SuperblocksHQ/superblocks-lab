@@ -23,12 +23,5 @@ export const pipelineService = {
         .pipe(
             switchMap(response => response.json())
         );
-    },
-
-    getPipeline(pipelineId: string) {
-        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/pipeline/v1/pipelines/' + pipelineId, {})
-            .pipe(
-                switchMap(response => response.json())
-            );
-    },
+    }
 };

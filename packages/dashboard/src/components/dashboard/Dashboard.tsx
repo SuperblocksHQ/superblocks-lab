@@ -17,9 +17,9 @@
 import React, { Component, Fragment } from 'react';
 import style from './style.less';
 import { IconConfigure, IconPlusTransparent } from '../common/icons';
-import { LetterAvatar } from '../common';
+import { LetterAvatar, GenericLoading } from '../common';
 import Topbar from '../topbar';
-import { SideMenu, SideMenuItem, SideMenuSubHeader, SideMenuFooter } from '../sideMenu';
+import SideMenu, { SideMenuItem, SideMenuSubHeader, SideMenuFooter } from '../sideMenu';
 import ProjectList from '../organization/projectList';
 import { Redirect } from 'react-router';
 import OnlyIf from '../common/onlyIf';
@@ -28,69 +28,97 @@ import CreateOrganizationModal from '../modals/createOrganizationModal';
 import CreateProject from '../organization/createProject';
 
 interface IProps {
+    match: any;
+    history: any;
     organizationList: [IOrganization];
+    selectedOrganization: IOrganization;
     isOrganizationListLoading: boolean;
     loadUserOrganizationList: () => void;
+    loadOrganization: (organizationId: string) => void;
+    isOrganizationLoading: boolean;
     projectList: IProject[];
     isProjectListLoading: boolean;
     showCreateOrganizationModal: boolean;
     toggleCreateOrganizationModal: () => void;
-    getProjectList: () => void;
+    getProjectList: (ownerId: string) => void;
     githubLoginAction: () => void;
 }
 
 export default class Dashboard extends Component<IProps> {
 
     componentDidMount() {
+        const { organizationId } = this.props.match.params;
         this.props.loadUserOrganizationList();
-        this.props.getProjectList();
+        this.props.getProjectList(organizationId);
+        this.props.loadOrganization(organizationId);
+    }
+
+    componentWillReceiveProps(nextProps: any) {
+        // Update project list when changing organization
+        if (this.props.match.params.organizationId !== nextProps.match.params.organizationId) {
+            this.props.loadOrganization(nextProps.match.params.organizationId);
+            this.props.getProjectList(nextProps.match.params.organizationId);
+        }
+
+        // Update organizations when creating a new one
+        if (this.props.organizationList.length !== nextProps.organizationList.length) {
+            this.props.loadUserOrganizationList();
+        }
+
+        // Redirect to new organization when creating one
+        if (nextProps.organizationList.length === (this.props.organizationList.length + 1)) {
+            const { organizationList } = nextProps;
+            this.props.history.push(`/${organizationList[organizationList.length - 1].id}`);
+        }
     }
 
     render() {
-        const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, isOrganizationListLoading } = this.props;
+        const { projectList, isProjectListLoading, showCreateOrganizationModal, toggleCreateOrganizationModal, organizationList, isOrganizationListLoading, match, selectedOrganization, isOrganizationLoading } = this.props;
+        let projectListContent;
 
-        const organizationList = [
-            {
-                id: 'patata'
-            }
-        ];
+        if (isProjectListLoading) {
+            projectListContent = <GenericLoading />;
+        } else if (projectList.length > 0) {
+            projectListContent = <ProjectList
+                                    list={projectList}
+                                    organizationName={!isOrganizationLoading ? selectedOrganization.name : ''}
+                                    organizationId={match.params.organizationId}
+                                 />;
+        } else {
+            projectListContent = <CreateProject organizationId={match.params.organizationId} />;
+        }
 
         return (
             <Fragment>
                 <div className={style.dashboard}>
-                    <Topbar />
+                    <Topbar organizationId={match.params.organizationId} />
                     <div className={style.content}>
                         <SideMenu>
                             <SideMenuSubHeader title='My organizations' />
-                            {/* TODO: Remove placeholder items and fetch organizations instead, add corresponding link */}
-                            <SideMenuItem
-                                icon={<LetterAvatar title='Placeholder'/>}
-                                title='Placeholder organization'
-                                linkTo='TODO'
-                            />
+                            { organizationList.map(organization => (
+                                <SideMenuItem
+                                    key={organization.id}
+                                    icon={<LetterAvatar title={organization.name} />}
+                                    title={organization.name}
+                                    linkTo={`/${organization.id}`}
+                                />
+                            ))}
                             <SideMenuFooter>
                                 <SideMenuItem
                                     icon={<IconPlusTransparent />}
                                     title='New organization'
                                     onClick={toggleCreateOrganizationModal}
+                                    linkTo={window.location.pathname}
+                                    hideActiveClass={true}
                                 />
-                                {/* TODO: Add :organizationId to linkTo */}
                                 <SideMenuItem
                                     icon={<IconConfigure />}
                                     title='Organization settings'
-                                    linkTo='12334/settings/details'
+                                    linkTo={`${match.params.organizationId}/settings/details`}
                                 />
                             </SideMenuFooter>
                         </SideMenu>
-                        { projectList.length === 0 && !isProjectListLoading ?
-                            <CreateProject />
-                            :
-                            <ProjectList
-                                list={projectList}
-                                organizationName={'Placeholder organization'}
-                                organizationId={'12334'}
-                            />
-                        }
+                        {projectListContent}
                         <OnlyIf test={!isOrganizationListLoading && !organizationList.length}>
                             <Redirect to={'/welcome'} />
                         </OnlyIf>
@@ -99,6 +127,9 @@ export default class Dashboard extends Component<IProps> {
                 <OnlyIf test={showCreateOrganizationModal}>
                     <CreateOrganizationModal hideModal={toggleCreateOrganizationModal} />
                 </OnlyIf>
+                { (organizationList[0] && !match.params.organizationId) &&
+                    <Redirect to={organizationList[0].id} />
+                }
             </Fragment>
         );
     }

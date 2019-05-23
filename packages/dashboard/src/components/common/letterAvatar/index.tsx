@@ -64,7 +64,7 @@ export class LetterAvatar extends React.Component<IProps> {
         return (
             <div className={classNames([style.letterAvatar, className])} style={{backgroundColor: background}}>
                 <div className={style.letterAvatarInner}>
-                    {title[0]}
+                    {title[0].toUpperCase()}
                 </div>
             </div>
         );

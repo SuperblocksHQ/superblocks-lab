@@ -22,8 +22,8 @@ import { projectService } from '../../services';
 export const getProjectList: Epic = (action$: any, state$: any) => action$.pipe(
     ofType(projectsActions.GET_PROJECT_LIST),
     withLatestFrom(state$),
-    switchMap(([, ]) => {
-        return from(projectService.getProjectsList()).pipe(
+    switchMap(([action]) => {
+        return from(projectService.getProjectsList(action.data.ownerId)).pipe(
             map(projectsActions.getProjectListSuccess),
             catchError((error) => {
                 console.log('There was an issue fetching the projects: ' + error);

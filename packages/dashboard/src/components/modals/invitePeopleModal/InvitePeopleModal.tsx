@@ -18,10 +18,12 @@ import React from 'react';
 import style from './style.less';
 import classNames from 'classnames';
 import { TextInput, StyledButton, Modal, ModalHeader } from '../../common';
-import { StyledButtonType } from '../../../models/button.model';
+import { IOrganization, StyledButtonType } from '../../../models';
 
 interface IProps {
     hideModal: () => void;
+    addMemberToOrganization: (organizationId: string, email: string) => void;
+    selectedOrganization: IOrganization;
 }
 
 interface IState {
@@ -36,22 +38,24 @@ export default class InvitePeopleModal extends React.Component<IProps, IState> {
         });
     }
 
-    onConfirmClick = () => {
+    onConfirmClick = (e?: any) => {
         const { email } = this.state;
-        // TODO: Send email with invitation
+        e.preventDefault();
+        const organization = this.props.selectedOrganization;
+        this.props.addMemberToOrganization(organization.id, email);
     }
 
     render() {
         const { hideModal } = this.props;
 
         return (
-            <Modal>
+            <Modal hideModal={hideModal}>
                 <div className={classNames([style.invitePeopleModal, 'modal'])}>
                     <ModalHeader
                         title='Invite new members'
                         onCloseClick={hideModal}
                     />
-                    <div className={style.content}>
+                    <form className={style.content} onSubmit={(e) => this.onConfirmClick(e)}>
                         <p>
                             Invite new members to your organization
                         </p>
@@ -66,7 +70,7 @@ export default class InvitePeopleModal extends React.Component<IProps, IState> {
                             <div className={style.cancelBtn} onClick={hideModal}>Cancel</div>
                             <StyledButton type={StyledButtonType.Primary} text={'Invite member'} onClick={this.onConfirmClick} />
                         </div>
-                    </div>
+                    </form>
                 </div>
             </Modal>
         );

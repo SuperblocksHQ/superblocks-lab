@@ -16,12 +16,12 @@
 
 import React, { Component } from 'react';
 import Loadable from 'react-loadable';
-import { Switch } from 'react-router-dom';
+import { Switch, Link } from 'react-router-dom';
 import LoadingBar from 'react-redux-loading-bar';
 import Topbar from '../topbar';
 import style from './style.less';
 import { EmptyLoading, LetterAvatar } from '../common';
-import { SideMenu, SideMenuItem, SideMenuFooter, SideMenuHeader } from '../sideMenu';
+import SideMenu, { SideMenuItem, SideMenuFooter, SideMenuHeader } from '../sideMenu';
 import { IconConfigure, IconPlay } from '../common/icons';
 import PrivateRoute from '../app/PrivateRoute';
 import OnlyIf from '../common/onlyIf';
@@ -52,7 +52,9 @@ interface IProps {
     location: any;
     match: any;
     loadProject: (projectId: string) => void;
+    loadOrganization: (organizationId: string) => void;
     isProjectLoading: boolean;
+    isOrganizationLoading: boolean;
     isAuthenticated: boolean;
     isAuthLoading: boolean;
 }
@@ -60,46 +62,47 @@ interface IProps {
 export default class ProjectDashboard extends Component<IProps> {
 
     componentDidMount() {
-        const { match, loadProject } = this.props;
+        const { match, loadProject, loadOrganization } = this.props;
 
         loadProject(match.params.projectId);
+        loadOrganization(match.params.organizationId);
     }
 
     render() {
-        const { isAuthenticated, isAuthLoading, isProjectLoading, project } = this.props;
-        const { pathname } = this.props.location;
+        const { isAuthenticated, isAuthLoading, isProjectLoading, project, match, isOrganizationLoading } = this.props;
 
         return (
             <div className={style.projectDashboard}>
                 <React.Fragment>
-                    <Topbar />
+                    <Topbar organizationId={match.params.organizationId} />
                     <LoadingBar className='loading' />
                     <div className={style.content}>
                         <SideMenu>
                             { project &&
-                                <SideMenuHeader
-                                    icon={<LetterAvatar title={project.name} />}
-                                    className={style.projectName}
-                                    title={<span>{project.name}</span>}
-                                />
+                                <Link to={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}>
+                                    <SideMenuHeader
+                                        icon={<LetterAvatar title={project.name} />}
+                                        className={style.projectName}
+                                        title={<span>{project.name}</span>}
+                                        visibleCollapsed={true}
+                                    />
+                                </Link>
                             }
                             <SideMenuItem
                                     icon={<IconPlay />}
                                     title='Builds'
-                                    active={pathname.includes('builds')}
                                     linkTo={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/builds`}
                             />
                             <SideMenuFooter>
                                 <SideMenuItem
                                     icon={<IconConfigure />}
                                     title='Project Settings'
-                                    active={pathname.includes('settings')}
                                     linkTo={`/${this.props.match.params.organizationId}/projects/${this.props.match.params.projectId}/settings/details`}
                                 />
                             </SideMenuFooter>
 
                         </SideMenu>
-                            <OnlyIf test={!isProjectLoading}>
+                            <OnlyIf test={!isProjectLoading && !isOrganizationLoading}>
                                 <div className={style.pageContent}>
                                     <Switch>
                                         <PrivateRoute exact path='/:organizationId/projects/:projectId' isAuthenticated={isAuthenticated} isLoading={isAuthLoading} render={(props: any) => (

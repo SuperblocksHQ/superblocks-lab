@@ -18,13 +18,13 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import Details from './Details';
-import { projectSelectors } from '../../../../selectors';
 import { organizationActions } from '../../../../actions';
+import { IOrganization } from '../../../../models';
+import { organizationSelectors } from '../../../../selectors';
 
-// TODO: Change all project actions to organization
 const mapStateToProps = (state: any) => ({
-    project: projectSelectors.getProject(state),
-    showDeleteOrganizationModal: state.organizations.showDeleteOrganizationModal
+    showDeleteOrganizationModal: state.organizations.showDeleteOrganizationModal,
+    organization: organizationSelectors.getOrganization(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
@@ -32,8 +32,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
         toggleDeleteOrganizationModal: () => {
             dispatch(organizationActions.toggleDeleteOrganizationModal());
         },
-        updateOrganization: (name: string, description: string) => {
-            // dispatch(projectsActions.updateProjectDetails(project));
+        updateOrganizationDetails: (newOrganizationDetails: Partial<IOrganization>) => {
+            dispatch(organizationActions.updateOrganizationDetails(newOrganizationDetails));
         }
     };
 };

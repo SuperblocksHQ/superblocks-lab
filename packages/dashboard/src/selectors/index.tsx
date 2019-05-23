@@ -21,3 +21,4 @@ export * from './user.selectors';
 export * from './auth.selectors';
 export * from './organization.selectors';
 export * from './pipelines.selectors';
+export * from './job.selectors';

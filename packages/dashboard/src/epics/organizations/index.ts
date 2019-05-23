@@ -16,23 +16,30 @@
 
 import { createOrganization } from './createOrganization.epic';
 import { deleteOrganization } from './deleteOrganization.epic';
-import { updateOrganization } from './updateOrganization.epic';
+import { updateOrganizationDetails } from './updateOrganizationDetails.epic';
 import { createDefaultOrganization } from './createDefaultOrganization.epic';
 import { getOrganizationList } from './getOrganizationList.epic';
 
-import { inviteMemberToOrganization } from './members/inviteMemberToOrganization.epic';
+import { resendInvitation } from './members/resendInvitation.epic';
 import { addMemberToOrganization } from './members/addMemberToOrganization.epic';
 import { changeMemberRoleInOrganization } from './members/changeMemberRoleInOrganization.epic';
 import { removeMemberFromOrganization } from './members/removeMemberFromOrganization.epic';
+import { loadOrganization } from './loadOrganization.epic';
+
+import { getInvitationById } from './invitation/getInvitation.epic';
+import { acceptInvitation } from './invitation/acceptInvitation.epic';
 
 export const organizationEpics = [
     createDefaultOrganization,
     createOrganization,
     deleteOrganization,
-    updateOrganization,
-    inviteMemberToOrganization,
+    updateOrganizationDetails,
+    resendInvitation,
     addMemberToOrganization,
     changeMemberRoleInOrganization,
     removeMemberFromOrganization,
     getOrganizationList,
+    loadOrganization,
+    getInvitationById,
+    acceptInvitation
 ];

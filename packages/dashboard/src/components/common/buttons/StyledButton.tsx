@@ -24,9 +24,10 @@ interface IProps {
     type: StyledButtonType;
     text: string;
     icon?: JSX.Element;
-    customClassName?: string;
+    className?: string;
     isDisabled?: boolean;
     onClick?: () => void;
+    htmlType?: string;
 }
 
 export const StyledButton = (props: IProps) => {
@@ -44,7 +45,7 @@ export const StyledButton = (props: IProps) => {
     }
 
     return (
-        <button onClick={props.onClick} className={classNames([style.btn, clsBtn, props.customClassName])} disabled={props.isDisabled}>
+        <button onClick={props.onClick} className={classNames([style.btn, clsBtn, props.className])} disabled={props.isDisabled} type={'button'}>
             <OnlyIf test={!!props.icon}>
                 <div className={style.icon}>
                     {props.icon}

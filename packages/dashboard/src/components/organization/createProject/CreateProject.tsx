@@ -22,7 +22,8 @@ import { IconPlusTransparent } from '../../common/icons';
 import { validateProjectName } from '../../../validations';
 
 interface IProps {
-    createProject: (name: string, description: string, redirect: boolean) => void;
+    organizationId: string;
+    createProject: (name: string, ownerId: string, ownerType: string, description: string, redirect: boolean) => void;
 }
 
 interface IState {
@@ -60,11 +61,14 @@ export default class CreateProject extends Component<IProps, IState> {
         });
     }
 
-    onCreate = () => {
-        const { createProject } = this.props;
-        const { projectName, projectDescription} = this.state;
+    onCreate = (e?: any) => {
+        const { createProject, organizationId } = this.props;
+        const { projectName, projectDescription, canCreate } = this.state;
+        e.preventDefault();
 
-        createProject(projectName, projectDescription, false);
+        if (canCreate) {
+            createProject(projectName, organizationId, 'organization', projectDescription, false);
+        }
     }
 
     render() {
@@ -75,7 +79,7 @@ export default class CreateProject extends Component<IProps, IState> {
                 <div className={style.left}>
                     <img src='/static/img/illustration-new-project.svg' />
                 </div>
-                <div className={style.right}>
+                <form className={style.right} onSubmit={(e) => this.onCreate(e)}>
                     <h2 className={style['mb-4']}>Create a project to get started</h2>
 
                     <div className={style['mb-4']}>
@@ -103,7 +107,7 @@ export default class CreateProject extends Component<IProps, IState> {
                         onClick={this.onCreate}
                         isDisabled={!canCreate}
                     />
-                </div>
+                </form>
             </div>
         );
     }

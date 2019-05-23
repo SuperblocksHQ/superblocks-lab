@@ -16,7 +16,7 @@
 import { fetchJSON } from './utils/fetchJson';
 import { switchMap } from 'rxjs/operators';
 import { IOrganization } from '../models';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IOrganizationMember, IRole } from '../models/organizationMember.model';
 
 export const organizationService = {
@@ -56,35 +56,31 @@ export const organizationService = {
         return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/organization/v1/organizations/' + id, {
             method: 'PUT',
             body: data
-        }).pipe(
-            switchMap(response => response.json())
-        );
+        });
     },
 
     deleteOrganizationById(id: string) {
         return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/organization/v1/organizations/' + id, {
-            method: 'DELETE'
+            method: 'DELETE',
+            body: {
+                'x-organization-role': 'OWNER'
+            }
         });
     },
 
     // ---------- Organization Member endpoints ----------
-    inviteMemberToOrganization(organizationId: string, email: string) {
-        return fetchJSON(`/${process.env.REACT_APP_API_BASE_URL}/organization/v1/organization/${organizationId}/members/_invite`, {
+    resendInvitation(organizationId: string, email: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/organizations/${organizationId}/resend-invitation`, {
             method: 'POST',
             body: { email }
-        })
-        .pipe(
-            switchMap(response => response.json())
-        );
+        });
     },
-    addMemberToOrganization(organizationId: string, data: Partial<IOrganizationMember>) {
-        return fetchJSON(`/${process.env.REACT_APP_API_BASE_URL}/organization/v1/organization/${organizationId}/members`, {
+
+    addMemberToOrganization(organizationId: string, email: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/organizations/${organizationId}/members`, {
             method: 'POST',
-            body: data
-        })
-        .pipe(
-            switchMap(response => response.json())
-        );
+            body: { email }
+        });
     },
 
     changeMemberRoleInOrganization(organizationId: string, memberId: any, newRole: IRole) {
@@ -96,9 +92,25 @@ export const organizationService = {
         );
     },
 
-    removeMemberFromOrganization(organizationId: string, memberId: string) {
-        return fetchJSON(`/${process.env.REACT_APP_API_BASE_URL}/organization/v1/organization/${organizationId}/members/${memberId}`, {
+    removeMemberFromOrganization(organizationId: string, userId?: string, email?: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/organizations/${organizationId}/members`, {
             method: 'DELETE',
+            body: { email, userId }
         });
     },
+
+    getInvitationById(invitationId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/invitation/${invitationId}`, {
+            method: 'GET',
+        }).pipe(
+            switchMap(response => response.json())
+        );
+    },
+
+    acceptInvitation(invitationId: string) {
+        return fetchJSON(`${process.env.REACT_APP_API_BASE_URL}/organization/v1/accept-invite`, {
+            method: 'POST',
+            body: { invitationId  }
+        });
+    }
 };

@@ -22,3 +22,6 @@ export * from './githubRepository.model';
 export * from './button.model';
 export * from './organization.model';
 export * from './pipeline.model';
+export * from './job.model';
+export * from './organizationMember.model';
+export * from './invitation.model';

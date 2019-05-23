@@ -22,8 +22,8 @@ import { organizationActions } from '../../../actions';
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>) {
     return {
-        createOrganization: (name: string, description: string, redirect: boolean) => {
-            dispatch(organizationActions.createOrganization({ name, description }, redirect));
+        createOrganization: (name: string, redirect: boolean) => {
+            dispatch(organizationActions.createOrganization({ name }, redirect));
         }
     };
 }

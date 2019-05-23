@@ -17,8 +17,8 @@
 import React, { Component } from 'react';
 import style from './style.less';
 import classNames from 'classnames';
-import { GenericLoading } from '../common';
-import { IGithubRepository, IGithubRepositoryOwner, StyledButtonType, IProject, VcsType } from '../../models';
+import { GenericLoading, DropdownContainer } from '../common';
+import { IGithubRepository, IGithubRepositoryOwner, StyledButtonType, VcsType } from '../../models';
 import { IconFilter, IconChevronDown, IconClose, IconGithub } from '../common/icons';
 import { StyledButton } from '../common/buttons/StyledButton';
 import OnlyIf from '../common/onlyIf';
@@ -32,12 +32,12 @@ interface IProps {
     className?: string;
     repositoryList: IGithubRepository[];
     isRepositoriesLoading: boolean;
-    projectId: string;
+    projectId?: string;
     section: Section;
     getUserRepositoryList: () => void;
     cancelGetUserRepositoryList: () => void;
-    createDefaultOrganization: (organizationName: string, projectName: string) => void;
-    updateProjectDetails: (newProjectDetails: Partial<IProject>) => void;
+    createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => void;
+    connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => void;
 }
 
 interface IState {
@@ -46,7 +46,6 @@ interface IState {
     ownerFilterId: number;
     ownerFilterName: string;
     ownerFilterAvatar: string;
-    isExpandedOwners: boolean;
 }
 
 export default class GithubRepositoryList extends Component<IProps, IState> {
@@ -56,8 +55,7 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
         searchFilter: '',
         ownerFilterId: -1,
         ownerFilterName: '',
-        ownerFilterAvatar: '',
-        isExpandedOwners: false
+        ownerFilterAvatar: ''
     };
 
     componentWillUnmount() {
@@ -78,8 +76,7 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
         this.setState({
             ownerFilterId: id !== this.state.ownerFilterId ? id : -1,
             ownerFilterName: name !== this.state.ownerFilterName ? name : '',
-            ownerFilterAvatar: avatar !== this.state.ownerFilterAvatar ? avatar : '',
-            isExpandedOwners: false
+            ownerFilterAvatar: avatar !== this.state.ownerFilterAvatar ? avatar : ''
         });
     }
 
@@ -89,12 +86,6 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
             ownerFilterId: -1,
             ownerFilterName: '',
             ownerFilterAvatar: ''
-        });
-    }
-
-    toggleOwnersDropdown = () => {
-        this.setState({
-            isExpandedOwners: !this.state.isExpandedOwners
         });
     }
 
@@ -110,17 +101,18 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
     }
 
     handleOnBuildClick = (repo: IGithubRepository) => {
-        const { section, projectId, updateProjectDetails, createDefaultOrganization } = this.props;
+        const { section, projectId, connectProjectRepository, createDefaultOrganization } = this.props;
+
         if (section === Section.Welcome) {
-            createDefaultOrganization(repo.name, repo.owner.login);
-        } else {
-            updateProjectDetails({ id: projectId, vcsUrl: repo.cloneUrl, vcsType: VcsType.Github });
+            createDefaultOrganization(repo.owner.login, repo.name, repo.cloneUrl, VcsType.Github, repo.id);
+        } else if (projectId) {
+            connectProjectRepository(projectId, repo.cloneUrl, VcsType.Github, repo.id);
         }
     }
 
     render() {
         const { className, repositoryList, isRepositoriesLoading } = this.props;
-        const { searchFilter, ownerFilterId, ownerFilterName, ownerFilterAvatar, isExpandedOwners } = this.state;
+        const { searchFilter, ownerFilterId, ownerFilterName, ownerFilterAvatar } = this.state;
         const owners = this.getOwners();
 
         const filteredRepositories = repositoryList
@@ -146,7 +138,7 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
                                 <OnlyIf test={repo.private}>
                                     <div className={style.repoPrivate}>Private</div>
                                 </OnlyIf>
-                                <StyledButton type={StyledButtonType.Primary} onClick={() => this.handleOnBuildClick(repo)} text='Build' customClassName={style.btnBuild}/>
+                                <StyledButton type={StyledButtonType.Primary} onClick={() => this.handleOnBuildClick(repo)} text='Build' className={style.btnBuild}/>
                             </div>
                         )}
 
@@ -166,33 +158,39 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
                 </div>
                 <div className={style.right}>
                     <OnlyIf test={owners.length}>
-                        <p className={style.ownersDropdownContainer} onClick={() => this.toggleOwnersDropdown()}>
-                            {ownerFilterAvatar ? <img src={`${ownerFilterAvatar}&s=48`} alt={ownerFilterName} /> : ''}
-                            {ownerFilterName ? ownerFilterName : 'All repositories'}
-                            <IconChevronDown className={style.ownersDropdown} />
-                        </p>
-                        <div className={classNames([style.organizationsList, isExpandedOwners ? style.expanded : null])}>
-                            <div onClick={() => this.onFilterOwnerChange(-1, '', '')} className={classNames([style.singleOrganization, ownerFilterId === -1 ? style.active : null])}>
-                                <div className={style.githubIcon}>
-                                    <IconGithub />
-                                </div>
-                                <div className={style.orgTitle}>All repositories</div>
-                            </div>
-                            { owners.map((owner: IGithubRepositoryOwner, index: number) =>
-                                <div onClick={() => this.onFilterOwnerChange(owner.id, owner.login, owner.avatarUrl)}
-                                    className={classNames([style.singleOrganization, owner.id === ownerFilterId ? style.active : null])}
-                                    key={index}
-                                >
-                                    <img src={`${owner.avatarUrl}&s=48`}/>
-                                    <div className={style.orgTitle}>{owner.login}</div>
-                                    <OnlyIf test={owner.id === ownerFilterId}>
-                                        <div className={style.icon}>
-                                            <IconClose />
+                        <DropdownContainer
+                            dropdownContent={
+                                <div className={classNames([style.organizationsList])}>
+                                    <div onClick={() => this.onFilterOwnerChange(-1, '', '')} className={classNames([style.singleOrganization, ownerFilterId === -1 ? style.active : null])}>
+                                        <div className={style.githubIcon}>
+                                            <IconGithub />
                                         </div>
-                                    </OnlyIf>
+                                        <div className={style.orgTitle}>All repositories</div>
+                                    </div>
+                                    { owners.map((owner: IGithubRepositoryOwner, index: number) =>
+                                        <div onClick={() => this.onFilterOwnerChange(owner.id, owner.login, owner.avatarUrl)}
+                                            className={classNames([style.singleOrganization, owner.id === ownerFilterId ? style.active : null])}
+                                            key={index}
+                                        >
+                                            <div className={style.avatarContainer}>
+                                                <img src={`${owner.avatarUrl}&s=48`}/>
+                                            </div>
+                                            <div className={style.orgTitle}>{owner.login}</div>
+                                            <OnlyIf test={owner.id === ownerFilterId}>
+                                                <div className={style.icon}>
+                                                    <IconClose />
+                                                </div>
+                                            </OnlyIf>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
+                            }>
+                                <p className={style.ownersDropdownContainer}>
+                                    {ownerFilterAvatar ? <img src={`${ownerFilterAvatar}&s=48`} alt={ownerFilterName} /> : ''}
+                                    {ownerFilterName ? ownerFilterName : 'All repositories'}
+                                    <IconChevronDown className={style.ownersDropdown} />
+                                </p>
+                        </DropdownContainer>
                     </OnlyIf>
                 </div>
             </div>

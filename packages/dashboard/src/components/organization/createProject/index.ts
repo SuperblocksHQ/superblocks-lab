@@ -22,9 +22,8 @@ import { projectsActions } from '../../../actions';
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>) {
     return {
-        // TODO: Add appropriate action
-        createProject: (name: string, description: string, redirect: boolean) => {
-            dispatch(projectsActions.createProject({ name, description }, redirect));
+        createProject: (name: string, ownerId: string, ownerType: string, description: string, redirect: boolean) => {
+            dispatch(projectsActions.createProject({ name, ownerId, ownerType, description }, redirect));
         }
     };
 }

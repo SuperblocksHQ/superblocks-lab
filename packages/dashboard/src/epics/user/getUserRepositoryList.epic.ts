@@ -24,9 +24,6 @@ function getUserRepositories(action$: any) {
     return userService.getUserRepositories()
     .pipe(
         map(userActions.getUserRepositoryListSuccess),
-        takeUntil(action$.pipe(
-            ofType(userActions.GET_USER_REPOSITORY_LIST_CANCELLED)
-        )),
         catchError((error) => {
             console.log('There was an issue fetching the user repositories: ' + error);
             return of(userActions.getUserRepositoryListFail(error));
@@ -40,7 +37,10 @@ const getUserRepositoryList: Epic = (action$: any, state$: any) => action$.pipe(
     switchMap(([, ]) => {
         return timer(0, 5000)
             .pipe(
-                exhaustMap(() => getUserRepositories(action$))
+                exhaustMap(() => getUserRepositories(action$)),
+                takeUntil(action$.pipe(
+                    ofType(userActions.GET_USER_REPOSITORY_LIST_CANCELLED)
+                )),
             );
     })
 );

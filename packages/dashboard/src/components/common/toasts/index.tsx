@@ -16,7 +16,7 @@
 
 import React from 'react';
 import classNames from 'classnames';
-import { projectsActions } from '../../../actions';
+import { projectsActions, organizationActions } from '../../../actions';
 import {
     IconInformation,
     IconCheckCircle,
@@ -63,7 +63,7 @@ const error = (text: string) => ({
     className: classNames(['body', 'error'])
 });
 
-export const getToastComponent = (type: string) => {
+export const getToastComponent = (type: string, data: string) => {
     switch (type) {
         case projectsActions.CREATE_PROJECT_SUCCESS:
             return info('Project created!');
@@ -72,7 +72,33 @@ export const getToastComponent = (type: string) => {
         case projectsActions.UPDATE_PROJECT_DETAILS_FAIL:
             return error('Ups! Sorry there was an error. Try again.');
         case projectsActions.DELETE_PROJECT_FAIL:
-            return error('Error deleting project!');
+            return error('Error deleting project: ' + data);
+        case projectsActions.DISCONNECT_PROJECT_REPOSITORY_FAIL:
+            return error('Error disconnecting repository: ' + data);
+        case projectsActions.DISCONNECT_PROJECT_REPOSITORY_SUCCESS:
+            return success('Repository was successfully disconnected.');
+        case organizationActions.UPDATE_ORGANIZATION_DETAILS_SUCCESS:
+            return success('Sweet! Your organization was updated successfully.');
+        case organizationActions.UPDATE_ORGANIZATION_DETAILS_FAIL:
+            return error('Ups! Sorry there was an error. Try again.');
+        case organizationActions.DELETE_ORGANIZATION_FAIL:
+            return error('Error deleting organization: ' + data);
+        case organizationActions.CREATE_DEFAULT_ORGANIZATION_FAIL:
+            return error('Error creating default organization: ' + data);
+        case organizationActions.CREATE_ORGANIZATION_FAIL:
+            return error('Error creating organization: ' + data);
+        case organizationActions.ADD_MEMBER_TO_ORGANIZATION_SUCCESS:
+            return success('Yay! User has been added to organization!');
+        case organizationActions.ADD_MEMBER_TO_ORGANIZATION_FAIL:
+            return error('Ups! Sorry there was an error. Try again.');
+        case organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION_SUCCESS:
+            return success('User has been removed from organization!');
+        case organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION_FAIL:
+            return error('Ups! Sorry there was an error. Try again.');
+        case organizationActions.RESEND_INVITATION_SUCCESS:
+            return success('Yay! The new invitation is on the way!');
+        case organizationActions.RESEND_INVITATION_FAIL:
+            return error('Ups! Sorry there was an error. Try again.');
         default:
             return null;
     }
