@@ -27,11 +27,10 @@ interface IProps {
 export function BuildStatus(props: IProps) {
     switch (props.status) {
         case PipelineStatus.Pending:
-        case PipelineStatus.Queued:
             return (
-                <div className={classNames([style.buildStatus, style.queue])}>
+                <div className={classNames([style.buildStatus, style.pending])}>
                     <IconClock width='14px' height='14px' />
-                    <span>queue</span>
+                    <span>pending</span>
                 </div>
             );
         case PipelineStatus.Running:

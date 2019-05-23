@@ -97,7 +97,7 @@
     }
 
     .singleCell:nth-of-type(3) {
-        flex: 1 0;
+        flex: 0 0 250px;
         min-width: 0px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -113,7 +113,7 @@
 
     .singleCell:nth-of-type(4) {
         flex: 1 0;
-        min-width: 0px;
+        min-width: 100px;
         overflow: hidden;
         text-overflow: ellipsis;
 
@@ -148,7 +148,7 @@
             border-right-color: #59a600;
         }
 
-        &.status-queued {
+        &.status-pending {
             border-right-color: #725BA4;
         }
 
@@ -248,7 +248,7 @@
         line-height: 1;
     }
 
-    &.queue {
+    &.pending {
         border-color: #725BA4;
         color: #fff;
         background-color: #725BA4;
