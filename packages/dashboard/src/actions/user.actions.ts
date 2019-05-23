@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { IGithubRepository, IUser } from '../models';
+import { IGithubRepository, IUser, RepoListScreenType } from '../models';
 
 export const userActions = {
 
@@ -78,4 +78,24 @@ export const userActions = {
             error
         };
     },
+    CHECK_REPOSITORY_PERMISSIONS: 'CHECK_REPOSITORY_PERMISSIONS',
+    checkRepositoryPermissions(repoOwnerId: number, repositoryId: number, screenType: RepoListScreenType, projectId?: string) {
+        return {
+            type: userActions.CHECK_REPOSITORY_PERMISSIONS,
+            data: { repoOwnerId, repositoryId, screenType, projectId }
+        };
+    },
+    CHECK_REPOSITORY_PERMISSIONS_SUCCESS: 'CHECK_REPOSITORY_PERMISSIONS_SUCCESS',
+    checkRepositoryPermissionsSuccess() {
+        return {
+            type: userActions.CHECK_REPOSITORY_PERMISSIONS_SUCCESS
+        };
+    },
+    CHECK_REPOSITORY_PERMISSIONS_FAIL: 'CHECK_REPOSITORY_PERMISSIONS_FAIL',
+    checkRepositoryPermissionsFail(error: any) {
+        return {
+            type: userActions.CHECK_REPOSITORY_PERMISSIONS_FAIL,
+            error
+        };
+    }
 };

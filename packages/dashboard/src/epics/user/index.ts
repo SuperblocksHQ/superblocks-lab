@@ -16,8 +16,10 @@
 
 import { getUserRepositoryList } from './getUserRepositoryList.epic';
 import { updateUserProfile } from './updateUserProfile.epic';
+import { checkGithubRepoPermissions } from './checkGithubRepoPermissions.epic';
 
 export const userEpics = [
     getUserRepositoryList,
-    updateUserProfile
+    updateUserProfile,
+    checkGithubRepoPermissions
 ];

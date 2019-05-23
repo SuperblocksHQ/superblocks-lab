@@ -25,3 +25,4 @@ export * from './pipeline.model';
 export * from './job.model';
 export * from './organizationMember.model';
 export * from './invitation.model';
+export * from './repoListScreenType.enum';

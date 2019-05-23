@@ -15,7 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import { of } from 'rxjs';
-import { switchMap, withLatestFrom, map, catchError, takeUntil, exhaustMap } from 'rxjs/operators';
+import { switchMap, withLatestFrom, tap, map, filter, catchError } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { userActions } from '../../actions';
 import { userService } from '../../services';
@@ -23,9 +23,11 @@ import { userService } from '../../services';
 export const getUserRepositoryList: Epic = (action$: any, state$: any) => action$.pipe(
     ofType(userActions.GET_USER_REPOSITORY_LIST),
     withLatestFrom(state$),
-    switchMap(([, ]) => {
+    switchMap(([, state]) => {
+        const githubUserId = state.user.profile.githubId;
         return userService.getUserRepositories()
             .pipe(
+                map((repositories) => repositories.filter((r: any) => r.owner.id === githubUserId || r.owner.type === 'Organization')),
                 map(userActions.getUserRepositoryListSuccess),
                 catchError((error) => {
                     console.log('There was an issue fetching the user repositories: ' + error);

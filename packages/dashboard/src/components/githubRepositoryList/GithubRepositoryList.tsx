@@ -18,25 +18,19 @@ import React, { Component } from 'react';
 import style from './style.less';
 import classNames from 'classnames';
 import { GenericLoading, DropdownContainer } from '../common';
-import { IGithubRepository, IGithubRepositoryOwner, StyledButtonType, VcsType } from '../../models';
+import { IGithubRepository, IGithubRepositoryOwner, StyledButtonType, RepoListScreenType } from '../../models';
 import { IconFilter, IconChevronDown, IconClose, IconGithub } from '../common/icons';
 import { StyledButton } from '../common/buttons/StyledButton';
 import OnlyIf from '../common/onlyIf';
-
-export enum Section {
-    Welcome,
-    ConnectToRepo
-}
 
 interface IProps {
     className?: string;
     repositoryList: IGithubRepository[];
     isRepositoriesLoading: boolean;
     projectId?: string;
-    section: Section;
+    screenType: RepoListScreenType;
     getUserRepositoryList: () => void;
-    createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) => void;
-    connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType) => void;
+    checkGithubRepoPermissions: (repoOwnerId: number, repositoryId: number, screenType: RepoListScreenType, projectId?: string) => void;
 }
 
 interface IState {
@@ -96,13 +90,9 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
     }
 
     handleOnBuildClick = (repo: IGithubRepository) => {
-        const { section, projectId, connectProjectRepository, createDefaultOrganization } = this.props;
+        const { screenType, checkGithubRepoPermissions, projectId } = this.props;
 
-        if (section === Section.Welcome) {
-            createDefaultOrganization(repo.owner.login, repo.name, repo.cloneUrl, VcsType.Github);
-        } else if (projectId) {
-            connectProjectRepository(projectId, repo.cloneUrl, VcsType.Github);
-        }
+        checkGithubRepoPermissions(repo.owner.id, repo.id, screenType, projectId);
     }
 
     render() {
@@ -123,7 +113,7 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
                         <input type='text' placeholder='Filter projects...' value={searchFilter} onChange={this.onSearchInputChange.bind(this)} />
                     </div>
 
-                    <p>If you don't see your project listed here, make sure to <a href='https://github.com/apps/superblocks-devops' target='_blank' rel='noreferrer noopener'>grant us access</a></p>
+                    <p>If you don't see your project listed here, make sure to <a href={process.env.REACT_APP_GITHUB_APP_URL} target='_blank' rel='noreferrer noopener'>grant us access</a></p>
 
                     <div className={style.repoList}>
                         { filteredRepositories.map((repo: IGithubRepository, index: number) =>

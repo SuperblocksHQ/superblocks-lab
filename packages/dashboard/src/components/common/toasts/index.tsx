@@ -16,7 +16,7 @@
 
 import React from 'react';
 import classNames from 'classnames';
-import { projectsActions, organizationActions } from '../../../actions';
+import { projectsActions, organizationActions, userActions } from '../../../actions';
 import {
     IconInformation,
     IconCheckCircle,
@@ -99,6 +99,8 @@ export const getToastComponent = (type: string, data: string) => {
             return success('Yay! The new invitation is on the way!');
         case organizationActions.RESEND_INVITATION_FAIL:
             return error('Ups! Sorry there was an error. Try again.');
+        case userActions.CHECK_REPOSITORY_PERMISSIONS_FAIL:
+            return error('Ups! Sorry there was an error checking for the repository permissions. Try again');
         default:
             return null;
     }

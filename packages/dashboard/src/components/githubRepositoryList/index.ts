@@ -20,9 +20,7 @@ import { AnyAction } from 'redux';
 import { userActions, organizationActions, projectsActions } from '../../actions';
 import { userSelectors } from '../../selectors';
 import GithubRepositoryList from './GithubRepositoryList';
-import { VcsType } from '../../models';
-
-export { Section } from './GithubRepositoryList';
+import { VcsType, RepoListScreenType } from '../../models';
 
 const mapStateToProps = (state: any) => ({
     repositoryList: userSelectors.getUserRepositoryList(state),
@@ -33,6 +31,9 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
     return {
         getUserRepositoryList: () => {
             dispatch(userActions.getUserRepositoryList());
+        },
+        checkGithubRepoPermissions: (repoOwnerId: number, repositoryId: number, screenType: RepoListScreenType, projectId?: string) => {
+            dispatch(userActions.checkRepositoryPermissions(repoOwnerId, repositoryId, screenType, projectId));
         },
         createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) => {
             dispatch(organizationActions.createDefaultOrganization(organizationName, projectName, vcsUrl, vcsType));
