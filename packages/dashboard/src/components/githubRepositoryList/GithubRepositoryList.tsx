@@ -35,7 +35,6 @@ interface IProps {
     projectId?: string;
     section: Section;
     getUserRepositoryList: () => void;
-    cancelGetUserRepositoryList: () => void;
     createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => void;
     connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => void;
 }
@@ -57,10 +56,6 @@ export default class GithubRepositoryList extends Component<IProps, IState> {
         ownerFilterName: '',
         ownerFilterAvatar: ''
     };
-
-    componentWillUnmount() {
-        this.props.cancelGetUserRepositoryList();
-    }
 
     componentDidMount() {
         this.props.getUserRepositoryList();
