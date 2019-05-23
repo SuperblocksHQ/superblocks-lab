@@ -19,6 +19,7 @@ import style from './style.less';
 import { Link } from 'react-router-dom';
 import { BreadCrumbs } from '../../../common';
 import { IUser } from '../../../../models';
+import ThemeSwitcher from './themeSwitcher';
 
 interface IProps {
     location: any;
@@ -38,6 +39,10 @@ export default class Appearance extends Component<IProps> {
                 </BreadCrumbs>
 
                 <h1>Appearance</h1>
+                <div className={style.hr}></div>
+                <div className={style.optionBlock}>
+                    <ThemeSwitcher />
+                </div>
             </React.Fragment>
         );
     }

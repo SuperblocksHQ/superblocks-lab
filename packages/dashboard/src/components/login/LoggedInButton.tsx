@@ -45,6 +45,7 @@ export default class LoggedInButton extends Component<IProps> {
                         dropdownContent={
                             <div className={style.menuDialog} >
                                 <MenuItem linkTo={'/settings/profile'} title='Account Settings' />
+                                <MenuItem linkTo={'/settings/appearance'} title='Change theme' />
                                 <MenuItem onClick={this.logout} title='Logout' />
                             </div>
                         }>

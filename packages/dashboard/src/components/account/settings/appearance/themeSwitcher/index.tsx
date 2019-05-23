@@ -18,8 +18,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import { ThemeSwitcher } from './ThemeSwitcher';
-import { appSelectors } from '../../../../selectors';
-import { appActions } from '../../../../actions';
+import { appSelectors } from '../../../../../selectors';
+import { appActions } from '../../../../../actions';
 
 export enum Theme {
     Dark = 'darkTheme',

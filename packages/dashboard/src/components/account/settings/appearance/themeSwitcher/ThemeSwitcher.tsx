@@ -15,10 +15,8 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component } from 'react';
-import { Tooltip } from '../../tooltip';
 import style from './style.less';
 import classNames from 'classnames';
-import { IconSun, IconMoon } from '../../icons';
 import { Theme } from './';
 
 interface IProps {
@@ -28,16 +26,10 @@ interface IProps {
 
 export class ThemeSwitcher extends Component<IProps> {
 
-    toggleLightMode = () => {
+    handleChangeTheme = (theme: Theme) => {
         const { changeAppTheme } = this.props;
-        localStorage.setItem('theme', Theme.Light);
-        changeAppTheme(Theme.Light);
-    }
-
-    toggleDarkMode = () => {
-        const { changeAppTheme } = this.props;
-        localStorage.setItem('theme', Theme.Dark);
-        changeAppTheme(Theme.Dark);
+        localStorage.setItem('theme', theme);
+        changeAppTheme(theme);
     }
 
     render() {
@@ -45,23 +37,17 @@ export class ThemeSwitcher extends Component<IProps> {
 
         return (
             <React.Fragment>
-            { appTheme === Theme.Light ?
-                    <div onClick={() => this.toggleDarkMode()} className={style.action}>
-                        <Tooltip title='Dark mode'>
-                            <button className={classNames([style.container, 'btnNoBg'])}>
-                                <IconMoon />
-                            </button>
-                        </Tooltip>
+                <p>Theme:</p>
+                <div className={style.container}>
+                    <div onClick={() => this.handleChangeTheme(Theme.Light)} className={style.theme}>
+                        <div className={classNames([style.light, appTheme === Theme.Light ? style.active : null])}></div>
+                        <p>Light</p>
                     </div>
-                 :
-                    <div onClick={() => this.toggleLightMode()} className={style.action}>
-                        <Tooltip title='Light mode'>
-                            <button className={classNames([style.container, 'btnNoBg'])}>
-                                <IconSun />
-                            </button>
-                        </Tooltip>
+                    <div onClick={() => this.handleChangeTheme(Theme.Dark)} className={style.theme}>
+                        <div className={classNames([style.dark, appTheme === Theme.Dark ? style.active : null])}></div>
+                        <p>Dark</p>
                     </div>
-                }
+                </div>
             </React.Fragment>
         );
     }
