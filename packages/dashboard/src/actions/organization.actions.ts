@@ -42,10 +42,10 @@ export const organizationActions = {
 
     // ---------- Special case when the user does not have any organization available and we need to create a default one ---------- //
     CREATE_DEFAULT_ORGANIZATION: 'CREATE_DEFAULT_ORGANIZATION',
-    createDefaultOrganization(organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) {
+    createDefaultOrganization(organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) {
         return {
             type: organizationActions.CREATE_DEFAULT_ORGANIZATION,
-            data: { organizationName, projectName, vcsUrl, vcsType, repositoryId }
+            data: { organizationName, projectName, vcsUrl, vcsType }
         };
     },
     CREATE_DEFAULT_ORGANIZATION_SUCCESS: 'CREATE_DEFAULT_ORGANIZATION_SUCCESS',

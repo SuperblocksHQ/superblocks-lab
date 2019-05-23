@@ -34,11 +34,11 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
         getUserRepositoryList: () => {
             dispatch(userActions.getUserRepositoryList());
         },
-        createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => {
-            dispatch(organizationActions.createDefaultOrganization(organizationName, projectName, vcsUrl, vcsType, repositoryId));
+        createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) => {
+            dispatch(organizationActions.createDefaultOrganization(organizationName, projectName, vcsUrl, vcsType));
         },
-        connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => {
-            dispatch(projectsActions.connectProjectRepository(id, vcsUrl, vcsType, repositoryId));
+        connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType) => {
+            dispatch(projectsActions.connectProjectRepository(id, vcsUrl, vcsType));
         }
     };
 };
