@@ -1,4 +1,4 @@
-import { Theme } from '../components/common/topbar/themeSwitcher';
+import { Theme } from '../components/account/settings/appearance/themeSwitcher';
 
 export const appActions = {
     APP_START: 'APP_START',
