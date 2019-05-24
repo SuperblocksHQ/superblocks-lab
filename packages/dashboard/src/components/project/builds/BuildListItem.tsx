@@ -77,9 +77,11 @@ export default class BuildListItem extends Component<IProps> {
                 <div className={classNames([style[`status-${pipeline.status}`], style.singleCell])}>
                     <span className={style['mb-2']}>
                         <IconClock className={style['mr-2']} />
-
-                        {/* TODO - This needs to be calculated when not available */}
-                        {secondsToHms(pipeline.duration)}
+                        { !pipeline.finishedAt ?
+                            secondsToHms(moment().diff(moment.utc(pipeline.createdAt), 'seconds'))
+                            :
+                            secondsToHms(moment.utc(pipeline.finishedAt).diff(moment.utc(pipeline.createdAt), 'seconds'))
+                        }
                     </span>
                     <span>
                         <IconCalendar className={style['mr-2']} />
