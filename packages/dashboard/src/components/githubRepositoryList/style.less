@@ -26,13 +26,13 @@
         flex-grow: 2;
 
         p {
-            color: #c0c0c0;
+            color: var(--colorGrey);
         }
     }
 
     .right {
         margin-left: 25px;
-        margin-top: 8px;
+        margin-top: 12px;
         flex-grow: 1;
 
         p {
@@ -55,16 +55,16 @@
 
         .icon {
             position: absolute;
-            left: 10px;
-            top: 11px;
+            left: 20px;
+            top: 15px;
         }
 
         input {
             background: transparent;
-            color: white;
-            border: 1px solid grey;
+            color: var(--primaryFontColor);
+            border: 1px solid var(--inputBorderColor);
             border-radius: 4px;
-            padding: 7px 15px 7px 30px;
+            padding: 12px 15px 12px 45px;
             width: 100%;
             margin-bottom: 15px;
         }
@@ -89,13 +89,12 @@
         position: relative;
         min-height: 350px;
         max-height: 350px;
-        overflow-y: auto;
 
         .singleRepo {
             display: flex;
             align-items: center;
-            padding: 8px 8px 8px 4px;
-            max-height: 35px;
+            padding: 15px 15px 15px 15px;
+            max-height: 45px;
 
             .repoPrivate {
                 font-size: 12px;
@@ -114,7 +113,7 @@
             }
 
             &:hover {
-                background: #283134;
+                background: var(--repositoryRowBackgroundHover);
 
                 .btnBuild {
                     display: block;
@@ -122,9 +121,9 @@
             }
 
             img {
-                max-width: 24px;
-                min-width: 24px;
-                min-height: 24px;
+                max-width: 30px;
+                min-width: 30px;
+                min-height: 30px;
                 height: auto;
                 margin-right: 15px;
             }
@@ -152,11 +151,11 @@
 
             &.active {
                 border-color: @primary-color;
-                background: #283134;
+                background: var(--repositoryOwnerBackgroundActive);
             }
 
             &:hover {
-                background: #283134;
+                background: var(--repositoryOwnerBackgroundActive);
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
                 cursor: pointer;
 
@@ -206,7 +205,7 @@
         &:hover {
             cursor: pointer;
             opacity: .6;
-        } 
+        }
 
         .ownersDropdown {
             margin-left: 5px;

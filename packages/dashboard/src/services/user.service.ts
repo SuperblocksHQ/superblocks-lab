@@ -38,6 +38,13 @@ export const userService = {
 
     },
 
+    putUserById(id: string, data: any) {
+        return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/user/v1/user/' + id, {
+            method: 'PUT',
+            body: data
+        });
+    },
+
     getUserRepositories() {
         return fetchJSON(process.env.REACT_APP_API_BASE_URL + '/user/v1/github/repos', {})
             .pipe(

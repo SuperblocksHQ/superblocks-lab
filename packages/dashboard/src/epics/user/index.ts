@@ -14,8 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import getUserRepositoryList from './getUserRepositoryList.epic';
+import { getUserRepositoryList } from './getUserRepositoryList.epic';
+import { updateUserProfile } from './updateUserProfile.epic';
+import { checkGithubRepoPermissions } from './checkGithubRepoPermissions.epic';
 
 export const userEpics = [
-    getUserRepositoryList
+    getUserRepositoryList,
+    updateUserProfile,
+    checkGithubRepoPermissions
 ];

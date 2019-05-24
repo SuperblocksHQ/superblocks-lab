@@ -15,6 +15,7 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 @import '../style.less';
+@import '../../../../style/index.less';
 
 .peopleList {
     width: 100%;
@@ -32,10 +33,6 @@
             &:hover {
                 background: transparent;
             }
-        }
-
-        &:hover {
-            background: #262c30;
         }
     }
 
@@ -85,7 +82,7 @@
         
         .userItem {
             display: block;
-            border: 1px solid @border-color;
+            border: 1px solid var(--borderColor);
             margin-bottom: 30px;
             padding: 10px;
         }
@@ -102,7 +99,7 @@
 }
 
 .colorGrey {
-    color: #c4c4c4;
+    color: var(--colorGrey);
 }
 
 .inviteBtn {

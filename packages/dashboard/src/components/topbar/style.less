@@ -24,10 +24,11 @@
     align-items: center;
     width: 100%;
     height: 45px;
-    background-color: #1C2123;
+    background-color: var(--topbarBackground);
     line-height: 190%;
-    color: #fff;
-    border-bottom: 1px solid @border-color;
+    color: var(--primaryFontColor);
+    border-bottom: 1px solid var(--borderColor);
+    .themeTransition();
     .container {
         display: flex;
         align-content: center;
@@ -53,6 +54,10 @@
         display: flex;
         align-items: center;
         transition: opacity .15s;
+        img {
+            .themeTransition();
+            transition+: filter .35s;
+        }
         &:hover {
             opacity: .6;
         }

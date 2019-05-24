@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+@import '../../style/index.less';
+
 .welcomePage {
     height: 100%;
 
     .header {
         display: inline-block;
-        margin-bottom: 50px;
-        margin-top: auto;
+        margin-bottom: 30px;
+        margin-top: 40px;
 
         h1 {
             margin-top: 0px;
@@ -36,9 +38,9 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-        background: #1C2123;
+        background: var(--primaryBackground);
         height: calc(100% - 50px);
-        color: white;
+        color: var(--primaryFontColor);
         overflow-y: auto;
         overflow-x: hidden;
         padding: 20px;

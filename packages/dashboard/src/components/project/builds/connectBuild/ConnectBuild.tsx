@@ -18,9 +18,9 @@ import React, { Component } from 'react';
 import style from './style.less';
 import { Link, Redirect } from 'react-router-dom';
 import { BreadCrumbs, StyledButton } from '../../../common';
-import { StyledButtonType, IProject, IOrganization } from '../../../../models';
+import { StyledButtonType, IProject, IOrganization, RepoListScreenType } from '../../../../models';
 import { IconGithub } from '../../../common/icons';
-import GithubRepositoryList, { Section } from '../../../githubRepositoryList';
+import GithubRepositoryList from '../../../githubRepositoryList';
 import OnlyIf from '../../../common/onlyIf';
 
 interface IProps {
@@ -45,7 +45,7 @@ export default class ConnectBuild extends Component<IProps> {
 
                 <div className={style.title}>
                     <h1>Connect to repository</h1>
-                    <a href='https://github.com/apps/superblocks-devops' target='_blank' rel='noreferrer noopener'>
+                    <a href={process.env.REACT_APP_GITHUB_APP_URL} target='_blank' rel='noreferrer noopener'>
                         <StyledButton icon={<IconGithub />} type={StyledButtonType.Primary} text={'Configure Github App'} className={style.btnConfigure} />
                     </a>
                 </div>
@@ -54,7 +54,7 @@ export default class ConnectBuild extends Component<IProps> {
                     <Redirect to={`/${organization.id}/projects/${project.id}/builds`} />
                 </OnlyIf>
 
-                <GithubRepositoryList projectId={project.id} section={Section.ConnectToRepo}/>
+                <GithubRepositoryList projectId={project.id} screenType={RepoListScreenType.ConnectToRepo}/>
             </div>
         );
     }

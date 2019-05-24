@@ -39,6 +39,7 @@ export default class Topbar extends Component<IProps> {
                         src='/static/img/img-logo-dashboard.svg'
                         alt='Superblocks logo'
                         height='28px'
+                        className={'colorInverted'}
                     />
                 </Link>
 

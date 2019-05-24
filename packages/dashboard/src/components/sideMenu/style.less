@@ -22,21 +22,23 @@
     max-width: 259px;
     box-sizing: border-box;
     z-index: 1;
-    background-color: #262c30;
-    color: white;
+    background-color: var(--sideMenuBackground);
+    color: var(--primaryFontColor);
+    .themeTransition();
     display: flex;
     flex-direction: column;
     height: calc(100% - 45px);
     overflow-x: hidden;
-    transition: width .2s ease-out, min-width .2s ease-out;
-    border-right: 1px solid @border-color;
+    transition+: width .2s ease-out, min-width .2s ease-out;
+    border-right: 1px solid var(--borderColor);
 
     &.collapsed {
         width: 50px;
         min-width: 50px;
 
         .collapseSidebar {
-            border-bottom: 1px solid @border-color;
+            border-bottom: 1px solid var(--borderColor);
+            .themeTransition();
             transform: rotate(180deg);
         }
 
@@ -57,7 +59,6 @@
         .item {
             padding: 5px 4px;
             justify-content: center;
-
 
             &, &.active {
                 border-right: 2px solid transparent;
@@ -80,7 +81,7 @@
             &:hover .subMenu.visible {
                 position: fixed;
                 display: block;
-                background: #262c30;
+                background: var(--sideMenuBackground);
                 min-width: 150px;
                 margin-left: 36px;
                 margin-top: -34px;
@@ -122,7 +123,7 @@
             padding: 5px 0px;
             position: fixed;
             display: block;
-            background: #262c30;
+            background: var(--sideMenuBackground);
             min-width: 150px;
             margin-left: 220px;
             margin-top: -34px;
@@ -142,7 +143,7 @@
         }
 
         .item {
-            background: #262c30;
+            background: var(--sideMenuBackground);
             justify-content: flex-start;
         }
 
@@ -159,7 +160,8 @@
     .collapseSidebar {
         margin-top: auto;
         height: 30px;
-        border-top: 1px solid @border-color;
+        border-top: 1px solid var(--borderColor);
+        .themeTransition();
 
         svg {
             max-height: 100%;
@@ -191,7 +193,9 @@
 
 .active .item {
     border-color: @primary-color;
-    background-color: #31383B;
+    background-color: var(--sideMenuBackgroundActive);
+    .themeTransition();
+    transition+: border-color 0s;
 }
 
 .item {
@@ -202,7 +206,7 @@
     user-select: none;
     padding: 5px 13px;
     white-space: nowrap;
-    border-left: 2px solid transparent;
+    border-left: 2.5px solid transparent;
     min-height: 37px;
 
     .iconContainer {
@@ -214,7 +218,7 @@
 
     &:hover {
         opacity: 1;
-        background-color: #31383B;
+        background-color: var(--sideMenuBackgroundActive);
         cursor: pointer;
     }
 
@@ -230,7 +234,8 @@
 }
 
 .sideMenuHeader {
-    color: white;
+    color: var(--primaryFontColor);
+    .themeTransition();
     padding: 20px 5px 12px 15px;
     white-space: nowrap;
     font-size: 16px;
@@ -238,7 +243,8 @@
 }
 
 .sideMenuSubHeader {
-    color: white;
+    color: var(--primaryFontColor);
+    .themeTransition();
     padding-bottom: 12px;
     padding-left: 15px;
     padding-top: 20px;

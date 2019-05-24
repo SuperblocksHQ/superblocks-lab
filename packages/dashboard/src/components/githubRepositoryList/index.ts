@@ -18,11 +18,9 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import { userActions, organizationActions, projectsActions } from '../../actions';
-import { userSelectors, projectSelectors } from '../../selectors';
+import { userSelectors } from '../../selectors';
 import GithubRepositoryList from './GithubRepositoryList';
-import { IProject, VcsType } from '../../models';
-
-export { Section } from './GithubRepositoryList';
+import { VcsType, RepoListScreenType } from '../../models';
 
 const mapStateToProps = (state: any) => ({
     repositoryList: userSelectors.getUserRepositoryList(state),
@@ -34,14 +32,14 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
         getUserRepositoryList: () => {
             dispatch(userActions.getUserRepositoryList());
         },
-        cancelGetUserRepositoryList: () => {
-            dispatch(userActions.cancelGetUserRepositoryList());
+        checkGithubRepoPermissions: (repoOwnerId: number, repositoryId: number, screenType: RepoListScreenType, projectId?: string) => {
+            dispatch(userActions.checkRepositoryPermissions(repoOwnerId, repositoryId, screenType, projectId));
         },
-        createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => {
-            dispatch(organizationActions.createDefaultOrganization(organizationName, projectName, vcsUrl, vcsType, repositoryId));
+        createDefaultOrganization: (organizationName: string, projectName: string, vcsUrl: string, vcsType: VcsType) => {
+            dispatch(organizationActions.createDefaultOrganization(organizationName, projectName, vcsUrl, vcsType));
         },
-        connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType, repositoryId: number) => {
-            dispatch(projectsActions.connectProjectRepository(id, vcsUrl, vcsType, repositoryId));
+        connectProjectRepository: (id: string, vcsUrl: string, vcsType: VcsType) => {
+            dispatch(projectsActions.connectProjectRepository(id, vcsUrl, vcsType));
         }
     };
 };

@@ -14,10 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { IGithubRepository } from '../models';
+import { IGithubRepository, IUser, RepoListScreenType } from '../models';
 
 export const userActions = {
 
+    // ---------- CRUD User actions ----------
+    UPDATE_USER_PROFILE: 'UPDATE_USER_PROFILE',
+    updateUserProfile(newUser: Partial<IUser>) {
+       return {
+            type: userActions.UPDATE_USER_PROFILE,
+            data: newUser
+       };
+    },
+    UPDATE_USER_PROFILE_SUCCESS: 'UPDATE_USER_PROFILE_SUCCESS',
+    updateUserProfileSuccess(user: IUser) {
+       return {
+            type: userActions.UPDATE_USER_PROFILE_SUCCESS,
+            data: { user }
+       };
+    },
+    UPDATE_USER_PROFILE_FAIL: 'UPDATE_USER_PROFILE_FAIL',
+    updateUserProfileFail(error: string) {
+       return {
+            type: userActions.UPDATE_USER_PROFILE_FAIL,
+            data: error
+       };
+    },
+
+
+    // ---------- Others ----------
     SET_PROFILE_PICTURE: 'SET_PROFILE_PICTURE',
     setProfilePicture(user: any) {
         return {
@@ -38,13 +63,6 @@ export const userActions = {
         };
     },
 
-    GET_USER_REPOSITORY_LIST_CANCELLED: 'GET_USER_REPOSITORY_LIST_CANCELLED',
-    cancelGetUserRepositoryList() {
-        return {
-            type: userActions.GET_USER_REPOSITORY_LIST_CANCELLED,
-        };
-    },
-
     GET_USER_REPOSITORY_LIST_SUCCESS: 'GET_USER_REPOSITORY_LIST_SUCCESS',
     getUserRepositoryListSuccess(githubRepositoryList: IGithubRepository[]) {
         return {
@@ -60,4 +78,24 @@ export const userActions = {
             error
         };
     },
+    CHECK_REPOSITORY_PERMISSIONS: 'CHECK_REPOSITORY_PERMISSIONS',
+    checkRepositoryPermissions(repoOwnerId: number, repositoryId: number, screenType: RepoListScreenType, projectId?: string) {
+        return {
+            type: userActions.CHECK_REPOSITORY_PERMISSIONS,
+            data: { repoOwnerId, repositoryId, screenType, projectId }
+        };
+    },
+    CHECK_REPOSITORY_PERMISSIONS_SUCCESS: 'CHECK_REPOSITORY_PERMISSIONS_SUCCESS',
+    checkRepositoryPermissionsSuccess() {
+        return {
+            type: userActions.CHECK_REPOSITORY_PERMISSIONS_SUCCESS
+        };
+    },
+    CHECK_REPOSITORY_PERMISSIONS_FAIL: 'CHECK_REPOSITORY_PERMISSIONS_FAIL',
+    checkRepositoryPermissionsFail(error: any) {
+        return {
+            type: userActions.CHECK_REPOSITORY_PERMISSIONS_FAIL,
+            error
+        };
+    }
 };

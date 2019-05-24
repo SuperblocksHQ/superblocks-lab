@@ -34,7 +34,12 @@ const Dashboard = Loadable({
 });
 
 const OrganizationSettings = Loadable({
-    loader: () => import(/* webpackChunkName: "Dashboard" */'../organization/settings'),
+    loader: () => import(/* webpackChunkName: "OrganizationSettings" */'../organization/settings'),
+    loading: EmptyLoading,
+});
+
+const AccountSettings = Loadable({
+    loader: () => import(/* webpackChunkName: "AccountSettings" */'../account/settings'),
     loading: EmptyLoading,
 });
 
@@ -48,16 +53,6 @@ const WelcomePage = Loadable({
     loading: EmptyLoading,
 });
 
-const Details = Loadable({
-    loader: () => import(/* webpackChunkName: "Details" */'../organization/settings/details'),
-    loading: EmptyLoading,
-});
-
-const PeopleList = Loadable({
-    loader: () => import(/* webpackChunkName: "PeopleList" */'../organization/settings/people'),
-    loading: EmptyLoading,
-});
-
 const Invitation = Loadable({
     loader: () => import(/* webpackChunkName: "Invitation" */'../organization/invitation'),
     loading: EmptyLoading,
@@ -67,6 +62,7 @@ interface IProps {
     notifyAppStart: () => void;
     isAuthenticated: boolean;
     isLoginInProgress: boolean;
+    appTheme: string;
 }
 
 export default class App extends Component<IProps> {
@@ -80,11 +76,11 @@ export default class App extends Component<IProps> {
     }
 
     render() {
-        const { isAuthenticated, isLoginInProgress } = this.props;
+        const { isAuthenticated, isLoginInProgress, appTheme } = this.props;
 
         return (
             <Router>
-                <div id='app'>
+                <div id='app' className={appTheme}>
                     <div id='app_content'>
                         <div className='maincontent'>
                             <Switch>
@@ -101,6 +97,9 @@ export default class App extends Component<IProps> {
                                     <ProjectDashboard {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
                                 )} />
                                 <PrivateRoute path='/github/update' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={() => <GithubAppRedirect />} />
+                                <PrivateRoute path='/settings' isAuthenticated={isAuthenticated} isLoading={isLoginInProgress} render={(props: any) => (
+                                    <AccountSettings {...props} isAuthenticated={isAuthenticated} isAuthLoading={isLoginInProgress}/>
+                                )} />
                                 <Route component={() => <ErrorPage />} status={404} />
                                 <Route exact path='/error/404' component={() => <ErrorPage />} status={404} />
                             </Switch>

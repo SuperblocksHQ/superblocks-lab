@@ -16,12 +16,6 @@
 
 @import '../../../../style/index';
 
-.actionRight {
-    &.noBorder:hover {
-        border-color: transparent;
-    }
-}
-
 .container {
     display: flex;
 }
@@ -36,9 +30,9 @@
     cursor: pointer;
     padding: 0px 5px;
     &:hover {
-        color: #E0E0E0;
+        color: var(--actionColorHover);
         border-color: @primary-color;
-        background-color: @action-color-hover;
+        background-color: var(--actionBackgroundHover);
     }
 }
 

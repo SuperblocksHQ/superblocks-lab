@@ -17,20 +17,20 @@
 @import '../../style/index.less';
 
 .dashboard {
-    background-color: #fff;
     font-size: 14px;
     height: 100%;
 
     .content {
         height: 100%;
         display: flex;
-        background-color: @primary-background-color;
-        color: white;
+        background-color: var(--primaryBackground);
+        color: var(--primaryFontColor);
         overflow-y: auto;
         overflow-x: hidden;
 
         .sideMenu {
-            background-color: @primary-background-color;
+            background-color: var(--primaryBackground);
+            .themeTransition();
         }
     }
 

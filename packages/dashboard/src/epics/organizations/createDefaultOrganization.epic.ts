@@ -14,58 +14,47 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { of, empty } from 'rxjs';
+import { of } from 'rxjs';
 import { switchMap, withLatestFrom, catchError } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { organizationActions, projectsActions } from '../../actions';
 import { organizationService, projectService } from '../../services';
-import { checkInstallations, redirectToGithub } from '../utils/github.utils';
 
 export const createDefaultOrganization: Epic = (action$, state$) => action$.pipe(
     ofType(organizationActions.CREATE_DEFAULT_ORGANIZATION),
     withLatestFrom(state$),
     switchMap(([action, state]) => {
-        return checkInstallations(state.user.profile.githubId, action.data.repositoryId)
-        .pipe(
-            switchMap((res) => {
-                if (res.id) {
-                    return organizationService.createOrganization({
-                        name: action.data.organizationName
-                    }).pipe(
-                        switchMap((newOrganization) =>  {
-                            return projectService.createProject({
-                                name: action.data.projectName,
-                                ownerId: newOrganization.id,
-                                ownerType: 'organization'
-                            }).pipe(
-                                switchMap((newProject) => {
-                                    return projectService.createRepositoryConfigById(newProject.id, { vcsUrl: action.data.vcsUrl, vcsType: action.data.vcsType })
-                                    .pipe(
-                                        switchMap(() => {
-                                            window.location.href = `${window.location.origin}/${newOrganization.id}/projects/${newProject.id}/builds`;
-                                            return [projectsActions.createProjectSuccess(newProject)];
-                                        }),
-                                        catchError((error) => {
-                                            console.log('There was an issue creating repository config: ' + error);
-                                            return of(projectsActions.connectProjectRepositoryFail(error));
-                                        })
-                                    );
-                                }),
-                                catchError((error) => {
-                                    console.log('There was an issue creating the project: ' + error);
-                                    return of(projectsActions.createProjectFail(error));
-                                })
-                            );
-                        }),
-                        catchError((error) => {
-                            console.log('There was an issue creating the organization: ' + error);
-                            return of(organizationActions.createDefaultOrganizationFail(error));
-                        })
-                    );
-                } else {
-                    redirectToGithub();
-                    return empty();
-                }
+        return organizationService.createOrganization({
+            name: action.data.organizationName
+        }).pipe(
+            switchMap((newOrganization) =>  {
+                return projectService.createProject({
+                    name: action.data.projectName,
+                    ownerId: newOrganization.id,
+                    ownerType: 'organization'
+                }).pipe(
+                    switchMap((newProject) => {
+                        return projectService.createRepositoryConfigById(newProject.id, { vcsUrl: action.data.vcsUrl, vcsType: action.data.vcsType })
+                        .pipe(
+                            switchMap(() => {
+                                window.location.href = `${window.location.origin}/${newOrganization.id}/projects/${newProject.id}/builds`;
+                                return [projectsActions.createProjectSuccess(newProject)];
+                            }),
+                            catchError((error) => {
+                                console.log('There was an issue creating repository config: ' + error);
+                                return of(projectsActions.connectProjectRepositoryFail(error));
+                            })
+                        );
+                    }),
+                    catchError((error) => {
+                        console.log('There was an issue creating the project: ' + error);
+                        return of(projectsActions.createProjectFail(error));
+                    })
+                );
+            }),
+            catchError((error) => {
+                console.log('There was an issue creating the organization: ' + error);
+                return of(organizationActions.createDefaultOrganizationFail(error));
             })
         );
     })

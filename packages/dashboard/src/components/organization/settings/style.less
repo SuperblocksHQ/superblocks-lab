@@ -23,8 +23,8 @@
     .content {
         height: 100%;
         display: flex;
-        background-color: @primary-background-color;
-        color: white;
+        background-color: var(--primaryBackground);
+        color: var(--primaryFontColor);
         overflow-y: auto;
         overflow-x: hidden;
     }
@@ -63,7 +63,7 @@
 }
 
 .hr {
-    background: @border-color;
+    background: var(--borderColor);
     height: 1px;
     margin: 15px calc(50% - 50vw) 15px calc(50% - 50vw);
 }

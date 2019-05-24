@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
-import { projectsActions, toastActions, organizationActions } from '../actions';
+import { projectsActions, toastActions, organizationActions, userActions } from '../actions';
 import { AnyAction } from 'redux';
 
 export const initialState = {
@@ -54,6 +54,7 @@ export default function toastsReducer(state = initialState, action: AnyAction, r
         case organizationActions.ADD_MEMBER_TO_ORGANIZATION_FAIL:
         case organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION_SUCCESS:
         case organizationActions.REMOVE_MEMBER_FROM_ORGANIZATION_FAIL:
+        case userActions.CHECK_REPOSITORY_PERMISSIONS_FAIL:
             return pushToastToState();
         case toastActions.TOAST_DISMISSED:
             return {

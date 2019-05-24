@@ -15,11 +15,11 @@
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
 @import '../style.less';
+@import '../../../style/index.less';
 
 .repoLink {
-    color: #c4c4c4;
+    color: var(--colorGrey);
     margin-bottom: 15px;
-    transition: opacity .15s;
     display: flex;
     align-content: center;
     align-items: center;
@@ -29,7 +29,7 @@
     }
 
     .colorGrey {
-        color: #c4c4c4;
+        color: var(--colorGrey);
     }
 
     span {
@@ -38,7 +38,7 @@
 }
 
 .githubLogo {
-    color: #c4c4c4;
+    color: var(--colorGrey);
     font-size: 12px;
 }
 
@@ -48,10 +48,10 @@
     .buildItem {
         transition: background .15s;
         display: flex;
-        border-bottom: 1px solid @border-color;
+        border-bottom: 1px solid var(--borderColor);
 
         &:hover {
-            background: #262c30;
+            background: var(--buildRowBackgroundHover);
         }
     }
 
@@ -97,7 +97,7 @@
     }
 
     .singleCell:nth-of-type(3) {
-        flex: 1 0;
+        flex: 0 0 250px;
         min-width: 0px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -113,7 +113,7 @@
 
     .singleCell:nth-of-type(4) {
         flex: 1 0;
-        min-width: 0px;
+        min-width: 100px;
         overflow: hidden;
         text-overflow: ellipsis;
 
@@ -135,10 +135,11 @@
     }
 
     .singleCell:nth-of-type(5) {
-        flex: 0 0 150px;
+        flex: 0 0 170px;
         flex-direction: column;
         padding-right: 15px;
         border-right: 2px solid black;
+        align-items: flex-start;
 
         span {
             justify-content: flex-end;
@@ -148,7 +149,7 @@
             border-right-color: #59a600;
         }
 
-        &.status-queued {
+        &.status-pending {
             border-right-color: #725BA4;
         }
 
@@ -164,7 +165,7 @@
     @media only screen and (max-width: 1000px) {
         .buildItem {
             flex-wrap: wrap;
-            border: 1px solid @border-color;
+            border: 1px solid var(--borderColor);
             position: relative;
             margin-bottom: 30px;
         }
@@ -248,7 +249,7 @@
         line-height: 1;
     }
 
-    &.queue {
+    &.pending {
         border-color: #725BA4;
         color: #fff;
         background-color: #725BA4;
@@ -308,7 +309,7 @@
     }
 
     p:last-of-type {
-        color: #c4c4c4;
+        color: var(--colorGrey);
         margin-bottom: 40px;
     }
 }

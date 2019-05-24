@@ -1,3 +1,5 @@
+import { Theme } from '../components/account/settings/appearance/themeSwitcher';
+
 export const appActions = {
     APP_START: 'APP_START',
     notifyAppStart() {
@@ -21,6 +23,13 @@ export const appActions = {
     emvReady() {
         return {
             type: appActions.EVM_READY
+        };
+    },
+    CHANGE_APP_THEME: 'CHANGE_APP_THEME',
+    changeAppTheme(appTheme: Theme) {
+        return {
+            type: appActions.CHANGE_APP_THEME,
+            data: { appTheme }
         };
     }
 };

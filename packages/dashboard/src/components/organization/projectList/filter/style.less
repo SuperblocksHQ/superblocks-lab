@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Superblocks Lab.  If not, see <http://www.gnu.org/licenses/>.
 
+@import '../../../../style/index.less';
+
 .container {
     display: flex;
     margin-top: 10px;
@@ -30,16 +32,16 @@
 
     .icon {
         position: absolute;
-        left: 10px;
-        top: 11px;
+        left: 20px;
+        top: 15px;
     }
 
     input {
         background: transparent;
-        color: white;
-        border: 1px solid grey;
-        border-radius: 4px;
-        padding: 7px 15px 7px 30px;
+        color: var(--primaryFontColor);
+        border: 1px solid var(--inputBorderColor);
+        border-radius: 2px;
+        padding: 12px 15px 12px 45px;
         max-width: 100%;
     }
 }
@@ -49,7 +51,7 @@
     display: flex;
     align-items: center;
     margin-left: 25px;
-    
+
     .desc {
         opacity: .6;
         padding-right: 6px;
@@ -94,7 +96,7 @@
 
 .orderButton {
     opacity: .6;
-    color: white;
+    color: var(--primaryFontColor);
     margin-left: 8px;
     display: flex;
     align-items: center;

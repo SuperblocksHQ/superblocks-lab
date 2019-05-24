@@ -23,8 +23,8 @@
     .content {
         height: 100%;
         display: flex;
-        background-color: @primary-background-color;
-        color: white;
+        background-color: var(--primaryBackground);
+        color: var(--primaryFontColor);
         overflow-y: auto;
         overflow-x: hidden;
     }
@@ -56,8 +56,6 @@
     }
 
     a {
-        transition: opacity .15s;
-
         &:hover {
             opacity: .6;
         }
@@ -70,7 +68,7 @@
 }
 
 .hr {
-    background: @border-color;
+    background: var(--borderColor);
     height: 1px;
     margin: 15px calc(50% - 50vw) 15px calc(50% - 50vw);
 }
@@ -85,7 +83,7 @@ a.linkPrimary,
     display: flex;
     align-items: center;
     padding: 10px !important;
-    border-bottom: 1px solid @border-color;
+    border-bottom: 1px solid var(--borderColor);
 
     span {
         margin-left: 10px;
