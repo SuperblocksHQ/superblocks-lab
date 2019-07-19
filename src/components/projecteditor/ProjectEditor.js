@@ -130,7 +130,7 @@ export default class ProjectEditor extends Component {
             <div className={style.projecteditor}>
                 <OnlyIf test={showBanner}>
                     <div className={style.banner}>
-                        <p>Check out our new <a href="https://superblocks.com" title='Superblocks home site'>Superblocks</a> platform for building and releasing smart contracts. <a href="https://superblocks.com/blog/introducing-the-superblocks-platform/" title='Superblocks home site'>Read more about it!</a></p>
+                        <p>Check out our new <a href="https://superblocks.com" target="_blank" rel="noopener noreferrer" title='Superblocks home site'>Superblocks</a> platform for building and releasing smart contracts. <a href="https://superblocks.com/blog/introducing-the-superblocks-platform/" target="_blank" rel="noopener noreferrer" title='Superblocks home site'>Read more about it!</a></p>
                         <button
                             className={classNames([ style.icon, 'btnNoBg', ])}
                             onClick={this.onCloseBannerClick}>
@@ -144,7 +144,7 @@ export default class ProjectEditor extends Component {
                     onProjectSelected={this.onProjectSelectedHandle}
                 />
                 <div className={style.mainWrapper}>
-                    <div className={classnames([style.sideButtonsContainer, style.sideButtonsContainerLeft])}>
+                    <div className={classNames([style.sideButtonsContainer, style.sideButtonsContainerLeft])}>
                         <SideButton name="Explorer"
                             icon={<IconFileAlt style={{width: 12}} />}
                             onClick={() => {
@@ -204,7 +204,7 @@ export default class ProjectEditor extends Component {
                     </div>
                     <BottomBar endpoint={selectedEnvironment.endpoint} />
 
-                    <div className={classnames([style.sideButtonsContainer, style.sideButtonsContainerRight])}>
+                    <div className={classNames([style.sideButtonsContainer, style.sideButtonsContainerRight])}>
                         <SideButton name="Transactions"
                             icon={<IconTransactions />}
                             onClick={toggleTransactionsHistoryPanel}  />
