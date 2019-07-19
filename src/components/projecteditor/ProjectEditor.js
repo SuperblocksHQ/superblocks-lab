@@ -26,7 +26,6 @@ import SplitterLayoutBase from 'react-splitter-layout';
 import { PreviewSidePanel, TransactionLogPanel } from './sidePanels';
 import { IconTransactions, IconShowPreview, IconFileAlt, IconClose } from '../icons';
 import { SideButton } from './sideButton';
-import classnames from 'classnames';
 import OnlyIf from '../onlyIf';
 
 class SplitterLayout extends SplitterLayoutBase {
