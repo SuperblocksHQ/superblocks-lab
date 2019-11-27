@@ -130,7 +130,7 @@ export default class ProjectEditor extends Component {
             <div className={style.projecteditor}>
                 <OnlyIf test={showBanner}>
                     <div className={style.banner}>
-                        <p>Check out our new <a href="https://superblocks.com" target="_blank" rel="noopener noreferrer" title='Superblocks home site'>Superblocks</a> platform for building and releasing smart contracts. <a href="https://superblocks.com/blog/introducing-the-superblocks-platform/" target="_blank" rel="noopener noreferrer" title='Superblocks home site'>Read more about it!</a></p>
+                        <p>PLEASE NOTE: Due to breaking changes in Metamask, <strong>Superblocks Lab will become deprecated on December the 16th</strong>. Please use the official <a href="https://studio.ethereum.org" target="_blank" rel="noopener noreferrer" title='Ethereum studio'>Ethereum Studio</a> instead. </p>
                         <button
                             className={classNames([ style.icon, 'btnNoBg', ])}
                             onClick={this.onCloseBannerClick}>
