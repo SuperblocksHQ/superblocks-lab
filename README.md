@@ -2,6 +2,10 @@
 
 [![Join the community](https://img.shields.io/badge/chat-on%20discord-7289da.svg?logo=discord)](https://discord.gg/6Cgg2Dw) [![CircleCI](https://circleci.com/gh/SuperblocksHQ/superblocks-lab.svg?style=shield)](https://circleci.com/gh/SuperblocksHQ/superblocks-lab) [![Follow in Twitter](https://img.shields.io/twitter/follow/getSuperblocks.svg?style=social&logo=twitter)](https://twitter.com/intent/follow?screen_name=GetSuperblocks)
 
+### :warning: This repo is deprecated :warning:
+**Superblocks Lab has been deprecated in favour of [Ethereum Studio](https://github.com/SuperblocksHQ/ethereum-studio). See you over there!**
+
+-----------------------
 
 [Superblocks](https://superblocks.com) **Lab** is an integrated development environment (IDE) to learn, build and deploy decentralized apps (DApps) for _Ethereum_. It's a full browser experience which requires no installations to run.
 
