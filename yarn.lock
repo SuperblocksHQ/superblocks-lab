@@ -947,7 +947,7 @@
 
 "@segment/top-domain@^3.0.0":
   version "3.0.0"
-  resolved "http://registry.npmjs.org/@segment/top-domain/-/top-domain-3.0.0.tgz#02e5a5a4fd42a9f6cf886b05e82f104012a3c3a7"
+  resolved "https://registry.npmjs.org/@segment/top-domain/-/top-domain-3.0.0.tgz#02e5a5a4fd42a9f6cf886b05e82f104012a3c3a7"
   dependencies:
     component-cookie "^1.1.2"
     component-url "^0.2.1"
@@ -2884,9 +2884,9 @@ cache-base@^1.0.1:
     unset-value "^1.0.0"
 
 cached-path-relative@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/cached-path-relative/-/cached-path-relative-1.0.2.tgz#a13df4196d26776220cc3356eb147a52dba2c6db"
-  integrity sha512-5r2GqsoEb4qMTTN9J+WzXfjov+hjxT+j3u5K+kIVNIwAd99DLCJE9pBIMP1qVeybV6JiijL385Oz0DcYxfbOIg==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/cached-path-relative/-/cached-path-relative-1.1.0.tgz#865576dfef39c0d6a7defde794d078f5308e3ef3"
+  integrity sha512-WF0LihfemtesFcJgO7xfOoOcnWzY/QHR4qeDqV44jPU3HTI54+LnfXK3SA27AVVGCdZFgjjFFaqUA9Jx7dMJZA==
 
 call-me-maybe@^1.0.1:
   version "1.0.1"
@@ -3781,7 +3781,7 @@ date-now@^0.1.4:
 
 debug@2.2.0:
   version "2.2.0"
-  resolved "http://registry.npmjs.org/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
+  resolved "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
     ms "0.7.1"
 
@@ -8158,7 +8158,7 @@ move-concurrently@^1.0.1:
 
 ms@0.7.1:
   version "0.7.1"
-  resolved "http://registry.npmjs.org/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
+  resolved "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
 
 ms@2.0.0:
   version "2.0.0"
